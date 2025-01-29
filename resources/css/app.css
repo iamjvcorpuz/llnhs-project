@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+  font-family: "SF Pro Text, Light";
+  src: url('/fonts/sf/SFProText-Light.ttf'); 
+}
+html,
+body {
+  background-color: #a9a9a92e!important;  
+  /* -webkit-tap-highlight-color: transparent;  */
+  font-family: "SF Pro Text, Light";
+  /* overflow: hidden; */
+  /* background-image: linear-gradient(70deg, rgb(33, 24, 83), rgb(21, 121, 37)); */
+  
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
+.center {
+    text-align: center!important;
+}
+
+.attendance-school-font {
+    font-size:  220%;
+    font-weight: bolder;
+}
+.attendance-nav {
+    background-color: #78bbf8;
+
+    border-color: #028eb4;
+    border-style: solid; 
+    border-bottom-width: 1px;
+
+    box-shadow:0 0 20px rgba(102, 101, 101, 0.555);
+}
+.attendance-nav-container {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 110px;
+}
+.log-user-photo {
+    width: 25%;
+    float: left;
+  
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    /* padding-right: 15px; */
+    
+    height: 86.5vh!important;
+    max-height: 86.4vh!important;
+  
+    display:flex;
+    flex-direction:column;
+    /* background-color: #5f6870; */
+}
+.log-center-data {
+    width: 60%;
+    float: left;
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 6px;
+  
+    background-color: #ddd8d87a;
+    height: 86vh!important;
+  
+    display:flex;
+    flex-direction:column;
+}
+.log-right-photo-list {
+    width: 14.9%;
+    float: left;
+    position: relative;
+    min-height: 1px;
+    /* padding-left: 15px;
+    padding-right: 15px; */
+  
+    /* background-color: #694c4c; */
+    height: 86.4vh!important;
+    /* height: 99vh!important; */
+  
+  
+    white-space: nowrap;
+    cursor: grab;
+    /* overflow-y: auto; */
+    /* -webkit-overflow-scrolling: touch!important;  */
+}
+.logo_round { 
+    border-color: #ffffff;
+    border-style: solid;
+    border-width: 10px;
+    margin-top: 15px;
+    border-radius: 50%;
+    background-color: #ffffff;
+} 
+.logo_round_mini { 
+    border-color: #ffffff;
+    border-style: solid; 
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+.shadow {
+    box-shadow:0 0 20px rgba(102, 101, 101, 0.384);
+}
+.photo-upload { 
+    width: 60%!important; 
+    max-height: 45.5vh!important; 
+    margin-bottom: 10px;
+}
+.attendance-login-profile {
+    margin-top: 50px;
+    width: 90%!important; 
+    max-height: 45.5vh!important; 
+}
+.header_time {
+    /* margin-left: 20px!important;
+    margin-bottom: 20px!important;  */
+    text-align: center;
+    width: 100%;
+}
+.timeCount {
+    font-size: 11vh;
+    margin-bottom: -20px;
+    text-align: center;
+    width: 100%; 
+}
+.header_time2 {  
+    text-align: center;
+    width: 100%; 
+    min-height: 47.5vh;
+}
+.dateCount {
+    padding: 0;
+    margin-top: 0px;
+    margin-left: 8px;
+    margin-bottom: 10px;
+    font-size: 4vh;
+}
+.logger-name {
+    font-size: 400%; 
+    text-align: center;
+    width: 100%;  
+    padding:10px;
+    margin-bottom: 5px;
+
+    /* border-color: #2c3335;
+    border-style: solid; 
+    border-radius: 10px;
+    background-color: #78bbf8;
+    box-shadow:0 0 5px rgba(102, 101, 101, 0.384); */
+}
+.logger-name-small {
+    font-size: 250%;
+    margin-bottom: -20px;
+    text-align: center;
+    width: 100%; 
+    padding:10px;
+    
+    margin-bottom: 5px;
+
+    /* border-color: #2c3335;
+    border-style: solid; 
+    border-radius: 10px;
+    background-color: #78bbf8;
+    box-shadow:0 0 5px rgba(102, 101, 101, 0.384); */
+}
+
+.time-logs {
+    /* font-size: 250%; */
+
+    font-size: 3vw;
+    margin-top: 80px;
+    margin-right: 20px;
+    text-align: center;
+    width: 95%; 
+
+    border-color: #2c3335;
+    border-style: solid; 
+    border-radius: 10px; 
+    margin-bottom: 5px;
+    box-shadow:0 0 5px rgba(102, 101, 101, 0.384);
+}
+
+.logo_round_mini_mobile { 
+    border-color: #ffffff;
+    border-style: solid;
+    border-width: 2px;
+    margin-top: 10px;
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+.image_list {
+    width: 100%;
+    box-shadow: 0 1px rgba(102, 101, 101, 0.384);
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px; 
+}
+.image_list img {
+    /* width: 100%!important;  */
+    margin-left: auto;
+    margin-right: auto;
+}
+.logo_round_mini_name {
+    display: block;
+    /* width:100%!important; */
+    height: auto;
+    /* color: #f5f5f5;  */
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: break-word!important;
+    word-wrap: break-word!important;
+    margin-left: auto;
+    margin-right: auto;
+}
+.view_list_right_side {
+    width: 100%;
+    float: left; 
+    min-height: 1px;
+    
+    height: 86.5vh!important; 
+
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+
+    white-space: nowrap;  
+    cursor: grab;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch!important;
+}
+.log-center-data-total-logs {
+    position: absolute;
+    bottom: 0px;
+}
+
+.log-right-photo-list-time {
+    font-size: 20px;
+}
+.auto-margin-lr {
+    margin-left: auto;
+    margin-right: auto;
+}
