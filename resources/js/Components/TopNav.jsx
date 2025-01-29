@@ -1,0 +1,51 @@
+import { Link } from '@inertiajs/react';
+
+export default function TopNav({
+    active = false,
+    className = '',
+    children,
+    ...props
+}) {
+    return (<nav className="app-header navbar navbar-expand bg-info shadow"> 
+        <div className="container-fluid"> 
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a className="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                <i className="bi bi-list"></i>
+              </a>
+            </li>
+            {/* <li className="nav-item d-none d-md-block"><a href="#" className="nav-link">Home</a></li>
+            <li className="nav-item d-none d-md-block"><a href="#" className="nav-link">Contact</a></li> */}
+          </ul> 
+          <ul className="navbar-nav">   
+            <li className="nav-item dropdown user-menu">
+              <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <img
+                  src="/adminlte/dist/assets/img/user2-160x160.jpg"
+                  className="user-image rounded-circle shadow auto-margin-lr"
+                  alt="User Image"
+                />
+                {/* <span className="d-none d-md-inline">Alexander Pierce</span> */}
+              </a>
+              <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end"> 
+                <li className="user-header text-bg-primary">
+                  <img
+                    src="/adminlte/dist/assets/img/user2-160x160.jpg"
+                    className="rounded-circle shadow auto-margin-lr"
+                    alt="User Image"
+                  />
+                  <p>
+                    Juan Dela Cruz
+                    <small>Member since Nov. 2023</small>
+                  </p>
+                </li>  
+                <li className="user-footer">
+                  <Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>
+                  <Link to="/logout" className="btn btn-danger btn-flat float-end">Log out</Link>
+                </li> 
+              </ul>
+            </li> 
+          </ul> 
+        </div>
+    </nav>);
+}
