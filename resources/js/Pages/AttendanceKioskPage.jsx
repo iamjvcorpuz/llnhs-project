@@ -1,8 +1,10 @@
 import React,{ Component } from "react";
-import { Head } from '@inertiajs/react';
-import { EachMethod } from '@/Components/EachMethod'
+// import { Head } from '@inertiajs/react';
+import { EachMethod } from '@/Components/EachMethod';
+import { Pagination } from '@/Components/commonFunctions'; 
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
+import moment from 'moment';
 // import {
 //     createColumnHelper,
 //     flexRender,
@@ -13,6 +15,15 @@ import Swal from 'sweetalert2';
 
 // import ReactTable from "react-table"; 
 // import 'react-table/react-table.css';  
+setInterval( async () => {
+    let dt = new Date();
+    let time = moment(dt);  
+    let dates = moment(dt);  
+    let timecountings = time.format('hh:mm:ss A');
+    let timedates = dates.format('LL');
+    $("#timers").text(timecountings);  
+    $("#timesdates").text(timedates);  
+}, 800);
 
 export default class AttendancePage extends Component {
     constructor(props) {
@@ -21,10 +32,10 @@ export default class AttendancePage extends Component {
             requestimg: '/adminlte/dist/assets/img/avatar.png',
             timeCount: "00:00:00 AM",
             datenow: "00/00/000 Monday",
-            idnumber: "00001",
-            fullname: "Juan Dela Filipe y Cresostomo Ibarra",
-            logger_type: "Student",
-            logger_section: "Section 1",
+            idnumber: "",
+            fullname: "",
+            logger_type: "",
+            logger_section: "",
             data: [],
             columns: [
                 {
@@ -40,66 +51,147 @@ export default class AttendancePage extends Component {
             ],
             time_logs_status: "",
             time_logs_status_message: "",
-            attendance_data: []
+            attendance_data: [],
+            attendance_data_temp: [],
+            pagenationIndex: 0,
+            scanned_code: ""
         }
         let loop_test = 0;
-        setInterval(() => {
-            this.setState({
-                attendance_data: [...this.state.attendance_data,{
-                    id: 0,
+        this.handleFocusableElements = true;
+        this.eventKeys = this.eventKeys.bind(this);
+        // setInterval(() => {
+        //     this.setState({
+        //         attendance_data: [...this.state.attendance_data,{
+        //             id: 0,
+        //             fullname: "Juan Dela Filipe y Cresostomo Ibarra",
+        //             nicname: "Juan",
+        //             timelogs: "Time In: 08:00 AM",
+        //             section: "Section 1"
+        //         }]
+        //     })
+        //     if(loop_test==0) {
+        //         this.setState({
+        //             time_logs_status: "bg-success",
+        //             time_logs_status_message:"Time In",
+        //             idnumber: "00001",
+        //             fullname: "Marco Polo",
+        //             logger_type: "Student",
+        //             logger_section: "Section 2"
+        //         });
+        //         loop_test++;
+        //     } else if(loop_test==1) {
+        //         this.setState({
+        //             idnumber: "00003",
+        //             fullname: "Jose RizalJosé Protacio Rizal Mercado y Alonso Realonda",
+        //             logger_type: "Student",
+        //             logger_section: "Section 3",
+        //             time_logs_status: "bg-success",
+        //             time_logs_status_message:"Time Out"
+        //         });
+        //         loop_test++;
+        //     } else if(loop_test==2) {
+        //         this.setState({
+        //             idnumber: "00003",
+        //             fullname: "Eric Santos",
+        //             logger_type: "Student",
+        //             logger_section: "Section 11",
+        //             time_logs_status: "bg-danger",
+        //             time_logs_status_message:"Scan Fail"
+        //         });
+        //         loop_test++;
+        //     } else if(loop_test==3) {
+        //         this.setState({
+        //             idnumber: "",
+        //             fullname: "",
+        //             logger_type: "",
+        //             logger_section: "",
+        //             time_logs_status: "bg-danger",
+        //             time_logs_status_message:"Sorry Please Try Again"
+        //         });
+        //         loop_test=0;
+        //     }
+        // }, 2000);
+
+
+    }
+
+    componentDidMount() {
+        let self = this;
+        let count = 0;
+        let t = setInterval(() => {
+            self.setState({
+                attendance_data: [...self.state.attendance_data,{
+                    id: self.state.attendance_data.length,
                     fullname: "Juan Dela Filipe y Cresostomo Ibarra",
                     nicname: "Juan",
                     timelogs: "Time In: 08:00 AM",
                     section: "Section 1"
                 }]
+            },() => {
+                Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
+                    // console.log(result)
+                    if(typeof(result)!="undefined") { 
+                        self.setState({attendance_data_temp: result}); 
+                    } else { 
+                        self.setState({attendance_data_temp: result}); 
+                    }
+                });
+                if(count==10) {
+                    clearInterval(t)
+                }
+                count++;
             })
-            if(loop_test==0) {
-                this.setState({
-                    time_logs_status: "bg-success",
-                    time_logs_status_message:"Time In",
-                    idnumber: "00001",
-                    fullname: "Marco Polo",
-                    logger_type: "Student",
-                    logger_section: "Section 2"
-                });
-                loop_test++;
-            } else if(loop_test==1) {
-                this.setState({
-                    idnumber: "00003",
-                    fullname: "Jose RizalJosé Protacio Rizal Mercado y Alonso Realonda",
-                    logger_type: "Student",
-                    logger_section: "Section 3",
-                    time_logs_status: "bg-success",
-                    time_logs_status_message:"Time Out"
-                });
-                loop_test++;
-            } else if(loop_test==2) {
-                this.setState({
-                    idnumber: "00003",
-                    fullname: "Eric Santos",
-                    logger_type: "Student",
-                    logger_section: "Section 11",
-                    time_logs_status: "bg-danger",
-                    time_logs_status_message:"Scan Fail"
-                });
-                loop_test++;
-            } else if(loop_test==3) {
-                this.setState({
-                    idnumber: "",
-                    fullname: "",
-                    logger_type: "",
-                    logger_section: "",
-                    time_logs_status: "bg-danger",
-                    time_logs_status_message:"Sorry Please Try Again"
-                });
-                loop_test=0;
-            }
-        }, 2000);
+        }, 500);
+
+        window.addEventListener('keydown', this.eventKeys);
 
     }
+
+    paganationPosition(index) { 
+        if(index < this.state.attendance_data_temp.length && index > 0) { 
+            this.setState({pagenationIndex: index});
+        } else if(index==0) { 
+            this.setState({pagenationIndex: index});
+        }
+    }
+
+    async eventKeys(key_, e){
+        let self = this;
+        let key = key_.key; 
+        try {
+            if (key == "Enter" && self.state.scanned_code != "Enter" && self.state.scanned_code.trim() !== "" ) { 
+                console.log(self.state.scanned_code, " - aw");
+                self.setState({
+                    scanned_code: ""
+                }); 
+            } else {
+                let card = self.state.scanned_code + key; 
+                // console.log(card);
+                if(key === 'Enter') {
+                    self.setState({
+                        scanned_code_history: "",
+                        scanned_code: ""
+                    });        
+                } else {
+                    self.setState({
+                        scanned_code_history: card,
+                        scanned_code: card
+                    });  
+                }
+        
+            }            
+        } catch (error) {
+            
+        }
+    }
+
     render() {
         return <div className="noselect">
-            <Head title="Attendance" />
+            {/* <KeyboardEventHandler 
+            handleFocusableElements={this.handleFocusableElements}
+            handleKeys={['numeric','enter']}
+            onKeyEvent={(key, e)=>{ this.eventKeys(key, e); }} /> */}
+            {/* <Head title="Attendance" /> */}
             <nav className="main-header navbar attendance-nav">
                 <div className="attendance-nav-container">
                     <div className="col-lg-1">
@@ -109,7 +201,7 @@ export default class AttendancePage extends Component {
                     </div> 
                     <div className="col-lg-9">
                         <label className="attendance-school-font">Lebak Legislated National High School </label>  
-                        <p className="h5">Poblacion III Lebak, Sultan Kudarat, 9807 Philippines</p>
+                        <p className="h6">Poblacion III Lebak, Sultan Kudarat, 9807 Philippines</p>
                     </div> 
                     <div className="col-lg-2">
                         <img src="/images/depedlogo.png" alt="AdminLTE Logo" className="img-circle" width={250} /> 
@@ -132,17 +224,17 @@ export default class AttendancePage extends Component {
                 </div>
                 <div className="log-center-data">
                     <div className="header_time">  
-                        <div className="timeCount">{this.state.timeCount}</div>  
-                        <div className="dateCount" >{this.state.datenow}</div>
+                        <div className="timeCount" id="timers">-</div>  
+                        <div className="dateCount" id="timesdates" >-</div>
                     </div>
                     {/* <hr /> */}
                     <br />
                     <br />
                     <br />
                     <div className="header_time">
-                        <div className="logger-name-small">LRN : {this.state.idnumber}</div> 
-                        <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:"-"}</strong></div> 
-                        <div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:"-"}</div>
+                        <div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.idnumber}`:""}</div> 
+                        <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
+                        <div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>
                         
                     </div>
                     {/* <hr /> */}
@@ -162,7 +254,7 @@ export default class AttendancePage extends Component {
                 </div>
                 <div className="log-right-photo-list">
                     <div className="view_list_right_side">
-                        <EachMethod of={this.state.attendance_data} render={(element,index) => {
+                        <EachMethod of={(this.state.attendance_data_temp.length>0)?this.state.attendance_data_temp[this.state.pagenationIndex]:[]} render={(element,index) => {
                             return <div className="image_list"  key={index}>
                                 <img className={`logo_round_mini_mobile`} style={{height: "100px" }} 
                                     onError={(e)=>{
@@ -176,12 +268,18 @@ export default class AttendancePage extends Component {
                                     onDoubleClick={()=>{
                                         
                                     }} alt="profile picture"  />
-                                <p className="logo_round_mini_name" ><strong>{element.fullname}</strong></p>
-                                <hr />
+                                <p className="logo_round_mini_name mb-0" ><strong>{element.fullname}</strong></p>
+                                {/* <hr /> */}
                                 {/* <p className="logo_round_mini_name" >{element.section}</p> */}
-                                <p className="logo_round_mini_name log-right-photo-list-time badge bg-success" >{element.timelogs}</p>
+                                <p className="logo_round_mini_name log-right-photo-list-time badge bg-success mb-0" >{element.timelogs}</p>
                             </div>                    
                         }} />                        
+                    </div>
+                    <div className="paganation-button-attendance">
+                        <div className="form-control pt-2 paganation-button-attendance2">
+                            <button className="btn btn-primary btn-block mr-1" onClick={() => { this.paganationPosition(this.state.pagenationIndex - 1) }} > <i className="bi bi-caret-left-fill"></i> </button>
+                            <button className="btn btn-primary btn-block"  onClick={() => { this.paganationPosition(this.state.pagenationIndex + 1) }}> <i className="bi bi-caret-right-fill"></i> </button>
+                        </div>
                     </div>
                 </div>
             </div>

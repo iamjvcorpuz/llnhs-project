@@ -14,7 +14,8 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-          '@import': './public',
+            '@':'/resources/js',
+            '@import': './public',
         },
     }
 });

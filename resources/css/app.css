@@ -42,7 +42,7 @@ body {
     border-style: solid; 
     border-bottom-width: 1px;
 
-    box-shadow:0 0 20px rgba(102, 101, 101, 0.555);
+    box-shadow:0 0 20px rgb(74 152 224 / 93%);
 }
 .attendance-nav-container {
     display: flex;
@@ -234,8 +234,8 @@ body {
     float: left; 
     min-height: 1px;
     
-    height: 86.5vh!important; 
-
+    /* height: 86.5vh!important;  */
+    height: 81vh!important;
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
     scrollbar-width: none;  /* Firefox */
 
@@ -250,9 +250,24 @@ body {
 }
 
 .log-right-photo-list-time {
-    font-size: 20px;
+    width: 100%!important;
+    font-size: 20px!important;
+    margin-left: auto;
+    margin-right: auto;
 }
 .auto-margin-lr {
     margin-left: auto;
     margin-right: auto;
+}
+.paganation-button-attendance {
+    float: left;
+    width: 100%;
+    bottom: 0px;
+    right: 0px;
+    height: 55px;
+    box-shadow: 2px -2px 5px 0px rgb(74 152 224 / 93%);
+}
+.paganation-button-attendance2 > button {
+    width: 6.5vw!important;
+    
 }
