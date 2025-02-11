@@ -13,6 +13,12 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+
+// Route::get( '/{path?}', function(){
+//     return Inertia::render( 'Admin/Dashboard' );
+// })->where('path', '.*');
+
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -33,6 +39,7 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/dashboard/student', function () {
     return Inertia::render('Admin/Student',['props' => null,]);
 });
+
 Route::get('/admin/dashboard/student/new', function () {
     return Inertia::render('Admin/Student/NewStudent',['props' => null,]);
 });

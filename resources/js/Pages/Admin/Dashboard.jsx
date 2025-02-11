@@ -1,11 +1,12 @@
 import React,{ Component } from "react";
 import { Head } from '@inertiajs/react';
-import { EachMethod } from '@/Components/EachMethod'
+// import { EachMethod } from '@/Components/EachMethod'
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import ApexCharts from 'apexcharts'
 
-import DashboardLayout from '@/Layouts/DashboardLayout';
+// import DashboardLayout from '@/Layouts/DashboardLayout';
+import DashboardLayout from '../../Layouts/DashboardLayout';
 
 export default class Dashboard extends Component {
     constructor(props) {

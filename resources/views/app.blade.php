@@ -36,6 +36,7 @@
     <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary">
         
       @inertia
+       <!-- <div id="main-apps"></div> -->
  
       <!-- <script src="{{ url('adminlte/dist/js/jquery.min.js') }}"></script> -->
       <script
@@ -57,6 +58,5 @@
       ></script>
       <script src="{{ url('adminlte/dist/js/adminlte.min.js') }}"></script>
       <!-- <script src="{{ url('adminlte/dist/js/adminlte.js') }}"></script> -->
-       
     </body>
 </html>
