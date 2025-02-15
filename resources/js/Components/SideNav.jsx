@@ -41,6 +41,12 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
+                <Link href="/admin/dashboard/parents" className="nav-link">
+                  <i className="nav-icon bi bi-person-lines-fill"></i>
+                  <p>Parents</p>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link href="/admin/dashboard/subject" className="nav-link">
                   <i className="nav-icon bi bi-book-half"></i>
                   <p>Subject</p>
@@ -52,71 +58,74 @@ export default function SideNav({
                   <p>Users</p>
                 </Link>
               </li>
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  <i className="nav-icon bi bi-tree-fill"></i>
-                  <p>
-                    UI Elements
-                    <i className="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul className="nav nav-treeview">
-                  <li className="nav-item">
-                    <a href="../UI/general.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>General</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="../UI/icons.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Icons</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="../UI/timeline.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Timeline</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  <i className="nav-icon bi bi-tree-fill"></i>
-                  <p>
-                    UI Elements
-                    <i className="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul className="nav nav-treeview">
-                  <li className="nav-item">
-                    <a href="../UI/general.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>General</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="../UI/icons.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Icons</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="../UI/timeline.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Timeline</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+
             </ul>
           </nav>
         </div>
       </aside>);
 }
 
-
+{/*
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-tree-fill"></i>
+                  <p>
+                    UI Elements
+                    <i className="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <a href="../UI/general.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>General</p>
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="../UI/icons.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Icons</p>
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="../UI/timeline.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Timeline</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-tree-fill"></i>
+                  <p>
+                    UI Elements
+                    <i className="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <a href="../UI/general.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>General</p>
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="../UI/icons.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Icons</p>
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="../UI/timeline.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Timeline</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>  
+  
+*/}
 {/* <li className="nav-item">
 <a href="#" className="nav-link">
   <i className="nav-icon bi bi-box-seam-fill"></i>

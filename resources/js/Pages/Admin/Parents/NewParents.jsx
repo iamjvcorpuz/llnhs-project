@@ -11,7 +11,8 @@ import Webcam from "react-webcam";
 import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
 
-export default class NewStudent extends Component {
+
+export default class NewTeacher extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -28,6 +29,7 @@ export default class NewStudent extends Component {
             sex: "",
             bdate: "",
             status: "",
+            email: "",
             filedata: null,
             filedataName: "",
             filetype: "",
@@ -94,16 +96,15 @@ export default class NewStudent extends Component {
             $("#fileuploadpanel").modal('show');
         }
     };
-    
+
     updateCrop(result) { 
         this.setState({
             photobase64final:result
         })
     }
-
     saveData() {
         let self = this;
-        if(self.state.lrn != "" && self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.psa_cert_no != "") {
+        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "") {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
                 $("#invalidCheck-alert").addClass('d-block invalid-feedback');
@@ -135,8 +136,7 @@ export default class NewStudent extends Component {
                         }
                     });
                     let datas =  {
-                        qr_code: self.state.lrn,
-                        psa_cert_no:self.state.psa_cert_no,
+                        qr_code: self.state.lrn, 
                         first_name:self.state.first_name,
                         last_name:self.state.last_name,
                         middle_name:self.state.middle_name,
@@ -144,11 +144,11 @@ export default class NewStudent extends Component {
                         bdate:self.state.bdate,
                         status: "active",
                         picture_base64:self.state.photobase64final,
-                        lrn:self.state.lrn,
+                        email:self.state.email,
                         sex:self.state.sex
                     };
                     console.log(datas);
-                    axios.post('/student',datas).then(function (response) {
+                    axios.post('/teacher',datas).then(function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
@@ -204,29 +204,6 @@ export default class NewStudent extends Component {
                                         closeOnClickOutside: false,  
                                         dangerMode: true,
                                     });
-                                    console.log(typeof(data.data)!="undefined",data.data.length>0)
-                                    if(typeof(data.data)!="undefined"&&data.data.length>0) {
-                                        data.data.forEach((val,i,arr) => {
-                                            console.log(val)
-                                            if(val.field=='lrn') {
-                                                $("#lrn-alert").removeAttr('class');
-                                                $("#lrn-alert").html('LRN is already exist');
-                                                $("#lrn-alert").addClass('d-block invalid-feedback');
-                                            } else if(val.field=='first_name') {
-                                                $("#first-name-alert").removeAttr('class');
-                                                $("#first-name-alert").html('First is already exist');
-                                                $("#first-name-alert").addClass('d-block invalid-feedback');
-                                            } else if(val.field=='last_name') {
-                                                $("#last-name-alert").removeAttr('class');
-                                                $("#last-name-alert").html('Last is already exist');
-                                                $("#last-name-alert").addClass('d-block invalid-feedback');
-                                            } else if(val.field=='middle_name') {
-                                                $("#middle-name-alert").removeAttr('class');
-                                                $("#middle-name-alert").html('Middle is already exist');
-                                                $("#middle-name-alert").addClass('d-block invalid-feedback');
-                                            }
-                                        });
-                                    }
                                 }
                             }
                       }).catch(function (error) {
@@ -253,11 +230,7 @@ export default class NewStudent extends Component {
                 return false
             });            
         } else {
-            if(self.state.lrn == "") {
-                $("#lrn-alert").removeAttr('class');
-                $("#lrn-alert").html('Required Field');
-                $("#lrn-alert").addClass('d-block invalid-feedback');
-            }
+            
             if(self.state.first_name == "") {
                 $("#first-name-alert").removeAttr('class');
                 $("#first-name-alert").html('Required Field');
@@ -283,24 +256,23 @@ export default class NewStudent extends Component {
                 $("#bdate-alert").html('Required Field');
                 $("#bdate-alert").addClass('d-block invalid-feedback');
             }
-            if(self.state.psa_cert_no == "") {
-                $("#psa-alert").removeAttr('class');
-                $("#psa-alert").html('Required Field');
-                $("#psa-alert").addClass('d-block invalid-feedback');
+            if(self.state.lrn == "") {
+                $("#lrn-alert").removeAttr('class');
+                $("#lrn-alert").html('Required Field');
+                $("#lrn-alert").addClass('d-block invalid-feedback');
             }
         }
     }
-    
     render() {
-        return <DashboardLayout title="New Student" ><div className="noselect">
+        return <DashboardLayout title="New Parents" ><div className="noselect">
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Student</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Parents</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard/student">Student</Link></li>
+                            <li className="breadcrumb-item"><Link href="/admin/dashboard/teacher">Teacher</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">New Account</li>
                         </ol>
                     </div>
@@ -315,9 +287,9 @@ export default class NewStudent extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title"> <i className="bi bi-person"></i>New Account</h3>
-                                    <Link href="/admin/dashboard/student" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
-                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>    
+                                    <h3 className="card-title"> <i className="bi bi-person"></i> New Account</h3>
+                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
                                 </div>
                                 <div className="card-body"> 
                                     <div className="row g-3"> 
@@ -334,20 +306,15 @@ export default class NewStudent extends Component {
                                                 <span className="input-group-text" htmlFor="inputGroupFile02" onClick={() => { this.setState({cameraOn: true}); $("#camerapanel").modal('show') }} ><i className="bi bi-camera"></i></span>
                                             </div> 
                                         </div> 
-                                        <div className="col-md-4 d-flex flex-column justify-content-end">
-                                            <label htmlFor="lrn" className="form-label ">LRN</label>
+                                        <div className="col-md-8 d-flex flex-column justify-content-end">
+                                            <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
+                                            <label htmlFor="lrn" className="form-label ">Identification Number</label>
                                             <input type="text" className="form-control" id="lrn" defaultValue="" required="" onChange={(e) => {
                                                 $("#lrn-alert").removeAttr('class').addClass('invalid-feedback'); 
                                                 this.setState({lrn: e.target.value})}} />
                                             <span id="lrn-alert" className="valid-feedback">Looks good!</span>
-                                        </div> 
-                                        <div className="col-md-4 d-flex flex-column justify-content-end">
-                                            <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
-                                            <label htmlFor="first_name" className="form-label">PSA Cert. No.</label>
-                                            <input type="text" className="form-control" id="first_name" defaultValue="" required="" onChange={(e) => { $("#psa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({psa_cert_no: e.target.value})}}  />
-                                            <div id="psa-alert" className="valid-feedback">Looks good!</div>
-                                        </div> 
-                                        <div className="col-md-4">
+                                        </div>
+                                        <div className="col-md-3">
                                             <label htmlFor="first_name" className="form-label">First name</label>
                                             <input type="text" className="form-control" id="first_name" defaultValue="" required="" onChange={(e) => { $("#first-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({first_name: e.target.value})}}  />
                                             <div id="first-name-alert" className="valid-feedback">Looks good!</div>
@@ -362,7 +329,7 @@ export default class NewStudent extends Component {
                                             <input type="text" className="form-control" id="last_name" defaultValue="" required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({last_name: e.target.value})}}  />
                                             <div id="last-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
-                                        <div className="col-md-2">
+                                        <div className="col-md-3">
                                             <label htmlFor="extension_name" className="form-label">Extension name</label>
                                             <select className="form-select" id="extension_name" required="" defaultValue="" onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
                                                 <option disabled>Choose...</option>
@@ -391,9 +358,15 @@ export default class NewStudent extends Component {
                                             <input type="date" className="form-control" id="bdate" defaultValue="" required="" onChange={(e) => {  $("#bdate-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({bdate: e.target.value})}}  />
                                             <div id="bdate-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
+                                        <div className="col-md-4">
+                                            <label htmlFor="bdate" className="form-label">Email</label>
+                                            <input type="email" className="form-control" id="bdate" defaultValue="" required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
+                                            <div id="email-alert" className="valid-feedback">Looks good!</div>
+                                        </div> 
                                     </div> 
                                     <div className="col-12">
                                         <div className="form-check float-right">
+                                            <br />
                                             <input className="form-check-input" type="checkbox" defaultValue="" id="invalidCheck" required="" />
                                             <label className="form-check-label" htmlFor="invalidCheck">
                                             Agree to all fields are correct
@@ -408,8 +381,6 @@ export default class NewStudent extends Component {
 
                 </div>
             </div>
-            
-
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">

@@ -35,6 +35,7 @@ export function getMaxHeightDiv(param) {
         return $(this).height();
     }).get());
 }
+
 export const Pagination = (data,page,limit,params) => {
     let itemLimit = limit;
     let totalData = typeof(data)!="undefined"?data.length:0;
@@ -299,6 +300,7 @@ export const validateEmail = (emailField) => {
     }
 
 }
+
 export const calculateAge = (dateString) => {
     if(dateString!="") {
         var today = new Date();
@@ -313,16 +315,67 @@ export const calculateAge = (dateString) => {
         return ""
     }
 }
+
 export const capitalizeWords = (string) => {
     return typeof(string)!="undefined"&&string!=""?string.split(' ').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' '):""
 }
+
 export const uniques = (arr) => {
     var a = [];
     for (var i=0, l=arr.length; i<l; i++)
         if (a.indexOf(arr[i]) === -1 && arr[i] !== '')
             a.push(arr[i]);
     return a;
+}
+export const AlertSound = {
+    /*
+    messagebox
+    smallbox
+    voice_alert
+    voice_off
+    voice_on
+    action_denied
+    */
+    test: async function() {
+        let a = new Audio('/sound/voice_alert.mp3'); 
+        a.addEventListener("canplaythrough", (event) => {
+            /* the audio is now playable; play it if permissions allow */
+            a.play();
+        });
+        // document.createElement('audio')
+    },
+    loading_data: async function(){        
+        let a = new Audio('/sound/loading_data.mp3'); 
+        a.addEventListener("canplaythrough", (event) => { 
+            a.play();
+        });
+    },
+    success_timelogs: async function() {
+        let a = new Audio('/sound/success.mp3'); 
+        a.addEventListener("canplaythrough", (event) => { 
+            a.play();
+        });
+    },
+    fail_timelogs: async function() {
+        let a = new Audio('/sound/voice_off.mp3'); 
+        a.addEventListener("canplaythrough", (event) => { 
+            a.play();
+        });
+    },
+    denied: async function() {
+        let a = new Audio('/sound/voice_off.mp3'); 
+        // let a = new Audio('/sound/voice_alert.mp3'); 
+        a.addEventListener("canplaythrough", (event) => { 
+            a.play();
+        });
+    },
+    action_denied: async function() {
+        let a = new Audio('/sound/action_denied.mp3'); 
+        a.addEventListener("canplaythrough", (event) => { 
+            a.play();
+        });
+    }
 }
 //#endregion

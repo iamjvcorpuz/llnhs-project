@@ -7,7 +7,7 @@ import path from 'path';
 export default defineConfig({
     plugins: [
         laravel({
-            input: 'resources/js/app.jsx',
+            input: ['resources/js/app.jsx','resources/css/app.scss'],
             refresh: true,
         }),
         react()
@@ -16,6 +16,8 @@ export default defineConfig({
         alias: {
             '@':'/resources/js',
             '@import': './public',
+            '$': path.resolve(__dirname,'node_modules/jquery/dist/jquery'),
+            '~bootstrap': path.resolve(__dirname,'node_modules/bootstrap/dist/js/bootstrap.js')
         },
     }
 });
