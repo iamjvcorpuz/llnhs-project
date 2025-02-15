@@ -1,20 +1,12 @@
 import React,{ Component } from "react";
 // import { Head } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod';
-import { Pagination } from '@/Components/commonFunctions'; 
+import { Pagination , AlertSound} from '@/Components/commonFunctions'; 
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';
-// import {
-//     createColumnHelper,
-//     flexRender,
-//     getCoreRowModel,
-//     useReactTable,
-//   } from '@tanstack/react-table'
+import axios from 'axios';
 
-
-// import ReactTable from "react-table"; 
-// import 'react-table/react-table.css';  
 setInterval( async () => {
     let dt = new Date();
     let time = moment(dt);  
@@ -32,6 +24,8 @@ export default class AttendancePage extends Component {
             requestimg: '/adminlte/dist/assets/img/avatar.png',
             timeCount: "00:00:00 AM",
             datenow: "00/00/000 Monday",
+            profileImageBase64: "",
+            lrn: "",
             idnumber: "",
             fullname: "",
             logger_type: "",
@@ -56,9 +50,13 @@ export default class AttendancePage extends Component {
             pagenationIndex: 0,
             scanned_code: ""
         }
+        this.intervals = null;
         let loop_test = 0;
         this.handleFocusableElements = true;
         this.eventKeys = this.eventKeys.bind(this);
+        this.queryAccounts = this.queryAccounts.bind(this);
+        this.queryAttendanceLogs = this.queryAttendanceLogs.bind(this);
+        this.AlertSound = AlertSound;
         // setInterval(() => {
         //     this.setState({
         //         attendance_data: [...this.state.attendance_data,{
@@ -118,30 +116,30 @@ export default class AttendancePage extends Component {
     componentDidMount() {
         let self = this;
         let count = 0;
-        let t = setInterval(() => {
-            self.setState({
-                attendance_data: [...self.state.attendance_data,{
-                    id: self.state.attendance_data.length,
-                    fullname: "Juan Dela Filipe y Cresostomo Ibarra",
-                    nicname: "Juan",
-                    timelogs: "Time In: 08:00 AM",
-                    section: "Section 1"
-                }]
-            },() => {
-                Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
-                    // console.log(result)
-                    if(typeof(result)!="undefined") { 
-                        self.setState({attendance_data_temp: result}); 
-                    } else { 
-                        self.setState({attendance_data_temp: result}); 
-                    }
-                });
-                if(count==10) {
-                    clearInterval(t)
-                }
-                count++;
-            })
-        }, 500);
+        // let t = setInterval(() => {
+        //     self.setState({
+        //         attendance_data: [...self.state.attendance_data,{
+        //             id: self.state.attendance_data.length,
+        //             fullname: "Juan Dela Filipe y Cresostomo Ibarra",
+        //             nicname: "Juan",
+        //             timelogs: "Time In: 08:00 AM",
+        //             section: "Section 1"
+        //         }]
+        //     },() => {
+        //         Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
+        //             // console.log(result)
+        //             if(typeof(result)!="undefined") { 
+        //                 self.setState({attendance_data_temp: result}); 
+        //             } else { 
+        //                 self.setState({attendance_data_temp: result}); 
+        //             }
+        //         });
+        //         if(count==10) {
+        //             clearInterval(t)
+        //         }
+        //         count++;
+        //     })
+        // }, 500);
 
         window.addEventListener('keydown', this.eventKeys);
 
@@ -160,7 +158,8 @@ export default class AttendancePage extends Component {
         let key = key_.key; 
         try {
             if (key == "Enter" && self.state.scanned_code != "Enter" && self.state.scanned_code.trim() !== "" ) { 
-                console.log(self.state.scanned_code, " - aw");
+                // console.log(self.state.scanned_code, " - aw");
+                self.queryAccounts(self.state.scanned_code);
                 self.setState({
                     scanned_code: ""
                 }); 
@@ -183,6 +182,120 @@ export default class AttendancePage extends Component {
         } catch (error) {
             
         }
+    }
+
+    queryAccounts(code) {
+        let self = this;
+        // console.log("queryAccounts code",code)
+        axios.post('/attendance/account/find',{code: code}).then(function (response) {
+            // handle success
+            console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                console.log("aw",response.data.status,data);
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                    console.log("aw")
+                    self.setState({
+                        _id: data.id,
+                        lrn: data.lrn,
+                        profileImageBase64: data.picture_base64,
+                        fullname: `${data.first_name} ${data.last_name}`.toLocaleUpperCase(),
+                        idnumber: data.id,
+                        logger_type: data.type,
+                        logger_section: "test"
+                    },() => {
+                        self.queryAttendanceLogs();
+                        self.alertMessages();
+                    });
+                } else if(typeof(response.data)!="undefined"&&response.data.status == "not_found") { 
+                    self.AlertSound.denied();
+                    self.alertMessages();
+                    self.setState({
+                        idnumber: "",
+                        fullname: "",
+                        logger_type: "",
+                        logger_section: "",
+                        time_logs_status: "bg-danger",
+                        time_logs_status_message:"Not Found"
+                    });
+                }
+            } else {
+                self.AlertSound.denied();
+                self.alertMessages();
+                self.setState({
+                    idnumber: "",
+                    fullname: "",
+                    logger_type: "",
+                    logger_section: "",
+                    time_logs_status: "bg-danger",
+                    time_logs_status_message:"Sorry Please Try Again"
+                });
+            }
+        }).catch(function (error) {
+        // handle error
+            console.log(error);
+        }).finally(function () {
+        // always executed
+        });
+    }
+
+    queryAttendanceLogs() {
+        let self = this;
+        let logs_stats = "Time In: " + moment(new Date()).format('hh:mm A');
+        let xx = self.state.attendance_data.filter(e => e._id==self.state._id); 
+        if(xx.length % 2 == 0) {
+            logs_stats = "Time In: " + moment(new Date()).format('hh:mm A');
+        } else {
+            logs_stats = "Time Out: " + moment(new Date()).format('hh:mm A');
+        }
+
+        self.setState({
+            attendance_data: [...self.state.attendance_data,{
+                _id: self.state._id,
+                profile_photo: self.state.profileImageBase64,
+                fullname: self.state.fullname,
+                nicname: "",
+                timelogs: logs_stats,
+                section: "Section 1"
+            }]
+        },() => {
+
+            self.AlertSound.success_timelogs();
+            Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
+                // console.log(result)
+                if(typeof(result)!="undefined") { 
+                    self.setState({attendance_data_temp: result}); 
+                } else { 
+                    self.setState({attendance_data_temp: result}); 
+                }
+            }); 
+        })
+    }
+
+    alertMessages() {
+        let self = this;
+        let timeoutIntervals = 5000;
+        if(this.intervals != null) {
+            clearTimeout(this.intervals);
+            this.intervals = null;
+        }
+        //
+        //
+        this.intervals = setTimeout(() => {
+            self.setState({
+                lrn: "",
+                requestimg: "",
+                fullname: "",
+                idnumber: "",
+                logger_type: "",
+                logger_section: "",
+                time_logs_status: "",
+                time_logs_status_message:""
+            },() => {
+                clearTimeout(this.intervals);
+                this.intervals = null;
+            });
+        }, timeoutIntervals);
     }
 
     render() {
@@ -211,7 +324,7 @@ export default class AttendancePage extends Component {
             <div className="">
                 <div className="log-user-photo">
                     <center> 
-                        <img className="attendance-login-profile logo_round shadow" src={this.state.requestimg!=""?this.state.requestimg:"/adminlte/dist/assets/img/avatar.png"}
+                        <img className="attendance-login-profile logo_round shadow" src={this.state.profileImageBase64!=""?this.state.profileImageBase64:"/adminlte/dist/assets/img/avatar.png"}
                         ref={t=> this.photo_time_view_image = t}
                         onError={(e)=>{ 
                             this.photo_time_view_image.src='/images/adminlte/dist/assets/img/avatar.png'; 
@@ -232,7 +345,7 @@ export default class AttendancePage extends Component {
                     <br />
                     <br />
                     <div className="header_time">
-                        <div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.idnumber}`:""}</div> 
+                        <div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:""}</div> 
                         <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
                         <div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>
                         
@@ -261,7 +374,7 @@ export default class AttendancePage extends Component {
                                         e.target.error=null;
                                         e.target.src='/adminlte/dist/assets/img/avatar.png';
                                     }}
-                                    src={'/adminlte/dist/assets/img/avatar.png'} 
+                                    src={(element.profile_photo!="")?element.profile_photo:'/adminlte/dist/assets/img/avatar.png'} 
                                     onClick={() => {
                                         console.log("image call single click"); 
                                     }} 

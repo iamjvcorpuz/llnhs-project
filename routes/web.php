@@ -13,11 +13,10 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
-
-// Route::get( '/{path?}', function(){
-//     return Inertia::render( 'Admin/Dashboard' );
-// })->where('path', '.*');
-
+// kani para mag routing sa react
+// Route::get('/',function() {
+//     return view('app');
+// });
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -52,6 +51,15 @@ Route::get('/admin/dashboard/teacher/new', function () {
     return Inertia::render('Admin/Teacher/NewTeacher',['props' => null,]);
 });
 
+
+Route::get('/admin/dashboard/parents', function () {
+    return Inertia::render('Admin/Parents',['props' => null,]);
+});
+
+Route::get('/admin/dashboard/parents/new', function () {
+    return Inertia::render('Admin/Parents/NewParents',['props' => null,]);
+});
+
 Route::get('/admin/dashboard/subject', function () {
     return Inertia::render('Admin/Subject',['props' => null,]);
 });
@@ -59,11 +67,11 @@ Route::get('/admin/dashboard/users', function () {
     return Inertia::render('Admin/Users',['props' => null,]);
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 Route::get('/attendance/kiosk', function () {
     return Inertia::render('AttendanceKioskPage');
@@ -73,3 +81,4 @@ Route::get('/attendance/mobile', function () {
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/api.php';

@@ -3,21 +3,13 @@ import { Head, Link } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod';
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
-import axios from 'axios';
-// import QRCode from 'qrcode';
-import QRCode from "react-qr-code";
+
 import ReactTable from "@/Components/ReactTable"; 
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
-// const generateQR = async text => {
-//     try {
-//       console.log(await QRCode.toDataURL(text))
-//     } catch (err) {
-//       console.error(err)
-//     }
-//   }
 
-export default class Student extends Component {
+
+export default class Parents extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -27,16 +19,8 @@ export default class Student extends Component {
                     id: "no",
                     accessor: 'no',
                     Header: 'No.', 
-                    width: 100,
+                    width: 50,
                     className: "center"
-                },
-                {
-                    id: "qr",
-                    accessor: 'lrn',
-                    Header: 'QR Code',   
-                    Cell: ({row}) => { 
-                        return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />             
-                    }
                 }, 
                 {
                     id: "picture",
@@ -44,34 +28,22 @@ export default class Student extends Component {
                     accessor: 'photo',
                     Cell: ({row}) => { 
                        return <img className="" height={150} width={150}  onError={(e)=>{ 
-                            e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                       }} alt="Picture Error" src={row.original.photo} />
-                    }
+                        e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
+                   }} alt="Picture Error" src={row.original.photo} />          
+                    },
                 }, 
-                {
-                    id: "lrn",
-                    accessor: 'lrn',
-                    Header: 'LRN NO.', 
-                    maxWidth: 100,
-                },
                 {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
                     accessor: 'fullname'
-                },  
-                {
-                    id: "level",
-                    Header: 'Level',  
-                    width: 200,
-                    accessor: 'level'
-                },  
+                }, 
                 {
                     id: "section",
-                    Header: 'Section',  
+                    Header: 'No. Section',  
                     width: 200,
                     accessor: 'section'
-                },
+                },  
                 {
                     id: "Status",
                     Header: 'Status',  
@@ -92,39 +64,37 @@ export default class Student extends Component {
                        </>            
                     }
                 }
-            ]     
+            ]            
         }
+
         this._isMounted = false;
         this.loadStudentList = this.loadStudentList.bind(this);
     }
-    
     componentDidMount() {
         this._isMounted = true;
         this.loadStudentList();
-        console.log(this)
         // let list  = [];
         // for (let index = 0; index < 10; index++) {
 
         //     list.push({
-        //         no: index + 1,
-        //         photo: "",
-        //         lrn: '00000000000000000000',
-        //         fullname: "Student " + index,
-        //         level: " Grade " + index,
-        //         section: "Section "  + index,
+        //         no: index + 1, 
+        //         photo:"",
+        //         fullname: "Teacher " + index, 
+        //         section: index,
         //         status: "Active"
         //     })
             
         // }
         // this.setState({data: list});
+        this.loadStudentList();
     }
 
     loadStudentList() {
         let list  = []; 
         let self = this;
-        axios.get('/student').then(function (response) {
+        axios.get('/teacher').then(function (response) {
           // handle success
-        //   console.log(response)
+          console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 data.forEach((element,index,arr) => {
@@ -153,15 +123,15 @@ export default class Student extends Component {
     }
 
     render() {
-        return <DashboardLayout title="Student" >
+        return <DashboardLayout title="Parents" >
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Student</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Parents</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Student</li>
+                            <li className="breadcrumb-item active" aria-current="page">Parents</li>
                         </ol>
                     </div>
                     </div> 
@@ -175,8 +145,8 @@ export default class Student extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title"> <i className="bi bi-person"></i> Student List</h3>
-                                    <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/student/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
+                                    <h3 className="card-title"> <i className="bi bi-person"></i> Parent List</h3> 
+                                    <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/parents/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
                                 </div>
                                 <div className="card-body">
                                 <ReactTable
@@ -192,7 +162,6 @@ export default class Student extends Component {
 
                 </div>
             </div>
-
         </DashboardLayout>
     }
 }

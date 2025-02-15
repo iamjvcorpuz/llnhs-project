@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('student', function (Blueprint $table) {
             $table->id();
             $table->string('qr_code');
+            $table->string('lrn');
             $table->string('psa_cert_no');
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('middle_name');
-            $table->string('extension_name');
+            $table->string('middle_name')->nullable();
+            $table->string('extension_name')->nullable();
+            $table->string('sex');
             $table->string('bdate');
             $table->string('status');
-            $table->string('picture_base64'); 
+            $table->longText('picture_base64')->nullable();  
             $table->timestampsTz(precision: 0);
         });
 
@@ -31,11 +33,12 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('middle_name');
-            $table->string('extension_name');
-            $table->string('picture_base64');
+            $table->string('extension_name')->nullable();
+            $table->longText('picture_base64')->nullable();
             $table->string('email');
             $table->string('status'); 
             $table->string('bdate');
+            $table->string('sex');
             $table->timestampsTz(precision: 0);
         });
 
@@ -44,10 +47,10 @@ return new class extends Migration
             $table->string('qr_code');
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('middle_name');
-            $table->string('extension_name');
-            $table->string('picture_base64');
-            $table->string('email');
+            $table->string('middle_name')->nullable();
+            $table->string('extension_name')->nullable();
+            $table->longText('picture_base64');
+            $table->string('email')->nullable();
             $table->string('status'); 
             $table->string('bdate');
             $table->timestampsTz(precision: 0);
@@ -75,9 +78,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('qr_code');
             $table->foreignId('student_id')->nullable()->index();
-            $table->foreignId('teacher_id')->nullable()->index();
-            // $table->string('student_id');
-            // $table->string('teacher_id');
+            $table->foreignId('teacher_id')->nullable()->index(); 
             $table->string('time_in');
             $table->string('time_out');
             $table->string('date'); 
