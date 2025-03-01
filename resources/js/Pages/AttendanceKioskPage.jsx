@@ -1,11 +1,12 @@
 import React,{ Component } from "react";
-// import { Head } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod';
 import { Pagination , AlertSound} from '@/Components/commonFunctions'; 
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import axios from 'axios';
+import ReactTable from "@/Components/ReactTable"; 
 
 setInterval( async () => {
     let dt = new Date();
@@ -13,8 +14,8 @@ setInterval( async () => {
     let dates = moment(dt);  
     let timecountings = time.format('hh:mm:ss A');
     let timedates = dates.format('LL');
-    $("#timers").text(timecountings);  
-    $("#timesdates").text(timedates);  
+    $("#timers").text(timecountings);
+    $("#timesdates").text(timedates);
 }, 800);
 
 export default class AttendancePage extends Component {
@@ -33,13 +34,14 @@ export default class AttendancePage extends Component {
             data: [],
             columns: [
                 {
-                    Header: 'Employee Name', 
+                    Header: 'Name', 
                     width: 197,
-                    accessor: 'employee.fullNameReverse',
+                    accessor: 'fullname',
+                    className: "text-start"
                   },  
                   {
                     Header: 'Time Logs',
-                    accessor: 'logs', 
+                    accessor: 'timelogs', 
                     maxWidth: 800
                   }
             ],
@@ -61,45 +63,85 @@ export default class AttendancePage extends Component {
         //     this.setState({
         //         attendance_data: [...this.state.attendance_data,{
         //             id: 0,
+        //             lrn: "00003",
+        //             idnumber: "00003",
         //             fullname: "Juan Dela Filipe y Cresostomo Ibarra",
         //             nicname: "Juan",
         //             timelogs: "Time In: 08:00 AM",
         //             section: "Section 1"
-        //         }]
+        //         }],
+        //         id: 0,
+        //         lrn: "00003",
+        //         idnumber: "00003",
+        //         fullname: "Juan Dela Filipe y Cresostomo Ibarra",
+        //         nicname: "Juan",
+        //         timelogs: "Time In: 08:00 AM",
+        //         section: "Section 1"            
         //     })
         //     if(loop_test==0) {
-        //         this.setState({
+        //         this.setState({attendance_data: [...this.state.attendance_data,{
+        //             idnumber: "00003",
+        //             lrn: "00003",
         //             time_logs_status: "bg-success",
         //             time_logs_status_message:"Time In",
         //             idnumber: "00001",
         //             fullname: "Marco Polo",
-        //             logger_type: "Student",
+        //             logger_type: "Teacher",
+        //             timelogs: "Time In: 08:00 AM",
         //             logger_section: "Section 2"
-        //         });
+        //         }],idnumber: "00003",
+        //         lrn: "00003",
+        //         time_logs_status: "bg-success",
+        //         time_logs_status_message:"Time In",
+        //         idnumber: "00001",
+        //         fullname: "Marco Polo",
+        //         timelogs: "Time In: 08:00 AM",
+        //         logger_type: "Teacher",
+        //         logger_section: "Section 2"});
         //         loop_test++;
         //     } else if(loop_test==1) {
-        //         this.setState({
+        //         this.setState({attendance_data: [...this.state.attendance_data,{
         //             idnumber: "00003",
+        //             lrn: "00003",
         //             fullname: "Jose RizalJosé Protacio Rizal Mercado y Alonso Realonda",
         //             logger_type: "Student",
+        //             timelogs: "Time In: 08:00 AM",
         //             logger_section: "Section 3",
         //             time_logs_status: "bg-success",
         //             time_logs_status_message:"Time Out"
-        //         });
+        //         }],idnumber: "00003",
+        //         lrn: "00003",
+        //         fullname: "Jose RizalJosé Protacio Rizal Mercado y Alonso Realonda",
+        //         logger_type: "Student",
+        //         logger_section: "Section 3",
+        //         timelogs: "Time In: 08:00 AM",
+        //         time_logs_status: "bg-success",
+        //         time_logs_status_message:"Time Out"});
         //         loop_test++;
         //     } else if(loop_test==2) {
         //         this.setState({
+        //             attendance_data: [...this.state.attendance_data,{
         //             idnumber: "00003",
+        //             lrn: "00003",
         //             fullname: "Eric Santos",
         //             logger_type: "Student",
         //             logger_section: "Section 11",
+        //             timelogs: "Time In: 08:00 AM",
         //             time_logs_status: "bg-danger",
         //             time_logs_status_message:"Scan Fail"
-        //         });
+        //         }],idnumber: "00003",
+        //         lrn: "00003",
+        //         fullname: "Eric Santos",
+        //         logger_type: "Student",
+        //         logger_section: "Section 11",
+        //         timelogs: "Time In: 08:00 AM",
+        //         time_logs_status: "bg-danger",
+        //         time_logs_status_message:"Scan Fail"});
         //         loop_test++;
         //     } else if(loop_test==3) {
         //         this.setState({
         //             idnumber: "",
+        //             lrn: "",
         //             fullname: "",
         //             logger_type: "",
         //             logger_section: "",
@@ -108,9 +150,15 @@ export default class AttendancePage extends Component {
         //         });
         //         loop_test=0;
         //     }
+        //     Pagination(this.state.attendance_data,this.state.pagenationIndex,4,null).Content("",(result) => { 
+        //         // console.log(result)
+        //         if(typeof(result)!="undefined") { 
+        //             this.setState({attendance_data_temp: result}); 
+        //         } else { 
+        //             this.setState({attendance_data_temp: result}); 
+        //         }
+        //     });
         // }, 2000);
-
-
     }
 
     componentDidMount() {
@@ -140,7 +188,15 @@ export default class AttendancePage extends Component {
         //         count++;
         //     })
         // }, 500);
-
+                // this.setState({
+                //     idnumber: "00003",
+                //     lrn: "00003",
+                //     fullname: "Jose RizalJosé Protacio Rizal Mercado y Alonso Realonda",
+                //     logger_type: "Student",
+                //     logger_section: "Section 3",
+                //     time_logs_status: "bg-success",
+                //     time_logs_status_message:"Time Out"
+                // });
         window.addEventListener('keydown', this.eventKeys);
 
     }
@@ -189,7 +245,7 @@ export default class AttendancePage extends Component {
         // console.log("queryAccounts code",code)
         axios.post('/attendance/account/find',{code: code}).then(function (response) {
             // handle success
-            console.log(response)
+            // console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 console.log("aw",response.data.status,data);
@@ -284,6 +340,7 @@ export default class AttendancePage extends Component {
         this.intervals = setTimeout(() => {
             self.setState({
                 lrn: "",
+                profileImageBase64: "",
                 requestimg: "",
                 fullname: "",
                 idnumber: "",
@@ -304,7 +361,7 @@ export default class AttendancePage extends Component {
             handleFocusableElements={this.handleFocusableElements}
             handleKeys={['numeric','enter']}
             onKeyEvent={(key, e)=>{ this.eventKeys(key, e); }} /> */}
-            {/* <Head title="Attendance" /> */}
+            <Head title="Attendance" />
             <nav className="main-header navbar attendance-nav">
                 <div className="attendance-nav-container">
                     <div className="col-lg-1">
@@ -317,7 +374,7 @@ export default class AttendancePage extends Component {
                         <p className="h6">Poblacion III Lebak, Sultan Kudarat, 9807 Philippines</p>
                     </div> 
                     <div className="col-lg-2">
-                        <img src="/images/depedlogo.png" alt="AdminLTE Logo" className="img-circle" width={250} /> 
+                        <img src="/images/bagongtae.png" alt="AdminLTE Logo" className="img-circle" width={220} /> 
                     </div> 
                 </div>
             </nav>
@@ -341,25 +398,25 @@ export default class AttendancePage extends Component {
                         <div className="dateCount" id="timesdates" >-</div>
                     </div>
                     {/* <hr /> */}
+                    {/* <br />
                     <br />
-                    <br />
-                    <br />
-                    <div className="header_time">
-                        <div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:""}</div> 
+                    <br /> */}
+                    <div className="header_time logger-details-space">
+                        {(this.state.logger_type=="Student")?<div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:""}</div>:<div className="logger-name-small">{(this.state.idnumber!="")?`ID : ${this.state.idnumber}`:""}</div> }
                         <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
-                        <div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>
-                        
+                        {(this.state.logger_type=="Student")?<div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>:null}                        
                     </div>
                     {/* <hr /> */}
                     <div className="header_time">
-                        {/* <ReactTable  
-                            resizable={true} 
-                            showPaginationTop={false} 
-                            showPaginationBottom={true}
-                            showPageSizeOptions={false} 
-                            data={this.state.data} 
-                            columns={this.state.columns}
-                        /> */}
+                    <ReactTable
+                        key={"react-tables"}
+                        className={"table table-bordered table-striped "}
+                        data={this.state.attendance_data} 
+                        columns={this.state.columns}
+                        showHeader={true}
+                        showPagenation={false}
+                        defaultPageSize={5}
+                    />
                     </div>
                     <div className="log-center-data-total-logs">
                         Total Logs: {this.state.attendance_data.length}
@@ -374,7 +431,7 @@ export default class AttendancePage extends Component {
                                         e.target.error=null;
                                         e.target.src='/adminlte/dist/assets/img/avatar.png';
                                     }}
-                                    src={(element.profile_photo!="")?element.profile_photo:'/adminlte/dist/assets/img/avatar.png'} 
+                                    src={(typeof(element.profile_photo)!="undefined"&&element.profile_photo!="")?element.profile_photo:'/adminlte/dist/assets/img/avatar.png'} 
                                     onClick={() => {
                                         console.log("image call single click"); 
                                     }} 
@@ -388,12 +445,12 @@ export default class AttendancePage extends Component {
                             </div>                    
                         }} />                        
                     </div>
-                    <div className="paganation-button-attendance">
+                    {/* <div className="paganation-button-attendance">
                         <div className="form-control pt-2 paganation-button-attendance2">
                             <button className="btn btn-primary btn-block mr-1" onClick={() => { this.paganationPosition(this.state.pagenationIndex - 1) }} > <i className="bi bi-caret-left-fill"></i> </button>
                             <button className="btn btn-primary btn-block"  onClick={() => { this.paganationPosition(this.state.pagenationIndex + 1) }}> <i className="bi bi-caret-right-fill"></i> </button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

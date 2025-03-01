@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contacts;
-use App\Models\Teacher;
+use App\Models\Parents;
+use App\Models\StudentGuardian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
-class TeacherController extends Controller
+class ParentsController extends Controller
 {
     public function index() 
     {
-        $student = Teacher::all();
+        // $student = Parents::all();
+        // $student = Parents::query([
+        //     'total_student' => StudentGuardian::query()->count('parents_id')->where('')
+        // ])->addSelect()->get();
+        // $student = Parents::select('id')->whereHas('student_guardians',function($query) use ($id){
+        //     $query->where('parents_id',$id);
+        // })->get();
+        // $student = DB::select(`SELECT id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email FROM parents ORDER BY ? ASC`,['id']);
+
+        $student = DB::select('SELECT id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student FROM parents');
+
         return response()->json([
             'status' => 'done',
             'error' => null,
@@ -21,20 +31,11 @@ class TeacherController extends Controller
     }
     public static function getAll() 
     {
-        return Teacher::all();
-    }
-    public static function getData($id)
-    {
-        $student = Teacher::findOrFail($id);
-        return $student;
-    }
-    public static function getContacts($id)
-    { 
-        return  DB::select('SELECT * FROM contacts WHERE teacher_id = ?',[$id]);
-    }
+        return Parents::all();
+    }   
     public function show($id)
     {
-        $student = Teacher::findOrFail($id);
+        $student = Parents::findOrFail($id);
         return response()->json([
             'status' => 'success',
             'error' => null,
@@ -48,10 +49,10 @@ class TeacherController extends Controller
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
             'bdate' => 'required|string',
-            'sex' => 'required|string',
-            'email' => 'required|string'
+            'sex' => 'required|string'
         ]);
 
+        $contact_list = $request->contact_list;
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -60,23 +61,21 @@ class TeacherController extends Controller
             ], 422);
         }
 
-        $contact_list = $request->contact_list;
         // echo $request;
-        $Student = DB::table('teacher')
+        $Student = DB::table('parents')
                 ->where('first_name', '=', $request->first_name)
                 ->orWhere('last_name', '=', $request->last_name)
-                ->orWhere('email', '=', $request->email)
                 ->get();
 
         if($Student->count()==0) {
-            $customer = Teacher::create($request->except(['contact_list']));
+            $customer = Parents::create($request->except(['contact_list']));
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 
                     if($temp->count() == 0) {
                         Contacts::create([
-                            'user_type' => 'teacher',
-                            'teacher_id' => $customer->id,
+                            'user_type' => 'guardian',
+                            'guardian_id' => $customer->id,
                             'phone_number' => $val['phone_number'],
                             'status' => 'active'
                         ]);
@@ -98,15 +97,16 @@ class TeacherController extends Controller
 
 
     }
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $validator = Validator::make($request->all(), [ 
             'first_name' => 'required|string',
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
             'bdate' => 'required|string',
-            'sex' => 'required|string',
-            'email' => 'required|string'
+            'sex' => 'required|string'
         ]);
+
         $contact_list = $request->contact_list;
         if ($validator->fails()) {
             return response()->json([
@@ -117,22 +117,20 @@ class TeacherController extends Controller
         }
 
         // echo $request;
-        $teacher = DB::table('teacher')->where('id', $request->id)->get();
-        // $teacher = DB::table('teacher')
-        //         ->where('first_name', '=', $request->first_name)
-        //         ->orWhere('last_name', '=', $request->last_name)
-        //         ->get();
+        $Student = DB::table('parents')
+                ->where('first_name', '=', $request->first_name)
+                ->orWhere('last_name', '=', $request->last_name)
+                ->get();
 
-        if($teacher->count()==1) {
-            
-            $teacher = DB::table('teacher')->where('id', $request->id)->update($request->except(['id','contact_list']));
+        if($Student->count()==1) {
+            $customer = Parents::create($request->except(['contact_list']));
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
-                    $temp = DB::table('contacts')->where('teacher_id',$val['teacher_id'])->where('phone_number',$val['phone_number'])->get(); 
+                    $temp = DB::table('contacts')->where('guardian_id',$val['guardian_id'])->where('phone_number',$val['phone_number'])->get(); 
                     if($temp->count() == 0) {
                         Contacts::create([
-                            'user_type' => 'teacher',
-                            'teacher_id' => $val['teacher_id'],
+                            'user_type' => 'guardian',
+                            'guardian_id' => $val['guardian_id'],
                             'phone_number' => $val['phone_number'],
                             'status' => 'active'
                         ]);
@@ -142,21 +140,22 @@ class TeacherController extends Controller
             return response()->json([
                 'status' => 'success',
                 'error' => null,
-                'data' => $contact_list
+                'data' => $customer
             ], 201);
-
         } else {
             return response()->json([
                 'status' => 'data_not_exist',
-                'error' => "DATA NOT EXIST",
+                'error' => "DATA NOT FOUND",
                 'data' => []
             ], 200);
         }
+
+
     }
     public function remove(Request $request) {
-        $Student = DB::table('teacher')->where('id', $request->id)->get();
+        $Student = DB::table('parents')->where('id', $request->id)->get();
         if($Student->count()==1) {
-            $updateStudent = DB::table('teacher')->where('id', $request->id)->update(['status'=>'remove']);            
+            $updateStudent = DB::table('parents')->where('id', $request->id)->update(['status'=>'remove']);            
             return response()->json([
                 'status' => 'success',
                 'error' => null,

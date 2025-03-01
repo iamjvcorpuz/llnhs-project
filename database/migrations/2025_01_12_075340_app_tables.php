@@ -22,8 +22,39 @@ return new class extends Migration
             $table->string('extension_name')->nullable();
             $table->string('sex');
             $table->string('bdate');
-            $table->string('status');
             $table->longText('picture_base64')->nullable();  
+            $table->boolean('is_ip')->nullable();
+            $table->string('ip_specify')->nullable();
+            $table->boolean('is_4ps_benficiary')->nullable();
+            $table->string('4ps_id')->nullable();
+            $table->boolean('is_disability')->nullable();
+            $table->string('type_disability')->nullable();
+            $table->string('type2_disability')->nullable();
+            $table->string('type_others_disability')->nullable();
+            $table->string('cd_hno')->nullable();
+            $table->string('cd_sn')->nullable();
+            $table->string('cd_barangay')->nullable();
+            $table->string('cd_mc')->nullable();
+            $table->string('cd_province')->nullable();
+            $table->string('cd_country')->nullable();
+            $table->string('cd_zip')->nullable();
+            $table->string('is_pa_same_cd')->nullable();
+            $table->string('pa_hno')->nullable();
+            $table->string('pa_sn')->nullable();
+            $table->string('pa_barangay')->nullable();
+            $table->string('pa_mc')->nullable();
+            $table->string('pa_province')->nullable();
+            $table->string('pa_country')->nullable();
+            $table->string('pa_zip')->nullable();
+            $table->string('lglc')->nullable();
+            $table->string('lsyc')->nullable();
+            $table->string('lsa')->nullable();
+            $table->string('lsa_school_id')->nullable();
+            $table->string('flsh_semester')->nullable();
+            $table->string('flsh_track')->nullable();
+            $table->string('flsh_strand')->nullable();
+            $table->string('ldm_applied')->nullable(); 
+            $table->string('status');
             $table->timestampsTz(precision: 0);
         });
 
@@ -35,7 +66,7 @@ return new class extends Migration
             $table->string('middle_name');
             $table->string('extension_name')->nullable();
             $table->longText('picture_base64')->nullable();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('status'); 
             $table->string('bdate');
             $table->string('sex');
@@ -49,27 +80,19 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('middle_name')->nullable();
             $table->string('extension_name')->nullable();
-            $table->longText('picture_base64');
+            $table->string('sex');
+            $table->string('bdate')->nullable();
+            $table->longText('picture_base64')->nullable();
             $table->string('email')->nullable();
             $table->string('status'); 
-            $table->string('bdate');
-            $table->timestampsTz(precision: 0);
-        });
-        
-        Schema::create('user_accounts', function (Blueprint $table) {
-            $table->id();
-            $table->string('user_type');
-            $table->string('fullname');
-            $table->string('username');
-            $table->string('userpassword');
             $table->timestampsTz(precision: 0);
         });
 
         Schema::create('student_guardians', function (Blueprint $table) {
             $table->id();
-            $table->string('parents_id');
-            $table->string('student_id');
-            $table->string('added_by'); 
+            $table->foreignId('parents_id');
+            $table->foreignId('student_id');
+            $table->string('added_by')->nullable(); 
             $table->timestampsTz(precision: 0);
         });
 
@@ -79,8 +102,8 @@ return new class extends Migration
             $table->string('qr_code');
             $table->foreignId('student_id')->nullable()->index();
             $table->foreignId('teacher_id')->nullable()->index(); 
-            $table->string('time_in');
-            $table->string('time_out');
+            $table->string('time');
+            $table->string('status');
             $table->string('date'); 
             $table->timestampsTz(precision: 0);
         });
@@ -89,12 +112,88 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('to');
-            $table->string('message');
+            $table->longText('message');
             $table->string('status'); 
             $table->string('date'); 
-            $table->string('time'); 
+            $table->string('time');  
             $table->timestampsTz(precision: 0);
         });
+
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->id();
+            $table->string('type')->nullable();
+            $table->string('student_id')->nullable();
+            $table->string('teacher_id')->nullable();
+            $table->string('guardian_id')->nullable(); 
+            $table->string('phone_number'); 
+            $table->string('telephone_number')->nullable(); 
+            $table->string('email')->nullable(); 
+            $table->string('status')->nullable(); 
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('school_subjects', function (Blueprint $table) {
+            $table->id();
+            $table->string('subject_name');
+            $table->string('decription')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('advisory', function (Blueprint $table) {
+            $table->id();
+            $table->string('qrcode')->nullable();
+            $table->string('student_id')->nullable(); 
+            $table->string('section_name')->nullable();
+            $table->string('school_year')->nullable();
+            $table->string('subject_id')->nullable();
+            $table->string('year_level')->nullable();
+            $table->string('decription')->nullable();
+            $table->string('status')->nullable(); 
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('advisory_group', function (Blueprint $table) {
+            $table->id();
+            $table->string('advisory_id')->nullable();
+            $table->string('student_id')->nullable();
+            $table->string('decription')->nullable();
+            $table->string('status')->nullable(); 
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('user_accounts', function (Blueprint $table) {
+            $table->id();
+            $table->string('user_type');
+            $table->integer('user_role_id');
+            $table->string('fullname');
+            $table->string('username');
+            $table->string('password');
+            $table->string('plainpassword');
+            $table->string('verified')->nullable();;
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->string('decription')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('user_roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('user_id')->nullable();
+            $table->string('roles_id')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('user_roles_permissions', function (Blueprint $table) {
+            $table->id();
+            $table->string('user_roles_id')->nullable();
+            $table->string('action')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
     }
 
     /**
@@ -109,5 +208,10 @@ return new class extends Migration
         Schema::dropIfExists('student_guardians');
         Schema::dropIfExists('parents');
         Schema::dropIfExists('notifications');
+        Schema::dropIfExists('school_subjects');
+        Schema::dropIfExists('advisory');
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('user_roles_permissions');
     }
 };

@@ -22,7 +22,7 @@ export default class Users extends Component {
                     <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-gear"></i> Users</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
+                            <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Users</li>
                         </ol>
                     </div>
