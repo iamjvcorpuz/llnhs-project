@@ -12,20 +12,26 @@ export default class Dashboard extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            
+            subjects: this.props.subjects,
+            teachers: this.props.teacher,
+            advisoryList: this.props.advisory,    
+            student: this.props.student,
+            todayAttendance: [],
+            sections: []
         }
         console.log(this.props)
     }
+
     componentDidMount() {
         const sales_chart_options = {
             series: [
               {
                 name: 'Beign Present',
-                data: [28, 48, 40, 19, 86, 27, 90],
+                data: [0],
               },
               {
                 name: 'Beign Absent',
-                data: [65, 59, 80, 81, 56, 55, 40],
+                data: [0],
               },
             ],
             chart: {
@@ -70,6 +76,7 @@ export default class Dashboard extends Component {
           );
           sales_chart.render();
     }
+
     render() {
         return <DashboardLayout title="Dashboard">
             <div className="app-content-header"> 
@@ -94,7 +101,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                                 <div className="inner">
-                                    <h3>0</h3>
+                                    <h3>{this.state.todayAttendance.length}</h3>
                                     <p>Today Attendance</p>
                                 </div>
                                 <svg 
@@ -113,7 +120,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>0</h3>
+                                <h3>{this.state.student.length}</h3>
                                 <p>Registered Student</p>
                             </div>
                             <svg
@@ -131,7 +138,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>0</h3>
+                                <h3>{this.state.teachers.length}</h3>
                                 <p>Registered Teacher</p>
                             </div>
                             <svg
@@ -150,7 +157,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>0</h3>
+                                <h3>{this.state.sections.length}</h3>
                                 <p>Section</p>
                             </div>
                             <svg

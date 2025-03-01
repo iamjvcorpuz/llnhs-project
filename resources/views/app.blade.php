@@ -40,6 +40,7 @@
       @viteReactRefresh
       @vite(['resources/js/app.jsx']) --}}
 
+      <script src="{{ url('adminlte/dist/js/popper.min.js') }}"></script>
       <script src="{{ url('adminlte/dist/js/jquery.min.js') }}"></script>
       <script src="{{ url('adminlte/dist/js/bootstrap.min.js') }}"></script>
       <script

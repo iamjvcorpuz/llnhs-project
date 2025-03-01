@@ -31,6 +31,15 @@ body {
     text-align: center!important;
 }
 
+select:required:invalid {
+    color: gray;
+}
+option[value=""][disabled] {
+display: none;
+}
+option {
+color: black;
+}
 .attendance-school-font {
     font-size:  220%;
     font-weight: bolder;
@@ -162,13 +171,18 @@ body {
     margin-bottom: 10px;
     font-size: 4vh;
 }
+.logger-details-space {
+    max-height: 34.3vh;
+    height: 34vh;
+    /* background-color: #028eb4; */
+}
 .logger-name {
     font-size: 400%; 
     text-align: center;
     width: 100%;  
-    padding:10px;
+    /* padding:10px; */
     margin-bottom: 5px;
-
+    line-height: 0.8;
     /* border-color: #2c3335;
     border-style: solid; 
     border-radius: 10px;
@@ -177,12 +191,12 @@ body {
 }
 .logger-name-small {
     font-size: 250%;
-    margin-bottom: -20px;
+    /* margin-bottom: -20px; */
     text-align: center;
     width: 100%; 
-    padding:10px;
+    /* padding:10px; */
     
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
 
     /* border-color: #2c3335;
     border-style: solid; 
@@ -243,7 +257,7 @@ body {
     width: 100%;
     float: left; 
     min-height: 1px;
-    
+    margin-top: 5vh;
     /* height: 86.5vh!important;  */
     height: 81vh!important;
     -ms-overflow-style: none;  /* Internet Explorer 10+ */

@@ -26,10 +26,10 @@ export default class Parents extends Component {
                     id: "picture",
                     Header: 'Picture',  
                     accessor: 'photo',
-                    Cell: ({row}) => { 
-                       return <img className="" height={150} width={150}  onError={(e)=>{ 
+                    Cell: ({row}) => {
+                       return <img className="" height={100} width={100}  onError={(e)=>{ 
                         e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                   }} alt="Picture Error" src={row.original.photo} />          
+                   }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />          
                     },
                 }, 
                 {
@@ -39,21 +39,29 @@ export default class Parents extends Component {
                     accessor: 'fullname'
                 }, 
                 {
-                    id: "section",
-                    Header: 'No. Section',  
-                    width: 200,
-                    accessor: 'section'
+                    id: "student",
+                    Header: 'No. of Students',  
+                    width: 150,
+                    className: 'center',
+                    accessor: 'total_student',
+                    Cell: ({row}) => { 
+                       return <>
+                        <button className="btn btn-info btn-sm" onClick={() => {
+                            $("#student_list").modal('show');
+                        }}>{row.original.total_student}</button> 
+                       </>            
+                    }
                 },  
                 {
                     id: "Status",
                     Header: 'Status',  
-                    width: 200,
+                    width: 150,
                     accessor: 'status',
                     className: "center"
                 },
                 {
-                    id: "Action",
-                    Header: 'Status',  
+                    id: "action",
+                    Header: 'Action',  
                     width: 200,
                     accessor: 'status',
                     className: "center",
@@ -92,7 +100,7 @@ export default class Parents extends Component {
     loadStudentList() {
         let list  = []; 
         let self = this;
-        axios.get('/teacher').then(function (response) {
+        axios.get('/parents').then(function (response) {
           // handle success
           console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
@@ -106,7 +114,8 @@ export default class Parents extends Component {
                             level: "None",
                             section: "None",
                             sex: element.sex,
-                            status: element.status
+                            status: element.status,
+                            total_student: element.total_student
                         })
                     if((index + 1) == arr.length) {
                         self.setState({data: list});
@@ -130,7 +139,7 @@ export default class Parents extends Component {
                     <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Parents</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
+                            <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Parents</li>
                         </ol>
                     </div>
@@ -160,6 +169,22 @@ export default class Parents extends Component {
                         </div>
                     </div>
 
+                </div>
+            </div>
+            <div className="modal fade" tabIndex="-1" role="dialog" id="student_list" data-bs-backdrop="static">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5">Student List</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body"> 
+                    </div>
+                    <div className="modal-footer"> 
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
                 </div>
             </div>
         </DashboardLayout>
