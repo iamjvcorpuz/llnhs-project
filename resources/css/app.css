@@ -5,7 +5,9 @@
 
 @font-face {
   font-family: "SF Pro Text, Light";
-  src: url('/fonts/sf/SFProText-Light.ttf'); 
+  /* ../../public/fonts/sf/SFProText-Light.ttf */
+  /* /fonts/sf/SFProText-Light.ttf */
+  src: url('../../public/fonts/sf/SFProText-Light.ttf'); 
 }
 html,
 body {
