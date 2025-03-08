@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-                 
+        //----start for default data lang ni
         Roles::create([
             'name' => 'Admin',
             'decription' => 'For admin role only',
@@ -109,7 +109,7 @@ class DatabaseSeeder extends Seeder
             'subject_name' => 'Edukasyong Pantahanan at Pangkabuhayan (EPP)',
             'decription' => '',
         ]);
-
+        //----end for default data lang ni
 
         $student = Student::factory(100)->create();
         $student->each(function($val) {
@@ -128,7 +128,7 @@ class DatabaseSeeder extends Seeder
         $teacher = Teacher::factory(10)->create();
         $teacher->each(function($val) {
             Contacts::factory()->state([
-                'user_type' => 'teacher',
+                'type' => 'teacher',
                 'teacher_id' => $val->id,
                 'phone_number' => "09758955082",
                 'status' => 'active'
@@ -152,7 +152,7 @@ class DatabaseSeeder extends Seeder
 
         $Parents->each(function($val) {
             Contacts::factory()->state([
-                'user_type' => 'guardian',
+                'type' => 'guardian',
                 'guardian_id' => $val->id,
                 'phone_number' => "09758955082",
                 'status' => 'active'

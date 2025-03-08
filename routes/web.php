@@ -103,6 +103,9 @@ Route::get('/admin/dashboard/users', function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
+Route::get('/qrcode', function () {
+    return Inertia::render('QRCode');
+});
 Route::get('/attendance/kiosk', function () {
     return Inertia::render('AttendanceKioskPage');
 });

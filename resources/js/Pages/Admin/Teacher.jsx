@@ -62,7 +62,8 @@ export default class Teacher extends Component {
                     Cell: ({row}) => { 
                        return <>
                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteTeacher(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>    
-                       <Link href={`/admin/dashboard/teacher/update/${row.original.id}`} className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-pen"></i> Edit</Link> 
+                       <Link href={`/admin/dashboard/teacher/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
+                       <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</button>    
                        </>            
                     }
                 }

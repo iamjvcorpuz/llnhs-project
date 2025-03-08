@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
+use stdClass;
+
+use function PHPUnit\Framework\isNull;
 
 class AttendanceController extends Controller
 {
@@ -40,7 +45,132 @@ class AttendanceController extends Controller
             ], 200);
         }
     }
+    public function getTodaysTimelogs(Request $request) {
+
+        $logs = DB::select('SELECT * FROM attendance WHERE  date = ? ',[$request->date]);
+        $attendance = array();
+        foreach($logs as $key => $val) { 
+            
+            $teacher = is_null($val->teacher_id) ? null: DB::table('teacher')->where('id', $val->teacher_id)->get();
+            $student = is_null($val->student_id) ? null: DB::table('student')->where('id', $val->student_id)->get();
+            $section = "";
+            if(is_null($teacher) == false && $teacher->count()>0) {
+                $object = new stdClass();
+                $object->_id = $teacher[0]->id;
+                $object->lrn = $teacher[0]->id;
+                $object->profileImageBase64 = $teacher[0]->picture_base64;
+                $object->fullname = $teacher[0]->first_name . " " . $teacher[0]->last_name;
+                $object->idnumber = $teacher[0]->qr_code;
+                $object->logger_type = "teacher";
+                $object->logger_section = "";
+                $object->timelogs = "TIME " . $val->mode . ": " . $val->time;
+                $object->date = $val->date;
+                $object->section = $section;
+                $object->mode = $val->mode;
+                array_push($attendance,$object );
+            }
+            if(is_null($student) == false && $student->count()>0) {
+                $object = new stdClass();
+                $object->_id = $student[0]->id;
+                $object->lrn = $student[0]->lrn;
+                $object->profileImageBase64 = $student[0]->id;
+                $object->fullname = $student[0]->first_name . " " . $student[0]->last_name;
+                $object->idnumber = $student[0]->qr_code;
+                $object->logger_type = "studnet";
+                $object->logger_section = "";
+                $object->timelogs =  "TIME " . $val->mode . ": " . $val->time;
+                $object->date = $val->date;
+                $object->section = $section;
+                $object->mode = $val->mode;
+                array_push($attendance,$object);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $attendance
+        ], 200);
+
+    }
+    public function getTimelogs(Request $request) {
+        $logs = (object)array();
+
+        if($request->type == "student") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qrcode = ?',[$request->date,$request->qrcode]);
+        } else if($request->type == "teacher") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qrcode = ?',[$request->date,$request->qrcode]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $logs
+        ], 200);
+
+    }
     public function insertTimelogs(Request $request) {
+
+        // echo "<pre>";
+        // print($request); 
+        // echo "</pre>";
+
+        $logs = (object)array();
+        // echo gettype($request->logsdata) . "<br>";
+        // echo gettype($request->userdata) . "<br>"; 
+
+        $logsdata = gettype($request->logsdata)=="string"? json_decode( $request->logsdata ,true) : $request->logsdata;
+        $userdata = gettype($request->userdata)=="string"? json_decode( $request->userdata ,true) : $request->userdata;
+
+        // echo "<pre>";
+        // print_r($logsdata);
+        // print_r($userdata);
+        // echo "</pre>";
+        $type = $userdata['type'];
+        $student_id = null;
+        $teacher_id = null;
+        if($userdata['type'] == "student") {
+            $student_id = $userdata['id'];
+        } else if($userdata['type'] == "teacher") {
+            $teacher_id = $userdata['id'];;
+        }
+        
+        // echo "<pre>";
+        // print_r([
+        //     'terminal' => 'kiosk',
+        //     'terminal_id' => '',
+        //     'type' => $type,
+        //     'qr_code' => $logsdata['code'],
+        //     'student_id' => $student_id,
+        //     'teacher_id' => $teacher_id,
+        //     'time' => $logsdata['time'],
+        //     'date' => $logsdata['date'],
+        //     'mode' => $logsdata['mode'],
+        //     'status' => ""
+        // ]);
+
+        // echo "</pre>";
+        $insertAttendance = Attendance::create([
+            'terminal' => "kiosk",
+            'terminal_id' => "",
+            'type' => $type,
+            'qr_code' => $logsdata['code'],
+            'student_id' => $student_id,
+            'teacher_id' => $teacher_id,
+            'time' => $logsdata['time'],
+            'date' => $logsdata['date'],
+            'mode' => $logsdata['mode'],
+            'status' => ""
+        ]);
+
+
+        if($userdata['type'] == "student") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
+        } else if($userdata['type'] == "teacher") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
+        }
+
+
         return response()->json([
             'status' => 'success',
             'error' => null,

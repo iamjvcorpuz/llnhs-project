@@ -25,5 +25,6 @@ Route::get('/parents',[ParentsController::class,'index']);
 Route::post('/parents',[ParentsController::class,'store']);
 
 Route::post('/attendance/account/find',[AttendanceController::class,'findAccount']);
-Route::post('/attendance/time/entry',[AttendanceController::class,'insertTimelogs']);
-Route::post('/attendance/time/today',[AttendanceController::class,'geTodayTimelogs']);
+Route::post('/attendance/time/today/all/timelogs',[AttendanceController::class,'getTodaysTimelogs']);
+Route::post('/attendance/time/new/entry',[AttendanceController::class,'insertTimelogs']);
+Route::post('/attendance/time/logs',[AttendanceController::class,'getTimelogs']);

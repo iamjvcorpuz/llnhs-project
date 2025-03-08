@@ -281,7 +281,7 @@ export default class NewStudent extends Component {
                                 if(data.status ="sucess") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
-                                        showCancelButton: true,
+                                        showCancelButton: false,
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
                                         confirmButtonText: "Continue", 

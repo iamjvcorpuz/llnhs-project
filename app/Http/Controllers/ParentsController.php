@@ -74,7 +74,7 @@ class ParentsController extends Controller
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 
                     if($temp->count() == 0) {
                         Contacts::create([
-                            'user_type' => 'guardian',
+                            'type' => 'guardian',
                             'guardian_id' => $customer->id,
                             'phone_number' => $val['phone_number'],
                             'status' => 'active'
@@ -129,7 +129,7 @@ class ParentsController extends Controller
                     $temp = DB::table('contacts')->where('guardian_id',$val['guardian_id'])->where('phone_number',$val['phone_number'])->get(); 
                     if($temp->count() == 0) {
                         Contacts::create([
-                            'user_type' => 'guardian',
+                            'type' => 'guardian',
                             'guardian_id' => $val['guardian_id'],
                             'phone_number' => $val['phone_number'],
                             'status' => 'active'
