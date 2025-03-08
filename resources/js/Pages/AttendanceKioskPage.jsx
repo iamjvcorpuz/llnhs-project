@@ -22,6 +22,7 @@ export default class AttendancePage extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            userdata: {},
             requestimg: '/adminlte/dist/assets/img/avatar.png',
             timeCount: "00:00:00 AM",
             datenow: "00/00/000 Monday",
@@ -38,12 +39,12 @@ export default class AttendancePage extends Component {
                     width: 197,
                     accessor: 'fullname',
                     className: "text-start"
-                  },  
-                  {
+                },  
+                {
                     Header: 'Time Logs',
                     accessor: 'timelogs', 
                     maxWidth: 800
-                  }
+                }
             ],
             time_logs_status: "",
             time_logs_status_message: "",
@@ -58,7 +59,9 @@ export default class AttendancePage extends Component {
         this.eventKeys = this.eventKeys.bind(this);
         this.queryAccounts = this.queryAccounts.bind(this);
         this.queryAttendanceLogs = this.queryAttendanceLogs.bind(this);
+        this.insertLogs = this.insertLogs.bind(this);
         this.AlertSound = AlertSound;
+        this.timeoutScan = null;
         // setInterval(() => {
         //     this.setState({
         //         attendance_data: [...this.state.attendance_data,{
@@ -198,7 +201,7 @@ export default class AttendancePage extends Component {
                 //     time_logs_status_message:"Time Out"
                 // });
         window.addEventListener('keydown', this.eventKeys);
-
+        this.getAllTodaysTimeLogs();
     }
 
     paganationPosition(index) { 
@@ -213,8 +216,34 @@ export default class AttendancePage extends Component {
         let self = this;
         let key = key_.key; 
         try {
+            if(self.timeoutScan != null){
+                self.setState({
+                    userdata: {},
+                    idnumber: "",
+                    fullname: "",
+                    logger_type: "",
+                    logger_section: "",
+                    time_logs_status: "bg-danger",
+                    time_logs_status_message:"Please Try Again"
+                });                
+                return;
+            } else {
+                self.setState({
+                    userdata: {},
+                    idnumber: "",
+                    fullname: "",
+                    logger_type: "",
+                    logger_section: "",
+                    time_logs_status: "",
+                    time_logs_status_message:""
+                });
+            }
             if (key == "Enter" && self.state.scanned_code != "Enter" && self.state.scanned_code.trim() !== "" ) { 
                 // console.log(self.state.scanned_code, " - aw");
+                self.timeoutScan = setTimeout(() => {
+                    clearTimeout(self.timeoutScan);
+                    self.timeoutScan = null;
+                }, 2000);
                 self.queryAccounts(self.state.scanned_code);
                 self.setState({
                     scanned_code: ""
@@ -226,7 +255,7 @@ export default class AttendancePage extends Component {
                     self.setState({
                         scanned_code_history: "",
                         scanned_code: ""
-                    });        
+                    });
                 } else {
                     self.setState({
                         scanned_code_history: card,
@@ -240,6 +269,45 @@ export default class AttendancePage extends Component {
         }
     }
 
+    getTimeLogs(qrcode) {
+        let date = moment(new Date()).format("YYYY-MM-DD")
+        axios.post('/attendance/time/logs',{qrcode: qrcode,date:date}).then(function (response) {
+            console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                // console.log("aw",response.data.status,data);
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+
+                }
+            }
+        });
+    }
+
+    getAllTodaysTimeLogs() {
+        let self = this;
+        let date = moment(new Date()).format("YYYY-MM-DD")
+        axios.post('/attendance/time/today/all/timelogs',{date:date}).then(function (response) {
+            console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                    self.setState({attendance_data: data},() => {
+
+                        Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
+                            // console.log(result)
+                            if(typeof(result)!="undefined") { 
+                                self.setState({attendance_data_temp: result}); 
+                            } else { 
+                                self.setState({attendance_data_temp: result}); 
+                            }
+                        });
+
+                    });
+                }
+            }
+        });
+    }
+
     queryAccounts(code) {
         let self = this;
         // console.log("queryAccounts code",code)
@@ -248,20 +316,20 @@ export default class AttendancePage extends Component {
             // console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                console.log("aw",response.data.status,data);
+                // console.log("aw",response.data.status,data);
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    console.log("aw")
+                    console.log("aw",data);
                     self.setState({
+                        userdata: data,
                         _id: data.id,
-                        lrn: data.lrn,
+                        lrn: typeof(data.lrn)!="undefined"?data.lrn:data.qr_code,
                         profileImageBase64: data.picture_base64,
                         fullname: `${data.first_name} ${data.last_name}`.toLocaleUpperCase(),
                         idnumber: data.id,
                         logger_type: data.type,
-                        logger_section: "test"
+                        logger_section: typeof(data.section)!="undefined"?data.section:""
                     },() => {
-                        self.queryAttendanceLogs();
-                        self.alertMessages();
+                        self.queryAttendanceLogs(code,data);                       
                     });
                 } else if(typeof(response.data)!="undefined"&&response.data.status == "not_found") { 
                     self.AlertSound.denied();
@@ -295,37 +363,121 @@ export default class AttendancePage extends Component {
         });
     }
 
-    queryAttendanceLogs() {
+    queryAttendanceLogs(code,userdata) {
         let self = this;
-        let logs_stats = "Time In: " + moment(new Date()).format('hh:mm A');
-        let xx = self.state.attendance_data.filter(e => e._id==self.state._id); 
-        if(xx.length % 2 == 0) {
-            logs_stats = "Time In: " + moment(new Date()).format('hh:mm A');
-        } else {
-            logs_stats = "Time Out: " + moment(new Date()).format('hh:mm A');
-        }
+        let date = moment(new Date()).format("YYYY-MM-DD")
+        axios.post('/attendance/time/logs',{qrcode: code,date:date}).then(function (response) {
+            console.log(response);
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                // console.log("aw",response.data.status,data);
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
 
-        self.setState({
-            attendance_data: [...self.state.attendance_data,{
-                _id: self.state._id,
-                profile_photo: self.state.profileImageBase64,
-                fullname: self.state.fullname,
-                nicname: "",
-                timelogs: logs_stats,
-                section: "Section 1"
-            }]
-        },() => {
+                    let logs_stats = "Time In: " + moment(new Date()).format('hh:mm A');
+                    let xx = self.state.attendance_data.filter(e => e._id==self.state._id); 
+                    let mode = "";
+                    if(xx.length % 2 == 0) {
+                        logs_stats = "Time In: " + moment(new Date()).format('hh:mm A');
+                        mode = "IN";
+                    } else {
+                        logs_stats = "Time Out: " + moment(new Date()).format('hh:mm A');
+                        mode = "OUT";
+                    }
+                    self.insertLogs({
+                        code: code,
+                        date: date,
+                        time: moment(new Date()).format('hh:mm A'),
+                        mode: mode
+                    },userdata, () => {
+                        
+                        self.setState({
+                            attendance_data: [...self.state.attendance_data,{
+                                _id: self.state._id,
+                                profile_photo: self.state.profileImageBase64,
+                                fullname: self.state.fullname,
+                                nicname: "",
+                                timelogs: logs_stats,
+                                section: "Section 1",
+                                mode: mode
+                            }]
+                        },() => {                
+                            self.AlertSound.success_timelogs();
+                            Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
+                                // console.log(result)
+                                if(typeof(result)!="undefined") { 
+                                    self.setState({attendance_data_temp: result}); 
+                                } else { 
+                                    self.setState({attendance_data_temp: result}); 
+                                }
+                            });
+                        });
 
-            self.AlertSound.success_timelogs();
-            Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
-                // console.log(result)
-                if(typeof(result)!="undefined") { 
-                    self.setState({attendance_data_temp: result}); 
-                } else { 
-                    self.setState({attendance_data_temp: result}); 
+                    });
+
+                    // self.alertMessages();
                 }
-            }); 
-        })
+            }
+        });
+    }
+
+    insertLogs(logsdata,userdata,callback) {
+        let self = this;
+        delete userdata.picture_base64;
+        axios.post('/attendance/time/new/entry',{
+            logsdata:logsdata,
+            userdata:userdata
+        }).then(function (response) {
+            // handle success
+            // console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                // console.log("aw",response.data.status,data);
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                    console.log("aw",data);
+                    // self.setState({
+                    //     userdata: data,
+                    //     _id: data.id,
+                    //     lrn: typeof(data.lrn)!="undefined"?data.lrn:data.qr_code,
+                    //     profileImageBase64: data.picture_base64,
+                    //     fullname: `${data.first_name} ${data.last_name}`.toLocaleUpperCase(),
+                    //     idnumber: data.id,
+                    //     logger_type: data.type,
+                    //     logger_section: typeof(data.section)!="undefined"?data.section:""
+                    // },() => {
+                    //     self.queryAttendanceLogs(code,data);
+                    //     self.alertMessages();
+                    // });
+                    self.getAllTodaysTimeLogs();
+                } else if(typeof(response.data)!="undefined"&&response.data.status == "not_found") { 
+                    self.AlertSound.denied();
+                    self.alertMessages();
+                    self.setState({
+                        idnumber: "",
+                        fullname: "",
+                        logger_type: "",
+                        logger_section: "",
+                        time_logs_status: "bg-danger",
+                        time_logs_status_message:"Not Found"
+                    });
+                }
+            } else {
+                self.AlertSound.denied();
+                self.alertMessages();
+                self.setState({
+                    idnumber: "",
+                    fullname: "",
+                    logger_type: "",
+                    logger_section: "",
+                    time_logs_status: "bg-danger",
+                    time_logs_status_message:"Sorry Please Try Again"
+                });
+            }
+        }).catch(function (error) {
+        // handle error
+            console.log(error);
+        }).finally(function () {
+        // always executed
+        });
     }
 
     alertMessages() {
@@ -402,9 +554,9 @@ export default class AttendancePage extends Component {
                     <br />
                     <br /> */}
                     <div className="header_time logger-details-space">
-                        {(this.state.logger_type=="Student")?<div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:""}</div>:<div className="logger-name-small">{(this.state.idnumber!="")?`ID : ${this.state.idnumber}`:""}</div> }
+                        {(this.state.logger_type=="student")?<div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:""}</div>:<div className="logger-name-small">{(this.state.idnumber!="")?`ID : ${this.state.lrn}`:""}</div> }
                         <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
-                        {(this.state.logger_type=="Student")?<div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>:null}                        
+                        {(this.state.logger_type=="student")?<div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>:null}                        
                     </div>
                     {/* <hr /> */}
                     <div className="header_time">
@@ -441,9 +593,9 @@ export default class AttendancePage extends Component {
                                 <p className="logo_round_mini_name mb-0" ><strong>{element.fullname}</strong></p>
                                 {/* <hr /> */}
                                 {/* <p className="logo_round_mini_name" >{element.section}</p> */}
-                                <p className="logo_round_mini_name log-right-photo-list-time badge bg-success mb-0" >{element.timelogs}</p>
+                                <p className={`logo_round_mini_name log-right-photo-list-time badge ${(element.mode=="IN")?'bg-success':'bg-danger'} mb-0`} >{element.timelogs}</p>
                             </div>                    
-                        }} />                        
+                        }} />
                     </div>
                     {/* <div className="paganation-button-attendance">
                         <div className="form-control pt-2 paganation-button-attendance2">

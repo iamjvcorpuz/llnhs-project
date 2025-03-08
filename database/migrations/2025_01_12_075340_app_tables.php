@@ -100,11 +100,14 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('qr_code');
+            $table->string('terminal')->nullable();
+            $table->string('terminal_id')->nullable(); 
             $table->foreignId('student_id')->nullable()->index();
             $table->foreignId('teacher_id')->nullable()->index(); 
             $table->string('time');
-            $table->string('status');
             $table->string('date'); 
+            $table->string('status');
+            $table->string('mode');
             $table->timestampsTz(precision: 0);
         });
 

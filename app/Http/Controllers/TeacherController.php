@@ -75,7 +75,7 @@ class TeacherController extends Controller
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 
                     if($temp->count() == 0) {
                         Contacts::create([
-                            'user_type' => 'teacher',
+                            'type' => 'teacher',
                             'teacher_id' => $customer->id,
                             'phone_number' => $val['phone_number'],
                             'status' => 'active'
@@ -131,7 +131,7 @@ class TeacherController extends Controller
                     $temp = DB::table('contacts')->where('teacher_id',$val['teacher_id'])->where('phone_number',$val['phone_number'])->get(); 
                     if($temp->count() == 0) {
                         Contacts::create([
-                            'user_type' => 'teacher',
+                            'type' => 'teacher',
                             'teacher_id' => $val['teacher_id'],
                             'phone_number' => $val['phone_number'],
                             'status' => 'active'
