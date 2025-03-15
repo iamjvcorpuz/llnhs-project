@@ -288,7 +288,7 @@ export default class EditStudent extends Component {
                                     }).then(function (result2) {
                                         if(result2.isConfirmed) { 
                                             Swal.close();
-                                            document.getElementById("cancel").click();
+                                            // document.getElementById("cancel").click();
                                         }
                                     });
 

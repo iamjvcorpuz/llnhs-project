@@ -39,8 +39,9 @@ export default class NewAdvisory extends Component {
             cameraOn: false,
             bdate_max: moment(new Date()).subtract('years',15).format('YYYY-MM-DD'),
             subjects: this.props.subjects,
-            teachers: this.props.teachers,
+            teachers: this.props.teacher,
             advisoryList: this.props.advisory,
+            sectionList: this.props.section,
             selectedTeacher: "",
             selectedSubject: "",
             selectedYearLevel: "",
@@ -298,11 +299,11 @@ export default class NewAdvisory extends Component {
                                         
                                         <div className="col-md-3">
                                             <label htmlFor="extension_name" className="form-label">Teacher</label>
-                                            <input type="text" className="form-control" list="selectedSubject" id="teacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedTeacher: e.target.value})}}  />
+                                            <input type="text" className="form-control" list="selectedTeacher" id="teacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedTeacher: e.target.value})}}  />
                                             <div id="teacher-alert" className="invalid-feedback">Please select a valid state.</div>
                                         </div>
                                         <div className="col-md-3">
-                                            <label htmlFor="extension_name" className="form-label">Year Level</label>                                            
+                                            <label htmlFor="extension_name" className="form-label">Year/Grade Level</label>                                            
                                             <input type="text" className="form-control" list="selectedYearLevel" id="teacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedYearLevel: e.target.value})}}  />
                                             <div id="extension-name-alert" className="invalid-feedback">Please select a valid state.</div>
                                         </div>
@@ -338,43 +339,27 @@ export default class NewAdvisory extends Component {
             </div>
 
             <datalist id="selectedTeacher">
-                {/* <option value="Edge" />
-                <option value="Firefox" />
-                <option value="Chrome" />
-                <option value="Opera" />
-                <option value="Safari" /> */}
+                <EachMethod of={this.state.teachers} render={(element,index) => {
+                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                }} />
             </datalist>
 
             <datalist id="selectedYearLevel">
-                {/* <option value="Edge" />
-                <option value="Firefox" />
-                <option value="Chrome" />
-                <option value="Opera" />
-                <option value="Safari" /> */}
             </datalist>
 
-            <datalist id="selectedSection">
-                {/* <option value="Edge" />
-                <option value="Firefox" />
-                <option value="Chrome" />
-                <option value="Opera" />
-                <option value="Safari" /> */}
+            <datalist id="selectedSection"> 
+                <EachMethod of={this.state.sectionList} render={(element,index) => {
+                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                }} />
             </datalist>
 
-            <datalist id="selectedSY">
-                {/* <option value="Edge" />
-                <option value="Firefox" />
-                <option value="Chrome" />
-                <option value="Opera" />
-                <option value="Safari" /> */}
+            <datalist id="selectedSY"> 
             </datalist>
 
-            <datalist id="selectedSubject">
-                {/* <option value="Edge" />
-                <option value="Firefox" />
-                <option value="Chrome" />
-                <option value="Opera" />
-                <option value="Safari" /> */}
+            <datalist id="selectedSubject"> 
+                <EachMethod of={this.state.teachers} render={(element,index) => {
+                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                }} />
             </datalist>
 
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">

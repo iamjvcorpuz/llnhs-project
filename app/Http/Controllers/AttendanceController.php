@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Notifications;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -129,13 +130,27 @@ class AttendanceController extends Controller
         $type = $userdata['type'];
         $student_id = null;
         $teacher_id = null;
+        $contacts = [];
+        $profile = null;
+        $fullname = "";
+        $phone_number = "";
+        $date = $logsdata['date'];
+        $time = $logsdata['time'];
+        $mode = $logsdata['mode']=='IN'?'nakapasok':'nakalabas'; 
         if($userdata['type'] == "student") {
             $student_id = $userdata['id'];
+            //Where('student_id',  $student_id)->
+            // student_guardians
+            $contacts = DB::table('contacts')->leftJoin('student_guardians', 'contacts.guardian_id',  'student_guardians.parents_id')->where('student_guardians.student_id', '=', $student_id)->get();
+            $profile = DB::table('student')->where('id', $student_id)->get();
+            $fullname = $profile[0]->first_name . ' ' . $profile[0]->last_name . ($profile[0]->extension_name != null ? " " .$profile[0]->extension_name:'');
+            $phone_number = $contacts[0]->phone_number;
         } else if($userdata['type'] == "teacher") {
-            $teacher_id = $userdata['id'];;
+            $teacher_id = $userdata['id'];
         }
-        
         // echo "<pre>";
+        // // print_r($contacts);
+        // // print_r($profile);
         // print_r([
         //     'terminal' => 'kiosk',
         //     'terminal_id' => '',
@@ -148,21 +163,60 @@ class AttendanceController extends Controller
         //     'mode' => $logsdata['mode'],
         //     'status' => ""
         // ]);
-
+        // echo $phone_number;
+        // echo "\n";
+        // echo $fullname;
+        // echo "\n";
         // echo "</pre>";
-        $insertAttendance = Attendance::create([
-            'terminal' => "kiosk",
-            'terminal_id' => "",
-            'type' => $type,
-            'qr_code' => $logsdata['code'],
-            'student_id' => $student_id,
-            'teacher_id' => $teacher_id,
-            'time' => $logsdata['time'],
-            'date' => $logsdata['date'],
-            'mode' => $logsdata['mode'],
-            'status' => ""
+        // insert timelogs
+        // $insertAttendance = Attendance::create([
+        //     'terminal' => "kiosk",
+        //     'terminal_id' => "",
+        //     'type' => $type,
+        //     'qr_code' => $logsdata['code'],
+        //     'student_id' => $student_id,
+        //     'teacher_id' => $teacher_id,
+        //     'time' => $logsdata['time'],
+        //     'date' => $logsdata['date'],
+        //     'mode' => $logsdata['mode'],
+        //     'status' => ""
+        // ]);
+        // send via sms
+        // error_reporting(E_ALL);
+        $message = 'Matagumpay ' . $mode . ' sa Paaralan ng Lebak Legislated NHS si ' . $fullname . ' sa saktong '  . $time . ' ' . $date;
+        // $request_sms = Request::create(
+        //     '/sms/send/attendance',
+        //     'POST',
+        //     ['phone_number' => $phone_number,'message' => $message],
+        //     [], // Cookies
+        //     [], // Files
+        //     ['Content-Type' => 'application/x-www-form-urlencoded']); 
+        // $targetController = app(TargetController::class);
+        // $targetController->process($request_sms);
+        // SMSController::SendSMS($request_sms);
+        // $logs = (object)array('phone_number' => $phone_number,'message' => $message);
+        
+        // $sms_result = SMSController::_SendSMS((object)array('phone_number' => $phone_number,'message' => $message));
+        // echo "< br />"; 
+        // print_r($sms_result);
+        
+        Notifications::factory()->create([
+            'type' => 'sms',
+            'to' => $phone_number,
+            'message' => $message,
+            'status' => 'sending',
+            'date' => $date,
+            'time' => $date
         ]);
 
+        Notifications::factory()->create([
+            'type' => 'push',
+            'to' => $phone_number,
+            'message' => $message,
+            'status' => 'sending',
+            'date' => $date,
+            'time' => $date
+        ]);
 
         if($userdata['type'] == "student") {
             $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
@@ -176,6 +230,8 @@ class AttendanceController extends Controller
             'error' => null,
             'data' => []
         ], 200);
+
+        
     }
     public function getUserTimelogs(Request $request) {
         return response()->json([
