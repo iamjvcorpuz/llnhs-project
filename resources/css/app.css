@@ -47,7 +47,7 @@ color: black;
     font-weight: bolder;
 }
 .attendance-nav {
-    background-color: #78bbf8;
+    background-color: #9ccdfa;
 
     border-color: #028eb4;
     border-style: solid; 
@@ -88,7 +88,8 @@ color: black;
     padding-right: 15px;
     margin-top: 6px;
   
-    background-color: #ddd8d87a;
+    background-color: #9ccdfa36;
+    /* background-color: #ddd8d87a; */
     height: 86vh!important;
   
     display:flex;

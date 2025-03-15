@@ -127,6 +127,11 @@ class StudentController extends Controller
 
     }
     public function update(Request $request) {
+
+        // echo "<pre>";
+        // echo $request;
+        // echo "</pre>";
+
         $validator = Validator::make($request->all(), [
             'lrn' => 'required|string',
             'first_name' => 'required|string',
@@ -148,24 +153,42 @@ class StudentController extends Controller
 
         $StudentLRN = DB::table('student')->where('lrn', $request->lrn) ->get();
 
+        $StudentParent = DB::table('student_guardians')->where('student_id', $request->id)->Where('parents_id',  $request->parents)->get();
+
+        $StudentParent2 = DB::table('student_guardians')->Where('student_id',  $request->id)->get();
+
         $fields = [];
         if($Student->count()==1) {
             if($StudentLRN->count()==1) {
 
                 // $customer = Student::update($request->except('parents')); 
                 $updateStudent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id']));
-                // $parents = $request->input('parents');
 
-                // StudentGuardian::create([
-                //     'student_id' => $customer->id,
-                //     'parents_id' => $parents
-                // ]);
+                // $updateStudentParent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id']));
+                // $StudentParent->count() == 0 && 
+                if($StudentParent2->count() > 0 ) {
+
+                    DB::table('student_guardians')->where('student_id', $request->id)->delete();
+                    
+                    StudentGuardian::create([
+                        'student_id' => $request->id,
+                        'parents_id' => $request->parents
+                    ]);
+
+                } else {
+                    StudentGuardian::create([
+                        'student_id' => $request->id,
+                        'parents_id' => $request->parents
+                    ]);
+                }
+                // $parents = $request->input('parents');
                 
                 return response()->json([
                     'status' => 'success',
                     'error' => null,
                     'data' => $updateStudent
                 ], 201);
+
             } else {  
                 $fields[] = (object)['field'=>'lrn']; 
                 return response()->json([

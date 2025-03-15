@@ -7,7 +7,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client'; 
 
-import * as bootstrap from "bootstrap";
+// import * as bootstrap from "bootstrap";
 
 import $ from 'jquery';
 window.jQuery = window.$ = $

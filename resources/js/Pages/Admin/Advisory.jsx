@@ -14,6 +14,7 @@ export default class Advisory extends Component {
 		super(props);
         this.state = {
             data: this.props.advisory,
+            subjects: this.props.subjects,
             columns: [
                 {
                     id: "no",
@@ -63,15 +64,21 @@ export default class Advisory extends Component {
             ]            
         }
         this._isMounted = false;
+        // this.getAllRequiredData = this.getAllRequiredData.bind(this);
         // console.log(this.props.teacher)
     }
 
     componentDidMount() {
         this._isMounted = true; 
+        // console.log(this);
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+    }
+
+    getAllRequiredData() {
+
     }
 
     render() {
