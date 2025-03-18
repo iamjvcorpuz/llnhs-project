@@ -167,12 +167,13 @@ return new class extends Migration
         Schema::create('user_accounts', function (Blueprint $table) {
             $table->id();
             $table->string('user_type');
+            $table->string('user_id');
             $table->integer('user_role_id');
             $table->string('fullname');
             $table->string('username');
             $table->string('password');
             $table->string('plainpassword');
-            $table->string('verified')->nullable();;
+            $table->string('verified')->nullable();
             $table->timestampsTz(precision: 0);
         });
 

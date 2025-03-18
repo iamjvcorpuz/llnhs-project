@@ -82,7 +82,7 @@ export default class Advisory extends Component {
     }
 
     render() {
-        return <DashboardLayout title="Subject">
+        return <DashboardLayout title="Subject" user={this.props.auth.user}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">

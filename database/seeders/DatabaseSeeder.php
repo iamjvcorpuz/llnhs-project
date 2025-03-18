@@ -109,12 +109,25 @@ class DatabaseSeeder extends Seeder
             'subject_name' => 'Edukasyong Pantahanan at Pangkabuhayan (EPP)',
             'decription' => '',
         ]);
+
+        UserAccounts::factory()->state([
+            'user_id' => 0,
+            'user_type' => 'Admin',
+            'user_role_id' => 1,
+            'fullname' => "Administrator",
+            'username' => "admin",
+            'password' => Hash::make('4dm!n'),
+            'plainpassword' => '4dm!n',
+            'verified' => null
+        ])->create();
+
         //----end for default data lang ni
 
         $student = Student::factory(100)->create();
         $student->each(function($val) {
             $rand_pass = Str::random(10);
             UserAccounts::factory()->state([
+                'user_id' => $val->id,
                 'user_type' => 'Student',
                 'user_role_id' => 3,
                 'fullname' => $val->first_name . " " . $val->last_name,
@@ -133,11 +146,9 @@ class DatabaseSeeder extends Seeder
                 'phone_number' => "09758955082",
                 'status' => 'active'
             ])->create();
-        });
-
-        $teacher->each(function($val) {
             $rand_pass = Str::random(10);
             UserAccounts::factory()->state([
+                'user_id' => $val->id,
                 'user_type' => 'Teacher',
                 'user_role_id' => 2,
                 'fullname' => $val->first_name . " " . $val->last_name,
@@ -148,6 +159,20 @@ class DatabaseSeeder extends Seeder
             ])->create();
         });
 
+        // $teacher->each(function($val) {
+        //     $rand_pass = Str::random(10);
+        //     UserAccounts::factory()->state([
+        //         'user_id' => $val->id,
+        //         'user_type' => 'Teacher',
+        //         'user_role_id' => 2,
+        //         'fullname' => $val->first_name . " " . $val->last_name,
+        //         'username' => Str::random(10),
+        //         'password' => Hash::make($rand_pass),
+        //         'plainpassword' => $rand_pass,
+        //         'verified' => null
+        //     ])->create();
+        // });
+
         $Parents = Parents::factory(10)->create();
 
         $Parents->each(function($val) {
@@ -157,11 +182,9 @@ class DatabaseSeeder extends Seeder
                 'phone_number' => "09758955082",
                 'status' => 'active'
             ])->create();
-        });
-        
-        $teacher->each(function($val) {
             $rand_pass = Str::random(10);
             UserAccounts::factory()->state([
+                'user_id' => $val->id,
                 'user_type' => 'Guardian',
                 'user_role_id' => 4,
                 'fullname' => $val->first_name . " " . $val->last_name,
@@ -171,6 +194,21 @@ class DatabaseSeeder extends Seeder
                 'verified' => null
             ])->create();
         });
+        
+        // $Parents->each(function($val) {
+        //     $rand_pass = Str::random(10);
+        //     UserAccounts::factory()->state([
+        //         'user_id' => $val->id,
+        //         'user_type' => 'Guardian',
+        //         'user_role_id' => 4,
+        //         'fullname' => $val->first_name . " " . $val->last_name,
+        //         'username' => Str::random(10),
+        //         'password' => Hash::make($rand_pass),
+        //         'plainpassword' => $rand_pass,
+        //         'verified' => null
+        //     ])->create();
+        // });
+
 
     }
 }
