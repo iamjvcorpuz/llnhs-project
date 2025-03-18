@@ -25,7 +25,7 @@ export default class DashboardLayout extends Component {
         // let adminlte = new window.adminlte.PushMenu();
         // console.log(adminlte)
         // const user = usePage();
-        // console.log(user);
+        console.log(this.props);
     }
     componentDidMount() {
         $(function () { 
@@ -121,7 +121,7 @@ export default class DashboardLayout extends Component {
     render() {
     return (<div className="app-wrapper">
          <Head title={this.props.title} />
-        <TopNav />
+        <TopNav user={this.props} />
         <SideNav />
         <main className="app-main">{this.props.children}</main>
         <Footer />

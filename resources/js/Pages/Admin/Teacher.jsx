@@ -231,7 +231,7 @@ export default class Teacher extends Component {
     }
     
     render() {
-        return <DashboardLayout title="Teacher" >
+        return <DashboardLayout title="Teacher" user={this.props.auth.user}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">

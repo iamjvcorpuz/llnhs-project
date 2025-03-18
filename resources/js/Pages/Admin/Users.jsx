@@ -15,7 +15,7 @@ export default class Users extends Component {
 
     }
     render() {
-        return <DashboardLayout title="User" >
+        return <DashboardLayout title="User" user={this.props.auth.user}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">

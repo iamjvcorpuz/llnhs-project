@@ -4,6 +4,7 @@ export default function TopNav({
     active = false,
     className = '',
     children,
+    user,
     ...props
 }) {
     return (<nav className="app-header navbar navbar-expand bg-info shadow"> 
@@ -35,13 +36,13 @@ export default function TopNav({
                     alt="User Image"
                   />
                   <p>
-                    Juan Dela Cruz
-                    <small>Member since Nov. 2023</small>
+                    {(typeof(user.user.fullname)!="undefined")?user?.user?.fullname:'Guest'}
+                    {/* <small>Member since Nov. 2023</small> */}
                   </p>
                 </li>  
                 <li className="user-footer">
-                  <Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>
-                  <Link to="/logout" className="btn btn-danger btn-flat float-end">Log out</Link>
+                  {(typeof(user.user.user_type)!="undefined"&&user.user.user_type!="Admin")?<Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>:null}
+                  <Link href="/logout" className="btn btn-danger btn-flat float-end">Log out</Link>
                 </li> 
               </ul>
             </li> 

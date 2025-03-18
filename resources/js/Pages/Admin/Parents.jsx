@@ -132,7 +132,7 @@ export default class Parents extends Component {
     }
 
     render() {
-        return <DashboardLayout title="Parents" >
+        return <DashboardLayout title="Parents" user={this.props.auth.user}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
