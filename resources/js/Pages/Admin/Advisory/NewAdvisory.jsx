@@ -303,7 +303,7 @@ export default class NewAdvisory extends Component {
                                             <div id="teacher-alert" className="invalid-feedback">Please select a valid state.</div>
                                         </div>
                                         <div className="col-md-3">
-                                            <label htmlFor="extension_name" className="form-label">Year/Grade Level</label>                                            
+                                            <label htmlFor="extension_name" className="form-label">Year Level</label>                                            
                                             <input type="text" className="form-control" list="selectedYearLevel" id="teacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedYearLevel: e.target.value})}}  />
                                             <div id="extension-name-alert" className="invalid-feedback">Please select a valid state.</div>
                                         </div>

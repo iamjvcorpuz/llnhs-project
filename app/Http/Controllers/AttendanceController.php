@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Notifications;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\Cast\Object_;
 use stdClass;
@@ -181,42 +182,31 @@ class AttendanceController extends Controller
         //     'mode' => $logsdata['mode'],
         //     'status' => ""
         // ]);
+        // --------------------------------------------------------------------------------------------------------------------------------------
         // send via sms
-        // error_reporting(E_ALL);
-        $message = 'Matagumpay ' . $mode . ' sa Paaralan ng Lebak Legislated NHS si ' . $fullname . ' sa saktong '  . $time . ' ' . $date;
-        // $request_sms = Request::create(
-        //     '/sms/send/attendance',
-        //     'POST',
-        //     ['phone_number' => $phone_number,'message' => $message],
-        //     [], // Cookies
-        //     [], // Files
-        //     ['Content-Type' => 'application/x-www-form-urlencoded']); 
-        // $targetController = app(TargetController::class);
-        // $targetController->process($request_sms);
-        // SMSController::SendSMS($request_sms);
-        // $logs = (object)array('phone_number' => $phone_number,'message' => $message);
+        $message = 'Matagumpay ' . $mode . ' sa Paaralan ng Lebak Legislated NHS si ' . $fullname . ' sa saktong '  . $time . ' ' . $date; 
         
-        // $sms_result = SMSController::_SendSMS((object)array('phone_number' => $phone_number,'message' => $message));
-        // echo "< br />"; 
-        // print_r($sms_result);
-        
-        Notifications::factory()->create([
+        $sms_id = Notifications::factory()->create([
             'type' => 'sms',
             'to' => $phone_number,
             'message' => $message,
             'status' => 'sending',
             'date' => $date,
             'time' => $date
-        ]);
+        ])['id'];
 
-        Notifications::factory()->create([
-            'type' => 'push',
-            'to' => $phone_number,
-            'message' => $message,
-            'status' => 'sending',
-            'date' => $date,
-            'time' => $date
-        ]);
+        // $push_noti_id = Notifications::factory()->create([
+        //     'type' => 'push',
+        //     'to' => $phone_number,
+        //     'message' => $message,
+        //     'status' => 'sending',
+        //     'date' => $date,
+        //     'time' => $date
+        // ])['id'];
+
+        $command = "php " . base_path('artisan') . " process:send-sms " . escapeshellarg($phone_number) . " " . escapeshellarg($message) . " " . escapeshellarg($sms_id);
+        Process::start($command);
+        // --------------------------------------------------------------------------------------------------------------------------------------
 
         if($userdata['type'] == "student") {
             $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);

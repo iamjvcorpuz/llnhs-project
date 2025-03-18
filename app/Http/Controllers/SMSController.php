@@ -1,6 +1,7 @@
 <?php 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessNotifications;
 use Exception;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\DB;
@@ -8,6 +9,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Facades\Process;
+
 
 class SMSController extends Controller
 {
@@ -38,11 +41,10 @@ class SMSController extends Controller
     }
     public static function SendSMS(Request $params) 
     {
-        print_r($params);
+        // print_r($params);
         $sms = new sendSMS();
         $phone_number = $params->phone_number;
         $message = $params->message;
-
 
         $status = $sms->send($phone_number,$message);
         
@@ -61,40 +63,48 @@ class SMSController extends Controller
         }      
 
     }
-    public static function _SendSMS($params) 
+    public static function _SendSMS() 
     {
         $sms = new sendSMS();
-        $phone_number = $params->phone_number;
-        $message = $params->message;
-
-        try {
-            //code...
-            // \parallel\run(
-            //     function() {
-            //         $sms->send($phone_number,$message);
-            //     }
-            // );
-            Concurrency::run([
-                $sms->send($phone_number,$message)
-            ]);
-            // Concurrency::defer([
-            //     $sms->send($phone_number,$message)
-            // ]);
-            // $status = $sms->send($phone_number,$message);
+        // $phone_number = $params->phone_number;
+        // $message = $params->message;
+        // try {
+            $status = $sms->send("09758955082","test");
+        //     // $status = $sms->send($phone_number,$message);
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'error' => null,
+        //         'data' => []
+        //     ], 200);
             
-            // if ($status) {
+        // } catch (\Throwable $th) {
+        //     return response()->json([
+        //         'status' => 'fail',
+        //         'error' => null,
+        //         'data' => []
+        //     ], 201);
+        // }
+
+    }
+    public static function _SendSMS_($phone_number,$message) 
+    {
+        $sms = new sendSMS();
+        try {
+            $status = $sms->send($phone_number,$message);
+            if ($status) {
                 return response()->json([
                     'status' => 'success',
                     'error' => null,
                     'data' => []
                 ], 200);
-            // } else {
-            //     return response()->json([
-            //         'status' => 'fail',
-            //         'error' => null,
-            //         'data' => []
-            //     ], 201);
-            // } 
+            } else {
+                return response()->json([
+                    'status' => 'fail',
+                    'error' => null,
+                    'data' => []
+                ], 201);
+            } 
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'fail',
@@ -102,7 +112,6 @@ class SMSController extends Controller
                 'data' => []
             ], 201);
         }
-
     }
     public static function SendSMSAttendance(Request $params) 
     {
@@ -157,12 +166,19 @@ class SMSController extends Controller
 class sendSMS {
     // main controller sa sms
     public function send($phoneumber, $message) {
-
         $sms = new gsm_request_url();
 
         $status = $sms->sms_send($phoneumber,$message);
 
         return $status;
+    }
+    public function send_($phoneumber, $message) {
+
+        $result = "Processed at " . date('Y-m-d H:i:s');
+        echo $result;
+        $sms = new gsm_request_url();
+        $sms->sms_send($phoneumber,$message);
+        return $result;
     }
     public function delete_all_sms() {
 
@@ -175,12 +191,10 @@ class sendSMS {
 }
 
 class gsm_request_url {
-
-
+    // use Exception; 
     private $_url_prefix = "http://"; 
     private $_url_post = "/goform/goform_process";
     private $_modem_ip = "192.168.0.1";
-
 
     private $GSM7_Table = array(
         "0040","00A3","0024","00A5","00E8","00E9","00F9","00EC","00F2","00C7","000A","00D8",
@@ -304,6 +318,7 @@ class gsm_request_url {
                 return false;
             }
         } catch (\Throwable $th) {
+            // echo $th;
             return false;
         }
   
@@ -443,7 +458,6 @@ class gsm_request_url {
         return $encode;
     }
 }
-
 //Send SMS via serial SMS modem
 class gsm_modem {
 

@@ -18,4 +18,16 @@ class UserAccounts extends Model
         'password',
         'plainpassword'
     ];
+    protected $hidden = [
+        'password',
+        'plainpassword',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'update_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }
