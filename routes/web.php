@@ -44,58 +44,58 @@ Route::get('/admin/dashboard', function () {
         "subjects" => SubjectController::getAll(),
         "student" => StudentController::getAll()
     ]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/student', function () {
     return Inertia::render('Admin/Student',['props' => null,]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/student/new', function () {
     return Inertia::render('Admin/Student/NewStudent',['parents' => ParentsController::getAll()]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/admin/dashboard/student/update/{id}', function (String $id) {
     return Inertia::render('Admin/Student/EditStudent',[
         'parents' => ParentsController::getAll(),
         'student' => StudentController::getData($id),
         'guardians' => StudentController::getStudentGuardian($id)
     ]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/teacher', function () {
     return Inertia::render('Admin/Teacher',['props' => null,]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/admin/dashboard/teacher/new', function () {
     return Inertia::render('Admin/Teacher/NewTeacher',['props' => null,]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/admin/dashboard/teacher/update/{id}', function (String $id) {
     return Inertia::render('Admin/Teacher/EditTeacher',[
         'teacher' => TeacherController::getData($id),
         'contacts' => TeacherController::getContacts($id)
     ]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/parents', function () {
     return Inertia::render('Admin/Parents',['props' => null,]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/parents/new', function () {
     return Inertia::render('Admin/Parents/NewParents',['props' => null,]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/advisory', function () {
     return Inertia::render('Admin/Advisory',["advisory" => AdvisoryController::getAll()]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/admin/dashboard/advisory/new', function () {
     return Inertia::render('Admin/Advisory/NewAdvisory',[
         "teacher" => TeacherController::getAll(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll()
     ]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/users', function () {
     return Inertia::render('Admin/Users',['props' => null,]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

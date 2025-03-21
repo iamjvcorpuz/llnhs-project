@@ -19,5 +19,11 @@ export default defineConfig({
             '$': path.resolve(__dirname,'node_modules/jquery/dist/jquery'),
             '~bootstrap': path.resolve(__dirname,'node_modules/bootstrap/dist/js/bootstrap.js')
         },
+    },
+    build: {
+        outDir: 'public/build',
+    },
+    define: {
+        'process.env.APP_URL': JSON.stringify(process.env.APP_URL || 'https://llnhs-staging-965004554169.us-central1.run.app'),
     }
 });

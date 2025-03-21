@@ -36,12 +36,12 @@ export default function TopNav({
                     alt="User Image"
                   />
                   <p>
-                    {(typeof(user.user.fullname)!="undefined")?user?.user?.fullname:'Guest'}
+                    {(typeof(user.user)!="undefined"&&user.user!=null&&typeof(user.user.fullname)!="undefined")?user?.user?.fullname:'Guest'}
                     {/* <small>Member since Nov. 2023</small> */}
                   </p>
                 </li>  
                 <li className="user-footer">
-                  {(typeof(user.user.user_type)!="undefined"&&user.user.user_type!="Admin")?<Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>:null}
+                  {(typeof(user.user)!="undefined"&&user.user!=null&&typeof(user.user.user_type)!="undefined"&&user.user.user_type!="Admin")?<Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>:null}
                   <Link href="/logout" className="btn btn-danger btn-flat float-end">Log out</Link>
                 </li> 
               </ul>
