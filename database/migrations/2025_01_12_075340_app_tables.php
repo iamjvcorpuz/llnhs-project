@@ -138,19 +138,20 @@ return new class extends Migration
         Schema::create('school_subjects', function (Blueprint $table) {
             $table->id();
             $table->string('subject_name');
-            $table->string('decription')->nullable();
+            $table->string('description')->nullable();
             $table->timestampsTz(precision: 0);
         });
 
         Schema::create('advisory', function (Blueprint $table) {
             $table->id();
             $table->string('qrcode')->nullable();
-            $table->string('student_id')->nullable(); 
+            $table->string('teacher_id')->nullable(); 
+            $table->string('school_sections_id')->nullable();
             $table->string('section_name')->nullable();
             $table->string('school_year')->nullable();
             $table->string('subject_id')->nullable();
             $table->string('year_level')->nullable();
-            $table->string('decription')->nullable();
+            $table->string('description')->nullable();
             $table->string('status')->nullable(); 
             $table->timestampsTz(precision: 0);
         });
@@ -159,8 +160,27 @@ return new class extends Migration
             $table->id();
             $table->string('advisory_id')->nullable();
             $table->string('student_id')->nullable();
-            $table->string('decription')->nullable();
+            $table->string('description')->nullable();
             $table->string('status')->nullable(); 
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('school_sections', function (Blueprint $table) {
+            $table->id();
+            $table->string('teacher_id')->nullable();
+            $table->string('section_name')->nullable();
+            $table->string('year_grade_id')->nullable();
+            $table->string('year_grade')->nullable();
+            $table->string('room_no')->nullable();
+            $table->string('building_no')->nullable(); 
+            $table->string('description')->nullable(); 
+            $table->string('status')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('school_year_grades', function (Blueprint $table) {
+            $table->id();
+            $table->string('year_grade')->nullable();
             $table->timestampsTz(precision: 0);
         });
 
@@ -180,7 +200,7 @@ return new class extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('decription')->nullable();
+            $table->string('description')->nullable();
             $table->timestampsTz(precision: 0);
         });
 
@@ -213,6 +233,8 @@ return new class extends Migration
         Schema::dropIfExists('parents');
         Schema::dropIfExists('notifications');
         Schema::dropIfExists('school_subjects');
+        Schema::dropIfExists('school_section');
+        Schema::dropIfExists('school_year_grades');
         Schema::dropIfExists('advisory');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('user_roles');

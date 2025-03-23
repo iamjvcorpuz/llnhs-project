@@ -1,0 +1,140 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Contacts;
+use App\Models\Parents;
+use App\Models\Roles;
+use App\Models\SchoolSection;
+use App\Models\SchoolYearGrades;
+use App\Models\Student;
+use App\Models\Subjects;
+use App\Models\Teacher;
+use App\Models\User;
+use App\Models\UserAccounts;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Mockery\Matcher\Subset;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class DefaultDataSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //----start for default data lang ni
+        Roles::create([
+            'name' => 'Admin',
+            'description' => 'For admin role only',
+        ]);
+                 
+        Roles::create([
+            'name' => 'Teacher',
+            'description' => 'For teacher role only',
+        ]);
+
+        Roles::create([
+            'name' => 'Student',
+            'description' => 'For student role only',
+        ]);
+
+        Roles::create([
+            'name' => 'Guardian',
+            'description' => 'For guardian role only',
+        ]);
+
+        Subjects::factory()->create([
+            'subject_name' => 'English',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Math',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Science',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Mathematics',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Filipino',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Araling Panlipunan',
+            'description' => 'Araling Panlipunan (social sciences)',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Edukasyon sa Pagpapakatao (EsP)',
+            'description' => 'Edukasyon sa Pagpapakatao, EsP (personnel training)',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Physical Education ',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Technology and Livelihood Education (TLE)',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Mother Tongue',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Music',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Arts',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Health',
+            'description' => '',
+        ]);
+        Subjects::factory()->create([
+            'subject_name' => 'Edukasyong Pantahanan at Pangkabuhayan (EPP)',
+            'description' => 'Edukasyong Pantahanan at Pangkabuhayan (health, home and life education)',
+        ]);
+
+        UserAccounts::factory()->state([
+            'user_id' => 0,
+            'user_type' => 'Admin',
+            'user_role_id' => 1,
+            'fullname' => "Administrator",
+            'username' => "admin",
+            'password' => Hash::make('4dm!n'),
+            'plainpassword' => '4dm!n',
+            'verified' => null
+        ])->create();
+
+        SchoolYearGrades::factory()->state([
+            'year_grade' => "Grade 7",
+        ])->create();
+        SchoolYearGrades::factory()->state([
+            'year_grade' => "Grade 8",
+        ])->create();
+        SchoolYearGrades::factory()->state([
+            'year_grade' => "Grade 9",
+        ])->create();
+        SchoolYearGrades::factory()->state([
+            'year_grade' => "Grade 10",
+        ])->create();
+        SchoolYearGrades::factory()->state([
+            'year_grade' => "Grade 11",
+        ])->create();
+        SchoolYearGrades::factory()->state([
+            'year_grade' => "Grade 12",
+        ])->create();
+        
+        //----end for default data lang ni
+    }
+}

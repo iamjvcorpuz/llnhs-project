@@ -17,7 +17,7 @@ export default class Dashboard extends Component {
             advisoryList: this.props.advisory,    
             student: this.props.student,
             todayAttendance: [],
-            sections: []
+            sections: this.props.sections
         }
         console.log(this.props)
     }
@@ -158,7 +158,7 @@ export default class Dashboard extends Component {
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.sections.length}</h3>
-                                <p>Section</p>
+                                <p>School Sections</p>
                             </div>
                             <svg
                                 className="small-box-icon"

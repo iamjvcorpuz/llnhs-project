@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\AdvisoryController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SchoolSectionController;
+use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Models\SchoolYearGrades;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,7 +46,9 @@ Route::get('/admin/dashboard', function () {
         "teacher" => TeacherController::getAll(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
-        "student" => StudentController::getAll()
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -83,7 +89,13 @@ Route::get('/admin/dashboard/parents/new', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/advisory', function () {
-    return Inertia::render('Admin/Advisory',["advisory" => AdvisoryController::getAll()]);
+    return Inertia::render('Admin/Advisory',[
+        "teacher" => TeacherController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll()
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/admin/dashboard/advisory/new', function () {
     return Inertia::render('Admin/Advisory/NewAdvisory',[

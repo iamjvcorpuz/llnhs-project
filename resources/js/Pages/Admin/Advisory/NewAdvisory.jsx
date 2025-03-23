@@ -345,12 +345,12 @@ export default class NewAdvisory extends Component {
             </datalist>
 
             <datalist id="selectedYearLevel">
-            <option >Grade 7</option>
-            <option >Grade 8</option>
-            <option >Grade 9</option>
-            <option >Grade 10</option>
-            <option >Grade 11</option>
-            <option >Grade 12</option>
+                <option >Grade 7</option>
+                <option >Grade 8</option>
+                <option >Grade 9</option>
+                <option >Grade 10</option>
+                <option >Grade 11</option>
+                <option >Grade 12</option>
             </datalist>
 
             <datalist id="selectedSection"> 
@@ -359,7 +359,8 @@ export default class NewAdvisory extends Component {
                 }} />
             </datalist>
 
-            <datalist id="selectedSY"> 
+            <datalist id="selectedSY">
+                <option >2025 - 2026</option>
             </datalist>
 
             <datalist id="selectedSubject"> 
@@ -367,68 +368,7 @@ export default class NewAdvisory extends Component {
                     return <option >{`${element.last_name}, ${element.first_name}`}</option>
                 }} />
             </datalist>
-
-            <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title fs-5">Image</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
-                        </button>
-                    </div>
-                    <div className="modal-body">
-                        <ImageCrop src={this.state.photoupload} onChange={this.updateCrop}  />
-                    </div>
-                    <div className="modal-footer"> 
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="modal fade" tabIndex="-1" role="dialog" id="camerapanel" data-bs-backdrop="static">
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title fs-5">Camera Capture</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
-                        </button>
-                    </div>
-                    <div className="modal-body">
-                    {(this.state.cameraOn==true)?<Webcam
-                        className="webcam"
-                        audio={false}
-                        screenshotFormat="image/jpeg"
-                        videoConstraints={{
-                            width: 600,  
-                            height: 600,
-                            facingMode: "user"
-                        }}
-                        mirrored={true}
-                        screenshotQuality={1}
-                        imageSmoothing={true}
-                        ref={this.webCam}
-                    />:null}
-                    </div>
-                    <div className="modal-footer"> 
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary" onClick={()=> { 
-                            try {
-                                this.setState({
-                                    photoupload: this.webCam.current.getScreenshot({width: 400, height: 400}),
-                                    cameraOn: false
-                                },() => {
-                                    $("#camerapanel").modal('hide');
-                                    $("#fileuploadpanel").modal('show');
-                                });
-                            } catch (error) {
-                                alert("Pleasse try again")
-                            }
-                         }}>Capture</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
+ 
         </div>
     </DashboardLayout>}
 }

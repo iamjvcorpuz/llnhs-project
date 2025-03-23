@@ -5,20 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Advisory extends Model
+class SchoolSection extends Model
 {
     use HasFactory;
     
-    public $table = "advisory";
+    public $table = "school_sections";
 
     protected $fillable = [
         'qrcode',
         'teacher_id',
-        'school_sections_id',
         'section_name',
-        'year_level',
-        'school_year',
+        'room_no',
         'subject_id',
+        'building_no',
         'decription',
         'status'
     ];

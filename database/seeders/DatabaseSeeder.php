@@ -2,16 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\SchoolYearGradesController;
 use App\Models\Contacts;
 use App\Models\Parents;
 use App\Models\Roles;
+use App\Models\SchoolSection;
+use App\Models\SchoolYearGrades;
 use App\Models\Student;
 use App\Models\Subjects;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Models\UserAccounts;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Mockery\Matcher\Subset;
 use Illuminate\Support\Facades\Hash;
@@ -30,98 +35,28 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-
-        //----start for default data lang ni
-        Roles::create([
-            'name' => 'Admin',
-            'decription' => 'For admin role only',
-        ]);
-                 
-        Roles::create([
-            'name' => 'Teacher',
-            'decription' => 'For teacher role only',
-        ]);
-
-        Roles::create([
-            'name' => 'Student',
-            'decription' => 'For student role only',
-        ]);
-
-        Roles::create([
-            'name' => 'Guardian',
-            'decription' => 'For guardian role only',
-        ]);
-
-
-        Subjects::factory()->create([
-            'subject_name' => 'English',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Math',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Science',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Mathematics',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Filipino',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Araling Panlipunan',
-            'decription' => 'Araling Panlipunan (social sciences)',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Edukasyon sa Pagpapakatao (EsP)',
-            'decription' => 'Edukasyon sa Pagpapakatao, EsP (personnel training)',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Physical Education ',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Technology and Livelihood Education (TLE)',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Mother Tongue',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Music',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Arts',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Health',
-            'decription' => '',
-        ]);
-        Subjects::factory()->create([
-            'subject_name' => 'Edukasyong Pantahanan at Pangkabuhayan (EPP)',
-            'decription' => 'Edukasyong Pantahanan at Pangkabuhayan (health, home and life education)',
-        ]);
-
-        UserAccounts::factory()->state([
-            'user_id' => 0,
-            'user_type' => 'Admin',
-            'user_role_id' => 1,
-            'fullname' => "Administrator",
-            'username' => "admin",
-            'password' => Hash::make('4dm!n'),
-            'plainpassword' => '4dm!n',
-            'verified' => null
-        ])->create();
-
-        //----end for default data lang ni
+        $school_year_grades = SchoolYearGradesController::getAll();
+        $school_year_grades->each(function($val) {
+            SchoolSection::factory(50)->state(new Sequence(
+                ['year_grade_id' => $val->id,'year_grade' => $val->year_grade]
+            ))->create();
+        });
+        // $school_section = SchoolSection::factory(50)->create();
+        // $school_section_room_no = 1;
+        // $school_section->each(function($val) { 
+        //     $qrcode = Str::random(10);
+        //     SchoolSection::factory()->state([
+        //         'qrcode' => $qrcode,
+        //         'teacher_id' => null,
+        //         'section_name' => 3,
+        //         'room_no' => $school_section_room_no,
+        //         'subject_id' => Str::random(10),
+        //         'building_no' => Hash::make($rand_pass),
+        //         'description' => $rand_pass,
+        //         'status' => null
+        //     ])->create();
+        // });
+        
 
         $student = Student::factory(100)->create();
         $student->each(function($val) {

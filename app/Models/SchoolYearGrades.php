@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Roles extends Model
+class SchoolYearGrades extends Model
 {
     use HasFactory;
     
-    public $table = "roles";
+    public $table = "school_year_grades";
 
     protected $fillable = [
-        'name',
-        'description'
-    ];
-}
+        'year_grade'
+    ];}
