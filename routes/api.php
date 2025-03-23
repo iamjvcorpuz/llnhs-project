@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\ParentsController;
@@ -23,6 +24,10 @@ Route::post('/contacts',[ContactsController::class,'store']);
 
 Route::get('/parents',[ParentsController::class,'index']);
 Route::post('/parents',[ParentsController::class,'store']);
+
+Route::get('/advisory',[AdvisoryController::class,'getRequiredAllData']);
+Route::post('/advisory',[AdvisoryController::class,'store']);
+Route::delete('/advisory',[AdvisoryController::class,'remove']);
 
 Route::post('/attendance/account/find',[AttendanceController::class,'findAccount']);
 Route::post('/attendance/time/today/all/timelogs',[AttendanceController::class,'getTodaysTimelogs']);

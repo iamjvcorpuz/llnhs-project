@@ -95,6 +95,54 @@ class AttendanceController extends Controller
         ], 200);
 
     }
+    public static function _getTodaysTimelogs() {
+
+        $logs = DB::select('SELECT * FROM attendance WHERE  date = ? ',[date("Y-m-d")]);
+        $attendance = array();
+        foreach($logs as $key => $val) { 
+            
+            $teacher = is_null($val->teacher_id) ? null: DB::table('teacher')->where('id', $val->teacher_id)->get();
+            $student = is_null($val->student_id) ? null: DB::table('student')->where('id', $val->student_id)->get();
+            $section = "";
+            if(is_null($teacher) == false && $teacher->count()>0) {
+                $object = new stdClass();
+                $object->_id = $teacher[0]->id;
+                $object->lrn = $teacher[0]->id;
+                $object->profileImageBase64 = $teacher[0]->picture_base64;
+                $object->fullname = $teacher[0]->first_name . " " . $teacher[0]->last_name;
+                $object->idnumber = $teacher[0]->qr_code;
+                $object->logger_type = "teacher";
+                $object->logger_section = "";
+                $object->timelogs = "TIME " . $val->mode . ": " . $val->time;
+                $object->date = $val->date;
+                $object->section = $section;
+                $object->mode = $val->mode;
+                array_push($attendance,$object );
+            }
+            if(is_null($student) == false && $student->count()>0) {
+                $object = new stdClass();
+                $object->_id = $student[0]->id;
+                $object->lrn = $student[0]->lrn;
+                $object->profileImageBase64 = $student[0]->id;
+                $object->fullname = $student[0]->first_name . " " . $student[0]->last_name;
+                $object->idnumber = $student[0]->qr_code;
+                $object->logger_type = "studnet";
+                $object->logger_section = "";
+                $object->timelogs =  "TIME " . $val->mode . ": " . $val->time;
+                $object->date = $val->date;
+                $object->section = $section;
+                $object->mode = $val->mode;
+                array_push($attendance,$object);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $attendance
+        ], 200);
+
+    }
     public function getTimelogs(Request $request) {
         $logs = (object)array();
 
