@@ -28,16 +28,10 @@ export default class Advisory extends Component {
                     Header: 'Section',  
                     accessor: 'section', 
                     width: 200,
-                }, 
-                {
-                    id: "grade",
-                    Header: 'Grade', 
-                    width: 200,
-                    accessor: 'fullname'
-                }, 
+                },
                 {
                     id: "year_level",
-                    Header: 'Year Level',  
+                    Header: 'Grade Level',  
                     width: 200,
                     accessor: 'year_level'
                 },  

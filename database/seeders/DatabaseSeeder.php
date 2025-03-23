@@ -75,11 +75,11 @@ class DatabaseSeeder extends Seeder
         ]);
         Subjects::factory()->create([
             'subject_name' => 'Araling Panlipunan',
-            'decription' => '',
+            'decription' => 'Araling Panlipunan (social sciences)',
         ]);
         Subjects::factory()->create([
             'subject_name' => 'Edukasyon sa Pagpapakatao (EsP)',
-            'decription' => '',
+            'decription' => 'Edukasyon sa Pagpapakatao, EsP (personnel training)',
         ]);
         Subjects::factory()->create([
             'subject_name' => 'Physical Education ',
@@ -107,7 +107,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Subjects::factory()->create([
             'subject_name' => 'Edukasyong Pantahanan at Pangkabuhayan (EPP)',
-            'decription' => '',
+            'decription' => 'Edukasyong Pantahanan at Pangkabuhayan (health, home and life education)',
         ]);
 
         UserAccounts::factory()->state([

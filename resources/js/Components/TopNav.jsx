@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLinkCustom';
 
 export default function TopNav({
     active = false,
@@ -7,7 +8,7 @@ export default function TopNav({
     user,
     ...props
 }) {
-    return (<nav className="app-header navbar navbar-expand bg-info shadow"> 
+    return (<nav className="app-header navbar navbar-expand bg-info "> 
         <div className="container-fluid"> 
           <ul className="navbar-nav">
             <li className="nav-item">
@@ -22,7 +23,7 @@ export default function TopNav({
             <li className="nav-item dropdown user-menu">
               <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img
-                  src="/adminlte/dist/assets/img/user2-160x160.jpg"
+                  src="/adminlte/dist/assets/img/avatar.png"
                   className="user-image rounded-circle shadow auto-margin-lr"
                   alt="User Image"
                 />
@@ -31,7 +32,7 @@ export default function TopNav({
               <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end"> 
                 <li className="user-header text-bg-primary">
                   <img
-                    src="/adminlte/dist/assets/img/user2-160x160.jpg"
+                    src="/adminlte/dist/assets/img/avatar.png"
                     className="rounded-circle shadow auto-margin-lr"
                     alt="User Image"
                   />
@@ -42,7 +43,13 @@ export default function TopNav({
                 </li>  
                 <li className="user-footer">
                   {(typeof(user.user)!="undefined"&&user.user!=null&&typeof(user.user.user_type)!="undefined"&&user.user.user_type!="Admin")?<Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>:null}
-                  <Link href="/logout" className="btn btn-danger btn-flat float-end">Log out</Link>
+                  {/* <Link href="/logout" className="btn btn-danger btn-flat float-end">Log out</Link> */}
+                  <ResponsiveNavLink
+                    method="post"
+                    href={route('logout')}
+                    as="button"
+                    className="btn btn-danger btn-flat float-end"
+                  >Log Out</ResponsiveNavLink>
                 </li> 
               </ul>
             </li> 
