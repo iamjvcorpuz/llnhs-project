@@ -9,7 +9,9 @@ use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\UserAccountsController;
 use App\Models\SchoolYearGrades;
+use App\Models\UserAccounts;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -106,7 +108,10 @@ Route::get('/admin/dashboard/advisory/new', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/users', function () {
-    return Inertia::render('Admin/Users',['props' => null,]);
+    return Inertia::render('Admin/Users',[
+        'user_list' => UserAccountsController::getAll(),
+        'data' => UserAccountsController::getAllUsers()
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Route::middleware('auth')->group(function () {

@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput';
 import LoginLayout from '@/Layouts/LoginLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword, version }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',
         password: '',
@@ -80,6 +80,7 @@ export default function Login({ status, canResetPassword }) {
                     </label>
                 </div>
 
+
                 <div className="mt-4 flex items-center justify-end">
                     {/* {canResetPassword && (
                         <Link
@@ -89,12 +90,15 @@ export default function Login({ status, canResetPassword }) {
                             Forgot your password?
                         </Link>
                     )} */}
-
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Log in
                     </PrimaryButton>
                 </div>
+                <div className=" flex  justify-center">
+                    <i className='center'>{version}</i>
+                </div>
             </form>
+
         </LoginLayout>
     );
 }

@@ -43,8 +43,9 @@ export default class Teacher extends Component {
                 {
                     id: "section",
                     Header: 'No. Section',  
-                    width: 200,
-                    accessor: 'section'
+                    width: 100,
+                    accessor: 'section',
+                    className: "center"
                 },  
                 {
                     id: "Status",
@@ -109,7 +110,7 @@ export default class Teacher extends Component {
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
                             level: "None",
-                            section: "None",
+                            section: element.total_advisory,
                             sex: element.sex,
                             status: element.status
                         })
