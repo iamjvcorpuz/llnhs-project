@@ -21,7 +21,7 @@ export default function SideNav({
           <nav className="mt-2">
             <ul className="nav nav-sidebar sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="true" >
               <li className="nav-item menu-open">
-                <Link href="/admin/dashboard" className="nav-link active">
+                <Link href="/teacher/dashboard" className="nav-link active">
                   <i className="nav-icon bi bi-speedometer"></i>
                   <p>
                     Dashboard 
@@ -29,37 +29,19 @@ export default function SideNav({
                 </Link> 
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/student" className="nav-link">
+                <Link href="/teacher/dashboard/student" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
                   <p>Student</p>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/teacher" className="nav-link">
-                  <i className="nav-icon bi bi-person-lines-fill"></i>
-                  <p>Teacher</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/parents" className="nav-link">
-                  <i className="nav-icon bi bi-person-lines-fill"></i>
-                  <p>Parents</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
+                <Link href="/teacher/dashboard/advisory" className="nav-link">
                   <i className="nav-icon bi bi-book-half"></i>
-                  <p>Teacher's Advisory</p>
+                  <p>Advisory</p>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/users" className="nav-link">
-                  <i className="nav-icon bi bi-person-gear"></i>
-                  <p>Users</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/settings" className="nav-link">
+                <Link href="/teacher/dashboard/settings" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>
                   <p>Settings</p>
                 </Link>

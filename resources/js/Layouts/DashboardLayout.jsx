@@ -4,6 +4,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import TopNav from '@/Components/TopNav';
 import SideNav from '@/Components/SideNav';
+import SideNavTeacher from '@/Components/SideNavTeacher';
 import Footer from '@/Components/Footer';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
@@ -17,7 +18,8 @@ export default class DashboardLayout extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            
+            user: this.props.user,
+            viewer_mode: "desktop"
         }
         // console.log(this.props);
         // console.log(window.adminlte);
@@ -51,8 +53,8 @@ export default class DashboardLayout extends Component {
                     });
                 });
             }
-
-            if($('[data-lte-toggle="sidebar"]').length > 0) {
+            
+            if( $('[data-lte-toggle="sidebar"]').length > 0) {
 
                 const DATA_KEY$4 = 'lte.push-menu';
                 const EVENT_KEY$4 = `.${DATA_KEY$4}`;
@@ -119,12 +121,15 @@ export default class DashboardLayout extends Component {
         }); 
     }
     render() {
-    return (<div className="app-wrapper">
-         <Head title={this.props.title} />
+    return ((this.state.viewer_mode=="desktop")?<div className="app-wrapper">
+        <Head title={this.props.title} />
         <TopNav user={this.props} />
-        <SideNav />
+        {(this.state.user.user_type=="Admin")?<SideNav user={this.props} />:null}
+        {(this.state.user.user_type=="Teacher")?<SideNavTeacher user={this.props} />:null}        
         <main className="app-main">{this.props.children}</main>
         <Footer />
+    </div>:<div className="app-wrapper">
+
     </div>);
     }
 }
