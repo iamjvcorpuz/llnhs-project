@@ -6,7 +6,8 @@ use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\TeacherController; 
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\UserAccountsController;
 use Illuminate\Support\Facades\Route;
  
 Route::get('/student',[StudentController::class,'index']);
@@ -28,6 +29,11 @@ Route::post('/parents',[ParentsController::class,'store']);
 Route::get('/advisory',[AdvisoryController::class,'getRequiredAllData']);
 Route::post('/advisory',[AdvisoryController::class,'store']);
 Route::delete('/advisory',[AdvisoryController::class,'remove']);
+
+Route::post('/user/update/auth',[UserAccountsController::class,'update']);
+Route::post('/user/accounts/auth',[UserAccountsController::class,'store']);
+Route::get('/user/accounts',[UserAccountsController::class,'index']);
+Route::delete('/user/accounts',[UserAccountsController::class,'remove']);
 
 Route::post('/attendance/account/find',[AttendanceController::class,'findAccount']);
 Route::post('/attendance/time/today/all/timelogs',[AttendanceController::class,'getTodaysTimelogs']);

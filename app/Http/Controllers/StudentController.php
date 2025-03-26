@@ -39,7 +39,7 @@ class StudentController extends Controller
     }
     public static function getStudentGuardian($id)
     {
-        $student = DB::select('SELECT id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
         // $student = Student::findOrFail($id);
         return $student;
     }
