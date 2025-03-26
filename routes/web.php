@@ -99,6 +99,7 @@ Route::get('/admin/dashboard/advisory', function () {
         "schoolyeargrades" => SchoolYearGradesController::getAll()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/admin/dashboard/advisory/new', function () {
     return Inertia::render('Admin/Advisory/NewAdvisory',[
         "teacher" => TeacherController::getAll(),
@@ -111,6 +112,25 @@ Route::get('/admin/dashboard/users', function () {
     return Inertia::render('Admin/Users',[
         'user_list' => UserAccountsController::getAll(),
         'data' => UserAccountsController::getAllUsers()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/settings', function () {
+    return Inertia::render('Admin/Users',[
+        'user_list' => UserAccountsController::getAll(),
+        'data' => UserAccountsController::getAllUsers()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/teacher/dashboard', function () {
+    return Inertia::render('Teacher/Dashboard',[
+        "teacher" => [],
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
