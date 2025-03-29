@@ -8,6 +8,10 @@ export default function TopNav({
     user,
     ...props
 }) {
+    let profile_link = "";
+    // if(user.user.user_type=="user_type") {
+
+    // }
     return (<nav className="app-header navbar navbar-expand bg-info "> 
         <div className="container-fluid"> 
           <ul className="navbar-nav">

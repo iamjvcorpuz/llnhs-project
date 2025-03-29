@@ -7,8 +7,8 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        {{-- <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" /> --}}
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/ic_launcher.png') }}">
 
         <meta charset="utf-8"> 
@@ -22,8 +22,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="{{ config('app.name', 'llnhs') }}">
-        <meta name="application-name" content="{{ config('app.name', 'llnhs') }}"> 
-        
+        <meta name="application-name" content="{{ config('app.name', 'llnhs') }}">         
 
         <link rel="stylesheet" media="screen, print" href="{{ asset('adminlte/src/assets/font/bootstrap-icons.min.css') }}">
         <link rel="stylesheet" href="{{ url('adminlte/dist/css/adminlte.min.css') }}" />
@@ -34,7 +33,7 @@
         @inertiaHead
     </head>
     <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary">
-        
+      
       @inertia
       {{-- <div id="main-apps"></div> 
       @viteReactRefresh

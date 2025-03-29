@@ -26,8 +26,7 @@ WORKDIR /var/www
 # Copy application files
 COPY . .
 
-# Install Composer dependencies
-# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install Composer dependencies 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
     && php -r "unlink('composer-setup.php');"
