@@ -48,7 +48,10 @@ class AttendanceController extends Controller
         }
     }
     public function getTodaysTimelogs(Request $request) {
-
+        $token = $request->session()->token();
+ 
+        $token = csrf_token();
+        
         $logs = DB::select('SELECT * FROM attendance WHERE  date = ? ',[$request->date]);
         $attendance = array();
         foreach($logs as $key => $val) { 

@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->validateCsrfTokens(except: [
             'stripe/*',
-            'http://localhost:8000',
+            '*'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
