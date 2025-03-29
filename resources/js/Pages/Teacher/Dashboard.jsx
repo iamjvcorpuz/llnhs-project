@@ -20,6 +20,15 @@ export default class Dashboard extends Component {
             sections: this.props.sections
         }
         console.log(this.props)
+        if(this.props.auth.user.user_type!="Teacher") {
+            if(this.props.auth.user.user_type == "Admin") {
+                window.location.href = "/admin/dashboard";
+            } else if(this.props.auth.user.user_type == "Student") {
+                window.location.href = "/student/dashboard";
+            } else if(this.props.auth.user.user_type == "Guardian") {
+                window.location.href = "/parents/dashboard";
+            }
+        }
     }
 
     componentDidMount() {

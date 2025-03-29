@@ -5,6 +5,8 @@ import NavLink from '@/Components/NavLink';
 import TopNav from '@/Components/TopNav';
 import SideNav from '@/Components/SideNav';
 import SideNavTeacher from '@/Components/SideNavTeacher';
+import SideNavStudent from '@/Components/SideNavStudent';
+import SideNavParents from '@/Components/SideNavParents';
 import Footer from '@/Components/Footer';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
@@ -121,16 +123,18 @@ export default class DashboardLayout extends Component {
         }); 
     }
     render() {
-    return ((this.state.viewer_mode=="desktop")?<div className="app-wrapper">
-        <Head title={this.props.title} />
-        <TopNav user={this.props} />
-        {(this.state.user.user_type=="Admin")?<SideNav user={this.props} />:null}
-        {(this.state.user.user_type=="Teacher")?<SideNavTeacher user={this.props} />:null}        
-        <main className="app-main">{this.props.children}</main>
-        <Footer />
-    </div>:<div className="app-wrapper">
+        return ((this.state.viewer_mode=="desktop")?<div className="app-wrapper">
+            <Head title={this.props.title} />
+            <TopNav user={this.props} />
+            {(this.state.user.user_type=="Admin")?<SideNav user={this.props} />:null}
+            {(this.state.user.user_type=="Teacher")?<SideNavTeacher user={this.props} />:null} 
+            {(this.state.user.user_type=="Student")?<SideNavStudent user={this.props} />:null}  
+            {(this.state.user.user_type=="Guardian")?<SideNavParents user={this.props} />:null}        
+            <main className="app-main">{this.props.children}</main>
+            <Footer />
+        </div>:<div className="app-wrapper">
 
-    </div>);
+        </div>);
     }
 }
 

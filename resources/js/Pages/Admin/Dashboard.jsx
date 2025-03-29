@@ -75,6 +75,15 @@ export default class Dashboard extends Component {
             sales_chart_options,
           );
           sales_chart.render();
+          if(this.props.auth.user.user_type!="Admin") {
+            if(this.props.auth.user.user_type == "Teacher") {
+                window.location.href = "/teacher/dashboard";
+            } else if(this.props.auth.user.user_type == "Student") {
+                window.location.href = "/student/dashboard";
+            } else if(this.props.auth.user.user_type == "Guardian") {
+                window.location.href = "/parents/dashboard";
+            }
+        }
     }
 
     render() {

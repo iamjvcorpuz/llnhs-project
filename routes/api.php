@@ -9,7 +9,9 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use Illuminate\Support\Facades\Route;
- 
+
+Route::get('/desktop',[StudentController::class,'index']);
+
 Route::get('/student',[StudentController::class,'index']);
 Route::post('/student',[StudentController::class,'store']); 
 Route::post('/student/update',[StudentController::class,'update']);
