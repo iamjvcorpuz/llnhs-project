@@ -84,6 +84,7 @@ return new class extends Migration
             $table->string('bdate')->nullable();
             $table->longText('picture_base64')->nullable();
             $table->string('email')->nullable();
+            $table->string('current_address')->nullable();
             $table->string('status'); 
             $table->timestampsTz(precision: 0);
         });
@@ -92,6 +93,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('parents_id');
             $table->foreignId('student_id');
+            $table->string('relationship')->nullable(); 
             $table->string('added_by')->nullable(); 
             $table->timestampsTz(precision: 0);
         });

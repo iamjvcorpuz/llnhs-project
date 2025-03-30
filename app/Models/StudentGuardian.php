@@ -14,6 +14,7 @@ class StudentGuardian extends Model
     protected $fillable = [
         'parents_id', 
         'student_id',
+        'relationship',
         'added_by'
     ];
 }

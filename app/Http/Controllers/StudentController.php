@@ -37,9 +37,21 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         return $student;
     }
+    public static function getDataID($id)
+    {
+        $student = Student::findOrFail($id);
+        $guardian = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address,(SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
+        return  [
+            'student' => $student,
+            'guardian' => $guardian,
+            'sy' => "",
+            'grade' => "",
+            'section' => "",
+        ];
+    }
     public static function getStudentGuardian($id)
     {
-        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
         // $student = Student::findOrFail($id);
         return $student;
     }
@@ -51,7 +63,9 @@ class StudentController extends Controller
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
             'bdate' => 'required|string',
-            'sex' => 'required|string'
+            'sex' => 'required|string',
+            'parents' => 'required',
+            'relationship' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -74,15 +88,17 @@ class StudentController extends Controller
         if($Student->count()==0) {
             if($StudentLRN->count()==0) {
 
-                $customer = Student::create($request->except('parents')); 
+                $customer = Student::create($request->except(['parents','relationship'])); 
 
 
                 $parents = $request->input('parents');
+                $relationship = $request->input('relationship');
 
                 if($parents != NULL) {
                     StudentGuardian::create([
                         'student_id' => $customer->id,
-                        'parents_id' => $parents
+                        'parents_id' => $parents,
+                        'relationship' => $relationship
                     ]);
                 }
                 
@@ -138,7 +154,9 @@ class StudentController extends Controller
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
             'bdate' => 'required|string',
-            'sex' => 'required|string'
+            'sex' => 'required|string',
+            'parents' => 'required',
+            'relationship' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -162,7 +180,7 @@ class StudentController extends Controller
             if($StudentLRN->count()==1) {
 
                 // $customer = Student::update($request->except('parents')); 
-                $updateStudent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id']));
+                $updateStudent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id','relationship']));
 
                 // $updateStudentParent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id']));
                 // $StudentParent->count() == 0 && 
@@ -172,13 +190,15 @@ class StudentController extends Controller
                     
                     StudentGuardian::create([
                         'student_id' => $request->id,
-                        'parents_id' => $request->parents
+                        'parents_id' => $request->parents,
+                        'relationship' => $request->relationship
                     ]);
 
-                } else {
+                } else if($request->parents != "") {
                     StudentGuardian::create([
                         'student_id' => $request->id,
-                        'parents_id' => $request->parents
+                        'parents_id' => $request->parents,
+                        'relationship' => $request->relationship
                     ]);
                 }
                 // $parents = $request->input('parents');

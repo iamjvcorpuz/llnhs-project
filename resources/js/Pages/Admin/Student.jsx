@@ -91,7 +91,7 @@ export default class Student extends Component {
                        return <>                       
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>    
                         <Link href={`/admin/dashboard/student/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
-                        <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</button>    
+                        <a target="_blank" href={`/student/id/print/${row.original.id}`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
                        </>            
                     }
                 }

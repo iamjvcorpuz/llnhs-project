@@ -123,6 +123,7 @@ export default class EditStudent extends Component {
         this._isMounted = true;
         console.log(this);
         let so = []
+        let selected_quardians = "";
         this.props.parents.forEach(element => {
             so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
         });
@@ -130,7 +131,9 @@ export default class EditStudent extends Component {
             selectOptions: so,
             photobase64final: (this.props.student.picture_base64!=null)?this.props.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
             ...this.props.student,
-            added_guardians:this.props.guardians
+            added_guardians:this.props.guardians,
+            selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
+            relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:""
         })
     }
 
@@ -266,7 +269,8 @@ export default class EditStudent extends Component {
                         flsh_track: self.state.flsh_track,
                         flsh_strand: self.state.flsh_strand,            
                         ldm_applied: self.state.ldm_applied,
-                        parents: self.state.selected_quardians// self.state.added_guardians
+                        parents: self.state.selected_quardians,
+                        relationship: self.state.relationship
                     };
                     console.log(datas);
                     axios.post('/student/update',datas).then(function (response) {
@@ -288,7 +292,7 @@ export default class EditStudent extends Component {
                                     }).then(function (result2) {
                                         if(result2.isConfirmed) { 
                                             Swal.close();
-                                            // document.getElementById("cancel").click();
+                                            document.getElementById("cancel").click();
                                         }
                                     });
 
@@ -324,7 +328,7 @@ export default class EditStudent extends Component {
                                         closeOnClickOutside: false,  
                                         dangerMode: true,
                                     });
-                                    console.log(typeof(data.data)!="undefined",data.data.length>0)
+                                    // console.log(typeof(data.data)!="undefined",data.data.length>0)
                                     if(typeof(data.data)!="undefined"&&data.data.length>0) {
                                         data.data.forEach((val,i,arr) => {
                                             console.log(val)
@@ -485,7 +489,7 @@ export default class EditStudent extends Component {
                                         </div> 
                                         <div className="col-md-2">
                                             <label htmlFor="extension_name" className="form-label">Extension name</label>
-                                            <select className="form-select" id="extension_name" required="" value={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
+                                            <select className="form-select" id="extension_name" required="" defaultValue={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <option>Jr.</option>
@@ -993,9 +997,14 @@ export default class EditStudent extends Component {
                                                     }} >Remove</button>
                                                 </div>
                                             }} />
+                                            <div className="col-lg-5">
+                                                <label htmlFor="relationship" className="form-label">Relationship</label>
+                                                <input type="text" className="form-control" id="relationship" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
+                                                <div id="relationship-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
                                         </div>
                                         <div className="row" >
-                                            <div className={`${(this.state.added_guardians.length>0)?'form-inline col-lg-6 pt-2':'form-inline col-lg-6'}`}>
+                                            <div className={`${(this.state.added_guardians=="")?'form-inline col-lg-6 pt-2':'hidden'}`}>
                                                 <div className="input-group">
                                                     <div className="input-group-prepend">
                                                         <div htmlFor="lglv" className="input-group-text">Parent / Guardian : </div>
