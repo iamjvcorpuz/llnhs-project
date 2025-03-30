@@ -31,6 +31,7 @@ export default class NewTeacher extends Component {
             bdate: "",
             status: "",
             email: "",
+            address: "",
             contact_list: [],
             filedata: null,
             filedataName: "",
@@ -150,6 +151,7 @@ export default class NewTeacher extends Component {
                         picture_base64:self.state.photobase64final,
                         email:self.state.email,
                         sex:self.state.sex,
+                        current_address: self.state.address,
                         contact_list: self.state.contact_list
                     };
                     console.log(datas);
@@ -393,8 +395,13 @@ export default class NewTeacher extends Component {
                                         </div> 
                                         <div className="col-md-4">
                                             <label htmlFor="bdate" className="form-label">Email</label>
-                                            <input type="email" className="form-control" id="bdate" defaultValue="" required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
+                                            <input type="email" className="form-control" id="email" defaultValue="" required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
                                             <div id="email-alert" className="valid-feedback">Looks good!</div>
+                                        </div> 
+                                        <div className="col-md-12">
+                                            <label htmlFor="bdate" className="form-label">Current Address</label>
+                                            <input type="text" className="form-control" id="address" defaultValue="" required="" onChange={(e) => {  $("#address-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({address: e.target.value})}}  />
+                                            <div id="address-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                     </div> 
                                     <div className="col-lg-12">

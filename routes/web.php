@@ -193,6 +193,12 @@ Route::get('/parents/dashboard/attendance', function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
+Route::get('/student/id/print/{id}', function (String $id) {
+    return Inertia::render('PrintID',[
+        "data" => StudentController::getDataID($id)
+    ]);
+});
+
 Route::get('/loading', function () {
     return Inertia::render('Loading');
 });

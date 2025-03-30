@@ -21,5 +21,6 @@ class Parents extends Model
         'status',
         'picture_base64',
         'email',
+        'current_address'
     ];
 }

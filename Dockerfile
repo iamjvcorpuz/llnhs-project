@@ -1,60 +1,73 @@
-# Use an official PHP runtime with FPM
-# FROM php:8.2-fpm
-FROM gabrieltva/php-fpm-node
+FROM php:8.2-apache
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    nginx
+RUN apt-get -y update --fix-missing && \
+    apt-get install -y libzip-dev && \
+    apt-get install -y libonig-dev && \
+    apt-get install -y libpng-dev && \
+    docker-php-ext-install zip && \
+    apt-get install -y nano vim git && \
+    apt-get install cron -y
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath
 
-# Install Node.js and npm for Vite
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs
+RUN docker-php-ext-install mysqli pdo pdo_mysql bcmath mbstring exif pcntl gd && docker-php-ext-enable mysqli pdo pdo_mysql
 
-# Set working directory
-WORKDIR /var/www
+#rootdir
+WORKDIR /var/www/html
 
-# Copy application files
-COPY . .
-
-# Install Composer dependencies 
+#copy all files to root dir
+COPY . /var/www/html
+# install composer in current directory
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
     && php -r "unlink('composer-setup.php');"
-RUN php composer.phar update
-RUN composer install --ignore-platform-reqs --optimize-autoloader --no-dev
-# RUN composer install --ignore-platform-reqs
 
-# Install npm dependencies and build frontend
-RUN npm install
-RUN npm run build
+# RUN php composer.phar update
 
-# Configure Laravel environment
+#allow root/user to run plugins
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# run composer, optimizing Composer's class autoloader map, exclude dev dependencies in prod
+RUN php composer.phar install --optimize-autoloader --ignore-platform-reqs  --no-dev
+
+RUN php composer.phar dump-autoload
+
 COPY .env-staging .env
-# RUN php artisan key:generate --ansi
+
+# RUN php composer.phar require vinkla/hashids
+
+# RUN php composer.phar require doctrine/dbal
+
+# RUN php artisan key:generate
+
+#optimize config loading
 RUN php artisan config:cache
+
+#optimize route loading
 # RUN php artisan route:cache
-RUN php artisan view:cache
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www
-RUN chmod -R 755 /var/www/storage
+# RUN chown -R $USER:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
-# Copy Nginx configuration
-COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+#setup for vhost
+COPY ./docker/default.conf /etc/apache2/sites-enabled/000-default.conf
 
-# Expose port 8080 (Cloud Run requirement)
+ENV APACHE_PORT=${PORT:-8080}
+RUN sed -i "s/Listen 80/Listen ${APACHE_PORT}/g" /etc/apache2/ports.conf
+
 EXPOSE 8080
 
-# Start Nginx and PHP-FPM
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
-# CMD ["sh", "-c", "apt-get update && apt-get install -y mysql-client && mysql --host=/cloudsql/llnhs-staging:us-central1:llnhs-db-staging --user=4dmIn --password=4dmIn -e 'SHOW DATABASES;'"]
+# enable apache modules
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+RUN a2enmod rewrite headers
+
+
+# COPY ./www/lnhs-attendance-system/start.sh /usr/local/bin/start
+
+#grant permission to exec start.sh
+# RUN chmod u+x /usr/local/bin/start 
+
+#execute
+# CMD ["/usr/local/bin/start"]
+CMD ["apache2-foreground"]
+# CMD ["php","/var/www/html/public/index.php"]

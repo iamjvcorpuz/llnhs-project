@@ -49,7 +49,8 @@ class ParentsController extends Controller
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
             'bdate' => 'required|string',
-            'sex' => 'required|string'
+            'sex' => 'required|string',
+            'current_address'=> 'required'
         ]);
 
         $contact_list = $request->contact_list;
