@@ -55,6 +55,7 @@ export default class EditParents extends Component {
             lrn: this.props.parents.qr_code,
             contact_list: this.props.contacts,
             parents_id: this.props.parents.id,
+            address: this.props.parents.current_address
         })
         // this.webCam.current.getScreenshot({width: 600, height: 300});
         // $("#fileuploadpanel").modal('show');
@@ -196,11 +197,10 @@ export default class EditParents extends Component {
 
                                     Swal.fire({  
                                         title: "Successfuly save!", 
-                                        showCancelButton: true,
+                                        showCancelButton: false,
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Continue", 
                                         icon: "success",
                                         showLoaderOnConfirm: true, 
                                         closeOnClickOutside: false,  
@@ -250,8 +250,8 @@ export default class EditParents extends Component {
                             }
                       }).catch(function (error) {
                         // handle error
-                        // console.log(error);
-                        if(!error) {
+                        console.log(error);
+                        if(error) {
                             if(error.status == "422") {
                                 Swal.fire({  
                                     title: "Required Field Error", 
@@ -266,22 +266,52 @@ export default class EditParents extends Component {
                                     dangerMode: true,
                                 });
                             }
+                            if(typeof(error.response.data.errors.current_address)!="undefined") {
+                                $("#address-alert").removeAttr('class');
+                                $("#address-alert").html('Required Field');
+                                $("#address-alert").addClass('d-block invalid-feedback');
+                            }
+
+                            if(typeof(error.response.data.errors.first_name)!="undefined") {
+                                $("#first-name-alert").removeAttr('class');
+                                $("#first-name-alert").html('Required Field');
+                                $("#first-name-alert").addClass('d-block invalid-feedback');
+                            }
+
+                            if(typeof(error.response.data.errors.middle_name)!="undefined") {
+                                $("#middle-name-alert").removeAttr('class');
+                                $("#middle-name-alert").html('Required Field');
+                                $("#middle-name-alert").addClass('d-block invalid-feedback');
+                            }
+
+                            if(typeof(error.response.data.errors.last_name)!="undefined") {
+                                $("#last-name-alert").removeAttr('class');
+                                $("#last-name-alert").html('Required Field');
+                                $("#last-name-alert").addClass('d-block invalid-feedback');
+                            }
+
+                            if(typeof(error.response.data.errors.bdate)!="undefined") {
+                                $("#bdate-alert").removeAttr('class');
+                                $("#bdate-alert").html('Required Field');
+                                $("#bdate-alert").addClass('d-block invalid-feedback');
+                            }
+
                         } else {
 
-                        Swal.fire({  
-                            title: "Server Error", 
-                            showCancelButton: true,
-                            showConfirmButton: false,
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            cancelButtonText: "Ok",
-                            confirmButtonText: "Continue",
-                            confirmButtonColor: "#DD6B55",
-                            icon: "error",
-                            showLoaderOnConfirm: true, 
-                            closeOnClickOutside: false,  
-                            dangerMode: true,
-                        });
+                            Swal.fire({  
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
                         }
                       })
                 } else if(result.isDismissed) {
@@ -370,24 +400,24 @@ export default class EditParents extends Component {
                                         <div className="col-md-8 d-flex flex-column justify-content-end">
                                             <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
                                             <label htmlFor="lrn" className="form-label ">Identification Number</label>
-                                            <input type="text" className="form-control" id="lrn" defaultValue={this.state.lrn} required="" onChange={(e) => {
+                                            <input type="text" className="form-control" id="lrn" value={this.state.lrn} required="" onChange={(e) => {
                                                 $("#lrn-alert").removeAttr('class').addClass('invalid-feedback'); 
                                                 this.setState({lrn: e.target.value})}} />
                                             <span id="lrn-alert" className="valid-feedback">Looks good!</span>
                                         </div>
                                         <div className="col-md-3">
                                             <label htmlFor="first_name" className="form-label">First name</label>
-                                            <input type="text" className="form-control" id="first_name" defaultValue={this.state.first_name} required="" onChange={(e) => { $("#first-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({first_name: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="first_name" value={this.state.first_name} required="" onChange={(e) => { $("#first-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({first_name: e.target.value})}}  />
                                             <div id="first-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-3">
                                             <label htmlFor="middle_name" className="form-label">Middle name</label>
-                                            <input type="text" className="form-control" id="middle_name" defaultValue={this.state.middle_name} required="" onChange={(e) => {  $("#middle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({middle_name: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="middle_name" value={this.state.middle_name} required="" onChange={(e) => {  $("#middle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({middle_name: e.target.value})}}  />
                                             <div id="middle-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-3">
                                             <label htmlFor="last_name" className="form-label">Last name</label>
-                                            <input type="text" className="form-control" id="last_name" defaultValue={this.state.last_name} required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({last_name: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="last_name" value={this.state.last_name} required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({last_name: e.target.value})}}  />
                                             <div id="last-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-3">
@@ -416,7 +446,7 @@ export default class EditParents extends Component {
                                         </div>
                                         <div className="col-md-3">
                                             <label htmlFor="bdate" className="form-label">Birth Date</label>
-                                            <input type="date" className="form-control" id="bdate" defaultValue={this.state.bdate} required="" max={this.state.bdate_max} onChange={(e) => {  $("#bdate-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({bdate: e.target.value})}}  />
+                                            <input type="date" className="form-control" id="bdate" defaultValue={this.state.bdate} required=""  max={this.state.bdate_max} onChange={(e) => {  $("#bdate-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({bdate: e.target.value})}}  />
                                             <div id="bdate-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-4">
@@ -426,7 +456,7 @@ export default class EditParents extends Component {
                                         </div> 
                                         <div className="col-md-12">
                                             <label htmlFor="bdate" className="form-label">Current Address</label>
-                                            <input type="text" className="form-control" id="address" defaultValue={this.state.current_address} required="" onChange={(e) => {  $("#address-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({address: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="address" defaultValue={this.state.current_address}  required="" onChange={(e) => {  $("#address-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({address: e.target.value})}}  />
                                             <div id="address-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                     </div> 
