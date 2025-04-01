@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgramsCurricularController;
 use App\Http\Controllers\SchoolSectionController;
 use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\StudentController;
@@ -45,7 +47,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/admin/dashboard', function () {
     return Inertia::render('Admin/Dashboard',[
-        "teacher" => TeacherController::getAll(),
+        "teacher" => EmployeeController::getAll(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
@@ -59,13 +61,19 @@ Route::get('/admin/dashboard/student', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/student/new', function () {
-    return Inertia::render('Admin/Student/NewStudent',['parents' => ParentsController::getAll()]);
+    return Inertia::render('Admin/Student/NewStudent',[
+        'parents' => ParentsController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/admin/dashboard/student/update/{id}', function (String $id) {
     return Inertia::render('Admin/Student/EditStudent',[
         'parents' => ParentsController::getAll(),
         'student' => StudentController::getData($id),
-        'guardians' => StudentController::getStudentGuardian($id)
+        'guardians' => StudentController::getStudentGuardian($id),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -82,12 +90,34 @@ Route::get('/admin/dashboard/teacher/update/{id}', function (String $id) {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// ----------------------------------------------------------------------------------
+Route::get('/admin/dashboard/employee', function () {
+    return Inertia::render('Admin/Employee',['props' => null,]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/admin/dashboard/employee/new', function () {
+    return Inertia::render('Admin/Employee/NewEmployee',['props' => null,]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/admin/dashboard/employee/update/{id}', function (String $id) {
+    return Inertia::render('Admin/Employee/EditEmployee',[
+        'employee' => EmployeeController::getData($id),
+        'contacts' => EmployeeController::getContacts($id)
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+// ----------------------------------------------------------------------------------
+
 Route::get('/admin/dashboard/parents', function () {
     return Inertia::render('Admin/Parents',['props' => null,]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/parents/new', function () {
-    return Inertia::render('Admin/Parents/NewParents',['props' => null,]);
+    return Inertia::render('Admin/Parents/NewParents',['id' => ParentsController::newId()]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/parents/update/{id}', function ($id) {
+    return Inertia::render('Admin/Parents/EditParents',[
+        'parents' => ParentsController::getData($id),
+        'contacts' => ParentsController::getContacts($id)
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/advisory', function () {
@@ -119,6 +149,19 @@ Route::get('/admin/dashboard/settings', function () {
     return Inertia::render('Admin/Users',[
         'user_list' => UserAccountsController::getAll(),
         'data' => UserAccountsController::getAllUsers()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/programs/curricular', function () {
+    return Inertia::render('Admin/ProgramsCurricular',[
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/school/subjects', function () {
+    return Inertia::render('Admin/Subject',[
+        'subjects' => SubjectController::getAll()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -166,8 +209,8 @@ Route::get('/profile/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-// ======================================== student ================================
+// ======================================== teacher ================================
+// ======================================== parents ================================
 Route::get('/parents/dashboard', function () {
     return Inertia::render('Parents/Dashboard',[
         "teacher" => [],
@@ -193,7 +236,7 @@ Route::get('/parents/dashboard/attendance', function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-Route::get('/student/id/print/{id}', function (String $id) {
+Route::get('/student/{id}/print/id', function (String $id) {
     return Inertia::render('PrintID',[
         "data" => StudentController::getDataID($id)
     ]);

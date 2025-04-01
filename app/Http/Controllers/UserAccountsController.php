@@ -32,7 +32,7 @@ class UserAccountsController extends Controller
     {
         return  [
             'student' => DB::select('SELECT * FROM student'),
-            'teacher' => DB::select('SELECT * FROM teacher'),
+            'teacher' => DB::select('SELECT * FROM employee WHERE employee_type = "Teacher"'),
             'guardians' => DB::select('SELECT * FROM parents')
         ];
     }

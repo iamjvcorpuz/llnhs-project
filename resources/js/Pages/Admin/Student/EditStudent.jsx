@@ -112,7 +112,9 @@ export default class EditStudent extends Component {
             selectOptions: [],
             selected_quardians: "",
             added_guardians: [],
-            bdate_max: moment(new Date()).subtract('years',3).format('YYYY-MM-DD')
+            bdate_max: moment(new Date()).subtract('years',3).format('YYYY-MM-DD'),
+            track: this.props.track,
+            strand: this.props.strand
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
@@ -876,7 +878,7 @@ export default class EditStudent extends Component {
 
                                                 <div id="flsh_semester-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
-                                            <div className="col-md-6">
+                                            {/* <div className="col-md-6">
                                                 <label htmlFor="flsh_track" className="form-label">Track</label>
                                                 <input type="text" className="form-control" id="flsh_track" defaultValue={this.state.flsh_track} required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  />
                                                 <div id="flsh_track-alert" className="valid-feedback">Looks good!</div>
@@ -884,6 +886,29 @@ export default class EditStudent extends Component {
                                             <div className="col-md-6">
                                                 <label htmlFor="flsh_strand" className="form-label">Strand</label>
                                                 <input type="text" className="form-control" id="flsh_strand" defaultValue={this.state.flsh_strand} required="" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}  />
+                                                <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
+                                            </div> */}
+
+                                            <div className="col-md-6">
+                                                <label htmlFor="flsh_track" className="form-label">Track</label>
+                                                {/* <input type="text" className="form-control" id="flsh_track" defaultValue="" required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  /> */}
+                                                <select name="flsh_track" id="flsh_track" className="form-control" value={this.state.flsh_track} onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
+                                                    <option value=""></option>
+                                                        <EachMethod of={this.state.track} render={(element,index) => {
+                                                            return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                                        }} />
+                                                </select>
+                                                <div id="flsh_track-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-6">
+                                                <label htmlFor="flsh_strand" className="form-label">Strand</label>
+                                                {/* <input type="text" className="form-control" id="flsh_strand" defaultValue="" required="" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}  /> */}
+                                                <select name="flsh_strand" id="flsh_strand" className="form-control" value={this.state.flsh_strand} onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
+                                                    <option value=""></option>
+                                                        <EachMethod of={this.state.strand} render={(element,index) => {
+                                                            return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                                        }} />
+                                                </select>
                                                 <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
                                             </div>
                                         </div>

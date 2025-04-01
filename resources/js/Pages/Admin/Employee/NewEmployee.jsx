@@ -13,7 +13,7 @@ import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
 
 
-export default class NewTeacher extends Component {
+export default class NewEmployee extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -31,14 +31,17 @@ export default class NewTeacher extends Component {
             bdate: "",
             status: "",
             email: "",
-            address: "",
             contact_list: [],
             filedata: null,
             filedataName: "",
             filetype: "",
             filetype_: "",
             cameraOn: false,
-            bdate_max: moment(new Date()).subtract('years',15).format('YYYY-MM-DD')
+            bdate_max: moment(new Date()).subtract('years',15).format('YYYY-MM-DD'),
+            trainings: [],
+            educations: [],
+            track: this.props.track,
+            strand: this.props.strand
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
@@ -114,6 +117,10 @@ export default class NewTeacher extends Component {
                 $("#invalidCheck-alert").removeAttr('class'); 
                 $("#invalidCheck-alert").addClass('d-block invalid-feedback');
                 alert('Please check aggree to all fields are correct');
+                swal({
+                    title: "Please check agree if all fields are correct",
+                    icon: 'info'
+                })
                 return;
             }
             Swal.fire({
@@ -151,11 +158,10 @@ export default class NewTeacher extends Component {
                         picture_base64:self.state.photobase64final,
                         email:self.state.email,
                         sex:self.state.sex,
-                        current_address: self.state.address,
                         contact_list: self.state.contact_list
                     };
                     console.log(datas);
-                    axios.post('/parents',datas).then( async function (response) {
+                    axios.post('/employee',datas).then( async function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
@@ -188,17 +194,19 @@ export default class NewTeacher extends Component {
 
                                     Swal.fire({  
                                         title: "Successfuly save!", 
-                                        showCancelButton: true,
+                                        showCancelButton: false,
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Continue", 
                                         icon: "success",
                                         showLoaderOnConfirm: true, 
                                         closeOnClickOutside: false,  
                                         dangerMode: true,
                                     }).then(function (result2) {
                                         if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            document.getElementById("cancel").click();
+                                        } else {
                                             Swal.close();
                                             document.getElementById("cancel").click();
                                         }
@@ -237,8 +245,6 @@ export default class NewTeacher extends Component {
                                         dangerMode: true,
                                     });
                                 }
-                            } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
-
                             }
                       }).catch(function (error) {
                         // handle error
@@ -303,11 +309,11 @@ export default class NewTeacher extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Parents / Guardian</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Employee</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard/parents">Parents / Guardian</Link></li>
+                            <li className="breadcrumb-item"><Link href="/admin/dashboard/teacher">Employee</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">New Account</li>
                         </ol>
                     </div>
@@ -323,7 +329,7 @@ export default class NewTeacher extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title mt-2"> <i className="bi bi-person"></i> New Account</h3>
-                                    <Link href="/admin/dashboard/parents" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
                                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
                                 </div>
                                 <div className="card-body"> 
@@ -344,10 +350,9 @@ export default class NewTeacher extends Component {
                                         <div className="col-md-8 d-flex flex-column justify-content-end">
                                             <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
                                             <label htmlFor="lrn" className="form-label ">Identification Number</label>
-                                            <input type="text" className="form-control" id="lrn" defaultValue={String(this.props.id).padStart(10, '0')} required="" onChange={(e) => {
+                                            <input type="text" className="form-control" id="lrn" defaultValue="" required="" onChange={(e) => {
                                                 $("#lrn-alert").removeAttr('class').addClass('invalid-feedback'); 
-                                                this.setState({lrn: e.target.value})}} 
-                                            />
+                                                this.setState({lrn: e.target.value})}} />
                                             <span id="lrn-alert" className="valid-feedback">Looks good!</span>
                                         </div>
                                         <div className="col-md-3">
@@ -396,13 +401,8 @@ export default class NewTeacher extends Component {
                                         </div> 
                                         <div className="col-md-4">
                                             <label htmlFor="bdate" className="form-label">Email</label>
-                                            <input type="email" className="form-control" id="email" defaultValue="" required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
+                                            <input type="email" className="form-control" id="bdate" defaultValue="" required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
                                             <div id="email-alert" className="valid-feedback">Looks good!</div>
-                                        </div> 
-                                        <div className="col-md-12">
-                                            <label htmlFor="bdate" className="form-label">Current Address</label>
-                                            <input type="text" className="form-control" id="address" defaultValue="" required="" onChange={(e) => {  $("#address-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({address: e.target.value})}}  />
-                                            <div id="address-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                     </div> 
                                     <div className="col-lg-12">
@@ -464,6 +464,89 @@ export default class NewTeacher extends Component {
                                             </div>  
                                         </div>
                                     </div>
+                                    <div className="col-lg-12">
+                                        <hr />
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Education Background</h5> 
+                                        <div className="row g-3">
+                                            <div className="col-md-4">
+                                                <label htmlFor="eb_level" className="form-label">Level</label>
+                                                <input type="text" className="form-control" id="eb_level" defaultValue="" required="" onChange={(e) => { $("#eb_level-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_level: e.target.value})}}  />
+                                                <div id="eb_level-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="eb_school" className="form-label">School</label>
+                                                <input type="text" className="form-control" id="eb_school" defaultValue="" required="" onChange={(e) => { $("#eb_school-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_school: e.target.value})}}  />
+                                                <div id="eb_school-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_barangay" className="form-label">Educational Attainment</label>
+                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
+                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_barangay" className="form-label">Date From</label>
+                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
+                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_barangay" className="form-label">Date To</label>
+                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
+                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_barangay" className="form-label">No. Units</label>
+                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
+                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_barangay" className="form-label">Year Graduated</label>
+                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
+                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_barangay" className="form-label">Scholarship/Academic Honors/Received</label>
+                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
+                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                        </div>
+                                        <br />
+                                        <button className="btn btn-success" onClick={() => { 
+                                        }}>Save</button>
+                                    </div>
+                                    <div className="col-lg-12">
+                                        <hr />
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Trainings</h5>
+                                        <div className="row g-3">
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_hn" className="form-label">Title</label>
+                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
+                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_hn" className="form-label">Experience</label>
+                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
+                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_hn" className="form-label">Total Render</label>
+                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
+                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_hn" className="form-label">Date From</label>
+                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
+                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-4">
+                                                <label htmlFor="ca_hn" className="form-label">Date To</label>
+                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
+                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <button className="btn btn-success" onClick={() => { 
+                                        }}>Save</button>
+                                    </div>
                                     <div className="col-12 pt-3">
                                         <div className="form-check float-right">
                                             <br />
@@ -475,13 +558,17 @@ export default class NewTeacher extends Component {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="card-footer">
+                                    <h3 className="card-title mt-2"> <i className="bi bi-person"></i> New Account</h3>
+                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Http\Controllers\SchoolYearGradesController;
 use App\Models\Contacts;
+use App\Models\Employee;
 use App\Models\Parents;
 use App\Models\Roles;
 use App\Models\SchoolSection;
@@ -73,7 +74,28 @@ class DatabaseSeeder extends Seeder
             ])->create();
         });
 
-        $teacher = Teacher::factory(10)->create();
+        // $teacher = Teacher::factory(10)->create();
+        // $teacher->each(function($val) {
+        //     Contacts::factory()->state([
+        //         'type' => 'teacher',
+        //         'teacher_id' => $val->id,
+        //         'phone_number' => "09758955082",
+        //         'status' => 'active'
+        //     ])->create();
+        //     $rand_pass = Str::random(10);
+        //     UserAccounts::factory()->state([
+        //         'user_id' => $val->id,
+        //         'user_type' => 'Teacher',
+        //         'user_role_id' => 2,
+        //         'fullname' => $val->first_name . " " . $val->last_name,
+        //         'username' => Str::random(10),
+        //         'password' => Hash::make($rand_pass),
+        //         'plainpassword' => $rand_pass,
+        //         'verified' => null
+        //     ])->create();
+        // });
+
+        $teacher = Employee::factory(10)->create();
         $teacher->each(function($val) {
             Contacts::factory()->state([
                 'type' => 'teacher',
