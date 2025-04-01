@@ -134,6 +134,83 @@ class DefaultDataSeeder extends Seeder
         SchoolYearGrades::factory()->state([
             'year_grade' => "Grade 12",
         ])->create();
+
+        DB::table('specific_programs')->insert([
+            'name' => 'Academic', 
+            'acronyms' => 'ACAD', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+        DB::table('specific_programs')->insert([
+            'name' => 'Technical-Vocational-Livelihood', 
+            'acronyms' => 'TVL', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+        DB::table('specific_programs')->insert([
+            'name' => 'Arts and Design', 
+            'acronyms' => 'AD', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+        DB::table('specific_programs')->insert([
+            'name' => 'Sports', 
+            'acronyms' => '', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+
+        DB::table('specialize_program')->insert([
+            'name' => 'Accountancy, Business and Management', 
+            'acronyms' => 'ABS', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+
+        DB::table('specialize_program')->insert([
+            'name' => 'Science, Technology, Engineering, and Mathematics', 
+            'acronyms' => 'STEM', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+
+        DB::table('specialize_program')->insert([
+            'name' => 'Humanities and Social Science', 
+            'acronyms' => 'HUMSS', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+
+        DB::table('specialize_program')->insert([
+            'name' => 'General Academic', 
+            'acronyms' => 'GAS', 
+            'definition' => '', 
+            'description' => '',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+        
         
         //----end for default data lang ni
     }

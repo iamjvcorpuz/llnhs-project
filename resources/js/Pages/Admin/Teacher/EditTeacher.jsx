@@ -333,7 +333,7 @@ export default class EditTeacher extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title mt-2"> <i className="bi bi-person"></i> New Account</h3>
+                                    <h3 className="card-title mt-2"> <i className="bi bi-person"></i> Update Account</h3>
                                     <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
                                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>   
                                 </div>

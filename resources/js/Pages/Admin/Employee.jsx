@@ -9,7 +9,7 @@ import ReactTable from "@/Components/ReactTable";
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 
-export default class Parents extends Component {
+export default class Employee extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -26,10 +26,12 @@ export default class Parents extends Component {
                     id: "picture",
                     Header: 'Picture',  
                     accessor: 'photo',
-                    Cell: ({row}) => {
+                    className: "center",
+                    width: 126,
+                    Cell: ({row}) => { 
                        return <img className="" height={100} width={100}  onError={(e)=>{ 
                         e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                   }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />          
+                   }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />
                     },
                 }, 
                 {
@@ -39,36 +41,30 @@ export default class Parents extends Component {
                     accessor: 'fullname'
                 }, 
                 {
-                    id: "student",
-                    Header: 'No. of Students',  
-                    width: 150,
-                    className: 'center',
-                    accessor: 'total_student',
-                    Cell: ({row}) => { 
-                       return <>
-                        <button className="btn btn-info btn-sm" onClick={() => {
-                            $("#student_list").modal('show');
-                        }}>{row.original.total_student}</button> 
-                       </>            
-                    }
+                    id: "section",
+                    Header: 'Type',  
+                    width: 100,
+                    accessor: 'employee_type',
+                    className: "center"
                 },  
                 {
                     id: "Status",
                     Header: 'Status',  
-                    width: 150,
+                    width: 100,
                     accessor: 'status',
                     className: "center"
                 },
                 {
-                    id: "action",
-                    Header: 'Action',  
+                    id: "Action",
+                    Header: 'Status',  
                     width: 200,
                     accessor: 'status',
                     className: "center",
                     Cell: ({row}) => { 
-                       return <>                       
-                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteParent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
-                        <Link href={`/admin/dashboard/parents/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
+                       return <>
+                       <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteTeacher(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
+                       <Link href={`/admin/dashboard/employee/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
+                       {/* <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</button>     */}
                        </>            
                     }
                 }
@@ -76,12 +72,12 @@ export default class Parents extends Component {
         }
 
         this._isMounted = false;
-        this.loadStudentList = this.loadStudentList.bind(this);
-        this.deleteParent = this.deleteParent.bind(this);
+        this.loadTeachertList = this.loadTeachertList.bind(this);
+        this.deleteTeacher = this.deleteTeacher.bind(this);
     }
     componentDidMount() {
         this._isMounted = true;
-        this.loadStudentList();
+        this.loadTeachertList();
         // let list  = [];
         // for (let index = 0; index < 10; index++) {
 
@@ -95,13 +91,13 @@ export default class Parents extends Component {
             
         // }
         // this.setState({data: list});
-        this.loadStudentList();
+        // this.loadStudentList();
     }
 
-    loadStudentList() {
+    loadTeachertList() {
         let list  = []; 
         let self = this;
-        axios.get('/parents').then(function (response) {
+        axios.get('/employee').then(function (response) {
           // handle success
           console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
@@ -109,15 +105,15 @@ export default class Parents extends Component {
                 data.forEach((element,index,arr) => {
                         list.push({
                             id: element.id,
+                            employee_type: element.employee_type,
                             no: index + 1,
                             photo: element.picture_base64,
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
                             level: "None",
-                            section: "None",
+                            section: element.total_advisory,
                             sex: element.sex,
-                            status: element.status,
-                            total_student: element.total_student
+                            status: element.status
                         })
                     if((index + 1) == arr.length) {
                         self.setState({data: list});
@@ -133,7 +129,7 @@ export default class Parents extends Component {
         });
     }
 
-    deleteParent(id) {
+    deleteTeacher(id) {
         Swal.fire({
             title: "Are you sure to remove this data?", 
             showCancelButton: true,
@@ -156,7 +152,7 @@ export default class Parents extends Component {
                       Swal.showLoading();
                     }
                 });
-                axios.delete('/parents',{data: {id:id}}).then(function (response) {
+                axios.delete('/employee',{data: {id:id}}).then(function (response) {
                     // handle success
                     // console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "201" ) {
@@ -235,17 +231,17 @@ export default class Parents extends Component {
             }
         });
     }
-
+    
     render() {
-        return <DashboardLayout title="Parents" user={this.props.auth.user}>
+        return <DashboardLayout title="Employee" user={this.props.auth.user}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Parents / Guardian</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Employee List</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Parents</li>
+                            <li className="breadcrumb-item active" aria-current="page">Employee</li>
                         </ol>
                     </div>
                     </div> 
@@ -259,8 +255,8 @@ export default class Parents extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title"> <i className="bi bi-person"></i> Parent List</h3> 
-                                    <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/parents/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
+                                    <h3 className="card-title  mt-2"> <i className="bi bi-person"></i> Teacher List</h3> 
+                                    <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/employee/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
                                 </div>
                                 <div className="card-body">
                                 <ReactTable
@@ -274,22 +270,6 @@ export default class Parents extends Component {
                         </div>
                     </div>
 
-                </div>
-            </div>
-            <div className="modal fade" tabIndex="-1" role="dialog" id="student_list" data-bs-backdrop="static">
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title fs-5">Student List</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
-                        </button>
-                    </div>
-                    <div className="modal-body"> 
-                    </div>
-                    <div className="modal-footer"> 
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                    </div>
                 </div>
             </div>
         </DashboardLayout>

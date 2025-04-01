@@ -31,6 +31,7 @@ RUN php composer.phar install --optimize-autoloader --ignore-platform-reqs  --no
 
 RUN php composer.phar dump-autoload
 
+# COPY .env-local .env
 COPY .env-staging .env
 
 # RUN php composer.phar require vinkla/hashids

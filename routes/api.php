@@ -3,14 +3,19 @@
 use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\ParentsController;
+use App\Http\Controllers\ProgramsCurricularController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/desktop',[StudentController::class,'index']);
+Route::get('/generate/code',[GeneralController::class,'generateCode']);
 
 Route::get('/student',[StudentController::class,'index']);
 Route::post('/student',[StudentController::class,'store']); 
@@ -22,11 +27,18 @@ Route::post('/teacher',[TeacherController::class,'store']);
 Route::post('/teacher/update',[TeacherController::class,'update']);
 Route::delete('/teacher',[TeacherController::class,'remove']);
 
+Route::get('/employee',[EmployeeController::class,'index']);
+Route::post('/employee',[EmployeeController::class,'store']);
+Route::post('/employee/update',[EmployeeController::class,'update']);
+Route::delete('/employee',[EmployeeController::class,'remove']);
+
 Route::get('/contacts',[ContactsController::class,'index']);
 Route::post('/contacts',[ContactsController::class,'store']);
 
 Route::get('/parents',[ParentsController::class,'index']);
 Route::post('/parents',[ParentsController::class,'store']);
+Route::post('/parents/update',[ParentsController::class,'update']);
+Route::delete('/parents',[ParentsController::class,'remove']);
 
 Route::get('/advisory',[AdvisoryController::class,'getRequiredAllData']);
 Route::post('/advisory',[AdvisoryController::class,'store']);
@@ -46,3 +58,15 @@ Route::post('/sms/send/test',[SMSController::class,'testSendSMS']);
 Route::post('/sms/send',[SMSController::class,'SendSMS']);
 Route::post('/sms/send/attendance',[SMSController::class,'SendSMSAttendance']);
 Route::post('/sms/remove/all/outbox',[SMSController::class,'DeleteAllOutboxMSG']);
+
+
+Route::get('/subject',[SubjectController::class,'getAll']);
+Route::post('/subject',[SubjectController::class,'store']);
+Route::post('/subject/update',[SubjectController::class,'update']);
+Route::delete('/subject',[SubjectController::class,'remove']);
+
+
+Route::get('/programs/curricular',[ProgramsCurricularController::class,'getAll']);
+Route::post('/programs/curricular',[ProgramsCurricularController::class,'store']);
+Route::post('/programs/curricular/update',[ProgramsCurricularController::class,'update']);
+Route::delete('/programs/curricular',[ProgramsCurricularController::class,'remove']);

@@ -58,8 +58,24 @@ return new class extends Migration
             $table->timestampsTz(precision: 0);
         });
 
-        Schema::create('teacher', function (Blueprint $table) {
+        // Schema::create('teacher', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('qr_code');
+        //     $table->string('first_name');
+        //     $table->string('last_name');
+        //     $table->string('middle_name');
+        //     $table->string('extension_name')->nullable();
+        //     $table->longText('picture_base64')->nullable();
+        //     $table->string('email')->nullable();
+        //     $table->string('status'); 
+        //     $table->string('bdate');
+        //     $table->string('sex');
+        //     $table->timestampsTz(precision: 0);
+        // });
+
+        Schema::create('employee', function (Blueprint $table) {
             $table->id();
+            $table->string('employee_type')->nullable();
             $table->string('qr_code');
             $table->string('first_name');
             $table->string('last_name');
@@ -70,6 +86,34 @@ return new class extends Migration
             $table->string('status'); 
             $table->string('bdate');
             $table->string('sex');
+            $table->string('civil_status')->nullable();
+            $table->string('religion')->nullable();
+            $table->string('ethic_group')->nullable(); 
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('tranings', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id');
+            $table->string('title')->nullable();
+            $table->string('experience')->nullable();
+            $table->string('total_render')->nullable();
+            $table->string('date_from')->nullable();
+            $table->string('date_to')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('education_background', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id');
+            $table->string('level')->nullable();
+            $table->string('name_of_school')->nullable();
+            $table->string('basic_edu_degree_course')->nullable();
+            $table->string('period_from')->nullable();
+            $table->string('period_to')->nullable();
+            $table->string('units')->nullable(); 
+            $table->string('yr_graduated')->nullable();
+            $table->string('ac_ah_recieve')->nullable();  
             $table->timestampsTz(precision: 0);
         });
 
@@ -220,6 +264,23 @@ return new class extends Migration
             $table->timestampsTz(precision: 0);
         });
 
+        Schema::create('specific_programs', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->string('acronyms')->nullable();
+            $table->string('definition')->nullable();
+            $table->string('description')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
+
+        Schema::create('specialize_program', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->string('acronyms')->nullable();
+            $table->string('definition')->nullable();
+            $table->string('description')->nullable();
+            $table->timestampsTz(precision: 0);
+        });
     }
 
     /**
@@ -241,5 +302,7 @@ return new class extends Migration
         Schema::dropIfExists('roles');
         Schema::dropIfExists('user_roles');
         Schema::dropIfExists('user_roles_permissions');
+        Schema::dropIfExists('specialize_program');
+        Schema::dropIfExists('specific_programs');
     }
 };

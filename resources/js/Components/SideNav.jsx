@@ -35,21 +35,51 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/teacher" className="nav-link">
-                  <i className="nav-icon bi bi-person-lines-fill"></i>
-                  <p>Teacher</p>
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link href="/admin/dashboard/parents" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
                   <p>Parents</p>
                 </Link>
               </li>
               <li className="nav-item">
+                <Link href="/admin/dashboard/employee" className="nav-link">
+                  <i className="nav-icon bi bi-person-lines-fill"></i>
+                  <p>Employee</p>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link href="/admin/dashboard/advisory" className="nav-link">
                   <i className="nav-icon bi bi-book-half"></i>
-                  <p>Teacher's Advisory</p>
+                  <p>Class Teaching</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/advisory" className="nav-link">
+                  <i className="nav-icon bi bi-calendar"></i>
+                  <p>Events</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/advisory" className="nav-link">
+                  <i className="nav-icon bi bi-calendar"></i>
+                  <p>Holiday</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/advisory" className="nav-link">
+                  <i className="nav-icon bi bi-door-closed"></i>
+                  <p>Class</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/school/subjects" className="nav-link">
+                  <i className="nav-icon bi bi-journals"></i>
+                  <p>Subjects</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/programs/curricular" className="nav-link" title="Track & Strand">
+                  <i className="nav-icon bi bi-list"></i>
+                  <p>Programs & Curricular </p>
                 </Link>
               </li>
               <li className="nav-item">

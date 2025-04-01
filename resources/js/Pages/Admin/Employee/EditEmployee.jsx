@@ -13,13 +13,15 @@ import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
 
 
-export default class NewTeacher extends Component {
+export default class EditEmployee extends Component {
     constructor(props) {
 		super(props);
         this.state = {
             photoupload: "",
             photobase64: "",
             photobase64final: "",
+            id: "",
+            teacher_id: "",
             lrn: "",
             psa_cert_no: "",
             qrcode: "",
@@ -31,7 +33,6 @@ export default class NewTeacher extends Component {
             bdate: "",
             status: "",
             email: "",
-            address: "",
             contact_list: [],
             filedata: null,
             filedataName: "",
@@ -48,6 +49,15 @@ export default class NewTeacher extends Component {
     componentDidMount() {
         this._isMounted = true;
         console.log(this)
+
+        this.setState({
+            photobase64final: (this.props.employee.picture_base64!=null)?this.props.employee.picture_base64:'/adminlte/dist/assets/img/avatar.png',
+            ...this.props.employee,
+            lrn: this.props.employee.qr_code,
+            contact_list: this.props.contacts,
+            teacher_id: this.props.employee.id,
+        })
+
         // this.webCam.current.getScreenshot({width: 600, height: 300});
         // $("#fileuploadpanel").modal('show');
         // jQuery.noConflict();
@@ -113,7 +123,11 @@ export default class NewTeacher extends Component {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
                 $("#invalidCheck-alert").addClass('d-block invalid-feedback');
-                alert('Please check aggree to all fields are correct');
+                // alert('Please check aggree to all fields are correct');
+                swal({
+                    title: "Please check agree if all fields are correct",
+                    icon: 'info'
+                })
                 return;
             }
             Swal.fire({
@@ -141,6 +155,7 @@ export default class NewTeacher extends Component {
                         }
                     });
                     let datas =  {
+                        id: self.props.teacher.id,
                         qr_code: self.state.lrn, 
                         first_name:self.state.first_name,
                         last_name:self.state.last_name,
@@ -151,11 +166,10 @@ export default class NewTeacher extends Component {
                         picture_base64:self.state.photobase64final,
                         email:self.state.email,
                         sex:self.state.sex,
-                        current_address: self.state.address,
                         contact_list: self.state.contact_list
                     };
                     console.log(datas);
-                    axios.post('/parents',datas).then( async function (response) {
+                    axios.post('/teacher/update',datas).then( async function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
@@ -191,8 +205,7 @@ export default class NewTeacher extends Component {
                                         showCancelButton: true,
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Continue", 
                                         icon: "success",
                                         showLoaderOnConfirm: true, 
                                         closeOnClickOutside: false,  
@@ -237,8 +250,6 @@ export default class NewTeacher extends Component {
                                         dangerMode: true,
                                     });
                                 }
-                            } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
-
                             }
                       }).catch(function (error) {
                         // handle error
@@ -303,11 +314,11 @@ export default class NewTeacher extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Parents / Guardian</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Teacher</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard/parents">Parents / Guardian</Link></li>
+                            <li className="breadcrumb-item"><Link href="/admin/dashboard/teacher">Teacher</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">New Account</li>
                         </ol>
                     </div>
@@ -322,9 +333,9 @@ export default class NewTeacher extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title mt-2"> <i className="bi bi-person"></i> New Account</h3>
-                                    <Link href="/admin/dashboard/parents" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
-                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
+                                    <h3 className="card-title mt-2"> <i className="bi bi-person"></i> Update Account</h3>
+                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>   
                                 </div>
                                 <div className="card-body"> 
                                     <div className="row g-3"> 
@@ -344,30 +355,29 @@ export default class NewTeacher extends Component {
                                         <div className="col-md-8 d-flex flex-column justify-content-end">
                                             <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
                                             <label htmlFor="lrn" className="form-label ">Identification Number</label>
-                                            <input type="text" className="form-control" id="lrn" defaultValue={String(this.props.id).padStart(10, '0')} required="" onChange={(e) => {
+                                            <input type="text" className="form-control" id="lrn" defaultValue={this.state.qr_code} required="" onChange={(e) => {
                                                 $("#lrn-alert").removeAttr('class').addClass('invalid-feedback'); 
-                                                this.setState({lrn: e.target.value})}} 
-                                            />
+                                                this.setState({lrn: e.target.value})}} />
                                             <span id="lrn-alert" className="valid-feedback">Looks good!</span>
                                         </div>
                                         <div className="col-md-3">
                                             <label htmlFor="first_name" className="form-label">First name</label>
-                                            <input type="text" className="form-control" id="first_name" defaultValue="" required="" onChange={(e) => { $("#first-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({first_name: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="first_name" defaultValue={this.state.first_name} required="" onChange={(e) => { $("#first-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({first_name: e.target.value})}}  />
                                             <div id="first-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-3">
                                             <label htmlFor="middle_name" className="form-label">Middle name</label>
-                                            <input type="text" className="form-control" id="middle_name" defaultValue="" required="" onChange={(e) => {  $("#middle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({middle_name: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="middle_name" defaultValue={this.state.middle_name} required="" onChange={(e) => {  $("#middle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({middle_name: e.target.value})}}  />
                                             <div id="middle-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-3">
                                             <label htmlFor="last_name" className="form-label">Last name</label>
-                                            <input type="text" className="form-control" id="last_name" defaultValue="" required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({last_name: e.target.value})}}  />
+                                            <input type="text" className="form-control" id="last_name" defaultValue={this.state.last_name} required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({last_name: e.target.value})}}  />
                                             <div id="last-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-3">
                                             <label htmlFor="extension_name" className="form-label">Extension name</label>
-                                            <select className="form-select" id="extension_name" required="" defaultValue="" onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
+                                            <select className="form-select" id="extension_name" required="" value={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <option>Jr.</option>
@@ -381,7 +391,7 @@ export default class NewTeacher extends Component {
                                         </div>
                                         <div className="col-md-3">
                                             <label htmlFor="gender" className="form-label">Gender</label>
-                                            <select className="form-select" id="gender" required="" defaultValue="" onChange={(e) => { $("#sex-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({sex: e.target.value})}} >
+                                            <select className="form-select" id="gender" required=""  value={this.state.sex} onChange={(e) => { $("#sex-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({sex: e.target.value})}} >
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <option>Male</option>
@@ -391,18 +401,13 @@ export default class NewTeacher extends Component {
                                         </div>
                                         <div className="col-md-3">
                                             <label htmlFor="bdate" className="form-label">Birth Date</label>
-                                            <input type="date" className="form-control" id="bdate" defaultValue="" required="" max={this.state.bdate_max} onChange={(e) => {  $("#bdate-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({bdate: e.target.value})}}  />
+                                            <input type="date" className="form-control" id="bdate" defaultValue={this.state.bdate} required="" max={this.state.bdate_max} onChange={(e) => {  $("#bdate-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({bdate: e.target.value})}}  />
                                             <div id="bdate-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                         <div className="col-md-4">
                                             <label htmlFor="bdate" className="form-label">Email</label>
-                                            <input type="email" className="form-control" id="email" defaultValue="" required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
+                                            <input type="email" className="form-control" id="bdate" defaultValue={this.state.email} required="" onChange={(e) => {  $("#email-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({email: e.target.value})}}  />
                                             <div id="email-alert" className="valid-feedback">Looks good!</div>
-                                        </div> 
-                                        <div className="col-md-12">
-                                            <label htmlFor="bdate" className="form-label">Current Address</label>
-                                            <input type="text" className="form-control" id="address" defaultValue="" required="" onChange={(e) => {  $("#address-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({address: e.target.value})}}  />
-                                            <div id="address-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
                                     </div> 
                                     <div className="col-lg-12">
@@ -432,10 +437,10 @@ export default class NewTeacher extends Component {
                                                         let phonenumber = $("#phonenumber").val();
                                                         if(phonenumber != "" && temp_numbers.some(e => e.phone_number == phonenumber) == false) {
                                                             temp_numbers.push({  
-                                                                id: null,
+                                                                id: this.state.id,
                                                                 type: null,
                                                                 student_id: null,
-                                                                teacher_id: null,
+                                                                teacher_id: this.state.teacher_id,
                                                                 guardian_id: null,
                                                                 phone_number: $("#phonenumber").val(),
                                                                 telephone_number: null,
@@ -475,13 +480,16 @@ export default class NewTeacher extends Component {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="card-footer">
+                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>   
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
