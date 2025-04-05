@@ -191,6 +191,21 @@ Route::get('/admin/dashboard/class/rooms', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+
+Route::get('/admin/dashboard/class/subject/teacher', function () {
+    return Inertia::render('Admin/ClassSubjectTeacher',[ 
+        "class" => ClassTSController::getAll(),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 // ======================================== teacher ================================
 Route::get('/teacher/dashboard', function () {
     return Inertia::render('Teacher/Dashboard',[

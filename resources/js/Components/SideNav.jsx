@@ -47,6 +47,12 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
+                <Link href="/admin/dashboard/class/subject/teacher" className="nav-link">
+                  <i className="nav-icon bi bi-microsoft-teams"></i>
+                  <p>Class Teacher</p>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link href="/admin/dashboard/advisory" className="nav-link">
                   <i className="nav-icon bi bi-book-half"></i>
                   <p>Class Advisory</p>
@@ -77,13 +83,13 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
+                <Link href="/admin/dashboard/events" className="nav-link">
                   <i className="nav-icon bi bi-calendar"></i>
                   <p>Events</p>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
+                <Link href="/admin/dashboard/holiday" className="nav-link">
                   <i className="nav-icon bi bi-calendar"></i>
                   <p>Holiday</p>
                 </Link>
@@ -94,12 +100,12 @@ export default function SideNav({
                   <p>Users</p>
                 </Link>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item" disabled="disabled" >
                 <Link href="/admin/dashboard/settings" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>
                   <p>Settings</p>
                 </Link>
-              </li>
+              </li> */}
 
             </ul>
           </nav>
