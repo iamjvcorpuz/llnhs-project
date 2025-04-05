@@ -24,6 +24,7 @@ export default class EditEmployee extends Component {
             teacher_id: "",
             lrn: "",
             psa_cert_no: "",
+            qr_code: "",
             qrcode: "",
             first_name: "",
             last_name: "",
@@ -39,6 +40,7 @@ export default class EditEmployee extends Component {
             filetype: "",
             filetype_: "",
             cameraOn: false,
+            employee_type: "",
             bdate_max: moment(new Date()).subtract('years',15).format('YYYY-MM-DD')
         }
         this.webCam = React.createRef(); 
@@ -135,8 +137,7 @@ export default class EditEmployee extends Component {
                 showCancelButton: true,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                confirmButtonText: "Continue",
-                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Continue", 
                 icon: "warning",
                 showLoaderOnConfirm: true, 
                 closeOnClickOutside: false,  
@@ -166,7 +167,8 @@ export default class EditEmployee extends Component {
                         picture_base64:self.state.photobase64final,
                         email:self.state.email,
                         sex:self.state.sex,
-                        contact_list: self.state.contact_list
+                        contact_list: self.state.contact_list,
+                        employee_type: self.state.employee_type
                     };
                     console.log(datas);
                     axios.post('/teacher/update',datas).then( async function (response) {
@@ -201,7 +203,7 @@ export default class EditEmployee extends Component {
                                     });
 
                                     Swal.fire({  
-                                        title: "Successfuly save!", 
+                                        title: "Successfuly update!", 
                                         showCancelButton: true,
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
@@ -225,8 +227,7 @@ export default class EditEmployee extends Component {
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
                                         cancelButtonText: "Ok",
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Continue", 
                                         icon: "error",
                                         showLoaderOnConfirm: false, 
                                         closeOnClickOutside: false,  
@@ -314,11 +315,11 @@ export default class EditEmployee extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Teacher</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Employee</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard/teacher">Teacher</Link></li>
+                            <li className="breadcrumb-item"><Link href="/admin/dashboard/employee">Employee</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">New Account</li>
                         </ol>
                     </div>
@@ -334,7 +335,7 @@ export default class EditEmployee extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title mt-2"> <i className="bi bi-person"></i> Update Account</h3>
-                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <Link href="/admin/dashboard/employee" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
                                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>   
                                 </div>
                                 <div className="card-body"> 
@@ -352,7 +353,19 @@ export default class EditEmployee extends Component {
                                                 <span className="input-group-text" htmlFor="inputGroupFile02" onClick={() => { this.setState({cameraOn: true}); $("#camerapanel").modal('show') }} ><i className="bi bi-camera"></i></span>
                                             </div> 
                                         </div> 
-                                        <div className="col-md-8 d-flex flex-column justify-content-end">
+                                        <div className="col-md-3 d-flex flex-column justify-content-end">
+                                            <label htmlFor="employee_type" className="form-label">Employee Type</label>
+                                            <select name="employee_type" className="form-control" required="" value={this.state.employee_type} id="employee_type" onChange={(e) => { $("#employee_type-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({ employee_type: e.target.value}) }}>
+                                                <option disabled>-- Select Type --</option>
+                                                <option value=""></option>
+                                                <option value="Teacher">Teacher</option>
+                                                <option value="Staff">Staff</option>
+                                                <option value="Janitor">Janitor</option>
+                                                <option value="Security Guard">Security Guard</option>
+                                            </select>
+                                            <div id="employee_type-alert" className="valid-feedback">Looks good!</div>
+                                        </div> 
+                                        <div className="col-md-5 d-flex flex-column justify-content-end">
                                             <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
                                             <label htmlFor="lrn" className="form-label ">Identification Number</label>
                                             <input type="text" className="form-control" id="lrn" defaultValue={this.state.qr_code} required="" onChange={(e) => {
@@ -377,7 +390,7 @@ export default class EditEmployee extends Component {
                                         </div> 
                                         <div className="col-md-3">
                                             <label htmlFor="extension_name" className="form-label">Extension name</label>
-                                            <select className="form-select" id="extension_name" required="" value={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
+                                            <select className="form-select" id="extension_name" required="" defaultValue={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <option>Jr.</option>
@@ -464,7 +477,7 @@ export default class EditEmployee extends Component {
                                                             });
                                                         }
 
-                                                    }}>Save</button>
+                                                    }}>Add</button>
                                                 </div>
                                             </div>  
                                         </div>

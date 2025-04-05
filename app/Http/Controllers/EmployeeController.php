@@ -24,6 +24,11 @@ class EmployeeController extends Controller
     {
         return Employee::all();
     }
+    public static function getAllTeacher() 
+    {
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' ;');
+        return Employee::all();
+    }
     public static function getData($id)
     {
         $student = Employee::findOrFail($id);
@@ -45,6 +50,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [ 
+            'employee_type' => 'required|string',
             'first_name' => 'required|string',
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
@@ -65,8 +71,8 @@ class EmployeeController extends Controller
         // echo $request;
         $Student = DB::table('employee')
                 ->where('first_name', '=', $request->first_name)
-                ->orWhere('last_name', '=', $request->last_name)
-                ->orWhere('email', '=', $request->email)
+                ->where('last_name', '=', $request->last_name)
+                ->where('email', '=', $request->email)
                 ->get();
 
         if($Student->count()==0) {

@@ -49,25 +49,19 @@ export default function SideNav({
               <li className="nav-item">
                 <Link href="/admin/dashboard/advisory" className="nav-link">
                   <i className="nav-icon bi bi-book-half"></i>
-                  <p>Class Teaching</p>
+                  <p>Class Advisory</p>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
-                  <i className="nav-icon bi bi-calendar"></i>
-                  <p>Events</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
-                  <i className="nav-icon bi bi-calendar"></i>
-                  <p>Holiday</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
-                  <i className="nav-icon bi bi-door-closed"></i>
+                <Link href="/admin/dashboard/class" className="nav-link">
+                  <i className="nav-icon bi bi-people-fill"></i>
                   <p>Class</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/class/rooms" className="nav-link">
+                  <i className="nav-icon bi bi-door-closed"></i>
+                  <p>Classroom</p>
                 </Link>
               </li>
               <li className="nav-item">
@@ -80,6 +74,18 @@ export default function SideNav({
                 <Link href="/admin/dashboard/programs/curricular" className="nav-link" title="Track & Strand">
                   <i className="nav-icon bi bi-list"></i>
                   <p>Programs & Curricular </p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/advisory" className="nav-link">
+                  <i className="nav-icon bi bi-calendar"></i>
+                  <p>Events</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin/dashboard/advisory" className="nav-link">
+                  <i className="nav-icon bi bi-calendar"></i>
+                  <p>Holiday</p>
                 </Link>
               </li>
               <li className="nav-item">

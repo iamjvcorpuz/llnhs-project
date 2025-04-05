@@ -23,11 +23,14 @@ class AdvisoryController extends Controller
     public static function getRequiredAllData()
     {
         return [
-            "teacher" => TeacherController::getAll(),
+            "teacher" => EmployeeController::getAllTeacher(),
             "advisory" => AdvisoryController::getAll(),
             "subjects" => SubjectController::getAll(),
             "sections" => SchoolSectionController::getAll(),
-            "schoolyeargrades" => SchoolYearGradesController::getAll()
+            "schoolyeargrades" => SchoolYearGradesController::getAll(),
+            "class" => ClassTSController::getAll(),
+            'track' => ProgramsCurricularController::getTrack(),
+            'strand' => ProgramsCurricularController::getStrand()
         ];
     }
 
@@ -57,8 +60,7 @@ class AdvisoryController extends Controller
             'teacher_id' => 'required',
             'school_sections_id' => 'required',
             'section_name' => 'required|string',
-            'schoolyear' => 'required|string',
-            'subject_id' => 'required',
+            'schoolyear' => 'required|string', 
             'year_level' => 'required|string'
         ]);
 
@@ -73,8 +75,7 @@ class AdvisoryController extends Controller
         // echo $request;
         $advisory = DB::table('advisory')
                 ->where('teacher_id',  $request->teacher_id)
-                ->Where('school_sections_id', $request->school_sections_id)
-                ->Where('subject_id', $request->subject_id)
+                ->Where('school_sections_id', $request->school_sections_id) 
                 ->Where('status', 'active')
                 ->get();
 
@@ -85,7 +86,7 @@ class AdvisoryController extends Controller
                 'teacher_id' => (int)$request->teacher_id,
                 'school_sections_id' => (int)$request->school_sections_id,
                 'section_name' => $request->section_name,
-                'year_level' => $request->year_level,
+                'year_level' => $request->grade,
                 'school_year' => $request->schoolyear,
                 'subject_id' => (int)$request->subject_id,
                 'description' => '',

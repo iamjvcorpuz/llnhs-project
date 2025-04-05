@@ -514,7 +514,7 @@ export default class EditParents extends Component {
                                                             });
                                                         }
 
-                                                    }}>Save</button>
+                                                    }}>Add</button>
                                                 </div>
                                             </div>  
                                         </div>
