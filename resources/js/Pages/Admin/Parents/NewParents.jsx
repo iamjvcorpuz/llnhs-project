@@ -459,7 +459,7 @@ export default class NewTeacher extends Component {
                                                             });
                                                         }
 
-                                                    }}>Save</button>
+                                                    }}>Add</button>
                                                 </div>
                                             </div>  
                                         </div>

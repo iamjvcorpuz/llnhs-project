@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GeneralController;
@@ -70,3 +72,15 @@ Route::get('/programs/curricular',[ProgramsCurricularController::class,'getAll']
 Route::post('/programs/curricular',[ProgramsCurricularController::class,'store']);
 Route::post('/programs/curricular/update',[ProgramsCurricularController::class,'update']);
 Route::delete('/programs/curricular',[ProgramsCurricularController::class,'remove']);
+
+
+Route::get('/classroom',[ClassroomController::class,'getAll']);
+Route::post('/classroom',[ClassroomController::class,'store']);
+Route::post('/classroom/update',[ClassroomController::class,'update']);
+Route::delete('/classroom',[ClassroomController::class,'remove']);
+
+
+Route::get('/tsclass',[ClassTSController::class,'getAll2']);
+Route::post('/tsclass',[ClassTSController::class,'store']);
+Route::post('/tsclass/update',[ClassTSController::class,'update']);
+Route::delete('/tsclass',[ClassTSController::class,'destroy']);

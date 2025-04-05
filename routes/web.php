@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProfileController;
@@ -122,11 +124,14 @@ Route::get('/admin/dashboard/parents/update/{id}', function ($id) {
 
 Route::get('/admin/dashboard/advisory', function () {
     return Inertia::render('Admin/Advisory',[
-        "teacher" => TeacherController::getAll(),
+        "teacher" => EmployeeController::getAllTeacher(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
-        "schoolyeargrades" => SchoolYearGradesController::getAll()
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        "class" => ClassTSController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -165,6 +170,27 @@ Route::get('/admin/dashboard/school/subjects', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/admin/dashboard/class', function () {
+    return Inertia::render('Admin/ClassTS',[
+        "class" => ClassTSController::getAll(),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/class/rooms', function () {
+    return Inertia::render('Admin/ClassRooms',[ 
+        "classroom" => ClassroomController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 // ======================================== teacher ================================
 Route::get('/teacher/dashboard', function () {
     return Inertia::render('Teacher/Dashboard',[
@@ -192,6 +218,7 @@ Route::get('/teacher/dashboard/advisory', function () {
         "schoolyeargrades" => SchoolYearGradesController::getAll()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::get('/teacher/dashboard/settings', function () {
     return Inertia::render('Teacher/Settings',[
