@@ -630,7 +630,8 @@ export default class Advisory extends Component {
                     </div>
                 </div>
             </div>
-            <div className="modal fade" tabIndex="-1" role="dialog" id="newAdvisory" aria-hidden="true" data-bs-backdrop="static">
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="updateAdvisory" aria-hidden="true" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                     <div className="modal-header">

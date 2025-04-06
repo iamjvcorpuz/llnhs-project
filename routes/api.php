@@ -3,10 +3,12 @@
 use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ClassSubjectTeachingController;
 use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GeneralController;
+use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProgramsCurricularController;
 use App\Http\Controllers\SMSController;
@@ -84,3 +86,15 @@ Route::get('/tsclass',[ClassTSController::class,'getAll2']);
 Route::post('/tsclass',[ClassTSController::class,'store']);
 Route::post('/tsclass/update',[ClassTSController::class,'update']);
 Route::delete('/tsclass',[ClassTSController::class,'destroy']);
+
+
+Route::get('/class/subject/teacher',[ClassSubjectTeachingController::class,'getAll2']);
+Route::post('/class/subject/teacher',[ClassSubjectTeachingController::class,'store']);
+Route::post('/class/subject/teacher/update',[ClassSubjectTeachingController::class,'update']);
+Route::delete('/class/subject/teacher',[ClassSubjectTeachingController::class,'destroy']);
+
+
+Route::get('/holidays',[HolidaysController::class,'getAll']);
+Route::post('/holidays',[HolidaysController::class,'store']);
+Route::post('/holidays/update',[HolidaysController::class,'update']);
+Route::delete('/holidays',[HolidaysController::class,'destroy']);

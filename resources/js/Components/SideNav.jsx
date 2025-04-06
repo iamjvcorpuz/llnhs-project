@@ -89,7 +89,7 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/holiday" className="nav-link">
+                <Link href="/admin/dashboard/holidays" className="nav-link">
                   <i className="nav-icon bi bi-calendar"></i>
                   <p>Holiday</p>
                 </Link>

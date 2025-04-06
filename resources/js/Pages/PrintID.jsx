@@ -46,24 +46,62 @@ export default class PrintID extends Component {
         //         code:stamp
         //     });
         // }
+        // console.log({
+        //     code: this.props.data.student.qr_code,
+        //     lrn: this.props.data.student.lrn,
+        //     picture: this.props.data.student.picture_base64,
+        //     fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
+        //     lastname: this.props.data.student.last_name,
+        //     track_strand: this.props.data.student.flsh_track + "-" + this.props.data.student.flsh_strand,
+        //     grade: this.props.data.grade,
+        //     section: this.props.data.section,
+        //     sy: this.props.data.sy,
+        //     guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
+        //     relationship: this.props.data.guardian[0].relationship,
+        //     guardiancontact: this.props.data.guardian[0].phone_number,
+        //     address: this.props.data.guardian[0].current_address
+        // })
+        // console.log(this.props.data.track.find(e => e.name == this.props.data.student.flsh_track))
+        try {
+            let track = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track).acronyms;
+            let strand = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand).acronyms;
+            this.setState({
+                code: this.props.data.student.qr_code,
+                lrn: this.props.data.student.lrn,
+                picture: this.props.data.student.picture_base64,
+                fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
+                lastname: this.props.data.student.last_name,
+                track_strand: track + "-" + strand,
+                grade: this.props.data.grade,
+                section: this.props.data.section,
+                sy: this.props.data.sy,
+                guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
+                relationship: this.props.data.guardian[0].relationship,
+                guardiancontact: this.props.data.guardian[0].phone_number,
+                address: this.props.data.guardian[0].current_address
+            },() => {
+                this.singleId();
+            });            
+        } catch (error) {
+            Swal.fire({
+                title: "Cannot continue because info is not completed", 
+                showCancelButton: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Download", 
+                cancelButtonText: "Close",
+                icon: "error",
+                showLoaderOnConfirm: false, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => { 
+                // if(result.isConfirmed) {
+                    window.close();
+                // }
+            });
+        }
 
-        this.setState({
-            code: this.props.data.student.qr_code,
-            lrn: this.props.data.student.lrn,
-            picture: this.props.data.student.picture_base64,
-            fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
-            lastname: this.props.data.student.last_name,
-            track_strand: this.props.data.student.flsh_track + "-" + this.props.data.student.flsh_strand,
-            grade: this.props.data.grade,
-            section: this.props.data.section,
-            sy: this.props.data.sy,
-            guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
-            relationship: this.props.data.guardian[0].relationship,
-            guardiancontact: this.props.data.guardian[0].phone_number,
-            address: this.props.data.guardian[0].current_address
-        },() => {
-            this.singleId();
-        });
 
         // let list = [];
         // let i = 0;
@@ -175,6 +213,9 @@ export default class PrintID extends Component {
                     }).then((result) => { 
                         if(result.isConfirmed) {
                             doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
+                            setTimeout(() => {
+                                window.close();
+                            }, 10000);
                         }
                     });
                 }else { 
@@ -185,6 +226,7 @@ export default class PrintID extends Component {
 
                 
         } catch (error) {
+            console.log(error)
             Swal.fire({
                 title: "Cannot continue because info is not completed", 
                 showCancelButton: true,
@@ -198,9 +240,10 @@ export default class PrintID extends Component {
                 closeOnClickOutside: false,  
                 dangerMode: true,
             }).then((result) => { 
-                if(result.isConfirmed) {
+                // if(result.isConfirmed) {
                     
-                }
+                // }
+                window.close();
             });
         }
     }

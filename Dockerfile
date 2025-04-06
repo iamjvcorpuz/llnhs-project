@@ -42,6 +42,9 @@ COPY .env-staging .env
 
 #optimize config loading
 RUN php artisan config:cache
+# RUN php artisan migrate
+# RUN php artisan db:seed --class DefaultDataSeeder
+# RUN php artisan db:seed --class DatabaseSeeder
 
 #optimize route loading
 # RUN php artisan route:cache

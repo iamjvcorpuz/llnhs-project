@@ -321,8 +321,54 @@ return new class extends Migration
                 $table->string('track')->nullable(); 
                 $table->string('strands')->nullable();
                 $table->string('classroom')->nullable();
-                $table->string('room_number')->nullable();
+                $table->string('section_name')->nullable();
                 $table->string('school_year')->nullable();
+                $table->timestampsTz(precision: 0);
+            });            
+        }
+        if (Schema::hasTable('class_teaching') == false) {
+            Schema::create('class_teaching', function (Blueprint $table) {
+                $table->id();
+                $table->string('subject_id')->nullable();
+                $table->string('teacher_id')->nullable();
+                $table->string('class_id')->nullable(); 
+                $table->string('subject_name')->nullable();
+                $table->string('time_start')->nullable();
+                $table->string('time_end')->nullable();
+                $table->string('monday')->nullable();
+                $table->string('tuesday')->nullable();
+                $table->string('wednesday')->nullable();
+                $table->string('thursday')->nullable();
+                $table->string('friday')->nullable();
+                $table->string('saturday')->nullable();
+                $table->string('sunday')->nullable();
+                $table->string('description')->nullable();
+                $table->timestampsTz(precision: 0);
+            });            
+        }
+        if (Schema::hasTable('holidays') == false) {
+            Schema::create('holidays', function (Blueprint $table) {
+                $table->id();
+                $table->string('type')->nullable();
+                $table->string('event_name')->nullable();
+                $table->string('date')->nullable(); 
+                $table->string('time_start')->nullable();
+                $table->string('time_end')->nullable(); 
+                $table->string('description')->nullable(); 
+                $table->timestampsTz(precision: 0);
+            });            
+        }
+        if (Schema::hasTable('events') == false) {
+            Schema::create('events', function (Blueprint $table) {
+                $table->id();
+                $table->string('type')->nullable();
+                $table->string('event_name')->nullable();
+                $table->string('facilitatior')->nullable();
+                $table->string('location')->nullable();
+                $table->string('date')->nullable(); 
+                $table->string('time_start')->nullable();
+                $table->string('time_end')->nullable(); 
+                $table->string('description')->nullable(); 
                 $table->timestampsTz(precision: 0);
             });            
         }
@@ -351,5 +397,13 @@ return new class extends Migration
         Schema::dropIfExists('specific_programs');
         Schema::dropIfExists('classrooms');
         Schema::dropIfExists('school_class');
+        Schema::dropIfExists('events');
+        Schema::dropIfExists('holidays');
+        Schema::dropIfExists('class_teaching');
+        Schema::dropIfExists('employee');
+        Schema::dropIfExists('tranings');
+        Schema::dropIfExists('contacts');
+        Schema::dropIfExists('advisory_group');
+        Schema::dropIfExists('school_sections');
     }
 };
