@@ -47,6 +47,8 @@ class StudentController extends Controller
             'sy' => "",
             'grade' => "",
             'section' => "",
+            'track' => ProgramsCurricularController::getTrack(),
+            'strand' => ProgramsCurricularController::getStrand()
         ];
     }
     public static function getStudentGuardian($id)

@@ -5,6 +5,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramsCurricularController;
@@ -195,6 +196,7 @@ Route::get('/admin/dashboard/class/rooms', function () {
 
 Route::get('/admin/dashboard/class/subject/teacher', function () {
     return Inertia::render('Admin/ClassSubjectTeacher',[ 
+        "teacher" => EmployeeController::getAllTeacher(),
         "class" => ClassTSController::getAll(),
         "classroom" => ClassroomController::getAll(),
         "advisory" => AdvisoryController::getAll(),
@@ -206,6 +208,16 @@ Route::get('/admin/dashboard/class/subject/teacher', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/admin/dashboard/events', function () {
+    return Inertia::render('Admin/Event',[ 
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/holidays', function () {
+    return Inertia::render('Admin/Holidays',[ 
+        "holidays" => HolidaysController::getAll()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 // ======================================== teacher ================================
 Route::get('/teacher/dashboard', function () {
     return Inertia::render('Teacher/Dashboard',[

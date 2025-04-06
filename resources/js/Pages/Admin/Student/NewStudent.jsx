@@ -886,7 +886,7 @@ export default class NewStudent extends Component {
                                                 <select name="flsh_track" id="flsh_track" className="form-control"  onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
                                                     <option value=""></option>
                                                         <EachMethod of={this.state.track} render={(element,index) => {
-                                                            return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                                            return <option value={`${element.name}`} >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
                                                         }} />
                                                 </select>
                                                 <div id="flsh_track-alert" className="valid-feedback">Looks good!</div>
@@ -897,7 +897,7 @@ export default class NewStudent extends Component {
                                                 <select name="flsh_strand" id="flsh_strand" className="form-control" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
                                                     <option value=""></option>
                                                         <EachMethod of={this.state.strand} render={(element,index) => {
-                                                            return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                                            return <option value={`${element.name}`} >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
                                                         }} />
                                                 </select>
                                                 <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>

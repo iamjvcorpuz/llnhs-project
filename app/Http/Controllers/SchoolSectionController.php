@@ -19,7 +19,8 @@ class SchoolSectionController extends Controller
     }
     public static function getAll()
     {
-        return SchoolSection::all();
+        // return SchoolSection::all();
+        return ClassTSController::getAll();
     }
 
     /**
