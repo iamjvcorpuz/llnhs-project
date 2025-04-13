@@ -28,7 +28,7 @@ class LoginController extends Controller
             if($request->user()->user_type == "Admin") {
                 return redirect('/admin/dashboard');
             } else if($request->user()->user_type == "Student") {
-                return redirect('/student/dashboard');
+                return redirect('/student/profiles');
             } else if($request->user()->user_type == "Teacher") {
                 return redirect('/teacher/dashboard');
             } else if($request->user()->user_type == "Guardian") {

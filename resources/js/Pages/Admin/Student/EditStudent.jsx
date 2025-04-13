@@ -136,7 +136,7 @@ export default class EditStudent extends Component {
             added_guardians:this.props.guardians,
             selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
             relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:""
-        })
+        });
     }
 
     getParentList() {

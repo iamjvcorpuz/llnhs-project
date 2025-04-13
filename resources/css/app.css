@@ -375,3 +375,124 @@ color: black;
     background-size: cover;
     /* opacity: 0.6; */
 }
+.post {
+    border-bottom: 1px solid #adb5bd;
+    color: #666;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+.post .user-block {
+    margin-bottom: 15px;
+    width: 100%;
+}
+.user-block {
+    float: left;
+}
+.user-block img {
+    float: left;
+    height: 40px;
+    width: 40px;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+.img-bordered-sm {
+    border: 2px solid #adb5bd;
+    padding: 2px;
+}
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+
+.user-block .description {
+    color: #6c757d;
+    font-size: 13px;
+    margin-top: -3px;
+}
+.user-block .comment, .user-block .description, .user-block .username {
+    display: block;
+    margin-left: 50px;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0, 0, 0, .125);
+    border-radius: .25rem;
+}
+.user-block .username {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: -1px;
+}
+.user-block .comment, .user-block .description, .user-block .username {
+    display: block;
+    margin-left: 50px;
+}
+.card-widget {
+    border: 0;
+    position: relative;
+}
+.widget-user .widget-user-header {
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    height: 135px;
+    padding: 1rem;
+    text-align: center;
+}
+.widget-user .widget-user-username {
+    font-size: 25px;
+    font-weight: 300;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+.widget-user .widget-user-desc {
+    margin-top: 0;
+}
+.widget-user .widget-user-image {
+    left: 50%;
+    margin-left: -45px;
+    position: absolute;
+    top: 80px;
+}
+.widget-user .widget-user-image>img {
+    border: 3px solid #fff;
+    height: auto;
+    width: 90px;
+}
+
+.elevation-2 {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23) !important;
+}
+.img-circle {
+    border-radius: 50%;
+}
+.widget-user .card-footer {
+    padding-top: 50px;
+}
+.card-footer:last-child {
+    border-radius: 0 0 calc(.25rem - 0) calc(.25rem - 0);
+}
+.card .border-right {
+    border-right: 1px solid rgba(0, 0, 0, .125);
+}
+.border-right {
+    border-right: 1px solid #dee2e6 !important;
+}
+.description-block {
+    display: block;
+    margin: 10px 0;
+    text-align: center;
+}

@@ -21,7 +21,7 @@ export default class Student extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            data: [],
+            data: this.props.studentsList,
             columns: [
                 {
                     id: "no",
@@ -61,34 +61,16 @@ export default class Student extends Component {
                     Header: 'Fullname', 
                     width: 800,
                     accessor: 'fullname'
-                },  
-                {
-                    id: "level",
-                    Header: 'Level',  
-                    width: 200,
-                    accessor: 'level'
-                },  
-                {
-                    id: "section",
-                    Header: 'Section',  
-                    width: 200,
-                    accessor: 'section'
-                },
-                {
-                    id: "Status",
-                    Header: 'Status',  
-                    width: 200,
-                    accessor: 'status',
-                    className: "center"
-                },
+                }, 
                 {
                     id: "Action",
                     Header: 'Status',  
                     width: 200,
-                    accessor: 'status',
+                    accessor: 'student_status',
                     className: "center",
                     Cell: ({row}) => { 
                        return <>                       
+                        <button className="btn btn-primary btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-person"></i> View Profile</button>
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
                        </>            
                     }
@@ -98,11 +80,12 @@ export default class Student extends Component {
         this._isMounted = false;
         this.loadStudentList = this.loadStudentList.bind(this);
         this.deleteStudent = this.deleteStudent.bind(this);
+        console.log(this.props)
     }
     
     componentDidMount() {
         this._isMounted = true;
-        this.loadStudentList();
+        // this.loadStudentList();
         // console.log(this)
         // let list  = [];
         // for (let index = 0; index < 10; index++) {

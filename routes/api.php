@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ClassSubjectTeachingController;
 use App\Http\Controllers\ClassTSController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProgramsCurricularController;
+use App\Http\Controllers\SchoolSectionController;
+use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -98,3 +101,23 @@ Route::get('/holidays',[HolidaysController::class,'getAll']);
 Route::post('/holidays',[HolidaysController::class,'store']);
 Route::post('/holidays/update',[HolidaysController::class,'update']);
 Route::delete('/holidays',[HolidaysController::class,'destroy']);
+
+///teacher/advisory
+
+
+Route::get('/teacher/advisory/student/{code}',function($code) {
+    $id = AuthenticatedSessionController::getAuthId();
+    return [
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisories($id), 
+        "studentsList" =>  StudentController::getAll_(), 
+        "advisory" =>  AdvisoryController::TeachersAdvisories($id,$code), 
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ];
+});
+Route::post('/teacher/advisory/student/add',[AdvisoryController::class,'addStudentAdvisory']);
+Route::delete('/teacher/advisory/student',[AdvisoryController::class,'removeStudentAdvisory']);
+// Route::post('/holidays/update',[HolidaysController::class,'update']);
+// Route::delete('/holidays',[HolidaysController::class,'destroy']);

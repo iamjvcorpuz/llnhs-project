@@ -23,6 +23,53 @@ class StudentController extends Controller
     {
         return Student::all();
     }
+    public static function getAll_() 
+    {
+        return Student::all([
+            'id',
+            'qr_code',
+            'lrn',
+            'psa_cert_no',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'extension_name',
+            'bdate',
+            'sex',
+            'status',
+            'is_ip',
+            'ip_specify',
+            'is_4ps_benficiary',
+            '4ps_id',
+            'is_disability',
+            'type_disability',
+            'type2_disability',
+            'type_others_disability', 
+            'cd_hno',
+            'cd_sn',
+            'cd_barangay',
+            'cd_mc',
+            'cd_province',
+            'cd_country',
+            'cd_zip', 
+            'is_pa_same_cd',
+            'pa_hno',
+            'pa_sn',
+            'pa_barangay',
+            'pa_mc',
+            'pa_province',
+            'pa_country',
+            'pa_zip',
+            'lglc',
+            'lsyc',
+            'lsa',
+            'lsa_school_id',
+            'flsh_semester',
+            'flsh_track',
+            'flsh_strand',
+            'ldm_applied',
+        ]);
+    }
     public static function show($id)
     {
         $student = Student::findOrFail($id);

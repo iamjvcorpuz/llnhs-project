@@ -15,106 +15,113 @@ import ReactTable from "@/Components/ReactTable";
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
-
-export default class Advisory extends Component {
+export default class StudentAdvisoryList extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            data: this.props.advisory,
-            subjects: this.props.subjects, 
-            teachers: this.props.teacher,
-            advisoryList: this.props.advisory,
-            sectionListTemp: this.props.sections,
-            sectionList: [],
-            yeargrade: this.props.schoolyeargrades,
-            selected_grade: "",
-            selected_grade_id: "",
-            selected_section: "",
-            selected_section_id: "",
-            selected_teacher_name: "",
-            selected_teacher_id: "",
-            selected_subject: "",
-            selected_subejct_id: "",
-            selected_school_year: "",
+            data: this.props.students,
             columns: [
                 {
                     id: "no",
-                    accessor: 'id',
+                    accessor: 'no',
                     Header: 'No.', 
-                    width: 70,
+                    width: 100,
                     className: "center"
                 }, 
                 {
-                    id: "section",
-                    Header: 'Section',  
-                    accessor: 'section_name', 
-                    width: 100,
+                    id: "picture",
+                    Header: 'Picture',  
+                    accessor: 'photo',
+                    Cell: ({row}) => { 
+                       return <img className="" height={150} width={150}  onError={(e)=>{ 
+                            e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
+                       }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />
+                    }
+                }, 
+                {
+                    id: "lrn",
+                    accessor: 'lrn',
+                    Header: 'LRN NO.', 
+                    maxWidth: 100,
                 },
                 {
-                    id: "year_level",
-                    Header: 'Grade Level',  
-                    width: 200,
-                    accessor: 'year_level'
-                },  
+                    id: "fullname",
+                    Header: 'Fullname', 
+                    width: 800,
+                    accessor: 'fullname'
+                }, 
                 {
-                    id: "school_year",
-                    Header: 'S.Y.',  
-                    width: 200,
-                    accessor: 'school_year'
-                },  
-                {
-                    id: "total_students",
-                    Header: 'No. Students',  
-                    width: 200,
-                    accessor: 'tota_students'
-                },  
-                {
-                    id: "Action",
+                    id: "action",
                     Header: 'Action',  
-                    width: 100,
-                    accessor: 'status',
+                    width: 200,
+                    accessor: 'fullname',
                     className: "center",
                     Cell: ({row}) => { 
-                       return <>  
-                        <Link href={`/teacher/advisory/students/${row.original.qrcode}?stamp=${moment(new Date()).toString()}`}  className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-eye"></i> View</Link> 
+                       return <>                       
+                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
                        </>            
                     }
                 }
-            ]            
+            ],
+            studentsList: this.props.studentsList,
+            yeargrade: this.props.schoolyeargrades,
+            class: this.props.class,
+            advisoryList: this.props.advisory,
+            sectionListTemp: this.props.sections,
+            track: this.props.track,
+            strand: this.props.strand,
+            advisory: (typeof(this.props.advisory)!="undefined"&&this.props.advisory.length>0)?this.props.advisory[0]:{},
         }
         this._isMounted = false;
-        // this.saveData = this.getAllRequiredData.bind(this);
-        this.saveData = this.saveData.bind(this);
-        this.deleteAdvisory = this.deleteAdvisory.bind(this);
+        this.loadStudentList = this.loadStudentList.bind(this);
+        this.deleteStudent = this.deleteStudent.bind(this);
         this.getAllData = this.getAllData.bind(this);
+        this.saveStudent = this.saveStudent.bind(this);
+        
         console.log(this.props)
     }
-
+    
     componentDidMount() {
-        this._isMounted = true; 
-        // console.log(this);
-        // this.getAllData();
-    }
+        this._isMounted = true;
+        // this.loadStudentList();
+        // console.log(this)
+        // let list  = [];
+        // for (let index = 0; index < 10; index++) {
 
-    componentWillUnmount() {
-        this._isMounted = false;
+        //     list.push({
+        //         no: index + 1,
+        //         photo: "",
+        //         lrn: '00000000000000000000',
+        //         fullname: "Student " + index,
+        //         level: " Grade " + index,
+        //         section: "Section "  + index,
+        //         status: "Active"
+        //     })
+            
+        // }
+        // this.setState({data: list});
+        this.getAllData();
     }
 
     getAllData() {
         let self = this;
-        axios.get('/advisory').then(function (response) {
-            console.log(response);
+        axios.get('/teacher/advisory/student/' + this.props.code).then(function (response) {
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                 if(Object.keys(data).length>0) {
                     self.setState({
-                        data: data.advisory,
-                        subjects: data.subjects, 
-                        teachers: data.teacher,
+                        data: data.students,
+                        studentList: data.studentList, 
+                        class: data.class,
                         advisoryList: data.advisory,
                         sectionListTemp: data.sections,
-                        sectionList: [],
+                        sectionList: data.schoolyeargrades,
                         yeargrade: data.schoolyeargrades,
+                        track: data.track,
+                        strand: data.strand,
+                        studentsList: data.studentsList,
+                        advisory: (typeof(data.advisory)!="undefined"&&data.advisory.length>0)?data.advisory[0]:{},
                     });
                     
                 }
@@ -122,7 +129,43 @@ export default class Advisory extends Component {
         });
     }
 
-    deleteAdvisory(id) {
+    loadStudentList() {
+        let list  = []; 
+        let self = this;
+        axios.get('/student').then(function (response) {
+          // handle success
+        //   console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                data.forEach((element,index,arr) => {
+                    if(element.status != "remove") {
+                        list.push({
+                            no: index + 1,
+                            id: element.id,
+                            photo: element.picture_base64,
+                            lrn: element.lrn,
+                            fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
+                            level: "None",
+                            section: "None",
+                            sex: element.sex,
+                            status: element.status
+                        });
+                    }
+                    if((index + 1) == arr.length) {
+                        self.setState({data: list});
+                    }                    
+                });
+                // console.log(data);
+            }
+        }).catch(function (error) {
+          // handle error
+        //   console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
+
+    deleteStudent(id) {
         let self = this;
         Swal.fire({
             title: "Are you sure to remove this data?", 
@@ -146,14 +189,12 @@ export default class Advisory extends Component {
                       Swal.showLoading();
                     }
                 });
-                axios.delete('/advisory',{data: {id:id}}).then(function (response) {
+                axios.delete('/teacher/advisory/student',{data: {id:id}}).then(function (response) {
                     // handle success
                     // console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "201" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                             if(data.status ="sucess") {
-
-                                self.getAllData();
                                 Swal.fire({  
                                     title: "Successfuly remove!", 
                                     showCancelButton: false,
@@ -167,6 +208,7 @@ export default class Advisory extends Component {
                                 }).then(function (result2) {
                                     if(result2.isConfirmed) { 
                                         Swal.close();
+                                        self.getAllData();
                                     }
                                 });
 
@@ -228,32 +270,20 @@ export default class Advisory extends Component {
         });
     }
 
-    saveData() {
+    saveStudent() {
         let self = this;
-        console.log($("#teacher").val());
-        console.log($("#yearlevel").val());
-        console.log($("#yearlevel").val());
-        console.log($("#section").val());
-        console.log($("#subject").val());
-        let teacher_name = $("#teacher").val();
-        let teacher = self.state.teachers.find(e=>(e.last_name + ', ' + e.first_name)==teacher_name).id;
-        let yearlevel = $("#yearlevel").val();
-        let year_level =  self.state.sectionList.find(e => e.id==$("#yearlevel").val()).year_grade;
-        let section_name = $("#section").val();
-        let section = self.state.sectionList.find(e => e.section_name==section_name).id;
-        let schoolyear = $("#schoolyear").val();
-        let subject = $("#subject").val();
+
+        let selected_student = $("#studentselection").val(); 
+
+        let select_student_id = self.state.studentsList.find( e => `${e.last_name}, ${e.first_name}`==selected_student).id;
+        let advisory_id = self.state.advisory.id;
 
 
-        if(teacher != "" && yearlevel != "" && section != "" && schoolyear != "" && subject != "") {
-            if($('#invalidCheck').prop('checked') == false) {
-                $("#invalidCheck-alert").removeAttr('class'); 
-                $("#invalidCheck-alert").addClass('d-block invalid-feedback');
-                alert('Please check aggree to all fields are correct');
-                return;
-            }
+        console.log(selected_student,select_student_id);
+        // return;
+        if(selected_student != "" && typeof(select_student_id) != "undefined" && typeof(advisory_id) != "undefined") { 
             Swal.fire({
-                title: "If all fields are correct and please click to continue to save", 
+                title: "You select " + selected_student.toLocaleUpperCase() + " and please click to continue to save", 
                 showCancelButton: true,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
@@ -276,16 +306,11 @@ export default class Advisory extends Component {
                         }
                     });
                     let datas =  { 
-                        teacher_id: teacher,
-                        teacher_name: teacher_name,
-                        year_level: year_level,
-                        school_sections_id: section,
-                        section_name: section_name,
-                        schoolyear: schoolyear,
-                        subject_id: subject
+                        advisory_id,
+                        select_student_id
                     };
                     console.log(datas);
-                    axios.post('/advisory',datas).then( async function (response) {
+                    axios.post('/teacher/advisory/student/add',datas).then( async function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
@@ -305,7 +330,7 @@ export default class Advisory extends Component {
                                         if(result2.isConfirmed) { 
                                             Swal.close();
                                             // window.location.reload();
-                                            $("#newAdvisory").modal('hide');
+                                            $("#studentModel").modal('hide');
                                             self.getAllData();
                                         }
                                     });
@@ -329,7 +354,7 @@ export default class Advisory extends Component {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 if(data.status ="data_exist") { 
                                     Swal.fire({  
-                                        title: "Data Exist", 
+                                        title: selected_student.toLocaleUpperCase() + " is ready added", 
                                         cancelButtonText: "Ok",
                                         showCancelButton: true,
                                         showConfirmButton: false,
@@ -370,44 +395,24 @@ export default class Advisory extends Component {
             });            
         } else {
             
-            if(teacher == "") {
-                $("#fteacher-alert").removeAttr('class');
-                $("#teacher-alert").html('Required Field');
-                $("#teacher-alert").addClass('d-block invalid-feedback');
-            }
-            if(yearlevel == "") {
-                $("#yearlevel-alert").removeAttr('class');
-                $("#yearlevel-alert").html('Required Field');
-                $("#yearlevel-alert").addClass('d-block invalid-feedback');
-            }
-            if(section == "") {
-                $("#section-alert").removeAttr('class');
-                $("#section-alert").html('Required Field');
-                $("#section-alert").addClass('d-block invalid-feedback');
-            }
-            if(schoolyear == "") {
-                $("#schoolyear-alert").removeAttr('class');
-                $("#schoolyear-alert").html('Required Field');
-                $("#schoolyear-alert").addClass('d-block invalid-feedback');
-            }
-            if(subject == "") {
-                $("#subject-alert").removeAttr('class');
-                $("#subject-alert").html('Required Field');
-                $("#subject-alert").addClass('d-block invalid-feedback');
+            if(selected_student == "") {
+                $("#studentselection-alert").removeAttr('class');
+                $("#studentselection-alert").html('Required Field');
+                $("#studentselection-alert").addClass('d-block invalid-feedback');
             }
         }
     }
 
-    render() {
-        return <DashboardLayout title="Subject" user={this.props.auth.user}>
+    render() { 
+        return <DashboardLayout title="Student" user={this.props.auth.user}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-card-list"></i> teacher's Advisory</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Student</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
-                            <li className="breadcrumb-item"> <i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Advisory</li>
+                            <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>
+                            <li className="breadcrumb-item active" aria-current="page">Student</li>
                         </ol>
                     </div>
                     </div> 
@@ -416,25 +421,94 @@ export default class Advisory extends Component {
 
             <div className="app-content">
                 <div className="container-fluid">
-                    
+                    <div className="row"> 
+                        <div className="col-md-6">
+                            <label htmlFor="yearlevel" className="form-label">Grade</label>                                            
+                            {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
+
+                            <select name="yearlevel" id="yearlevel" className="form-control" value={this.state.yeargrade.find( e => e.year_grade==this.state.advisory.year_level).id} aria-readonly onChange={(e) => {  }}>
+                                <option disabled >--Select Grade--</option>
+                                <option value="" ></option>
+                                <EachMethod of={this.state.yeargrade} render={(element,index) => {
+                                    return <option value={`${element.id}`} >{`${element.year_grade}`}</option>
+                                }} />
+                            </select>
+                            <div id="yearlevel-alert" className="invalid-feedback">Please select a valid state.</div>
+                        </div> 
+
+                        <div className="col-md-6">
+                            <label htmlFor="sectionname" className="form-label">Section Name</label>
+                            <input type="text" className="form-control" id="sectionname" defaultValue={this.state.advisory.section_name} required="" onChange={(e) => {  $("#sectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
+                            <div id="sectionname-alert" className="invalid-feedback">Please select a valid state.</div>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="schoolyear" className="form-label">School Year</label>
+                            <input type="text" className="form-control" list="selectedSY" id="schoolyear" defaultValue={this.state.advisory.school_year} required="" onChange={(e) => {  $("#schoolyear-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
+                            <div id="schoolyear-alert" className="invalid-feedback">Please select a valid state.</div>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="flsh_track" className="form-label">Track</label>
+                            {/* <input type="text" className="form-control" id="flsh_track" defaultValue="" required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  /> */}
+                            <select name="flsh_track" id="flsh_track" className="form-control" defaultValue={this.state.advisory.track} onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
+                                <option value=""></option>
+                                    <EachMethod of={this.state.track} render={(element,index) => {
+                                        return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                    }} />
+                            </select>
+                            <div id="flsh_track-alert" className="valid-feedback">Looks good!</div>
+                        </div> 
+                        <div className="col-md-6">
+                            <label htmlFor="flsh_strand" className="form-label">Strand</label>
+                            {/* <input type="text" className="form-control" id="flsh_strand" defaultValue="" required="" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}  /> */}
+                            <select name="flsh_strand" id="flsh_strand" className="form-control" defaultValue={this.state.advisory.strands}  onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
+                                <option value=""></option>
+                                    <EachMethod of={this.state.strand} render={(element,index) => {
+                                        return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                    }} />
+                            </select>
+                            <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
+                        </div>                
+                    </div>
+                    <br />
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title  mt-2"> <i className="bi bi-person"></i> List</h3> 
-                                    {/* <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/advisory/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>   */}
-                                    <button className="btn btn-primary float-right mr-1" onClick={() => {
-                                        this.setState({sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==1)})  
-                                        $("#newAdvisory").modal('show');
-                                    }} > <i className="bi bi-person-plus-fill"></i> Add</button>  
+                                    <div className="row d-flex">
+                                        <div className="col-lg-2 me-auto">
+                                            <h3 className="card-title mt-2 "> <i className="bi bi-person"></i> Student List</h3>
+                                        </div>                                        
+                                        <div className="col-lg-4">
+                                            <div className="input-group">
+                                                <span  className="input-group-text">School Year</span>
+                                                <select  className="form-select" id="gender" required="" defaultValue="" >
+                                                    <option disabled>Choose...</option>
+                                                    <option>All</option>
+                                                    <option>2021-2022</option>
+                                                    <option>2022-2023</option>
+                                                    <option>2023-2024</option>
+                                                    <option>2024-2025</option>
+                                                    <option>2025-2026</option>
+                                                </select>
+                                            </div> 
+                                        </div>
+
+                                        <button className="btn btn-primary col-lg-1 mr-1" onClick={() => {
+                                            $("#studentModel").modal('show')
+                                        }} > <i className="bi bi-person-plus-fill"></i> Add</button>    
+                                    </div>
+                                    
                                 </div>
                                 <div className="card-body">
-                                    <ReactTable
-                                        key={"react-tables"}
-                                        className={"table table-bordered table-striped "}
-                                        data={this.state.data} 
-                                        columns={this.state.columns}
-                                    />
+                                <ReactTable
+                                    key={"react-tables"}
+                                    className={"table table-bordered table-striped "}
+                                    data={this.state.data} 
+                                    columns={this.state.columns}
+                                    showHeader={true}
+                                    showPagenation={true}
+                                    defaultPageSize={5}
+                                />
                                 </div>
                             </div>
                         </div>
@@ -471,11 +545,17 @@ export default class Advisory extends Component {
                 }} />
             </datalist>
 
-            <div className="modal fade" tabIndex="-1" role="dialog" id="newAdvisory" aria-hidden="true" data-bs-backdrop="static">
+            <datalist id="selectStudent"> 
+                <EachMethod of={this.state.studentsList} render={(element,index) => {
+                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                }} />
+            </datalist>
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="studentModel" aria-hidden="true" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title fs-5">New Advisory</h5>
+                        <h5 className="modal-title fs-5">Add Student</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
                         </button>
                     </div>
@@ -485,62 +565,22 @@ export default class Advisory extends Component {
                             <div className="row g-3"> 
                                 
                                 <div className="col-md-12">
-                                    <label htmlFor="teacher" className="form-label">Teacher</label>
-                                    <input type="text" className="form-control" list="selectedTeacher" id="teacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedTeacher: e.target.value})}}  />
-                                    <div id="teacher-alert" className="invalid-feedback">Please select a valid state.</div>
-                                </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="yearlevel" className="form-label">Year Level</label>                                            
-                                    {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
-
-                                    <select name="yearlevel" id="yearlevel" className="form-control" onChange={(e) => { 
-                                         $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); 
-                                         $('#section').val("");
-                                         console.log(e.target.value)
-                                         if(e.target.value != "") {
-                                            this.setState({selectedYearLevel: e.target.value,sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==e.target.value)})  
-                                         }
-                                         }}>
-                                        <EachMethod of={this.state.yeargrade} render={(element,index) => {
-                                            return <option value={`${element.id}`} >{`${element.year_grade}`}</option>
-                                        }} />
-                                    </select>
-                                    <div id="yearlevel-alert" className="invalid-feedback">Please select a valid state.</div>
-                                </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="section" className="form-label">Section</label>
-                                    <input type="text" className="form-control" list="selectedSection" id="section" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSection: e.target.value})}}  />
-                                    <div id="section-alert" className="invalid-feedback">Please select a valid state.</div>
-                                </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="schoolyear" className="form-label">School Year</label>
-                                    <input type="text" className="form-control" list="selectedSY" id="schoolyear" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
-                                    <div id="schoolyear-alert" className="invalid-feedback">Please select a valid state.</div>
-                                </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="subject" className="form-label">Subject</label>
-                                    <select className="form-select" id="subject" required="" onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
-                                        <option disabled >Choose...</option>
-                                        <option></option>
-                                        <EachMethod of={this.state.subjects} render={(element,index) => {
-                                            return <option value={element.id}>{element.subject_name}</option>
-                                        }} />
-                                    </select>
-                                    <div id="extension-name-alert" className="invalid-feedback">Please select a valid state.</div>
-                                </div>
+                                    <label htmlFor="studentselection" className="form-label">Student</label>
+                                    <input type="text" className="form-control" list="selectStudent"  id="studentselection" defaultValue="" required="" onChange={(e) => {  $("#studentselection-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({studentselection: e.target.value})}}  />
+                                    <div id="studentselection-alert" className="invalid-feedback">Please select a valid state.</div>
+                                </div> 
 
                             </div> 
                         </div>
 
                     </div>
                     <div className="modal-footer"> 
-                        <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-save"></i> Save</button>   
+                        <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveStudent() }}> <i className="bi bi-save"></i> Add</button>   
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                     </div>
                 </div>
             </div>
-
         </DashboardLayout>
     }
 }

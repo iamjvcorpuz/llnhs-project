@@ -36,11 +36,14 @@ class AuthenticatedSessionController extends Controller
         if($request->user()->user_type == "Admin") {
             return redirect()->intended('admin/dashboard');
         } else if($request->user()->user_type == "Student") {
-            return redirect()->intended('student/dashboard');
+            return redirect()->intended('student/profiles');
         } else if($request->user()->user_type == "Teacher") {
             return redirect()->intended('teacher/dashboard');
         }
         return redirect()->intended(route('dashboard', absolute: false));
+    }
+    public static function getAuthId() { 
+        return Auth::user()->user_id;
     }
 
     /**

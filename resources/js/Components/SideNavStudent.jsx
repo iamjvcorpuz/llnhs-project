@@ -21,31 +21,39 @@ export default function SideNav({
           <nav className="mt-2">
             <ul className="nav nav-sidebar sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="true" >
               <li className="nav-item menu-open">
-                <Link href="/teacher/dashboard" className="nav-link active">
-                  <i className="nav-icon bi bi-speedometer"></i>
+                <Link href="/student/dashboard" className="nav-link active">
+                  <i className="nav-icon bi bi-list-columns"></i>
                   <p>
-                    Dashboard 
+                    Bulletin
+                  </p>
+                </Link> 
+              </li>
+              <li className="nav-item menu-open">
+                <Link href="/student/profiles" className="nav-link active">
+                  <i className="nav-icon bi bi-person-vcard"></i>
+                  <p>
+                    My Profile 
                   </p>
                 </Link> 
               </li>
               <li className="nav-item">
-                <Link href="/teacher/dashboard/student" className="nav-link">
+                <Link href="/student/grades" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
                   <p>My Grades</p>
                 </Link>
-              </li>
+              </li> 
               <li className="nav-item">
-                <Link href="/teacher/dashboard/advisory" className="nav-link">
-                  <i className="nav-icon bi bi-book-half"></i>
-                  <p>My Section</p>
+                <Link href="/student/myid" className="nav-link">
+                  <i className="nav-icon bi  bi-person-vcard"></i>
+                  <p>My ID</p>
                 </Link>
-              </li>
-              <li className="nav-item">
+              </li> 
+              {/* <li className="nav-item">
                 <Link href="/teacher/dashboard/settings" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>
                   <p>Settings</p>
                 </Link>
-              </li>
+              </li> */}
 
             </ul>
           </nav>

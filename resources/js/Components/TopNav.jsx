@@ -34,7 +34,7 @@ export default function TopNav({
                 {/* <span className="d-none d-md-inline">Alexander Pierce</span> */}
               </a>
               <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end"> 
-                <li className="user-header text-bg-primary">
+                <li className="user-header text-bg-info">
                   <img
                     src="/adminlte/dist/assets/img/avatar.png"
                     className="rounded-circle shadow auto-margin-lr"
@@ -46,7 +46,8 @@ export default function TopNav({
                   </p>
                 </li>  
                 <li className="user-footer">
-                  {(typeof(user.user)!="undefined"&&user.user!=null&&typeof(user.user.user_type)!="undefined"&&user.user.user_type!="Admin")?<Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>:null}
+                {(typeof(user.user)!="undefined"&&user.user!=null&&typeof(user.user.user_type)!="undefined"&&user.user.user_type=="Teacher")?<Link href="/profile/dashboard" className="btn btn-primary btn-flat">Profile</Link>:null}
+                {(typeof(user.user)!="undefined"&&user.user!=null&&typeof(user.user.user_type)!="undefined"&&user.user.user_type=="Student")?<Link href="/student/profiles" className="btn btn-primary btn-flat">Profile</Link>:null}
                   {/* <Link href="/logout" className="btn btn-danger btn-flat float-end">Log out</Link> */}
                   <ResponsiveNavLink
                     method="post"
