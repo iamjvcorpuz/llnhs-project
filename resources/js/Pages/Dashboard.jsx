@@ -17,7 +17,7 @@ export default class Dashboard extends Component {
         } else if(this.props.auth.user.user_type == "Teacher") {
             window.location.href = "/teacher/dashboard";
         } else if(this.props.auth.user.user_type == "Student") {
-            window.location.href = "/student/dashboard";
+            window.location.href = "/student/profiles";
         } else if(this.props.auth.user.user_type == "Guardian") {
             window.location.href = "/teacher/dashboard";
         }

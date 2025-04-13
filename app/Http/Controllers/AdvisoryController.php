@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Advisory;
+use App\Models\AdvisoryGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -33,13 +34,131 @@ class AdvisoryController extends Controller
             'strand' => ProgramsCurricularController::getStrand()
         ];
     }
+    public static function TeachersAllAdvisories($id)
+    {
+        return  DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id WHERE advisory.status = \'active\' AND teacher_id = ?',[$id]);
+    }
+    public static function TeachersAdvisories($id,$code)
+    {
+        return  DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname,
+            school_class.section_name,
+            school_class.strands,
+            school_class.track,
+            school_class.grade,
+            school_class.classroom FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id LEFT JOIN school_class ON school_class.id = advisory.school_sections_id WHERE advisory.status = \'active\' AND advisory.teacher_id = ? AND advisory.qrcode = ?',[$id,$code]);
+    }
+    public static function TeachersAdvisoriesStudentsList($id)
+    {
+        return  DB::select('SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.picture_base64 AS photo,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS \'student_status\'
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory.teacher_id = ?',[$id]);
+    }
+    public static function TeachersAllStudentAdvisories($id)
+    {
+        return  DB::select('
+        SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.picture_base64 AS photo,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS \'student_status\'
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory_group.advisory_id = ?
+        ',[$id]);
+    }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function addStudentAdvisory(Request $request)
     {
-        //
+        
+        $validator = Validator::make($request->all(), [  
+            'advisory_id' => 'required',
+            'select_student_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // echo $request;
+        $advisory = DB::table('advisory_group')
+                ->where('advisory_id',  $request->advisory_id)
+                ->Where('student_id', $request->select_student_id) 
+                ->Where('status', 'active')
+                ->get();
+
+        if($advisory->count()==0) {  
+            $add = AdvisoryGroup::create([ 
+                'advisory_id' => (int)$request->advisory_id,
+                'student_id' => (int)$request->select_student_id, 
+                'description' => "",
+                'status' => 'active'
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $add
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'data_exist',
+                'error' => "DATA EXIST",
+                'data' => []
+            ], 200);
+        }
+    }
+
+    public function removeStudentAdvisory(Request $request) {
+        $Student = DB::table('advisory_group')->where('id', $request->id)->get();
+        if($Student->count()==1) {
+            $updateStudent = DB::table('advisory_group')->where('id', $request->id)->update(['status'=>'remove']);            
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $updateStudent
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'data_not_exist',
+                'error' => "DATA NOT FOUND",
+                'data' => []
+            ], 200);
+        }
     }
 
     /**

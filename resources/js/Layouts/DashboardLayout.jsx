@@ -16,6 +16,7 @@ import $ from 'jquery';
 // window.$ = window.jQuery = {...$,...window.adminlte};
 // console.log(window.adminlte)
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default class DashboardLayout extends Component {
     constructor(props) {
 		super(props);
@@ -30,97 +31,116 @@ export default class DashboardLayout extends Component {
         // console.log(adminlte)
         // const user = usePage();
         console.log(this.props);
+        this.loadInits = this.loadInits.bind(this);
     }
     componentDidMount() {
-        $(function () { 
-            const Default$1 = {
-                animationSpeed: 300,
-                accordion: true
-            };
-
-            if($('[data-lte-toggle="treeview"]').length > 0) {
-                const button = document.querySelectorAll('[data-lte-toggle="treeview"]');
-                button.forEach(btn => {
-                    btn.addEventListener('click', event => {
-                        const target = event.target;
-                        const targetItem = target.closest('.nav-item');
-                        const targetLink = target.closest('.nav-link');
-                        if ((target === null || target === void 0 ? void 0 : target.getAttribute('href')) === '#' || (targetLink === null || targetLink === void 0 ? void 0 : targetLink.getAttribute('href')) === '#') {
-                            event.preventDefault();
-                        }
-                        if (targetItem) {
-                            const data = new window.adminlte.Treeview(targetItem, Default$1);
-                            data.toggle();
-                        }
-                    });
-                });
-            }
-            
-            if( $('[data-lte-toggle="sidebar"]').length > 0) {
-
-                const DATA_KEY$4 = 'lte.push-menu';
-                const EVENT_KEY$4 = `.${DATA_KEY$4}`;
-                const EVENT_OPEN = `open${EVENT_KEY$4}`;
-                const EVENT_COLLAPSE = `collapse${EVENT_KEY$4}`;
-                const CLASS_NAME_SIDEBAR_MINI = 'sidebar-mini';
-                const CLASS_NAME_SIDEBAR_COLLAPSE = 'sidebar-collapse';
-                const CLASS_NAME_SIDEBAR_OPEN = 'sidebar-open';
-                const CLASS_NAME_SIDEBAR_EXPAND = 'sidebar-expand';
-                const CLASS_NAME_SIDEBAR_OVERLAY = 'sidebar-overlay';
-                const CLASS_NAME_MENU_OPEN$1 = 'menu-open';
-                const SELECTOR_APP_SIDEBAR = '.app-sidebar';
-                const SELECTOR_SIDEBAR_MENU = '.sidebar-menu';
-                const SELECTOR_NAV_ITEM$1 = '.nav-item';
-                const SELECTOR_NAV_TREEVIEW = '.nav-treeview';
-                const SELECTOR_APP_WRAPPER = '.app-wrapper';
-                const SELECTOR_SIDEBAR_EXPAND = `[class*="${CLASS_NAME_SIDEBAR_EXPAND}"]`;
-                const SELECTOR_SIDEBAR_TOGGLE = '[data-lte-toggle="sidebar"]';
-                const Defaults = {
-                    sidebarBreakpoint: 992
+       this.loadInits();
+    }
+    loadInits() {
+        let self = this;
+        try {
+            $(function () { 
+                const Default$1 = {
+                    animationSpeed: 300,
+                    accordion: true
                 };
-                var _a;
-                const sidebar = document === null || document === void 0 ? void 0 : document.querySelector(SELECTOR_APP_SIDEBAR);
-                if (sidebar) {
-                    const data = new window.adminlte.PushMenu(sidebar, Defaults);
-                    data.init();
-                    window.addEventListener('resize', () => {
-                        data.init();
+    
+                if($('[data-lte-toggle="treeview"]').length > 0) {
+                    const button = document.querySelectorAll('[data-lte-toggle="treeview"]');
+                    button.forEach(btn => {
+                        btn.addEventListener('click', event => {
+                            const target = event.target;
+                            const targetItem = target.closest('.nav-item');
+                            const targetLink = target.closest('.nav-link');
+                            if ((target === null || target === void 0 ? void 0 : target.getAttribute('href')) === '#' || (targetLink === null || targetLink === void 0 ? void 0 : targetLink.getAttribute('href')) === '#') {
+                                event.preventDefault();
+                            }
+                            if (targetItem) {
+                                const data = new window.adminlte.Treeview(targetItem, Default$1);
+                                data.toggle();
+                            }
+                        });
                     });
                 }
-                const sidebarOverlay = document.createElement('div');
-                sidebarOverlay.className = CLASS_NAME_SIDEBAR_OVERLAY;
-                (_a = document.querySelector(SELECTOR_APP_WRAPPER)) === null || _a === void 0 ? void 0 : _a.append(sidebarOverlay);
-                sidebarOverlay.addEventListener('touchstart', event => {
-                    event.preventDefault();
-                    const target = event.currentTarget;
-                    const data = new window.adminlte.PushMenu(target, Defaults);
-                    data.collapse();
-                }, { passive: true });
-                sidebarOverlay.addEventListener('click', event => {
-                    event.preventDefault();
-                    const target = event.currentTarget;
-                    const data = new window.adminlte.PushMenu(target, Defaults);
-                    data.collapse();
-                });
-                const fullBtn = document.querySelectorAll(SELECTOR_SIDEBAR_TOGGLE);
-                fullBtn.forEach(btn => {
-                    btn.addEventListener('click', event => {
+                
+                if( $('[data-lte-toggle="sidebar"]').length > 0) {
+    
+                    const DATA_KEY$4 = 'lte.push-menu';
+                    const EVENT_KEY$4 = `.${DATA_KEY$4}`;
+                    const EVENT_OPEN = `open${EVENT_KEY$4}`;
+                    const EVENT_COLLAPSE = `collapse${EVENT_KEY$4}`;
+                    const CLASS_NAME_SIDEBAR_MINI = 'sidebar-mini';
+                    const CLASS_NAME_SIDEBAR_COLLAPSE = 'sidebar-collapse';
+                    const CLASS_NAME_SIDEBAR_OPEN = 'sidebar-open';
+                    const CLASS_NAME_SIDEBAR_EXPAND = 'sidebar-expand';
+                    const CLASS_NAME_SIDEBAR_OVERLAY = 'sidebar-overlay';
+                    const CLASS_NAME_MENU_OPEN$1 = 'menu-open';
+                    const SELECTOR_APP_SIDEBAR = '.app-sidebar';
+                    const SELECTOR_SIDEBAR_MENU = '.sidebar-menu';
+                    const SELECTOR_NAV_ITEM$1 = '.nav-item';
+                    const SELECTOR_NAV_TREEVIEW = '.nav-treeview';
+                    const SELECTOR_APP_WRAPPER = '.app-wrapper';
+                    const SELECTOR_SIDEBAR_EXPAND = `[class*="${CLASS_NAME_SIDEBAR_EXPAND}"]`;
+                    const SELECTOR_SIDEBAR_TOGGLE = '[data-lte-toggle="sidebar"]';
+                    const Defaults = {
+                        sidebarBreakpoint: 992
+                    };
+                    var _a;
+                    const sidebar = document === null || document === void 0 ? void 0 : document.querySelector(SELECTOR_APP_SIDEBAR);
+                    if (sidebar) {
+                        const data = new window.adminlte.PushMenu(sidebar, Defaults);
+                        try {                            
+                            data.init();
+                            window.addEventListener('resize', () => {
+                                data.init();
+                            });
+                        } catch (error) {
+                            // console.log(error);
+                            setTimeout(() => {
+                                self.loadInits();
+                            }, 1000);
+                        }
+                    }
+                    const sidebarOverlay = document.createElement('div');
+                    sidebarOverlay.className = CLASS_NAME_SIDEBAR_OVERLAY;
+                    (_a = document.querySelector(SELECTOR_APP_WRAPPER)) === null || _a === void 0 ? void 0 : _a.append(sidebarOverlay);
+                    sidebarOverlay.addEventListener('touchstart', event => {
                         event.preventDefault();
-                        let button = event.currentTarget;
-                        if ((button === null || button === void 0 ? void 0 : button.dataset.lteToggle) !== 'sidebar') {
-                            button = button === null || button === void 0 ? void 0 : button.closest(SELECTOR_SIDEBAR_TOGGLE);
-                        }
-                        if (button) {
-                            event === null || event === void 0 ? void 0 : event.preventDefault();
-                            const data = new window.adminlte.PushMenu(button, Defaults);
-                            data.toggle();
-                        }
+                        const target = event.currentTarget;
+                        const data = new window.adminlte.PushMenu(target, Defaults);
+                        data.collapse();
+                    }, { passive: true });
+                    sidebarOverlay.addEventListener('click', event => {
+                        event.preventDefault();
+                        const target = event.currentTarget;
+                        const data = new window.adminlte.PushMenu(target, Defaults);
+                        data.collapse();
                     });
-                });
-
-            }
-
-        }); 
+                    const fullBtn = document.querySelectorAll(SELECTOR_SIDEBAR_TOGGLE);
+                    fullBtn.forEach(btn => {
+                        btn.addEventListener('click', event => {
+                            event.preventDefault();
+                            let button = event.currentTarget;
+                            if ((button === null || button === void 0 ? void 0 : button.dataset.lteToggle) !== 'sidebar') {
+                                button = button === null || button === void 0 ? void 0 : button.closest(SELECTOR_SIDEBAR_TOGGLE);
+                            }
+                            if (button) {
+                                event === null || event === void 0 ? void 0 : event.preventDefault();
+                                const data = new window.adminlte.PushMenu(button, Defaults);
+                                data.toggle();
+                            }
+                        });
+                    });
+    
+                }
+    
+            }); 
+        } catch (error) {
+            // console.log(error);
+            setTimeout(() => {
+                self.loadInits();
+            }, 1000);
+        }
     }
     render() {
         return ((this.state.viewer_mode=="desktop")?<div className="app-wrapper">
