@@ -65,6 +65,13 @@ export default class PrintID extends Component {
         try {
             let track = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track).acronyms;
             let strand = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand).acronyms;
+
+            let t = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].track:"";
+            let s = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].strand:"";
+            
+            let _track = (this.props.data.track.length>0)?this.props.data.track.find((e) => `${e.name} (${e.acronyms})` === t):"";
+            let _strand = (this.props.data.strand.length>0)?this.props.data.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
+
             this.setState({
                 code: this.props.data.student.qr_code,
                 lrn: this.props.data.student.lrn,
@@ -78,7 +85,13 @@ export default class PrintID extends Component {
                 guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
                 relationship: this.props.data.guardian[0].relationship,
                 guardiancontact: this.props.data.guardian[0].phone_number,
-                address: this.props.data.guardian[0].current_address
+                address: this.props.data.guardian[0].current_address,
+                grade: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].grade:"",
+                level: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].grade_level:"",
+                section: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].section:"",
+                _track:  typeof(_track)!="undefined"&&_track!=null?_track.acronyms:"",
+                _strand: typeof(_strand)!="undefined"&&_strand!=null?_strand.acronyms:"",
+                sy: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].sy:"",
             },() => {
                 this.singleId();
             });            

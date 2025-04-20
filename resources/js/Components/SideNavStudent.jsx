@@ -43,6 +43,12 @@ export default function SideNav({
                 </Link>
               </li> 
               <li className="nav-item">
+                <Link href="/student/attendance" className="nav-link">
+                  <i className="nav-icon bi bi-calendar"></i>
+                  <p>My Attendance</p>
+                </Link>
+              </li> 
+              <li className="nav-item">
                 <Link href="/student/myid" className="nav-link">
                   <i className="nav-icon bi  bi-person-vcard"></i>
                   <p>My ID</p>

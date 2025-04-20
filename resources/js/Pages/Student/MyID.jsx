@@ -33,7 +33,7 @@ export default class PrintID extends Component {
         }
         // $('body').attr('class', '');
         this.singleId = this.singleId.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
 
     componentDidMount() {
@@ -65,6 +65,13 @@ export default class PrintID extends Component {
         try {
             let track = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track).acronyms;
             let strand = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand).acronyms;
+
+            let t = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].track:"";
+            let s = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].strand:"";
+            
+            let _track = (this.props.data.track.length>0)?this.props.data.track.find((e) => `${e.name} (${e.acronyms})` === t):"";
+            let _strand = (this.props.data.strand.length>0)?this.props.data.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
+
             this.setState({
                 code: this.props.data.student.qr_code,
                 lrn: this.props.data.student.lrn,
@@ -74,15 +81,21 @@ export default class PrintID extends Component {
                 track_strand: track + "-" + strand,
                 grade: this.props.data.grade,
                 section: this.props.data.section,
-                sy: this.props.data.sy,
                 guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
                 relationship: this.props.data.guardian[0].relationship,
                 guardiancontact: this.props.data.guardian[0].phone_number,
-                address: this.props.data.guardian[0].current_address
+                address: this.props.data.guardian[0].current_address,
+                grade: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].grade:"",
+                level: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].grade_level:"",
+                section: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].section:"",
+                _track:  typeof(_track)!="undefined"&&_track!=null?_track.acronyms:"",
+                _strand: typeof(_strand)!="undefined"&&_strand!=null?_strand.acronyms:"",
+                sy: (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].sy:"",
             },() => {
                 this.singleId();
             });            
         } catch (error) {
+            console.log(error);
             Swal.fire({
                 title: "Cannot continue because info is not completed", 
                 showCancelButton: true,
@@ -193,36 +206,37 @@ export default class PrintID extends Component {
             doc.text(this.state.guardiancontact.toLocaleUpperCase(), 90, 64,{align:'left',maxWidth: 70});
             doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
 
-            $("#obj1").height(window.innerHeight - 8);
+            $("#obj1").height(window.innerHeight - 128);
+            $('#obj1').attr('data',doc.output("datauristring"));
             // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
-            console.log(doc.output().length >= 1000000,doc.output().length)
-            setTimeout(() => {
-                Swal.close();
-                if(!self.browser_check_preview() && doc.output().length >= 1000000){
-                    // alert('For Browser data limitation. This will save automaticaly.');
-                    Swal.fire({
-                        title: "For Browser data limitation. This will save automaticaly.", 
-                        showCancelButton: true,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        confirmButtonText: "Download", 
-                        icon: "warning",
-                        showLoaderOnConfirm: true, 
-                        closeOnClickOutside: false,  
-                        dangerMode: true,
-                    }).then((result) => { 
-                        if(result.isConfirmed) {
-                            doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
-                            setTimeout(() => {
-                                window.close();
-                            }, 10000);
-                        }
-                    });
-                }else { 
-                    $('#obj1').attr('data',doc.output("datauristring"));
-                    // $('#frame1').attr('src',doc.output("datauristring"));  
-                }
-            }, 1000);
+            // console.log(doc.output().length >= 1000000,doc.output().length)
+            // setTimeout(() => {
+            //     Swal.close();
+            //     if(!self.browser_check_preview() && doc.output().length >= 1000000){
+            //         // alert('For Browser data limitation. This will save automaticaly.');
+            //         Swal.fire({
+            //             title: "For Browser data limitation. This will save automaticaly.", 
+            //             showCancelButton: true,
+            //             allowOutsideClick: false,
+            //             allowEscapeKey: false,
+            //             confirmButtonText: "Download", 
+            //             icon: "warning",
+            //             showLoaderOnConfirm: true, 
+            //             closeOnClickOutside: false,  
+            //             dangerMode: true,
+            //         }).then((result) => { 
+            //             if(result.isConfirmed) {
+            //                 doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
+            //                 setTimeout(() => {
+            //                     window.close();
+            //                 }, 10000);
+            //             }
+            //         });
+            //     }else { 
+            //         $('#obj1').attr('data',doc.output("datauristring"));
+            //         // $('#frame1').attr('src',doc.output("datauristring"));  
+            //     }
+            // }, 1000);
 
                 
         } catch (error) {

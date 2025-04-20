@@ -19,7 +19,7 @@ export default class Dashboard extends Component {
             todayAttendance: [],
             sections: this.props.sections
         }
-        console.log(this.props)
+        // console.log(this.props)
         if(this.props.auth.user.user_type!="Teacher") {
             if(this.props.auth.user.user_type == "Admin") {
                 window.location.href = "/admin/dashboard";
