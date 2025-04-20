@@ -32,7 +32,7 @@
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
     </head>
-    <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary">
+    <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary layout-fixed fixed-header fixed-footer">
       
       @inertia
       {{-- <div id="main-apps"></div> 

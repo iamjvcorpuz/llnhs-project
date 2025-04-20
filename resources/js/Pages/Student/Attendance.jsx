@@ -16,6 +16,12 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 //       console.error(err)
 //     }
 //   }
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+// import globalize from 'globalize';
+// const localizer = globalizeLocalizer(globalize);
+const localizer = momentLocalizer(moment);
+
 
 export default class Student extends Component {
     constructor(props) {
@@ -95,6 +101,18 @@ export default class Student extends Component {
                        </>            
                     }
                 }
+            ],
+            holidaysList: [
+                {
+                    id: 1,
+                    title: "Araw",
+                    start: "2025-04-19",
+                    end: "2025-04-19",
+                    color: "#ff4646",
+                    resource: "false",
+                    type: "holiday",
+                    allDay: "true"
+                }
             ]
         }
         this._isMounted = false;
@@ -105,6 +123,27 @@ export default class Student extends Component {
     componentDidMount() {
         this._isMounted = true;
         this.loadStudentList();
+        console.log(this.props)
+        if(typeof(this.props.holidays)!="undefined"&&this.props.holidays!=null&&this.props.holidays.length>0) {
+            let holidaysList = [];
+            this.props.holidays.forEach((val,i,arr) => {
+                holidaysList.push({
+                    id: 1,
+                    title: val.event_name,
+                    start: val.time_start,
+                    end: val.time_end,
+                    color: "#ff4646",
+                    resource: "false",
+                    type: val.type,
+                    allDay: "true"
+                });
+                if((i + 1) == arr.length) {
+                    this.setState({
+                        holidaysList
+                    });
+                }
+            });
+        }
         // console.log(this)
         // let list  = [];
         // for (let index = 0; index < 10; index++) {
@@ -121,42 +160,54 @@ export default class Student extends Component {
             
         // }
         // this.setState({data: list});
+    //     const holidays = []
+    //    this.state.holidaysList.forEach((holiday) => {
+    //        let start = moment(holiday.for_date).toDate()
+    //        holidays.push({ id: holiday.id, title: holiday.occasion, start: start, end: start, color: holiday.color, resource: holiday.is_restricted, type: 'holiday', allDay: 'true' })
+    //    })
+    //    const leaves = []
+    //    this.state.absentiesList.forEach((leave) => {
+    //        let start_at = (new Date(leave.start_at))
+    //        let end_at = (new Date(leave.end_at))
+    //        leaves.push({ id: leave.id, title: leave.username, start: start_at, end: end_at, color: leave.color, type: 'leave', allDay: 'true' })
+    //    })
+    //    const list = [...holidays, ...leaves]
     }
 
     loadStudentList() {
         let list  = []; 
         let self = this;
-        axios.get('/student').then(function (response) {
-          // handle success
-        //   console.log(response)
-            if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
-                data.forEach((element,index,arr) => {
-                    if(element.status != "remove") {
-                        list.push({
-                            no: index + 1,
-                            id: element.id,
-                            photo: element.picture_base64,
-                            lrn: element.lrn,
-                            fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
-                            level: "None",
-                            section: "None",
-                            sex: element.sex,
-                            status: element.status
-                        });
-                    }
-                    if((index + 1) == arr.length) {
-                        self.setState({data: list});
-                    }                    
-                });
-                // console.log(data);
-            }
-        }).catch(function (error) {
-          // handle error
-        //   console.log(error);
-        }).finally(function () {
-          // always executed
-        });
+        // axios.get('/student').then(function (response) {
+        //   // handle success
+        // //   console.log(response)
+        //     if( typeof(response.status) != "undefined" && response.status == "200" ) {
+        //         let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+        //         data.forEach((element,index,arr) => {
+        //             if(element.status != "remove") {
+        //                 list.push({
+        //                     no: index + 1,
+        //                     id: element.id,
+        //                     photo: element.picture_base64,
+        //                     lrn: element.lrn,
+        //                     fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
+        //                     level: "None",
+        //                     section: "None",
+        //                     sex: element.sex,
+        //                     status: element.status
+        //                 });
+        //             }
+        //             if((index + 1) == arr.length) {
+        //                 self.setState({data: list});
+        //             }                    
+        //         });
+        //         // console.log(data);
+        //     }
+        // }).catch(function (error) {
+        //   // handle error
+        // //   console.log(error);
+        // }).finally(function () {
+        //   // always executed
+        // });
     }
 
     deleteStudent(id) {
@@ -308,14 +359,17 @@ export default class Student extends Component {
                                     
                                 </div>
                                 <div className="card-body">
-                                <ReactTable
-                                    key={"react-tables"}
-                                    className={"table table-bordered table-striped "}
-                                    data={this.state.data} 
-                                    columns={this.state.columns}
-                                    showHeader={true}
-                                    showPagenation={true}
-                                    defaultPageSize={5}
+                                <Calendar
+                                    events={this.state.holidaysList}
+                                    localizer={localizer}
+                                    startAccessor="start"
+                                    endAccessor="end"
+                                    style={{ height: 500 }}
+                                    eventPropGetter={event => {
+                                        const eventData = this.state.holidaysList.find(ot => ot.id === event.id);
+                                        const backgroundColor = eventData && eventData.color;
+                                        return { style: { backgroundColor } };
+                                    }}
                                 />
                                 </div>
                             </div>

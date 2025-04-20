@@ -88,6 +88,33 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $guardian = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address,(SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
+        $getSchoolStats = DB::select('SELECT 
+        ROW_NUMBER() OVER () as no, 
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.picture_base64 AS photo,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS \'student_status\',
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section,
+        school_class.track AS track,
+        school_class.strands AS strand,
+        school_class.level AS grade_level
+        FROM student 
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
+        LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
+        WHERE
+        student.id = ?;',[$id]);
         return  [
             'student' => $student,
             'guardian' => $guardian,
@@ -95,8 +122,40 @@ class StudentController extends Controller
             'grade' => "",
             'section' => "",
             'track' => ProgramsCurricularController::getTrack(),
-            'strand' => ProgramsCurricularController::getStrand()
+            'strand' => ProgramsCurricularController::getStrand(),
+            'getSchoolStats' => $getSchoolStats
         ];
+    }
+    public static function getSchoolStats($id)
+    {
+        $getSchoolStats = DB::select('SELECT 
+ROW_NUMBER() OVER () as no, 
+CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+student.first_name,
+student.last_name,
+student.middle_name,
+student.extension_name,
+student.flsh_strand,
+student.flsh_track,
+student.picture_base64 AS photo,
+student.id AS student_id,
+student.lrn,
+student.qr_code,
+student.sex,
+student.status AS \'student_status\',
+advisory.school_year AS sy,
+advisory.year_level AS grade,
+advisory.section_name AS section,
+school_class.track AS track,
+school_class.strands AS strand,
+school_class.level AS grade_level
+FROM student 
+LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
+LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
+WHERE
+student.id = ?;',[$id]);
+        return  $getSchoolStats;
     }
     public static function getStudentGuardian($id)
     {
@@ -191,7 +250,8 @@ class StudentController extends Controller
 
 
     }
-    public function update(Request $request) {
+    public function update(Request $request) 
+    {
 
         // echo "<pre>";
         // echo $request;
@@ -279,7 +339,8 @@ class StudentController extends Controller
             ], 200);
         }
     }
-    public function remove(Request $request) {
+    public function remove(Request $request) 
+    {
         $Student = DB::table('student')->where('id', $request->id)->get();
         if($Student->count()==1) {
             $updateStudent = DB::table('student')->where('id', $request->id)->update(['status'=>'remove']);            

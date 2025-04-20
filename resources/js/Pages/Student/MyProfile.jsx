@@ -19,13 +19,19 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 export default class MyProfile extends Component {
     constructor(props) {
 		super(props);
+        // fullname: "Nina Mcintire",
+        // grade_level: "Grade 7",
+        // level: "Junior",
+        // section: "Section 1",
+        // _track: "ACAD",
+        // _strand: "STEM",
         this.state = {
-            fullname: "Nina Mcintire",
-            grade_level: "Grade 7",
-            level: "Junior",
-            section: "Section 1",
-            _track: "ACAD",
-            _strand: "STEM",
+            fullname: "",
+            grade_level: "",
+            level: "",
+            section: "",
+            _track: "",
+            _strand: "",
             photoupload: "",
             photobase64: "",
             photobase64final: "",
@@ -144,8 +150,13 @@ export default class MyProfile extends Component {
                     className: "center"
                 },
                 {
-                    Header: 'Year',
-                    accessor: 'year',
+                    Header: 'Mode',
+                    accessor: 'mode',
+                    className: "center"
+                },
+                {
+                    Header: 'Terminal',
+                    accessor: 'terminal',
                     className: "center"
                 }
             ],
@@ -185,6 +196,11 @@ export default class MyProfile extends Component {
         this.props.parents.forEach(element => {
             so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
         });
+        let t = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].track:"";
+        let s = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].strand:"";
+        
+        let _track = (this.props.track.length>0)?this.props.track.find((e) => `${e.name} (${e.acronyms})` === t):"";
+        let _strand = (this.props.strand.length>0)?this.props.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
         this.setState({
             selectOptions: so,
             photobase64final: (this.props.student.picture_base64!=null)?this.props.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
@@ -193,9 +209,11 @@ export default class MyProfile extends Component {
             selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
             relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:"",
             fullname: this.props.student.first_name + " " + this.props.student.last_name,
-            grade_level: "Grade 7",
-            level: "Junior",
-            section: "Section 1",
+            grade_level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade:"",
+            level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade_level:"",
+            section: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].section:"",
+            _track:  typeof(_track)!="undefined"&&_track!=null?_track.acronyms:"",
+            _strand: typeof(_strand)!="undefined"&&_strand!=null?_strand.acronyms:""
         });
 
         const pie_chart_options = {
@@ -241,19 +259,25 @@ export default class MyProfile extends Component {
                                 </div>
                                 <div className="card-footer">
                                     <div className="row">
-                                        <div className="col-sm-4 border-right">
+                                        <div className="col-sm-3 border-right">
                                             <div className="description-block">
                                                 <h5 className="description-header">{this.state.section}</h5>
                                                 <span className="description-text">Section</span>
                                             </div> 
                                         </div> 
-                                        <div className="col-sm-4 border-right">
+                                        <div className="col-sm-3 border-right">
+                                            <div className="description-block">
+                                                <h5 className="description-header">{this.state.grade_level}</h5>
+                                                <span className="description-text">Grade</span>
+                                            </div> 
+                                        </div> 
+                                        <div className="col-sm-3 border-right">
                                             <div className="description-block">
                                                 <h5 className="description-header">{this.state._track}</h5>
                                                 <span className="description-text">TRACK</span>
                                             </div> 
                                         </div> 
-                                        <div className="col-sm-4">
+                                        <div className="col-sm-3">
                                             <div className="description-block">
                                             <h5 className="description-header">{this.state._strand}</h5>
                                             <span className="description-text">STRAND</span>
@@ -776,38 +800,12 @@ export default class MyProfile extends Component {
                                                     <EachMethod of={this.state.added_guardians} render={(element,index) => {
                                                         return  <div className="input-group ">
                                                             <div className="input-group-prepend col-lg-4">
-                                                                <div htmlFor="lglv" className="input-group-text">{`${element.last_name}, ${element.first_name}`}</div>
-                                                            </div> 
-                                                            <button className="btn btn-danger" onClick={() => {
-                                                                let a = this.state.added_guardians;
-                                                                let temp = [];
-                                                                a.forEach((element_,i,arr) => {
-                                                                    if(element_.id != element.id) {
-                                                                        temp.push(element);
-                                                                    }
-                                                                    if((i + 1) == arr.length) {
-                                                                        this.setState({added_guardians: temp});
-                                                                    }
-                                                                });
-                                                            }} >Remove</button>
+                                                                <div htmlFor="lglv" className="label">{`${element.last_name}, ${element.first_name} (${this.state.relationship})`}</div>
+                                                            </div>  
                                                         </div>
-                                                    }} />
-                                                    <div className="col-lg-5">
-                                                        <label htmlFor="relationship" className="form-label">Relationship</label>
-                                                        <input type="text" className="form-control" id="relationship" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
-                                                        <div id="relationship-alert" className="valid-feedback">Looks good!</div>
-                                                    </div> 
+                                                    }} /> 
                                                 </div> 
-                                            </div>
-                                            <div className="col-lg-12 mt-3">
-                                                <div className="form-check float-right">
-                                                    <input className="form-check-input" type="checkbox" defaultValue="" id="invalidCheck" />
-                                                    <label className="form-check-label" htmlFor="invalidCheck">
-                                                    Agree to all fields are correct
-                                                    </label>
-                                                    <div id="invalidCheck-alert" className="invalid-feedback">You must agree before submitting.</div>
-                                                </div>
-                                            </div>
+                                            </div> 
 
 
 

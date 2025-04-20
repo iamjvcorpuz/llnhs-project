@@ -403,7 +403,7 @@ export default class Advisory extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-card-list"></i> teacher's Advisory</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-card-list"></i> Teacher's Advisory</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"> <i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>

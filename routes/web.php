@@ -321,11 +321,10 @@ Route::get('/student/profiles', function () {
         'guardians' => StudentController::getStudentGuardian($id),
         'track' => ProgramsCurricularController::getTrack(),
         'strand' => ProgramsCurricularController::getStrand(),
-        "teacher" => [],
-        "advisory" => [],
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(), 
-        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        "getSchoolStats" => StudentController::getSchoolStats($id)
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -342,9 +341,17 @@ Route::get('/student/grades', function () {
     return Inertia::render('Student/Grades',['props' => null,]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/student/attendance', function () {
+    return Inertia::render('Student/Attendance',[
+        'holidays' => HolidaysController::getAll()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/student/myid', function () {
     $id = AuthenticatedSessionController::getAuthId();
-    return Inertia::render('Student/MyID',["data" => StudentController::getDataID($id)]);
+    return Inertia::render('Student/MyID',[
+        "data" => StudentController::getDataID($id)
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // ======================================== Student ================================

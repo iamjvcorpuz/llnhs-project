@@ -14,13 +14,13 @@ class HolidaysController extends Controller
      */
     public function index()
     {
-        $school_class = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM holidays;');
-        return  $school_class;
+        $holidays = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM holidays;');
+        return  $holidays;
     }
     public static function getAll()
     {
-        $school_class = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM holidays;');
-        return  $school_class;
+        $holidays = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM holidays;');
+        return  $holidays;
     }
 
 
