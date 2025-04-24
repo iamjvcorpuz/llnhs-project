@@ -70,6 +70,27 @@ class StudentController extends Controller
             'ldm_applied',
         ]);
     }
+    public static function getAllNonAdvisory($id) 
+    {
+        return DB::select('SELECT ROW_NUMBER() OVER () as "index", 
+        id,
+        qr_code,
+        lrn, 
+        first_name,
+        last_name,
+        middle_name,
+        extension_name, 
+        sex,
+        status
+        FROM student WHERE id NOT IN (SELECT 
+        student.id
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        WHERE advisory_group.status = "active" AND advisory.status = "active" )
+        ');
+        
+    }
     public static function show($id)
     {
         $student = Student::findOrFail($id);
@@ -82,6 +103,24 @@ class StudentController extends Controller
     public static function getData($id)
     {
         $student = Student::findOrFail($id);
+        return $student;
+    }
+    public static function getData2($id)
+    {
+        $student = Student::findOrFail($id,[
+            'id',
+            'qr_code',
+            'lrn',
+            'psa_cert_no',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'extension_name',
+            'bdate',
+            'sex',
+            'picture_base64',
+            'status'
+        ]);
         return $student;
     }
     public static function getDataID($id)

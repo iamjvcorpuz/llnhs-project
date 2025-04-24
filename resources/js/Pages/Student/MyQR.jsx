@@ -12,10 +12,11 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable'; 
 import QRCode from 'qrcode';
 
-export default class PrintID extends Component {
+export default class MyQR extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            qrcode: "",
             code: "",
             lrn: "",
             picture: "",
@@ -31,7 +32,7 @@ export default class PrintID extends Component {
             address: "",
             list: []
         }
-        $('body').attr('class', '');
+        // $('body').attr('class', '');
         this.singleId = this.singleId.bind(this);
         console.log(this.props)
     }
@@ -81,7 +82,6 @@ export default class PrintID extends Component {
                 track_strand: track + "-" + strand,
                 // grade: this.props.data.grade,
                 // section: this.props.data.section,
-                // sy: this.props.data.sy,
                 guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
                 relationship: this.props.data.guardian[0].relationship,
                 guardiancontact: this.props.data.guardian[0].phone_number,
@@ -96,6 +96,7 @@ export default class PrintID extends Component {
                 this.singleId();
             });            
         } catch (error) {
+            console.log(error);
             Swal.fire({
                 title: "Cannot continue because info is not completed", 
                 showCancelButton: true,
@@ -110,7 +111,7 @@ export default class PrintID extends Component {
                 dangerMode: true,
             }).then((result) => { 
                 // if(result.isConfirmed) {
-                    window.close();
+                    // window.close();
                 // }
             });
         }
@@ -152,92 +153,26 @@ export default class PrintID extends Component {
         try {
             let self = this;
             let sgv = "";
-            const doc = new jsPDF({});
-            // const width = doc.getPageWidth();
-            const width = 210.1;         
-            doc.addImage("/images/id/front.png", "PNG", 5, 5, 81, 130);
-            doc.addImage("/images/id/back.png", "PNG", 87, 5, 81, 130);
-            if(this.state.picture != "") {
-                doc.addImage(this.state.picture, "PNG", 9, 30, 38, 36);
-            }
+            // const doc = new jsPDF({});
+            // // const width = doc.getPageWidth();
+            // const width = 210.1;         
+            // doc.addImage("/images/id/front.png", "PNG", 5, 5, 81, 130);
+            // doc.addImage("/images/id/back.png", "PNG", 87, 5, 81, 130);
+            // if(this.state.picture != "") {
+            //     doc.addImage(this.state.picture, "PNG", 9, 30, 38, 36);
+            // }
             const generateQR = async text => {
                 try {
-                    sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' });
+                    sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' ,width: 500 });
+                    self.setState({ qrcode: sgv})
                     // console.log(sgv)
                     // doc.addSvgAsImage( sgv , 87, 5, 20, 20);
-                    doc.addImage(sgv, 8, 74, 30, 27);
+                    // doc.addImage(sgv, 8, 74, 30, 27);
                 } catch (err) {
                 console.error(err)
                 }
             }
             await generateQR(this.state.lrn);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(255, 255, 255);
-            doc.text(this.state.lrn.toLocaleUpperCase(), 22, 72,{align:'left',color: "white"});
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(12);
-            doc.text(this.state.fullname1.toLocaleUpperCase(), 39, 78,{align:'left',maxWidth: 50});
-            doc.setFont("helvetica", "bold"); 
-            doc.setFontSize(15);
-
-            let fname_y = 83;// 89 nextline 83 ang defaul
-            if(this.state.fullname1.length >= 18) {
-                fname_y = 89;
-            }
-            // max 14 for the size of 15
-            if(this.state.lastname.length < 14) {
-                doc.setFontSize(20);
-                fname_y = 85;
-            }
-            doc.text(this.state.lastname.toLocaleUpperCase() , 39, fname_y,{align:'left',maxWidth: 50});
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(15);
-            doc.text(this.state.track_strand.toLocaleUpperCase(), 39, 96,{align:'left',maxWidth: 50});
-
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
-            doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
-            doc.text(this.state.sy.toLocaleUpperCase(), 139, 34,{align:'left',maxWidth: 50});
-
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(10);
-            doc.text(this.state.guardianname.toLocaleUpperCase(), 90, 56,{align:'left',maxWidth: 80});
-            doc.text(this.state.relationship.toLocaleUpperCase(), 90, 60,{align:'left',maxWidth: 50});
-            doc.text(this.state.guardiancontact.toLocaleUpperCase(), 90, 64,{align:'left',maxWidth: 70});
-            doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
-
-            $("#obj1").height(window.innerHeight - 8);
-            // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
-            console.log(doc.output().length >= 1000000,doc.output().length)
-            setTimeout(() => {
-                Swal.close();
-                if(!self.browser_check_preview() && doc.output().length >= 1000000){
-                    // alert('For Browser data limitation. This will save automaticaly.');
-                    Swal.fire({
-                        title: "For Browser data limitation. This will save automaticaly.", 
-                        showCancelButton: true,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        confirmButtonText: "Download", 
-                        icon: "warning",
-                        showLoaderOnConfirm: true, 
-                        closeOnClickOutside: false,  
-                        dangerMode: true,
-                    }).then((result) => { 
-                        if(result.isConfirmed) {
-                            doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
-                            setTimeout(() => {
-                                window.close();
-                            }, 10000);
-                        }
-                    });
-                }else { 
-                    $('#obj1').attr('data',doc.output("datauristring"));
-                    // $('#frame1').attr('src',doc.output("datauristring"));  
-                }
-            }, 1000);
-
-                
         } catch (error) {
             console.log(error)
             Swal.fire({
@@ -256,7 +191,7 @@ export default class PrintID extends Component {
                 // if(result.isConfirmed) {
                     
                 // }
-                window.close();
+                // window.close();
             });
         }
     }
@@ -299,84 +234,18 @@ export default class PrintID extends Component {
 			return 0;
 		}
 	}
-
-    async multipleId() {
-        let sgv = "";
-        const doc = new jsPDF({});
-        // const width = doc.getPageWidth();
-        const width = 210.1;         
-        doc.addImage("/images/id/front.png", "PNG", 5, 5, 81, 130);
-        doc.addImage("/images/id/back.png", "PNG", 87, 5, 81, 130);
-        doc.addImage(this.state.picture, "PNG", 9, 30, 38, 36);
-        const generateQR = async text => {
-            try {
-                sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' });
-                console.log(sgv)
-                // doc.addSvgAsImage( sgv , 87, 5, 20, 20);
-                doc.addImage(sgv, 8, 74, 30, 27);
-            } catch (err) {
-              console.error(err)
-            }
-        }
-        this.state.list.forEach(element => {
-            
-        });
-        await generateQR(this.state.lrn);
-
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(255, 255, 255);
-        doc.text(this.state.lrn.toLocaleUpperCase(), 22, 72,{align:'left',color: "white"});
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(12);
-        doc.text(this.state.fullname1.toLocaleUpperCase(), 39, 78,{align:'left',maxWidth: 50});
-        doc.setFont("helvetica", "bold"); 
-        doc.setFontSize(15);
-
-        let fname_y = 83;// 89 nextline 83 ang defaul
-        if(this.state.fullname1.length >= 18) {
-            fname_y = 89;
-        }
-        // max 14 for the size of 15
-        if(this.state.lastname.length < 14) {
-            doc.setFontSize(20);
-            fname_y = 85;
-        }
-        doc.text(this.state.lastname.toLocaleUpperCase() , 39, fname_y,{align:'left',maxWidth: 50});
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(15);
-        doc.text(this.state.track_strand.toLocaleUpperCase(), 39, 96,{align:'left',maxWidth: 50});
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
-        doc.text(this.state.sy.toLocaleUpperCase(), 139, 34,{align:'left',maxWidth: 50});
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(this.state.guardianname.toLocaleUpperCase(), 90, 56,{align:'left',maxWidth: 80});
-        doc.text(this.state.relationship.toLocaleUpperCase(), 90, 60,{align:'left',maxWidth: 50});
-        doc.text(this.state.guardiancontact.toLocaleUpperCase(), 90, 64,{align:'left',maxWidth: 70});
-        doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
-
-        // $('#obj1').attr('data',doc.output("datauristring"));
-        $('#frame1').attr('src',doc.output("datauristring")); 
-        // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
-
-    }
     
     render() {
-        return <div className="" >
-        <object
-            id="obj1"
-            type="application/pdf"
-            width="100%"
-            height="100">
-            {/* <iframe
-                id="frame1"
-                src="#view=FitH&toolbar=0"
-                width="100%"
-                height="100%"
-            ></iframe> */}
-        </object>
-    </div>}
+        return <DashboardLayout title="ID" user={this.props.auth.user} profile={this.props.auth.profile}><div className="noselect">  
+            <div className="my-qr-code ">
+                <div className="my-qr-code-content">
+                    <div className="center">
+                        <strong>
+                        {this.state.fullname1.toLocaleUpperCase()}
+                        </strong>
+                    </div>
+                    <img src={this.state.qrcode}  className="mx-auto" /> 
+                </div>
+            </div>
+    </div></DashboardLayout>}
 }

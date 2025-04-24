@@ -363,7 +363,7 @@ return new class extends Migration
                 $table->id();
                 $table->string('type')->nullable();
                 $table->string('event_name')->nullable();
-                $table->string('facilitatior')->nullable();
+                $table->string('facilitator')->nullable();
                 $table->string('location')->nullable();
                 $table->string('date')->nullable(); 
                 $table->string('time_start')->nullable();
@@ -379,31 +379,31 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('student');
-        Schema::dropIfExists('teacher');
-        Schema::dropIfExists('user_accounts');
-        Schema::dropIfExists('attendance');
-        Schema::dropIfExists('student_guardians');
-        Schema::dropIfExists('parents');
-        Schema::dropIfExists('notifications');
-        Schema::dropIfExists('school_subjects');
-        Schema::dropIfExists('school_section');
-        Schema::dropIfExists('school_year_grades');
-        Schema::dropIfExists('advisory');
-        Schema::dropIfExists('roles');
-        Schema::dropIfExists('user_roles');
-        Schema::dropIfExists('user_roles_permissions');
-        Schema::dropIfExists('specialize_program');
-        Schema::dropIfExists('specific_programs');
-        Schema::dropIfExists('classrooms');
-        Schema::dropIfExists('school_class');
-        Schema::dropIfExists('events');
-        Schema::dropIfExists('holidays');
-        Schema::dropIfExists('class_teaching');
-        Schema::dropIfExists('employee');
-        Schema::dropIfExists('tranings');
-        Schema::dropIfExists('contacts');
-        Schema::dropIfExists('advisory_group');
-        Schema::dropIfExists('school_sections');
+        // Schema::dropIfExists('student');
+        // Schema::dropIfExists('teacher');
+        // Schema::dropIfExists('user_accounts');
+        // Schema::dropIfExists('attendance');
+        // Schema::dropIfExists('student_guardians');
+        // Schema::dropIfExists('parents');
+        // Schema::dropIfExists('notifications');
+        // Schema::dropIfExists('school_subjects');
+        // Schema::dropIfExists('school_section');
+        // Schema::dropIfExists('school_year_grades');
+        // Schema::dropIfExists('advisory');
+        // Schema::dropIfExists('roles');
+        // Schema::dropIfExists('user_roles');
+        // Schema::dropIfExists('user_roles_permissions');
+        // Schema::dropIfExists('specialize_program');
+        // Schema::dropIfExists('specific_programs');
+        // Schema::dropIfExists('classrooms');
+        // Schema::dropIfExists('school_class');
+        // Schema::dropIfExists('events');
+        // Schema::dropIfExists('holidays');
+        // Schema::dropIfExists('class_teaching');
+        // Schema::dropIfExists('employee');
+        // Schema::dropIfExists('tranings');
+        // Schema::dropIfExists('contacts');
+        // Schema::dropIfExists('advisory_group');
+        // Schema::dropIfExists('school_sections');
     }
 };

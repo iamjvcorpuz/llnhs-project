@@ -48,7 +48,7 @@ export default class Advisory extends Component {
                     id: "section",
                     Header: 'Section',  
                     accessor: 'section_name', 
-                    width: 100,
+                    width: 300,
                 },
                 {
                     id: "year_level",
@@ -65,8 +65,9 @@ export default class Advisory extends Component {
                 {
                     id: "total_students",
                     Header: 'No. Students',  
-                    width: 200,
-                    accessor: 'tota_students'
+                    width: 100,
+                    className: "center",
+                    accessor: 'total_students'
                 },  
                 {
                     id: "Action",
@@ -399,7 +400,7 @@ export default class Advisory extends Component {
     }
 
     render() {
-        return <DashboardLayout title="Subject" user={this.props.auth.user}>
+        return <DashboardLayout title="Subject" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
@@ -423,10 +424,10 @@ export default class Advisory extends Component {
                                 <div className="card-header">
                                     <h3 className="card-title  mt-2"> <i className="bi bi-person"></i> List</h3> 
                                     {/* <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/advisory/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>   */}
-                                    <button className="btn btn-primary float-right mr-1" onClick={() => {
+                                    {/* <button className="btn btn-primary float-right mr-1" onClick={() => {
                                         this.setState({sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==1)})  
                                         $("#newAdvisory").modal('show');
-                                    }} > <i className="bi bi-person-plus-fill"></i> Add</button>  
+                                    }} > <i className="bi bi-person-plus-fill"></i> Add</button>   */}
                                 </div>
                                 <div className="card-body">
                                     <ReactTable

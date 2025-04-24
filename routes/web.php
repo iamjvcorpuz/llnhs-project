@@ -257,7 +257,7 @@ Route::get('/teacher/advisory/students/{code}', function ($code) {
     return Inertia::render('Teacher/StudentAdvisoryList',[
         "code" => $code,
         "students" =>  AdvisoryController::TeachersAllStudentAdvisories($id), 
-        "studentsList" =>  StudentController::getAll_(), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id), 
         "advisory" =>  AdvisoryController::TeachersAdvisories($id,$code), 
         "sections" => SchoolSectionController::getAll(),
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
@@ -276,6 +276,12 @@ Route::get('/teacher/dashboard/settings', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/teacher/attendance/scan', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('AttendanceMobilePage',[
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/profile/dashboard', function () {
     return Inertia::render('Profile/Default',[
         "teacher" => []
@@ -285,21 +291,24 @@ Route::get('/profile/dashboard', function () {
 // ======================================== teacher ================================
 // ======================================== parents ================================
 Route::get('/parents/dashboard', function () {
-    return Inertia::render('Parents/Dashboard',[
-        "teacher" => [],
-        "advisory" => [],
-        "subjects" => SubjectController::getAll(),
-        "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
-        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+    return Inertia::render('Parents/Bulletin',[ 
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/parents/dashboard/student', function () {
-    return Inertia::render('Parents/Student',['props' => null,]);
+Route::get('/parents/student', function () {
+    return Inertia::render('Parents/Student',[
+        
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/parents/dashboard/attendance', function () {
+
+Route::get('/parents/attendance', function () {
     return Inertia::render('Parents/Attendance',['props' => null,]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/parents/profile', function () {
+    return Inertia::render('Parents/Profile',[
+        "teacher" => []
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 // ======================================== parents ================================
 
@@ -350,6 +359,13 @@ Route::get('/student/attendance', function () {
 Route::get('/student/myid', function () {
     $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('Student/MyID',[
+        "data" => StudentController::getDataID($id)
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/student/qrcode', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Student/MyQR',[
         "data" => StudentController::getDataID($id)
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');

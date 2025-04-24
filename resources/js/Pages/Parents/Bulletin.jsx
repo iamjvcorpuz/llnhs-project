@@ -37,7 +37,7 @@ export default class Dashboard extends Component {
     }
 
     render() {
-        return <DashboardLayout title="Dashboard" user={this.props.auth.user} profile={this.props.auth.profile}>
+        return <DashboardLayout title="Bulletin" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
@@ -59,14 +59,14 @@ export default class Dashboard extends Component {
                         return <div className="col-lg-6 mb-2 mx-auto">
                           <div className="card p-2">
 
-                            <div class="post">
-                              <div class="user-block">
-                                <img class="img-circle img-bordered-sm" src="/adminlte/dist/assets/img/avatar.png" alt="user image" />
-                                <span class="username">
+                            <div className="post">
+                              <div className="user-block">
+                                <img className="img-circle img-bordered-sm" src="/adminlte/dist/assets/img/avatar.png" alt="user image" />
+                                <span className="username">
                                   <a href="#">Jonathan Burke Jr.</a>
-                                  <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                                  <a href="#" className="float-right btn-tool"><i className="fas fa-times"></i></a>
                                 </span>
-                                <span class="description">Shared publicly - 7:30 PM today</span>
+                                <span className="description">Shared publicly - 7:30 PM today</span>
                               </div> 
                               <p>
                                 Lorem ipsum represents a long-held tradition for designers,
@@ -77,16 +77,16 @@ export default class Dashboard extends Component {
                               </p>
 
                               <p>
-                                <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                                <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
-                                <span class="float-right">
-                                  <a href="#" class="link-black text-sm">
-                                    <i class="far fa-comments mr-1"></i> Comments (5)
+                                <a href="#" className="link-black text-sm mr-2"><i className="fas fa-share mr-1"></i> Share</a>
+                                <a href="#" className="link-black text-sm"><i className="far fa-thumbs-up mr-1"></i> Like</a>
+                                <span className="float-right">
+                                  <a href="#" className="link-black text-sm">
+                                    <i className="far fa-comments mr-1"></i> Comments (5)
                                   </a>
                                 </span>
                               </p>
 
-                              <input class="form-control form-control-sm" type="text" placeholder="Type a comment" />
+                              <input className="form-control form-control-sm" type="text" placeholder="Type a comment" />
                             </div>
                             
                           </div>

@@ -39,6 +39,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('student/profiles');
         } else if($request->user()->user_type == "Teacher") {
             return redirect()->intended('teacher/dashboard');
+        } else if($request->user()->user_type == "Guardian") {
+            return redirect()->intended('parents/dashboard');
         }
         return redirect()->intended(route('dashboard', absolute: false));
     }

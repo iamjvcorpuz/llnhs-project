@@ -109,7 +109,7 @@ Route::get('/teacher/advisory/student/{code}',function($code) {
     $id = AuthenticatedSessionController::getAuthId();
     return [
         "students" =>  AdvisoryController::TeachersAllStudentAdvisories($id), 
-        "studentsList" =>  StudentController::getAll_(), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id), 
         "advisory" =>  AdvisoryController::TeachersAdvisories($id,$code), 
         "sections" => SchoolSectionController::getAll(),
         "schoolyeargrades" => SchoolYearGradesController::getAll(),

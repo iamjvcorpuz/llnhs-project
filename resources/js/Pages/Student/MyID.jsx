@@ -79,8 +79,8 @@ export default class PrintID extends Component {
                 fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
                 lastname: this.props.data.student.last_name,
                 track_strand: track + "-" + strand,
-                grade: this.props.data.grade,
-                section: this.props.data.section,
+                // grade: this.props.data.grade,
+                // section: this.props.data.section,
                 guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
                 relationship: this.props.data.guardian[0].relationship,
                 guardiancontact: this.props.data.guardian[0].phone_number,
@@ -196,7 +196,14 @@ export default class PrintID extends Component {
 
             doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
-            doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
+            if(this.state.section.length>9) {
+                doc.text(this.state.grade.toLocaleUpperCase() , 109, 29,{align:'center',maxWidth: 45});
+                doc.setFontSize(10);
+                doc.text(this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
+            } else {
+
+                doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
+            }
             doc.text(this.state.sy.toLocaleUpperCase(), 139, 34,{align:'left',maxWidth: 50});
 
             doc.setFont("helvetica", "normal");
@@ -366,7 +373,7 @@ export default class PrintID extends Component {
     }
     
     render() {
-        return <DashboardLayout title="ID" user={this.props.auth.user} ><div className="noselect">
+        return <DashboardLayout title="ID" user={this.props.auth.user} profile={this.props.auth.profile}><div className="noselect">
         <object
             id="obj1"
             type="application/pdf"

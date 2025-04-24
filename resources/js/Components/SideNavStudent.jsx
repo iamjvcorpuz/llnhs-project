@@ -29,6 +29,14 @@ export default function SideNav({
                 </Link> 
               </li>
               <li className="nav-item menu-open">
+                <Link href="/student/qrcode" className="nav-link active">
+                  <i className="nav-icon bi bi-qr-code"></i>
+                  <p>
+                    QR CODE
+                  </p>
+                </Link> 
+              </li>
+              <li className="nav-item menu-open">
                 <Link href="/student/profiles" className="nav-link active">
                   <i className="nav-icon bi bi-person-vcard"></i>
                   <p>
