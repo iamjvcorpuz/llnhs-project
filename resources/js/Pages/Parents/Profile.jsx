@@ -13,7 +13,7 @@ import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios'; 
 
 
-export default class NewStudent extends Component {
+export default class Profile extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -179,10 +179,6 @@ export default class NewStudent extends Component {
                                 <div className="card-body">
                                     <div className="tab-content">
                                         <div className="tab-pane active" id="profiles">
-                                            <div className="alert alert-warning alert-dismissible"> 
-                                                <h5><i className="icon fas fa-exclamation-triangle"></i> Ongoing developement!</h5>
-                                                System still in development
-                                            </div>
                                             <div className="row">
                                                 <div className="col-lg-12">
                                                 <div className="row g-3"> 
@@ -323,16 +319,10 @@ export default class NewStudent extends Component {
                                             </div>
                                         </div>
                                         <div className="tab-pane " id="activity">
-                                            <div className="alert alert-warning alert-dismissible"> 
-                                                <h5><i className="icon fas fa-exclamation-triangle"></i> Ongoing developement!</h5>
-                                                System still in development
-                                            </div>
+                                            a
                                         </div>
                                         <div className="tab-pane" id="settings">
-                                            <div className="alert alert-warning alert-dismissible"> 
-                                                <h5><i className="icon fas fa-exclamation-triangle"></i> Ongoing developement!</h5>
-                                                System still in development
-                                            </div>
+                                            c
                                         </div>
                                     </div>
                                 </div>

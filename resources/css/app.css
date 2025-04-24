@@ -103,6 +103,37 @@ color: black;
     flex-direction:column;
     /* background-color: #5f6870; */
 }
+.log-center-data-mobile {
+    /* width: 60%; */
+    /* float: left; */
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 6px;
+  
+    background-color: #9ccdfa36;
+    /* background-color: #ddd8d87a; */
+    height: 86vh!important;
+    
+    margin-left: auto!important;
+    margin-right: auto!important;
+
+    /* display:flex;
+    flex-direction:column; */
+}
+.log-center-data-mobile .header_time .timeCount {
+    font-size: 2vh; 
+    text-align: center;
+    width: 100%; 
+}
+.log-center-data-mobile .header_time .dateCount {
+    padding: 0;
+    margin-top: 5px;
+    margin-left: 8px;
+    margin-bottom: 10px;
+    font-size: 2vh;
+}
 .log-center-data {
     width: 60%;
     float: left;
@@ -177,6 +208,12 @@ color: black;
 .header_time {
     /* margin-left: 20px!important;
     margin-bottom: 20px!important;  */
+    text-align: center;
+    width: 100%;
+}
+.attendance-list-mobile { 
+    position: relative;
+    bottom: 1px;
     text-align: center;
     width: 100%;
 }
@@ -519,4 +556,18 @@ img {
     display: block;
     margin: 10px 0;
     text-align: center;
+}
+.my-qr-code {
+    display: flex;
+    height: 77vh;
+    justify-content: center;
+    align-items: center;
+    /* background-color: rebeccapurple; */
+       
+}
+.my-qr-code-content {
+    width: 60vw;
+    height: 60vh;
+    display: table; 
+    /* background-color: brown; */
 }

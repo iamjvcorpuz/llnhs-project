@@ -12,11 +12,11 @@ class TeacherController extends Controller
 {
     public function index() 
     {
-        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\';');
+        $teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\';');
         return response()->json([
             'status' => 'done',
             'error' => null,
-            'data' => $student
+            'data' => $teacher
         ],200);
     }
     public static function getAll() 
@@ -25,8 +25,15 @@ class TeacherController extends Controller
     }
     public static function getData($id)
     {
-        $student = Teacher::findOrFail($id);
-        return $student;
+        $teacher = Teacher::findOrFail($id);
+        return $teacher;
+    }
+    public static function getData2($id)
+    {
+        // $student = Teacher::findOrFail($id);
+        // return $student;
+        $teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' AND id = ?;',[$id]);
+        return $teacher;
     }
     public static function getContacts($id)
     { 

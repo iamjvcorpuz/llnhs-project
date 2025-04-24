@@ -36,7 +36,18 @@ class AdvisoryController extends Controller
     }
     public static function TeachersAllAdvisories($id)
     {
-        return  DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id WHERE advisory.status = \'active\' AND teacher_id = ?',[$id]);
+        return  DB::select('
+        SELECT 
+        advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,
+        advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname ,
+        (SELECT 
+        COUNT(*)
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory_group.advisory_id = ? ) AS total_students
+        FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id 
+        WHERE advisory.status = \'active\' AND teacher_id = ?',[$id,$id]);
     }
     public static function TeachersAdvisories($id,$code)
     {

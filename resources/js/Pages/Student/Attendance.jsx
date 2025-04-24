@@ -102,6 +102,7 @@ export default class Student extends Component {
                     }
                 }
             ],
+            eventsList: [],
             holidaysList: [
                 {
                     id: 1,
@@ -112,6 +113,38 @@ export default class Student extends Component {
                     resource: "false",
                     type: "holiday",
                     allDay: "true"
+                }
+            ],
+            AttendanceList: [
+                {
+                    id: 3,
+                    title: "Present Subject 1",
+                    start: new Date(moment("2025-04-19 08:00 AM").toString()),
+                    end: new Date(moment("2025-04-19 09:00 AM").toString()),
+                    color: "#2bd34a",
+                    resource: "false",
+                    type: "Attendance",
+                    allDay: false
+                },
+                {
+                    id: 4,
+                    title: "Present Subject 2",
+                    start: new Date(moment("2025-04-19 09:00 AM").toString()),
+                    end: new Date(moment("2025-04-19 10:00 AM").toString()),
+                    color: "#2bd34a",
+                    resource: "false",
+                    type: "Attendance",
+                    allDay: false
+                },
+                {
+                    id: 5,
+                    title: "Present Subject 3",
+                    start: new Date(moment("2025-04-19 10:00 AM").toString()),
+                    end: new Date(moment("2025-04-19 11:00 AM").toString()),
+                    color: "#2bd34a",
+                    resource: "false",
+                    type: "Attendance",
+                    allDay: false
                 }
             ]
         }
@@ -135,11 +168,14 @@ export default class Student extends Component {
                     color: "#ff4646",
                     resource: "false",
                     type: val.type,
-                    allDay: "true"
+                    allDay: true
                 });
                 if((i + 1) == arr.length) {
                     this.setState({
-                        holidaysList
+                        holidaysList,
+                        eventsList: [...holidaysList,...this.state.AttendanceList]
+                    },() => {
+                        console.log(this.state.eventsList);
                     });
                 }
             });
@@ -314,7 +350,7 @@ export default class Student extends Component {
     }
 
     render() { 
-        return <DashboardLayout title="Attendance" user={this.props.auth.user}>
+        return <DashboardLayout title="Attendance" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
@@ -337,9 +373,9 @@ export default class Student extends Component {
                                 <div className="card-header">
                                     <div className="row d-flex">
                                         <div className="col-lg-2 me-auto">
-                                            <h3 className="card-title mt-2 "> <i className="bi bi-person"></i> Student List</h3>
+                                            <h3 className="card-title mt-2 "> <i className="bi bi-person"></i> Attendance</h3>
                                         </div>                                        
-                                        <div className="col-lg-4">
+                                        {/* <div className="col-lg-4">
                                             <div className="input-group">
                                                 <span  className="input-group-text">School Year</span>
                                                 <select  className="form-select" id="gender" required="" defaultValue="" >
@@ -352,24 +388,24 @@ export default class Student extends Component {
                                                     <option>2025-2026</option>
                                                 </select>
                                             </div> 
-                                        </div>
-
-                                        <Link className="btn btn-primary col-lg-1 mr-1" href="/admin/dashboard/student/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
+                                        </div> */}
+                                        {/* <Link className="btn btn-primary col-lg-1 mr-1" href="/admin/dashboard/student/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>     */}
                                     </div>
                                     
                                 </div>
                                 <div className="card-body">
                                 <Calendar
-                                    events={this.state.holidaysList}
+                                    events={this.state.eventsList}
                                     localizer={localizer}
                                     startAccessor="start"
                                     endAccessor="end"
+                                    // popup
                                     style={{ height: 500 }}
-                                    eventPropGetter={event => {
-                                        const eventData = this.state.holidaysList.find(ot => ot.id === event.id);
-                                        const backgroundColor = eventData && eventData.color;
-                                        return { style: { backgroundColor } };
-                                    }}
+                                    // eventPropGetter={event => {
+                                    //     const eventData = this.state.eventsList.find(ot => ot.id === event.id);
+                                    //     const backgroundColor = eventData && eventData.color;
+                                    //     return { style: { backgroundColor } };
+                                    // }}
                                 />
                                 </div>
                             </div>

@@ -404,7 +404,7 @@ export default class StudentAdvisoryList extends Component {
     }
 
     render() { 
-        return <DashboardLayout title="Student" user={this.props.auth.user}>
+        return <DashboardLayout title="Student" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">

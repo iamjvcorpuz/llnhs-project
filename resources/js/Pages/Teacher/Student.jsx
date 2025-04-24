@@ -71,7 +71,7 @@ export default class Student extends Component {
                     Cell: ({row}) => { 
                        return <>                       
                         <button className="btn btn-primary btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-person"></i> View Profile</button>
-                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
+                        {/* <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button> */}
                        </>            
                     }
                 }
@@ -244,7 +244,7 @@ export default class Student extends Component {
     }
 
     render() { 
-        return <DashboardLayout title="Student" user={this.props.auth.user}>
+        return <DashboardLayout title="Student" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
@@ -285,7 +285,7 @@ export default class Student extends Component {
                                             </div> 
                                         </div>
 
-                                        <Link className="btn btn-primary col-lg-1 mr-1" href="/admin/dashboard/student/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
+                                        {/* <Link className="btn btn-primary col-lg-1 mr-1" href="/admin/dashboard/student/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>     */}
                                     </div>
                                     
                                 </div>

@@ -22,26 +22,26 @@ export default function SideNav({
             <ul className="nav nav-sidebar sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="true" >
               <li className="nav-item menu-open">
                 <Link href="/parents/dashboard" className="nav-link active">
-                  <i className="nav-icon bi bi-speedometer"></i>
+                  <i className="nav-icon bi bi-list-columns"></i>
                   <p>
-                    Dashboard 
+                  Bulletin 
                   </p>
                 </Link> 
               </li>
               <li className="nav-item">
-                <Link href="/parents/dashboard/student" className="nav-link">
+                <Link href="/parents/student" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
                   <p>My Student</p>
                 </Link>
               </li> 
               <li className="nav-item">
-                <Link href="/parents/dashboard/attendance" className="nav-link">
+                <Link href="/parents/attendance" className="nav-link">
                   <i className="nav-icon bi bi-calendar"></i>
                   <p>Attendnace</p>
                 </Link>
               </li> 
               <li className="nav-item">
-                <Link href="/parents/dashboard/settings" className="nav-link">
+                <Link href="/parents/settings" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>
                   <p>Settings</p>
                 </Link>
