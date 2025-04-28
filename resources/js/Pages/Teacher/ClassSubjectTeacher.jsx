@@ -37,13 +37,6 @@ export default class ClassSubjectTeacher extends Component {
                     Header: 'No.', 
                     width: 70,
                     className: "center"
-                }, 
-                {
-                    id: "teacher",
-                    Header: 'Teacher',  
-                    width: 200,
-                    accessor: 'teacher_name',
-                    className: ""
                 },
                 {
                     id: "section",
@@ -77,7 +70,16 @@ export default class ClassSubjectTeacher extends Component {
                     className: "center",
                     accessor: 'index',
                     Cell: ({row}) => { 
-                       return <> {row.original.time_start} - {row.original.time_end} </>            
+                       return <> 
+                        {row.original.time_start} - {row.original.time_end} <br />
+                        {(row.original.monday==1)?"Mon-":""}
+                        {(row.original.tuesday==1)?"Tue-":""}
+                        {(row.original.wednesday==1)?"Wed-":""}
+                        {(row.original.thursday==1)?"Thu-":""}
+                        {(row.original.friday==1)?"Fri-":""}
+                        {(row.original.saturday==1)?"Sat-":""}
+                        {(row.original.sunday==1)?"Sun-":""}
+                       </>            
                     }
                 },
                 {
@@ -87,9 +89,8 @@ export default class ClassSubjectTeacher extends Component {
                     accessor: 'index',
                     className: "center",
                     Cell: ({row}) => { 
-                       return <>                       
-                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteAdvisory(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
-                        <button className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-pen"></i> Edit</button> 
+                       return <>
+                        <button className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-eye"></i> View</button> 
                        </>            
                     }
                 }
@@ -105,7 +106,7 @@ export default class ClassSubjectTeacher extends Component {
         this.updateData = this.updateData.bind(this);
         this.selectSubject = this.selectData.bind(this);
         this.getAllData = this.getAllData.bind(this);
-        console.log(this.props);
+        // console.log(this.props);
     }
     
     componentDidMount() {
@@ -153,7 +154,7 @@ export default class ClassSubjectTeacher extends Component {
 
     getAllData() {
         let self = this;
-        axios.get('/class/subject/teacher').then(function (response) {
+        axios.get('/teacher/class/subjects').then(function (response) {
             console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
@@ -662,11 +663,11 @@ export default class ClassSubjectTeacher extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-microsoft-teams"></i> Class Subject Teacher</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-microsoft-teams"></i> Class Subjects</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Class Subject</li>
+                            <li className="breadcrumb-item active" aria-current="page">Class Subjects</li>
                         </ol>
                     </div>
                     </div> 
@@ -681,10 +682,7 @@ export default class ClassSubjectTeacher extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title"> <i className="bi bi-microsoft-teams"></i> Class Subject List</h3> 
-                                    <button className="btn btn-primary float-right mr-1" onClick={() => {
-                                        // this.setState({sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==1)})  
-                                        $("#newClassTeaching").modal('show');
-                                    }}> <i className="bi bi-person-plus-fill"></i> Add</button>    
+                                    
                                 </div>
                                 <div className="card-body"> 
                                     <ReactTable

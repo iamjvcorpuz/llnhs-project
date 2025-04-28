@@ -19,6 +19,7 @@ export default class Dashboard extends Component {
             todayAttendance: [],
             sections: this.props.sections
         }
+        this.speak = this.speak.bind(this);
         console.log(this.props)
     }
 
@@ -85,7 +86,15 @@ export default class Dashboard extends Component {
             }
         }
     }
-
+    
+    speak(text) {
+        // Create a SpeechSynthesisUtterance
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = speechSynthesis.getVoices();
+        utterance.voice = voices[1];
+        speechSynthesis.speak(utterance);
+    }
+    
     render() {
         return <DashboardLayout title="Dashboard" user={this.props.auth.user}>
             <div className="app-content-header"> 
@@ -284,7 +293,9 @@ export default class Dashboard extends Component {
                             </div>
                         </div>
                     </div>
-
+                    {/* <button onClick={() => {
+                        this.speak();
+                    }}>Speak Test</button> */}
                 </div>
             </div>
         </DashboardLayout>

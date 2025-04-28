@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ClassSubjectTeachingController;
 use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HolidaysController;
@@ -48,6 +49,14 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/qrcodes/view', function () {
+    return Inertia::render('QRCodeList',[
+        "student" => StudentController::getDataQR(),
+        "teacher" => EmployeeController::getAllTeacher(),
+        "employee" => EmployeeController::getAllNONETeacher()
+    ]);
+});
 
 Route::get('/admin/dashboard', function () {
     return Inertia::render('Admin/Dashboard',[
@@ -211,6 +220,7 @@ Route::get('/admin/dashboard/class/subject/teacher', function () {
 
 Route::get('/admin/dashboard/events', function () {
     return Inertia::render('Admin/Event',[ 
+        "events" => []
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -279,6 +289,24 @@ Route::get('/teacher/dashboard/settings', function () {
 Route::get('/teacher/attendance/scan', function () {
     $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('AttendanceMobilePage',[
+        "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
+        "events" => []
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/teacher/class/subject', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Teacher/ClassSubjectTeacher',[ 
+        "class_teaching" => ClassSubjectTeachingController::getAllTeacherClass($id),
+        "teacher" => EmployeeController::getAllTeacher(),
+        "class" => ClassTSController::getAll(),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

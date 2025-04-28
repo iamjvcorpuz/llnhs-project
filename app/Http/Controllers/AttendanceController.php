@@ -21,10 +21,43 @@ class AttendanceController extends Controller
         $Student = DB::table('student')
         ->where('qr_code', '=', $request->code)
         ->get();
-        $Teacher = DB::table('teacher')
+        $Teacher = DB::table('employee')
         ->where('qr_code', '=', $request->code)
         ->get();
+        // $Teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' AND t.qr_code = ?;',[$request->code]);
+        
+        if($Student->count()>0) { 
+            $Student[0]->type = "student"; 
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $Student[0]
+            ], 200);
+        } else if($Teacher->count()>0) { 
+            $Teacher[0]->type = "teacher"; 
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $Teacher[0]
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'not_found',
+                'error' => null,
+                'data' => []
+            ], 200);
+        }
+    }
+    public function getClassStudents(Request $request) {
 
+        $Student = DB::table('student')
+        ->where('qr_code', '=', $request->code)
+        ->get();
+        $Teacher = DB::table('employee')
+        ->where('qr_code', '=', $request->code)
+        ->get();
+        // $Teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' AND t.qr_code = ?;',[$request->code]);
+        
         if($Student->count()>0) { 
             $Student[0]->type = "student"; 
             return response()->json([
@@ -52,11 +85,11 @@ class AttendanceController extends Controller
  
         $token = csrf_token();
         
-        $logs = DB::select('SELECT * FROM attendance WHERE  date = ? ',[$request->date]);
+        $logs = DB::select('SELECT * FROM attendance WHERE  date = ? AND terminal = \'kiosk\' ',[$request->date]);
         $attendance = array();
         foreach($logs as $key => $val) { 
             
-            $teacher = is_null($val->teacher_id) ? null: DB::table('teacher')->where('id', $val->teacher_id)->get();
+            $teacher = is_null($val->teacher_id) ? null: DB::table('employee')->where('id', $val->teacher_id)->where('employee_type', 'Teacher')->get();
             $student = is_null($val->student_id) ? null: DB::table('student')->where('id', $val->student_id)->get();
             $section = "";
             if(is_null($teacher) == false && $teacher->count()>0) {
@@ -72,6 +105,7 @@ class AttendanceController extends Controller
                 $object->date = $val->date;
                 $object->section = $section;
                 $object->mode = $val->mode;
+                $object->created_at = $val->created_at;
                 array_push($attendance,$object );
             }
             if(is_null($student) == false && $student->count()>0) {
@@ -87,6 +121,60 @@ class AttendanceController extends Controller
                 $object->date = $val->date;
                 $object->section = $section;
                 $object->mode = $val->mode;
+                $object->created_at = $val->created_at;
+                array_push($attendance,$object);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $attendance
+        ], 200);
+
+    }
+    public function getTodaysTimelogsClass(Request $request) {
+        $token = $request->session()->token();
+ 
+        $token = csrf_token();
+        
+        $logs = DB::select('SELECT * FROM attendance WHERE  date = ? ',[$request->date]);
+        $attendance = array();
+        foreach($logs as $key => $val) { 
+            
+            $teacher = is_null($val->teacher_id) ? null: DB::table('employee')->where('id', $val->teacher_id)->where('employee_type', 'Teacher')->get();
+            $student = is_null($val->student_id) ? null: DB::table('student')->where('id', $val->student_id)->get();
+            $section = "";
+            if(is_null($teacher) == false && $teacher->count()>0) {
+                $object = new stdClass();
+                $object->_id = $teacher[0]->id;
+                $object->lrn = $teacher[0]->id;
+                $object->profileImageBase64 = $teacher[0]->picture_base64;
+                $object->fullname = $teacher[0]->first_name . " " . $teacher[0]->last_name;
+                $object->idnumber = $teacher[0]->qr_code;
+                $object->logger_type = "teacher";
+                $object->logger_section = "";
+                $object->timelogs = "TIME " . $val->mode . ": " . $val->time;
+                $object->date = $val->date;
+                $object->section = $section;
+                $object->mode = $val->mode;
+                $object->created_at = $val->created_at;
+                array_push($attendance,$object );
+            }
+            if(is_null($student) == false && $student->count()>0) {
+                $object = new stdClass();
+                $object->_id = $student[0]->id;
+                $object->lrn = $student[0]->lrn;
+                $object->profileImageBase64 = $student[0]->id;
+                $object->fullname = $student[0]->first_name . " " . $student[0]->last_name;
+                $object->idnumber = $student[0]->qr_code;
+                $object->logger_type = "studnet";
+                $object->logger_section = "";
+                $object->timelogs =  "TIME " . $val->mode . ": " . $val->time;
+                $object->date = $val->date;
+                $object->section = $section;
+                $object->mode = $val->mode;
+                $object->created_at = $val->created_at;
                 array_push($attendance,$object);
             }
         }
@@ -162,6 +250,18 @@ class AttendanceController extends Controller
         ], 200);
 
     }
+    public function getClassTimelogs(Request $request) {
+        $logs = (object)array();
+
+        $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qrcode = ?',[$request->date,$request->qrcode]);
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $logs
+        ], 200);
+
+    }
     public function insertTimelogs(Request $request) {
 
         // echo "<pre>";
@@ -196,7 +296,9 @@ class AttendanceController extends Controller
             $contacts = DB::table('contacts')->leftJoin('student_guardians', 'contacts.guardian_id',  'student_guardians.parents_id')->where('student_guardians.student_id', '=', $student_id)->get();
             $profile = DB::table('student')->where('id', $student_id)->get();
             $fullname = $profile[0]->first_name . ' ' . $profile[0]->last_name . ($profile[0]->extension_name != null ? " " .$profile[0]->extension_name:'');
-            $phone_number = $contacts[0]->phone_number;
+            if($contacts->count()>0) {
+                $phone_number = $contacts[0]->phone_number;
+            }
         } else if($userdata['type'] == "teacher") {
             $teacher_id = $userdata['id'];
         }
@@ -221,46 +323,124 @@ class AttendanceController extends Controller
         // echo "\n";
         // echo "</pre>";
         // insert timelogs
-        // $insertAttendance = Attendance::create([
-        //     'terminal' => "kiosk",
-        //     'terminal_id' => "",
-        //     'type' => $type,
-        //     'qr_code' => $logsdata['code'],
-        //     'student_id' => $student_id,
-        //     'teacher_id' => $teacher_id,
-        //     'time' => $logsdata['time'],
-        //     'date' => $logsdata['date'],
-        //     'mode' => $logsdata['mode'],
-        //     'status' => ""
-        // ]);
-        // --------------------------------------------------------------------------------------------------------------------------------------
-        // send via sms
-        $message = 'Matagumpay ' . $mode . ' sa Paaralan ng Lebak Legislated NHS si ' . $fullname . ' sa saktong '  . $time . ' ' . $date; 
-        
-        $sms_id = Notifications::factory()->create([
-            'type' => 'sms',
-            'to' => $phone_number,
-            'message' => $message,
-            'status' => 'sending',
-            'date' => $date,
-            'time' => $date
-        ])['id'];
-
-        // $push_noti_id = Notifications::factory()->create([
-        //     'type' => 'push',
-        //     'to' => $phone_number,
-        //     'message' => $message,
-        //     'status' => 'sending',
-        //     'date' => $date,
-        //     'time' => $date
-        // ])['id'];
-
-        $command = "php " . base_path('artisan') . " process:send-sms " . escapeshellarg($phone_number) . " " . escapeshellarg($message) . " " . escapeshellarg($sms_id);
-        Process::start($command);
-        // --------------------------------------------------------------------------------------------------------------------------------------
-
+        $insertAttendance = Attendance::create([
+            'terminal' => "kiosk",
+            'terminal_id' => "",
+            'type' => $type,// student or employee(teacher,staff)
+            'qr_code' => $logsdata['code'],
+            'student_id' => $student_id,
+            'teacher_id' => $teacher_id,
+            'time' => $logsdata['time'],
+            'date' => $logsdata['date'],
+            'mode' => $logsdata['mode'],
+            'status' => ""
+        ]);
         if($userdata['type'] == "student") {
             $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
+            // --------------------------------------------------------------------------------------------------------------------------------------
+            // send via sms
+            $message = 'Matagumpay ' . $mode . ' sa Paaralan ng Lebak Legislated NHS si ' . $fullname . ' sa saktong '  . $time . ' ' . $date; 
+            if($phone_number!="") {
+                $sms_id = Notifications::factory()->create([
+                    'type' => 'sms',
+                    'to' => $phone_number,
+                    'message' => $message,
+                    'status' => 'sending',
+                    'date' => $date,
+                    'time' => $date
+                ])['id'];
+    
+                // $push_noti_id = Notifications::factory()->create([
+                //     'type' => 'push',
+                //     'to' => $phone_number,
+                //     'message' => $message,
+                //     'status' => 'sending',
+                //     'date' => $date,
+                //     'time' => $date
+                // ])['id'];
+    
+                $command = "php " . base_path('artisan') . " process:send-sms " . escapeshellarg($phone_number) . " " . escapeshellarg($message) . " " . escapeshellarg($sms_id);
+                Process::start($command);
+            }
+            // --------------------------------------------------------------------------------------------------------------------------------------
+        } else if($userdata['type'] == "teacher") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => []
+        ], 200);
+
+        
+    }
+    public function insertTimeTogsByClass(Request $request) {
+ 
+        $logs = (object)array(); 
+
+        $logsdata = gettype($request->logsdata)=="string"? json_decode($request->logsdata,true) : $request->logsdata;
+        $userdata = gettype($request->userdata)=="string"? json_decode($request->userdata,true) : $request->userdata;
+
+        // echo "<pre>";
+        // print_r($logsdata);
+        // // print_r($userdata);
+        // echo "</pre>";
+        $type = $userdata['type'];
+        $student_id = null;
+        $teacher_id = null;
+        $contacts = [];
+        $profile = null;
+        $fullname = "";
+        $phone_number = "";
+        $date = $logsdata['date'];
+        $time = $logsdata['time'];
+        $mode = $logsdata['mode']=='IN'?'nakapasok':'nakalabas'; 
+        if($userdata['type'] == "student") {
+            $student_id = $userdata['id'];
+            //Where('student_id',  $student_id)->
+            // student_guardians
+            $contacts = DB::table('contacts')->leftJoin('student_guardians', 'contacts.guardian_id',  'student_guardians.parents_id')->where('student_guardians.student_id', '=', $student_id)->get();
+            $profile = DB::table('student')->where('id', $student_id)->get();
+            $fullname = $profile[0]->first_name . ' ' . $profile[0]->last_name . ($profile[0]->extension_name != null ? " " .$profile[0]->extension_name:'');
+            if($contacts->count()>0) {
+                $phone_number = $contacts[0]->phone_number;
+            }
+        } else if($userdata['type'] == "teacher") {
+            $teacher_id = $userdata['id'];
+        } 
+        Attendance::create([
+            'terminal' => "mobile",
+            'terminal_id' => "class_id_" .  $logsdata['class_id'] . "_teacher_id_" . $logsdata['teacher_id'],
+            'type' => $type,// student or employee(teacher,staff)
+            'qr_code' => $logsdata['code'],
+            'student_id' => $student_id,
+            'teacher_id' => $teacher_id,
+            'time' => $logsdata['time'],
+            'date' => $logsdata['date'],
+            'mode' => $logsdata['mode'],
+            'status' => "class_present"
+        ]);
+        if($userdata['type'] == "student") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
+            // --------------------------------------------------------------------------------------------------------------------------------------
+            // send via sms
+            $message = 'Matagumpay naka ' . $mode . ' sa klase si ' . $fullname . ' sa saktong '  . $time . ' ' . $date; 
+            if($phone_number!="") {
+                $sms_id = Notifications::factory()->create([
+                    'type' => 'sms',
+                    'to' => $phone_number,
+                    'message' => $message,
+                    'status' => 'sending',
+                    'date' => $date,
+                    'time' => $date
+                ])['id'];
+    
+                $command = "php " . base_path('artisan') . " process:send-sms " . escapeshellarg($phone_number) . " " . escapeshellarg($message) . " " . escapeshellarg($sms_id);
+                Process::start($command);
+            }
+            // --------------------------------------------------------------------------------------------------------------------------------------
         } else if($userdata['type'] == "teacher") {
             $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
         }

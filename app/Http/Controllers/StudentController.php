@@ -123,6 +123,27 @@ class StudentController extends Controller
         ]);
         return $student;
     }
+    public static function getDataQR()
+    {
+        $student = DB::select("
+            SELECT 
+            id,
+            qr_code,
+            lrn,
+            psa_cert_no,
+            first_name,
+            last_name,
+            middle_name,
+            extension_name,
+            bdate,
+            sex,
+            picture_base64,
+            status
+            FROM
+            student
+        ");
+        return $student;
+    }
     public static function getDataID($id)
     {
         $student = Student::findOrFail($id);
@@ -168,32 +189,32 @@ class StudentController extends Controller
     public static function getSchoolStats($id)
     {
         $getSchoolStats = DB::select('SELECT 
-ROW_NUMBER() OVER () as no, 
-CONCAT(student.last_name , \', \' , student.first_name) as fullname,
-student.first_name,
-student.last_name,
-student.middle_name,
-student.extension_name,
-student.flsh_strand,
-student.flsh_track,
-student.picture_base64 AS photo,
-student.id AS student_id,
-student.lrn,
-student.qr_code,
-student.sex,
-student.status AS \'student_status\',
-advisory.school_year AS sy,
-advisory.year_level AS grade,
-advisory.section_name AS section,
-school_class.track AS track,
-school_class.strands AS strand,
-school_class.level AS grade_level
-FROM student 
-LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
-LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
-LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
-WHERE
-student.id = ?;',[$id]);
+        ROW_NUMBER() OVER () as no, 
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.picture_base64 AS photo,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS \'student_status\',
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section,
+        school_class.track AS track,
+        school_class.strands AS strand,
+        school_class.level AS grade_level
+        FROM student 
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
+        LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
+        WHERE
+        student.id = ?;',[$id]);
         return  $getSchoolStats;
     }
     public static function getStudentGuardian($id)

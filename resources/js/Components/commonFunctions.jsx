@@ -2,6 +2,11 @@ import React from 'react';
 import $ from "jquery";
 import { Link } from '@inertiajs/react';
 //#region 
+export const sortTimeDESC = function(a,b){
+    let t1 = new Date(Date.parse(a.created_at));
+    let t2 = new Date(Date.parse(b.created_at)); 
+    return t1<t2 ? 1 : t1>t2 ? -1 : 0;
+}
 export function consoleLog(val){
     if(window.logs){
         let params = []

@@ -41,6 +41,12 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
+                <Link href="/teacher/class/subject" className="nav-link">
+                  <i className="nav-icon bi bi-microsoft-teams"></i>
+                  <p>Class Subject</p>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-calendar-check-fill"></i>
                   <p>Attendance</p>
@@ -65,7 +71,7 @@ export default function SideNav({
                       <p>Scan</p>
                     </Link>
                   </li> 
-              </ul>
+                </ul>
               </li>
               <li className="nav-item">
                 <Link href="/teacher/dashboard/settings" className="nav-link">

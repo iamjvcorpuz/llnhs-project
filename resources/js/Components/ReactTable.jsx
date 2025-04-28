@@ -39,13 +39,13 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
       data.forEach(element => {
         temp1.push(element);
       });
-      console.log(temp1)
+      // console.log(temp1)
       Array.prototype.push.apply(temp1,Array.from(Array(defaultPageSize-data.length)).map(e => {
         return {
           no: null
         }
       }));
-      console.log(temp1,zeroRow)
+      // console.log(temp1,zeroRow)
       setMainData(temp1)
     } else { 
       defaultPageSize = 5;
