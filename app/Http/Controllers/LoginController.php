@@ -16,9 +16,10 @@ class LoginController extends Controller
             'username' => ['required'],
             'password' => ['required'],
         ]);
+        $remember = $request->remember;
 
         // print_r($credentials);
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials,$remember)) {
             $request->session()->regenerate();
             // echo "ok";
             // $user = DB::table('user_accounts')

@@ -77,6 +77,21 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-calendar-check-fill"></i>
+                  <p>Schedule</p>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/teacher/attendance/list" className="nav-link">
+                      <i className="nav-icon bi bi-calendar2-check"></i>
+                      <p>Advisory Schedules</p>
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+              <li className="nav-item">
                 <Link href="/admin/dashboard/programs/curricular" className="nav-link" title="Track & Strand">
                   <i className="nav-icon bi bi-list"></i>
                   <p>Programs & Curricular </p>

@@ -693,6 +693,7 @@ export default class Holidays extends Component {
                                 <input type="date" className="form-control" id="udate" defaultValue="08:00" min={"08:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#udate-alert").removeAttr('class').addClass('invalid-feedback');}}  />
                                 <div id="udate-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
+
                             <div className="col-md-6">
                                 <label htmlFor="utime_start" className="form-label">Time Start</label>
                                 <input type="time" className="form-control" id="utime_start" defaultValue="08:00" min={"08:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#utime_start-alert").removeAttr('class').addClass('invalid-feedback');}}  />

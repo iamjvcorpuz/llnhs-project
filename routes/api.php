@@ -60,6 +60,13 @@ Route::post('/attendance/account/find',[AttendanceController::class,'findAccount
 Route::post('/attendance/time/today/all/timelogs',[AttendanceController::class,'getTodaysTimelogs']);
 Route::post('/attendance/time/new/entry',[AttendanceController::class,'insertTimelogs']);
 Route::post('/attendance/time/logs',[AttendanceController::class,'getTimelogs']);
+// Route::post('/attendance/class/students',[AttendanceController::class,'getClassStudents']);
+Route::post('/attendance/class/students',[AdvisoryController::class,'TeachersAllStudentClass']);
+Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClass']);
+Route::post('/attendance/time/today/timelogs',[AttendanceController::class,'getTodaysTimelogsClass']);
+// Route::post('/attendance/class/students',function($id) { 
+//     return AdvisoryController::TeachersAllStudentClass($id);
+// });
 
 Route::post('/sms/send/test',[SMSController::class,'testSendSMS']);
 Route::post('/sms/send',[SMSController::class,'SendSMS']);
@@ -118,6 +125,10 @@ Route::get('/teacher/advisory/student/{code}',function($code) {
     ];
 });
 Route::post('/teacher/advisory/student/add',[AdvisoryController::class,'addStudentAdvisory']);
-Route::delete('/teacher/advisory/student',[AdvisoryController::class,'removeStudentAdvisory']);
+Route::delete('/teacher/advisory/student',[AdvisoryController::class,'removeStudentAdvisory']); 
+Route::get('/teacher/class/subjects',function() {
+    $id = AuthenticatedSessionController::getAuthId();
+    return ClassSubjectTeachingController::getAllTeacherClass($id);
+});
 // Route::post('/holidays/update',[HolidaysController::class,'update']);
 // Route::delete('/holidays',[HolidaysController::class,'destroy']);

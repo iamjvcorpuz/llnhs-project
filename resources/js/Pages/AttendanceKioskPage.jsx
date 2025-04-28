@@ -1,7 +1,7 @@
 import React,{ Component } from "react";
 import { Head } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod';
-import { Pagination , AlertSound} from '@/Components/commonFunctions'; 
+import { Pagination , AlertSound,sortTimeDESC} from '@/Components/commonFunctions'; 
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';
@@ -60,6 +60,7 @@ export default class AttendancePage extends Component {
         this.queryAccounts = this.queryAccounts.bind(this);
         this.queryAttendanceLogs = this.queryAttendanceLogs.bind(this);
         this.insertLogs = this.insertLogs.bind(this);
+        this.speak = this.speak.bind(this);
         this.AlertSound = AlertSound;
         this.timeoutScan = null;
         // setInterval(() => {
@@ -291,7 +292,7 @@ export default class AttendancePage extends Component {
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    self.setState({attendance_data: data},() => {
+                    self.setState({attendance_data: data.sort(sortTimeDESC)},() => {
 
                         Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
                             // console.log(result)
@@ -448,6 +449,7 @@ export default class AttendancePage extends Component {
                     //     self.alertMessages();
                     // });
                     self.getAllTodaysTimeLogs();
+                    callback();
                 } else if(typeof(response.data)!="undefined"&&response.data.status == "not_found") { 
                     self.AlertSound.denied();
                     self.alertMessages();
@@ -459,6 +461,7 @@ export default class AttendancePage extends Component {
                         time_logs_status: "bg-danger",
                         time_logs_status_message:"Not Found"
                     });
+                    callback();
                 }
             } else {
                 self.AlertSound.denied();
@@ -471,12 +474,15 @@ export default class AttendancePage extends Component {
                     time_logs_status: "bg-danger",
                     time_logs_status_message:"Sorry Please Try Again"
                 });
+                callback();
             }
         }).catch(function (error) {
-        // handle error
+            // handle error
             console.log(error);
+            callback();
         }).finally(function () {
-        // always executed
+            // always executed
+            callback();
         });
     }
 
@@ -507,6 +513,14 @@ export default class AttendancePage extends Component {
         }, timeoutIntervals);
     }
 
+    speak(text) {
+        // Create a SpeechSynthesisUtterance
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = speechSynthesis.getVoices();
+        utterance.voice = voices[1];
+        speechSynthesis.speak(utterance);
+    }
+    
     render() {
         return <div className="noselect">
             {/* <KeyboardEventHandler 

@@ -255,6 +255,7 @@ return new class extends Migration
                 $table->string('username');
                 $table->string('password');
                 $table->string('plainpassword');
+                $table->string('remember_token')->nullable();
                 $table->string('verified')->nullable();
                 $table->timestampsTz(precision: 0);
             });            
@@ -361,6 +362,8 @@ return new class extends Migration
         if (Schema::hasTable('events') == false) {
             Schema::create('events', function (Blueprint $table) {
                 $table->id();
+                $table->string('qrcode')->nullable();
+                $table->string('user_id')->nullable();
                 $table->string('type')->nullable();
                 $table->string('event_name')->nullable();
                 $table->string('facilitator')->nullable();

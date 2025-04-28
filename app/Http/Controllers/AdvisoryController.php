@@ -106,7 +106,35 @@ class AdvisoryController extends Controller
         WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory_group.advisory_id = ?
         ',[$id]);
     }
-
+    public static function TeachersAllStudentClass(Request $request)
+    {
+        $students = DB::select('
+        SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS \'student_status\'
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory_group.advisory_id = ?
+        ',[$request->id]);
+        return response()->json([
+            'status' => 'success',
+            'error' => $request->id,
+            'data' => $students
+        ], 201);
+    }
     /**
      * Show the form for creating a new resource.
      */
