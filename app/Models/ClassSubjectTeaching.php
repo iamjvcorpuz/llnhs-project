@@ -12,6 +12,7 @@ class ClassSubjectTeaching extends Model
     public $table = "class_teaching";
 
     protected $fillable = [
+        'qr_code',
         'subject_id',
         'teacher_id',
         'class_id',

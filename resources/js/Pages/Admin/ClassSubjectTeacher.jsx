@@ -241,7 +241,7 @@ export default class ClassSubjectTeacher extends Component {
             sunday
         })
 
-        if(time_start != "" && time_end != "" && description != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != ""&& flsh_track != ""&& flsh_strand != "" ) { 
+        if(time_start != "" && time_end != "" && description != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != "") { // && flsh_track != ""&& flsh_strand != "" 
             Swal.fire({
                 title: "If all fields are correct and please click to continue to save", 
                 showCancelButton: true,

@@ -13,6 +13,7 @@ class ClassTS extends Model
     public $table = "school_class";
 
     protected $fillable = [
+        'qr_code',
         'level',
         'grade',
         'track',

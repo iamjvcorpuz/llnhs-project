@@ -36,6 +36,7 @@ export default class DashboardLayout extends Component {
     componentDidMount() {
        this.loadInits();
     }
+
     loadInits() {
         let self = this;
         try {
@@ -142,6 +143,7 @@ export default class DashboardLayout extends Component {
             }, 1000);
         }
     }
+    
     render() {
         return ((this.state.viewer_mode=="desktop")?<div className="app-wrapper">
             <Head title={this.props.title} />

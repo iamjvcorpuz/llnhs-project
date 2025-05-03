@@ -21,15 +21,15 @@ export default class Dashboard extends Component {
           }]
         }
         // console.log(this.props);
-        if(this.props.auth.user.user_type!="Guardian") {
-            if(this.props.auth.user.user_type == "Admin") {
-                window.location.href = "/admin/dashboard";
-            } else if(this.props.auth.user.user_type == "Teacher") {
-                window.location.href = "/teacher/dashboard";
-            } else if(this.props.auth.user.user_type == "Student") {
-                // window.location.href = "/student/dashboard";
-            }  
-        }
+        // if(this.props.auth.user.user_type!="Guardian") {
+        if(this.props.auth.user.user_type == "Admin") {
+            window.location.href = "/admin/dashboard";
+        } else if(this.props.auth.user.user_type == "Teacher") {
+            window.location.href = "/teacher/dashboard";
+        } else if(this.props.auth.user.user_type == "Guardian") {
+            window.location.href = "/parents/bulletin";
+        }  
+        // }
     }
 
     componentDidMount() {

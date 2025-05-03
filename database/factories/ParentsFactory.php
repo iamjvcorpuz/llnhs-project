@@ -27,7 +27,8 @@ class ParentsFactory extends Factory
             'sex' => fake()->randomElement(['Male','Female']),
             'status' => 'active',
             'email' => fake()->unique()->safeEmail(),
-            'picture_base64' => ""
+            'picture_base64' => "",
+            'current_address' => "Davao City"
         ];
     }
 }

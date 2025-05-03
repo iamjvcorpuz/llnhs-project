@@ -193,6 +193,12 @@ Route::get('/admin/dashboard/class', function () {
         'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/student/qrcode', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Student/MyQR',[
+        "data" => StudentController::getDataID($id)
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/class/rooms', function () {
     return Inertia::render('Admin/ClassRooms',[ 
@@ -319,13 +325,14 @@ Route::get('/profile/dashboard', function () {
 // ======================================== teacher ================================
 // ======================================== parents ================================
 Route::get('/parents/dashboard', function () {
-    return Inertia::render('Parents/Bulletin',[ 
+    return Inertia::render('Parents/Bulletin',[
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/parents/student', function () {
+    $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('Parents/Student',[
-        
+        "data" => ParentsController::getAllMyChildren($id)
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

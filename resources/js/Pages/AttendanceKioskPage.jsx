@@ -11,11 +11,12 @@ import ReactTable from "@/Components/ReactTable";
 setInterval( async () => {
     let dt = new Date();
     let time = moment(dt);  
-    let dates = moment(dt);  
-    let timecountings = time.format('hh:mm:ss A');
-    let timedates = dates.format('LL');
-    $("#timers").text(timecountings);
-    $("#timesdates").text(timedates);
+    // let dates = moment(dt);  
+    // let timecountings = time.format('hh:mm:ss A');
+    // let timedates = dates.format('LL');
+    // $("#timers").text(timecountings);
+    // $("#timesdates").text(timedates);
+    $("#datetime").text("Today " + time.format('dddd, MMMM Do YYYY, h:mm:ss a'));
 }, 800);
 
 export default class AttendancePage extends Component {
@@ -72,7 +73,8 @@ export default class AttendancePage extends Component {
         //             fullname: "Juan Dela Filipe y Cresostomo Ibarra",
         //             nicname: "Juan",
         //             timelogs: "Time In: 08:00 AM",
-        //             section: "Section 1"
+        //             section: "Section 1",
+        //             logger_type: "Student",
         //         }],
         //         id: 0,
         //         lrn: "00003",
@@ -552,27 +554,31 @@ export default class AttendancePage extends Component {
                         onError={(e)=>{ 
                             this.photo_time_view_image.src='/images/adminlte/dist/assets/img/avatar.png'; 
                         }} alt="Picture Error" />
-                    </center> 
-                    {(this.state.time_logs_status!="")?<div className={`time-logs center text-white ${this.state.time_logs_status}`}>
-                        <label>{this.state.time_logs_status_message}</label>
-                    </div>:null}
-
+                    </center>
                 </div>
                 <div className="log-center-data">
-                    <div className="header_time">  
-                        <div className="timeCount" id="timers">-</div>  
-                        <div className="dateCount" id="timesdates" >-</div>
-                    </div>
-                    {/* <hr /> */}
-                    {/* <br />
                     <br />
-                    <br /> */}
-                    <div className="header_time logger-details-space">
-                        {(this.state.logger_type=="student")?<div className="logger-name-small">{(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:""}</div>:<div className="logger-name-small">{(this.state.idnumber!="")?`ID : ${this.state.lrn}`:""}</div> }
+                    <br />
+                    <br />
+                    <div className="header_time">
+                        <div className="logger-name-small">
+                        {(this.state.logger_type=="Student")?(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:"":(this.state.idnumber!="")?`ID : ${this.state.lrn}`:""}
+                        </div>            
+                        <hr />
                         <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
-                        {(this.state.logger_type=="student")?<div className="logger-name-small">{(this.state.logger_section!="")?this.state.logger_section:""}</div>:null}                        
-                    </div>
-                    {/* <hr /> */}
+                        <hr />
+                        <div className="logger-name-small">
+                        {(this.state.logger_type=="Student")?(this.state.logger_section!="")?this.state.logger_section:"":null}
+                        </div>
+                        <hr />
+                        <div className="datetimeCount" id="datetime" >-</div>
+                        <hr /> 
+                        <div className="logger-name-small-2">
+                            {(this.state.time_logs_status!="")?<div className={`time-logs-status center text-white ${this.state.time_logs_status}`}>
+                            <label>{this.state.time_logs_status_message}</label>
+                            </div>:null} 
+                        </div> 
+                    </div> 
                     <div className="header_time">
                     <ReactTable
                         key={"react-tables"}
@@ -580,8 +586,8 @@ export default class AttendancePage extends Component {
                         data={this.state.attendance_data} 
                         columns={this.state.columns}
                         showHeader={true}
-                        showPagenation={false}
-                        defaultPageSize={5}
+                        showPagenation={true}
+                        defaultPageSize={8}
                     />
                     </div>
                     <div className="log-center-data-total-logs">

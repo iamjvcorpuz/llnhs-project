@@ -14,18 +14,18 @@ class ClassTSController extends Controller
      */
     public function index()
     {
-        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class;');
+        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
         return  $school_class;
     }
     public static function getAll()
     {
-        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class;');
+        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",qr_code,id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
         return  $school_class;
     }
 
     public static function getAll2()
     {
-        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class;');
+        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",qr_code,id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
         // return  $school_class;
         return [
             "class" => $school_class,
@@ -55,9 +55,7 @@ class ClassTSController extends Controller
             'grade' => 'required',
             'yearlevel' => 'required',
             'classroom' => 'required',
-            'schoolyear' => 'required', 
-            'flsh_track' => 'required', 
-            'flsh_strand' => 'required',
+            'schoolyear' => 'required',
             'section_name' => 'required'
         ]);
 
@@ -78,9 +76,10 @@ class ClassTSController extends Controller
                 ->Where('classroom', $request->classroom)
                 ->Where('section_name', $request->section_name)
                 ->get();
-
+        $qr_code = md5($request->yearlevel . $request->grade . $request->classroom . $request->schoolyear . $request->section_name);
         if($advisory->count()==0) {  
             $add = ClassTS::create([
+                'qr_code' => $qr_code,
                 'level' => $request->yearlevel,
                 'grade' => $request->grade,
                 'track' => $request->flsh_track,

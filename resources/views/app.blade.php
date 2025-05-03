@@ -34,10 +34,10 @@
     </head>
     <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary layout-fixed fixed-header fixed-footer">
       
-      @inertia
-      {{-- <div id="main-apps"></div> 
-      @viteReactRefresh
-      @vite(['resources/js/app.jsx']) --}}
+      @inertia('llnhs-app')
+      {{-- <div id="llnhs-app"></div>  --}}
+      {{-- @viteReactRefresh--}}
+      {{-- @vite(['resources/js/app.jsx'])  --}}
 
       <script src="{{ url('adminlte/dist/js/popper.min.js') }}"></script>
       <script src="{{ url('adminlte/dist/js/jquery.min.js') }}"></script>

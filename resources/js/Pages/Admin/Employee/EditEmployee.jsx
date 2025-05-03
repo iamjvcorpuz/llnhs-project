@@ -50,6 +50,7 @@ export default class EditEmployee extends Component {
 
     componentDidMount() {
         this._isMounted = true;
+        console.log(this.props.employee.id)
         console.log(this)
 
         this.setState({
@@ -121,6 +122,7 @@ export default class EditEmployee extends Component {
     
     saveData() {
         let self = this;
+        console.log(self.state)
         if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "") {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
@@ -156,7 +158,7 @@ export default class EditEmployee extends Component {
                         }
                     });
                     let datas =  {
-                        id: self.props.teacher.id,
+                        id: self.props.employee.id,
                         qr_code: self.state.lrn, 
                         first_name:self.state.first_name,
                         last_name:self.state.last_name,
@@ -171,7 +173,7 @@ export default class EditEmployee extends Component {
                         employee_type: self.state.employee_type
                     };
                     console.log(datas);
-                    axios.post('/teacher/update',datas).then( async function (response) {
+                    axios.post('/employee/update',datas).then( async function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {

@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/react';
 
 export default function LoginLayout({ children }) {
     return (
-        <div className="login-bg flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
+        <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
             {/* <strong className="cente fs-4">Lebak Legislated National High School </strong>    */}
                 <center>
                     <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />

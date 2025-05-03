@@ -7,8 +7,13 @@ import Swal from 'sweetalert2';
 import ReactTable from "@/Components/ReactTable"; 
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
-
-
+document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('hide.bs.modal', function (event) {
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    });
+});
 export default class Advisory extends Component {
     constructor(props) {
 		super(props);
@@ -232,10 +237,10 @@ export default class Advisory extends Component {
 
     saveData() {
         let self = this;
-        console.log($("#teacher").val());
-        console.log($("#yearlevel").val()); 
-        console.log($("#sectionname").val());
-        console.log($("#subject").val());
+        // console.log($("#teacher").val());
+        // console.log($("#yearlevel").val()); 
+        // console.log($("#sectionname").val());
+        // console.log($("#subject").val());
         let teacher_name = $("#teacher").val();
         let teacher = "";
         let yearlevel = $("#yearlevel").val();
@@ -504,7 +509,7 @@ export default class Advisory extends Component {
                 }} />
             </datalist>
 
-            <div className="modal fade" tabIndex="-1" role="dialog" id="newAdvisory" aria-hidden="true" data-bs-backdrop="static">
+            <div className="modal fade" tabIndex="-1" role="dialog" id="newAdvisory" aria-hidden="false" aria-modal="true" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                     <div className="modal-header">
@@ -624,7 +629,7 @@ export default class Advisory extends Component {
 
                     </div>
                     <div className="modal-footer"> 
-                        <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-save"></i> Save</button>   
+                        <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData(); }}> <i className="bi bi-save"></i> Save</button>   
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                     </div>

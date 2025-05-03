@@ -171,8 +171,6 @@ class ClassSubjectTeachingController extends Controller
             'grade' => 'required',
             'yearlevel' => 'required',
             'schoolyear' => 'required', 
-            'flsh_track' => 'required', 
-            'flsh_strand' => 'required',
             'section_name' => 'required'
         ]);
 
@@ -194,7 +192,9 @@ class ClassSubjectTeachingController extends Controller
                 ->get();
 
         if($advisory->count()==0) {  
+            $qr_code = md5($request->subject . $request->teacher_id . $request->classts . $request->subject_name);
             $add = ClassSubjectTeaching::create([
+                'qr_code' => $qr_code,
                 'subject_id' => $request->subject,
                 'teacher_id' => $request->teacher_id,
                 'class_id' => $request->classts,

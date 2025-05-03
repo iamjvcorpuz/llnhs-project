@@ -6,7 +6,7 @@ export default function SideNav({
     children,
     ...props
 }) {
-    return (<aside className="app-sidebar shadow bg-info-subtle " data-bs-theme=""> 
+    return (<aside className="app-sidebar shadow bg-info " data-bs-theme=""> 
         <div className="sidebar-brand bg-info"> 
           <a href="#" className="brand-link"> 
             <img

@@ -8,6 +8,7 @@ import ReactTable from "@/Components/ReactTable";
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
+import QRCode from 'qrcode';
 
 export default class ClassTS extends Component {
     constructor(props) {
@@ -83,7 +84,7 @@ export default class ClassTS extends Component {
                 {
                     id: "action",
                     Header: 'Action',  
-                    width: 130, 
+                    width: 140, 
                     accessor: 'index',
                     className: "center",
                     Cell: ({row}) => { 
@@ -98,8 +99,25 @@ export default class ClassTS extends Component {
                             $("#uflsh_strand").val(''); 
                             $("#usectionname").val(''); 
                             this.selectData(row.original);
-                        }} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</button>  
-                       </>            
+                        }} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</button> 
+                        {(typeof(row.original.qr_code)!="undefined"&&row.original.qr_code!=null)?
+                        <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
+                            if(typeof(row.original.qr_code)!="undefined"&&row.original.qr_code!=null) {
+                                await this.generateQR(row.original.qr_code); 
+                                let room_no  = "";
+                                try {
+                                    room_no  = this.state.classroom_temp.find(e => e.id==row.original.classroom_id).room_number;
+                                } catch (error) {
+                                    
+                                }
+                                this.setState({
+                                    room_name: row.original.section_name,
+                                    room_number: room_no
+                                })
+                                $('#qrcode').modal('show');
+                            }
+                        }}> <i className="bi bi-qr-code"></i> QR</button>:null}
+                       </>
                     }
                 }
             ],
@@ -110,7 +128,11 @@ export default class ClassTS extends Component {
             description: "",
             selectedData: {},
             track: this.props.track,
-            strand: this.props.strand
+            strand: this.props.strand,
+            qr_code: "",
+            qr_code_data: "",
+            room_name: "",
+            room_number: ""
         }
         console.log(this.props)
         this.delete = this.delete.bind(this);
@@ -118,7 +140,7 @@ export default class ClassTS extends Component {
         this.updateData = this.updateData.bind(this);
         this.selectSubject = this.selectData.bind(this);
         this.getAllData = this.getAllData.bind(this);
-
+        this.generateQR = this.generateQR.bind(this);
     }
 
     componentDidMount() {
@@ -129,17 +151,27 @@ export default class ClassTS extends Component {
             });
         }
     }
+
+    async generateQR (text) {
+        let self = this;
+        try {
+            let sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' ,width: 500 });
+            self.setState({qr_code: text, qr_code_data: sgv});
+        } catch (err) {
+        console.error(err)
+        }
+    }
     
     selectData(data) {
         let self = this;
         console.log(data);
         if(data.level == "Junior") {
-            let temp = self.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 7"||e.year_grade=="Grade 8" );
+            let temp = self.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 7"||e.year_grade=="Grade 8"||e.year_grade=="Grade 9"||e.year_grade=="Grade 10" );
             self.setState({
                 yeargrade: temp
             })
         } else {                                            
-            let temp = self.state.yeargrade_temp.filter(e => e.year_grade=="Grade 9"||e.year_grade=="Grade 10"||e.year_grade=="Grade 11"||e.year_grade=="Grade 12");
+            let temp = self.state.yeargrade_temp.filter(e => e.year_grade=="Grade 11"||e.year_grade=="Grade 12");
             self.setState({
                 yeargrade: temp
             })
@@ -149,7 +181,7 @@ export default class ClassTS extends Component {
         $("#uschoolyear").val(data.school_year); 
         $("#uflsh_track").val(data.track); 
         $("#uflsh_strand").val(data.strands); 
-        $("#sectionname").val(data.description); 
+        $("#usectionname").val(data.section_name); 
         this.setState({selectedData:data, classroom: this.state.classroom_temp},() => {
             $("#updateClass").modal('show');
             setTimeout(() => {
@@ -159,7 +191,7 @@ export default class ClassTS extends Component {
                 $("#uschoolyear").val(data.school_year); 
                 $("#uflsh_track").val(data.track); 
                 $("#uflsh_strand").val(data.strands);  
-                $("#sectionname").val(data.description); 
+                $("#usectionname").val(data.section_name); 
             }, 1000);
         }); 
     }
@@ -209,7 +241,7 @@ export default class ClassTS extends Component {
         let section_name = $("#sectionname").val();  
         
 
-        if(yearlevel != "" && grade != "" && classroom != "" && schoolyear != ""&& flsh_track != ""&& flsh_strand != "" ) { 
+        if(yearlevel != "" && grade != "" && classroom != "" && schoolyear != "") { 
             Swal.fire({
                 title: "If all fields are correct and please click to continue to save", 
                 showCancelButton: true,
@@ -334,16 +366,16 @@ export default class ClassTS extends Component {
                 return false
             });            
         } else {
-            if(subject_name == "") {
-                $("#subject_name-alert").removeAttr('class');
-                $("#subject_name-alert").html('Required Field');
-                $("#subject_name-alert").addClass('d-block invalid-feedback');
-            }
-            if(description == "") {
-                $("#description-alert").removeAttr('class');
-                $("#description-alert").html('Required Field');
-                $("#description-alert").addClass('d-block invalid-feedback');
-            }
+            // if(subject_name == "") {
+            //     $("#subject_name-alert").removeAttr('class');
+            //     $("#subject_name-alert").html('Required Field');
+            //     $("#subject_name-alert").addClass('d-block invalid-feedback');
+            // }
+            // if(description == "") {
+            //     $("#description-alert").removeAttr('class');
+            //     $("#description-alert").html('Required Field');
+            //     $("#description-alert").addClass('d-block invalid-feedback');
+            // }
         }
     }
 
@@ -706,16 +738,20 @@ export default class ClassTS extends Component {
                                          if(e.target.value != "") {
                                             this.setState({selectedLevel: e.target.value})  
                                          }
-                                         if(e.target.value == "Junior") {
-                                            let temp = this.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 7"||e.year_grade=="Grade 8" );
+                                         if(e.target.value == "Junior") {                                       
+                                            let temp = this.state.yeargrade_temp.filter(e => e.year_grade=="Grade 7"||e.year_grade=="Grade 8"||e.year_grade=="Grade 9"||e.year_grade=="Grade 10");
                                             this.setState({
                                                 yeargrade: temp
-                                            })
-                                        } else {                                            
-                                            let temp = this.state.yeargrade_temp.filter(e => e.year_grade=="Grade 9"||e.year_grade=="Grade 10"||e.year_grade=="Grade 11"||e.year_grade=="Grade 12");
+                                            });
+                                            $("#flsh_track").attr('disabled','disabled');
+                                            $("#flsh_strand").attr('disabled','disabled');
+                                        } else {    
+                                            let temp = this.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 11"||e.year_grade=="Grade 12" );
                                             this.setState({
                                                 yeargrade: temp
-                                            })
+                                            });
+                                            $("#uflsh_track").removeAttr('disabled');
+                                            $("#flsh_strand").removeAttr('disabled');
                                         }
                                          }}>
                                          <option disabled >--Select Level--</option>
@@ -761,7 +797,7 @@ export default class ClassTS extends Component {
                                     <div id="section-alert" className="invalid-feedback">Please select a valid state.</div>
                                 </div>
                                 <div className="col-md-12">
-                                    <label htmlFor="sectionname" className="form-label">Section Name</label>
+                                    <label htmlFor="sectionname" className="form-label">Room Name</label>
                                     <input type="text" className="form-control" id="sectionname" defaultValue="" required="" onChange={(e) => {  $("#sectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
                                     <div id="sectionname-alert" className="invalid-feedback">Please select a valid state.</div>
                                 </div>
@@ -830,13 +866,13 @@ export default class ClassTS extends Component {
                                         if(e.target.value != "") {
                                             this.setState({selectedLevel: e.target.value})  
                                         }
-                                        if(e.target.value == "Junior") {
-                                            let temp = this.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 7"||e.year_grade=="Grade 8" );
+                                        if(e.target.value == "Junior") {                                         
+                                            let temp = this.state.yeargrade_temp.filter(e => e.year_grade=="Grade 7"||e.year_grade=="Grade 8"||e.year_grade=="Grade 9"||e.year_grade=="Grade 10");
                                             this.setState({
                                                 yeargrade: temp
                                             })
-                                        } else {                                            
-                                            let temp = this.state.yeargrade_temp.filter(e => e.year_grade=="Grade 9"||e.year_grade=="Grade 10"||e.year_grade=="Grade 11"||e.year_grade=="Grade 12");
+                                        } else {   
+                                            let temp = this.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 11"||e.year_grade=="Grade 12" );
                                             this.setState({
                                                 yeargrade: temp
                                             })
@@ -885,7 +921,7 @@ export default class ClassTS extends Component {
                                 <div id="uclassroom-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
-                                <label htmlFor="usectionname" className="form-label">Section Name</label>
+                                <label htmlFor="usectionname" className="form-label">Room Name</label>
                                 <input type="text" className="form-control" id="usectionname" defaultValue="" required="" onChange={(e) => {  $("#usectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
                                 <div id="usectionname-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
@@ -898,7 +934,7 @@ export default class ClassTS extends Component {
                             <div className="col-md-12">
                                 <label htmlFor="uflsh_track" className="form-label">Track</label>
                                 {/* <input type="text" className="form-control" id="flsh_track" defaultValue="" required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  /> */}
-                                <select name="uflsh_track" id="uflsh_track" className="form-control"  onChange={(e) => { $("#uflsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
+                                <select name="uflsh_track" id="uflsh_track" className="form-control"   onChange={(e) => { $("#uflsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
                                     <option value=""></option>
                                         <EachMethod of={this.state.track} render={(element,index) => {
                                             return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
@@ -924,6 +960,86 @@ export default class ClassTS extends Component {
                 </div>
                 <div className="modal-footer"> 
                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.updateData() }}> <i className="bi bi-save"></i> Update</button>   
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode" aria-hidden="false" data-bs-backdrop="static">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title fs-5">QR</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                    </button>
+                </div>
+                <div className="modal-body">
+                    
+                    <div className="card-body"> 
+                        <div className="row g-3"> 
+                            <div className="my-qr-code ">
+                                <div className="my-qr-code-content">
+                                    <div className="center">
+                                        <strong>
+                                        {this.state.room_name.toLocaleUpperCase()}
+                                        </strong>
+                                        <br />
+                                        <strong>
+                                        Room No.:{this.state.room_number.toLocaleUpperCase()}
+                                        </strong>
+                                    </div>
+                                    <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-primary" onClick={() => {
+                        let w=window.open();
+                        w.document.write($('.my-qr-code').html());
+                        w.print();
+                        w.close();
+                    }} ><i className="bi bi-printer"></i> Print</button>
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode_print" aria-hidden="false" data-bs-backdrop="static">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title fs-5">QR</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                    </button>
+                </div>
+                <div className="modal-body">
+                    
+                    <div className="card-body"> 
+                        <div className="row g-3"> 
+                            <div className="my-qr-code ">
+                                <div className="my-qr-code-content">
+                                    <div className="center">
+                                        <strong>
+                                        {this.state.room_name.toLocaleUpperCase()}
+                                        </strong>
+                                        <br />
+                                        <strong>
+                                        Room No.:{this.state.room_number.toLocaleUpperCase()}
+                                        </strong>
+                                    </div>
+                                    <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-primary" ><i className="bi bi-printer"></i> Print</button>
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
                 </div>
