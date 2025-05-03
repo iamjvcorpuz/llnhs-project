@@ -33,7 +33,7 @@ class LoginController extends Controller
             } else if($request->user()->user_type == "Teacher") {
                 return redirect('/teacher/dashboard');
             } else if($request->user()->user_type == "Guardian") {
-                return redirect('/guardian/dashboard');
+                return redirect('/parents/dashboard');
             }
             // print_r($request->user());
         }

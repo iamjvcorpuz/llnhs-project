@@ -33,6 +33,36 @@ class ParentsController extends Controller
     {
         return Parents::all();
     }
+    public static function getAllMyChildren($id) 
+    {
+        return  DB::select('SELECT 
+        ROW_NUMBER() OVER () as no, 
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.picture_base64 AS photo,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS \'student_status\',
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section,
+        school_class.track AS track,
+        school_class.strands AS strand,
+        school_class.level AS grade_level
+        FROM student_guardians
+        LEFT JOIN student ON student.id = student_guardians.student_id
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
+        LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
+        WHERE  student_guardians.parents_id = ?',[$id]);
+    }
     public static function newId() {
         // $id = DB::select('SELECT LAST_INSERT_ID() INTO parents;');
         $d = $trans = Parents::orderBy('id', 'desc')->take(1)->first();

@@ -6,7 +6,7 @@ export default function SideNav({
     children,
     ...props
 }) {
-    return (<aside className="app-sidebar shadow bg-info-subtle " data-bs-theme=""> 
+    return (<aside className="app-sidebar shadow bg-info " data-bs-theme=""> 
         <div className="sidebar-brand bg-info"> 
           <a href="#" className="brand-link"> 
             <img
@@ -108,6 +108,21 @@ export default function SideNav({
                   <i className="nav-icon bi bi-calendar"></i>
                   <p>Holiday</p>
                 </Link>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-printer"></i>
+                  <p>Report</p>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/teacher/attendance/list" className="nav-link">
+                      <i className="nav-icon bi bi-calendar2-check"></i>
+                      <p>Advisory Schedules</p>
+                    </Link>
+                  </li>
+                </ul>
               </li>
               <li className="nav-item">
                 <Link href="/admin/dashboard/users" className="nav-link">

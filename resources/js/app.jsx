@@ -11,7 +11,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client'; 
 
 // import * as bootstrap from "bootstrap";
-
+// import App from './AppRoute';
 import $ from 'jquery';
 window.jQuery = window.$ = $
 
@@ -20,8 +20,12 @@ window.DataTable = DataTable;
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
  
+const cleanApp = () => {
+    document.getElementById('llnhs-app').removeAttribute('data-page');
+};
 
 createInertiaApp({
+    id: 'llnhs-app',
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
         resolvePageComponent(
@@ -34,7 +38,7 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
-});
+}).then(cleanApp);
 
 
 // import React, { Component } from 'react';

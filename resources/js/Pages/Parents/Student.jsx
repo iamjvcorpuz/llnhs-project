@@ -21,7 +21,7 @@ export default class Student extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            data: [],
+            data: this.props.data,
             columns: [
                 {
                     id: "no",
@@ -29,16 +29,6 @@ export default class Student extends Component {
                     Header: 'No.', 
                     width: 100,
                     className: "center"
-                },
-                {
-                    id: "qr",
-                    accessor: 'lrn',
-                    Header: 'QR Code',   
-                    Cell: ({row}) => { 
-                        return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
-                            window.open(`/qrcode?code=${row.original.lrn}`)
-                        }} />             
-                    }
                 }, 
                 {
                     id: "picture",
@@ -66,7 +56,13 @@ export default class Student extends Component {
                     id: "level",
                     Header: 'Level',  
                     width: 200,
-                    accessor: 'level'
+                    accessor: 'grade_level'
+                },  
+                {
+                    id: "ylevel",
+                    Header: 'Year Level',  
+                    width: 200,
+                    accessor: 'grade'
                 },  
                 {
                     id: "section",
@@ -78,33 +74,20 @@ export default class Student extends Component {
                     id: "Status",
                     Header: 'Status',  
                     width: 200,
-                    accessor: 'status',
+                    accessor: 'student_status',
                     className: "center"
-                },
-                {
-                    id: "Action",
-                    Header: 'Status',  
-                    width: 200,
-                    accessor: 'status',
-                    className: "center",
-                    Cell: ({row}) => { 
-                       return <>                       
-                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>    
-                        <Link href={`/admin/dashboard/student/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
-                        <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</button>    
-                       </>            
-                    }
                 }
             ]
         }
         this._isMounted = false;
         this.loadStudentList = this.loadStudentList.bind(this);
         this.deleteStudent = this.deleteStudent.bind(this);
+        console.log(this.props)
     }
     
     componentDidMount() {
         this._isMounted = true;
-        this.loadStudentList();
+        // this.loadStudentList();
         // console.log(this)
         // let list  = [];
         // for (let index = 0; index < 10; index++) {

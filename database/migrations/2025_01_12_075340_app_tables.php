@@ -317,6 +317,7 @@ return new class extends Migration
         if (Schema::hasTable('school_class') == false) {
             Schema::create('school_class', function (Blueprint $table) {
                 $table->id();
+                $table->string('qr_code')->nullable();
                 $table->string('level')->nullable();
                 $table->string('grade')->nullable();
                 $table->string('track')->nullable(); 
@@ -330,6 +331,7 @@ return new class extends Migration
         if (Schema::hasTable('class_teaching') == false) {
             Schema::create('class_teaching', function (Blueprint $table) {
                 $table->id();
+                $table->string('qr_code')->nullable();
                 $table->string('subject_id')->nullable();
                 $table->string('teacher_id')->nullable();
                 $table->string('class_id')->nullable(); 

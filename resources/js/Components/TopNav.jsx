@@ -14,7 +14,7 @@ export default function TopNav({
     // if(user.user.user_type=="user_type") {
 
     // }
-    return (<nav className="app-header navbar navbar-expand bg-info "> 
+    return (<nav className="app-header navbar navbar-expand bg-light "> 
         <div className="container-fluid"> 
           <ul className="navbar-nav">
             <li className="nav-item">

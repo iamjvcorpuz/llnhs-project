@@ -20,7 +20,7 @@ export default class Dashboard extends Component {
             id: 1
           }]
         }
-        // console.log(this.props);
+        console.log(this.props);
         if(this.props.auth.user.user_type!="Guardian") {
             if(this.props.auth.user.user_type == "Admin") {
                 window.location.href = "/admin/dashboard";
