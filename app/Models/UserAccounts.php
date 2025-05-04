@@ -24,6 +24,7 @@ class UserAccounts extends Authenticatable
     protected $hidden = [
         'password',
         'plainpassword',
+        'remember_token'
     ];
 
     protected function casts(): array
