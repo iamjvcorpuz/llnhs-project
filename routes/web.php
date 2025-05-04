@@ -193,12 +193,6 @@ Route::get('/admin/dashboard/class', function () {
         'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/student/qrcode', function () {
-    $id = AuthenticatedSessionController::getAuthId();
-    return Inertia::render('Student/MyQR',[
-        "data" => StudentController::getDataID($id)
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin/dashboard/class/rooms', function () {
     return Inertia::render('Admin/ClassRooms',[ 
@@ -429,4 +423,4 @@ Route::get('/attendance/mobile', function () {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/api.php';
-// require __DIR__.'/fb.php';
+require __DIR__.'/fb.php';

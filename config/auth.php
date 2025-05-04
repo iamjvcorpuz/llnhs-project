@@ -94,14 +94,14 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'user_accounts',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 0,
-            'throttle' => 0,
-        ],
-    ],
+    // 'passwords' => [
+    //     'user_accounts' => [
+    //         'provider' => 'user_accounts',
+    //         'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+    //         'expire' => 0,
+    //         'throttle' => 0,
+    //     ],
+    // ],
 
     /*
     |--------------------------------------------------------------------------

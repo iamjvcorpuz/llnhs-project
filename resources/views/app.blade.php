@@ -34,8 +34,8 @@
     </head>
     <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary layout-fixed fixed-header fixed-footer">
       
-      @inertia('llnhs-app')
-      {{-- <div id="llnhs-app"></div>  --}}
+      @inertia
+      <div id="app"></div> 
       {{-- @viteReactRefresh--}}
       {{-- @vite(['resources/js/app.jsx'])  --}}
 
