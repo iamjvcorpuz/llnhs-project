@@ -77,7 +77,16 @@ export default class ClassSubjectTeacher extends Component {
                     className: "center",
                     accessor: 'index',
                     Cell: ({row}) => { 
-                       return <> {row.original.time_start} - {row.original.time_end} </>            
+                       return <> 
+                        {row.original.time_start} - {row.original.time_end} <br />
+                        {(row.original.monday==1)?"Mon-":""}
+                        {(row.original.tuesday==1)?"Tue-":""}
+                        {(row.original.wednesday==1)?"Wed-":""}
+                        {(row.original.thursday==1)?"Thu-":""}
+                        {(row.original.friday==1)?"Fri-":""}
+                        {(row.original.saturday==1)?"Sat-":""}
+                        {(row.original.sunday==1)?"Sun-":""}
+                       </>            
                     }
                 },
                 {

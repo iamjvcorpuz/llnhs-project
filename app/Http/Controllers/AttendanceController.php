@@ -286,6 +286,8 @@ class AttendanceController extends Controller
         $profile = null;
         $fullname = "";
         $phone_number = "";
+        $messenger_id = "";
+        $messenger_name = "";
         $date = $logsdata['date'];
         $time = $logsdata['time'];
         $mode = $logsdata['mode']=='IN'?'nakapasok':'nakalabas'; 
@@ -298,6 +300,8 @@ class AttendanceController extends Controller
             $fullname = $profile[0]->first_name . ' ' . $profile[0]->last_name . ($profile[0]->extension_name != null ? " " .$profile[0]->extension_name:'');
             if($contacts->count()>0) {
                 $phone_number = $contacts[0]->phone_number;
+                $messenger_id = $contacts[0]->messenger_id;
+                $messenger_name = $contacts[0]->messenger_name;
             }
         } else if($userdata['type'] == "teacher") {
             $teacher_id = $userdata['id'];
@@ -341,7 +345,7 @@ class AttendanceController extends Controller
             // send via sms
             $message = 'Matagumpay ' . $mode . ' sa Paaralan ng Lebak Legislated NHS si ' . $fullname . ' sa saktong '  . $time . ' ' . $date; 
             if($phone_number!="") {
-                $sms_id = Notifications::factory()->create([
+                $notif_id = Notifications::factory()->create([
                     'type' => 'sms',
                     'to' => $phone_number,
                     'message' => $message,
@@ -359,7 +363,29 @@ class AttendanceController extends Controller
                 //     'time' => $date
                 // ])['id'];
     
-                $command = "php " . base_path('artisan') . " process:send-sms " . escapeshellarg($phone_number) . " " . escapeshellarg($message) . " " . escapeshellarg($sms_id);
+                $command = "php " . base_path('artisan') . " process:send-sms " . escapeshellarg($phone_number) . " " . escapeshellarg($message) . " " . escapeshellarg($notif_id);
+                Process::start($command);
+            }
+            if($messenger_id!="") {
+                $notif_id = Notifications::factory()->create([
+                    'type' => 'fb',
+                    'to' => $messenger_id,
+                    'message' => $message,
+                    'status' => 'sending',
+                    'date' => $date,
+                    'time' => $date
+                ])['id'];
+    
+                // $push_noti_id = Notifications::factory()->create([
+                //     'type' => 'push',
+                //     'to' => $phone_number,
+                //     'message' => $message,
+                //     'status' => 'sending',
+                //     'date' => $date,
+                //     'time' => $date
+                // ])['id'];
+    
+                $command = "php " . base_path('artisan') . " process:process-send-messenger-command " . escapeshellarg($messenger_id) . " " . escapeshellarg($message) . " " . escapeshellarg($notif_id);
                 Process::start($command);
             }
             // --------------------------------------------------------------------------------------------------------------------------------------

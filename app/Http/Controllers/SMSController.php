@@ -459,6 +459,7 @@ class gsm_request_url {
     }
 }
 //Send SMS via serial SMS modem
+// status: not working
 class gsm_modem {
 
     public $port = 'COM1';

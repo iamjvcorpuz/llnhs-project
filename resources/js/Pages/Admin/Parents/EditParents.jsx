@@ -11,6 +11,7 @@ import QRCode from "react-qr-code";
 import Webcam from "react-webcam";
 import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
+import { type } from "jquery";
 
 
 export default class EditParents extends Component {
@@ -39,10 +40,48 @@ export default class EditParents extends Component {
             filetype: "",
             filetype_: "",
             cameraOn: false,
-            bdate_max: moment(new Date()).subtract('years',15).format('YYYY-MM-DD')
+            bdate_max: moment(new Date()).subtract('years',15).format('YYYY-MM-DD'),
+            data: [],
+            columns: [
+                {
+                    id: "no",
+                    accessor: 'index',
+                    Header: 'No.', 
+                    width: 50,
+                    className: "center"
+                },  
+                {
+                    id: "fullname",
+                    Header: 'Fullname', 
+                    width: 800,
+                    accessor: 'fullname'
+                }, 
+                {
+                    id: "Status",
+                    Header: 'Status',  
+                    width: 150,
+                    accessor: 'status',
+                    className: "center"
+                },
+                {
+                    id: "action",
+                    Header: 'Action',  
+                    width: 200,
+                    accessor: 'index',
+                    className: "center",
+                    Cell: ({row}) => { 
+                       return <>                       
+                        <button className="btn btn-primary btn-block btn-sm col-12 mb-1" onClick={()=>{ this.updateMessenger(row.original) }}> <i className="bi bi-plus"></i> Add</button>
+                       </>            
+                    }
+                }
+            ]    
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
+        this.getFBList = this.getFBList.bind(this);
+        this.fetchFBList = this.fetchFBList.bind(this);
+        this.updateMessenger = this.updateMessenger.bind(this);
         this._isMounted = false;
     }
 
@@ -56,7 +95,8 @@ export default class EditParents extends Component {
             contact_list: this.props.contacts,
             parents_id: this.props.parents.id,
             address: this.props.parents.current_address
-        })
+        });
+        this.getFBList();
         // this.webCam.current.getScreenshot({width: 600, height: 300});
         // $("#fileuploadpanel").modal('show');
         // jQuery.noConflict();
@@ -79,7 +119,6 @@ export default class EditParents extends Component {
         };
     };
   
-
     onFileChange = (e) => {
         $('.progress-bar').css("width", '0%');
         if(e.target.files.length) {
@@ -353,7 +392,202 @@ export default class EditParents extends Component {
             }
         }
     }
+    
+    getFBList() {
+        let list  = []; 
+        let self = this;
+        axios.post('/messenger/recepient').then(function (response) {
+          // handle success
+        //   console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                self.setState({data: data});
+            }
+        }).catch(function (error) {
+          // handle error
+        //   console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
+    
+    fetchFBList() {
+        let list  = []; 
+        let self = this;
+        axios.post('/messenger/recepient/sync').then(function (response) {
+          // handle success
+        //   console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                self.getFBList();
+            }
+        }).catch(function (error) {
+          // handle error
+        //   console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
 
+    updateMessenger(val) {
+        console.log(val);
+        try {
+            let self = this;
+            let datas =  {
+                dmode: typeof(val.dmode)!="undefined"?val.dmode:"update",
+                id: self.state.id,
+                messenger_name: val.fullname, 
+                messenger_id: val.fb_id,
+                messenger_email: val.email,
+                contact_id: self.state.contact_list[0].id, 
+                contact_list: self.state.contact_list
+            };
+            console.log(datas);
+            Swal.fire({
+                title: "To pair this messenger account to parent account click to continue to connect or pair", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    // Swal.close();
+                    Swal.fire({  
+                        title: 'Please wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    axios.post('/parents/update/messenger',datas).then( async function (response) {
+                        // handle success
+                        // console.log(response);
+                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status ="sucess") {
+    
+                                    Swal.fire({  
+                                        title: "Successfuly save!", 
+                                        showCancelButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        confirmButtonText: "Continue", 
+                                        icon: "success",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    }).then(function (result2) {
+                                        if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            $('#fbmessenger').modal('hide');
+                                            window.location.reload();
+                                        }
+                                    });
+    
+                                } else {
+                                    Swal.fire({  
+                                        title: "Fail to save", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status ="data_exist") { 
+                                    Swal.fire({  
+                                        title: "Data Exist", 
+                                        cancelButtonText: "Ok",
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false, 
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
+    
+                            }
+                    }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    if(error) {
+                        if(error.status == "422") {
+                            Swal.fire({  
+                                title: "Required Field Error", 
+                                showCancelButton: false,
+                                showConfirmButton: true,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false, 
+                                confirmButtonText: "Ok", 
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
+    
+                    } else {
+    
+                        Swal.fire({  
+                            title: "Server Error", 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+                    }
+                    })
+                } else if(result.isDismissed) {
+    
+                }
+                return false
+            }); 
+        } catch (error) {
+            Swal.fire({  
+                title: "Server Error", 
+                showCancelButton: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                cancelButtonText: "Ok",
+                confirmButtonText: "Continue",
+                confirmButtonColor: "#DD6B55",
+                icon: "error",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            });
+        }
+    }
+    
     render() {
         return <DashboardLayout title="New Teacher" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
@@ -466,22 +700,36 @@ export default class EditParents extends Component {
                                         <div className="row">
                                             <EachMethod of={this.state.contact_list} render={(element,index) => {
                                                 return  <div className="input-group ">
-                                                    <div className="input-group-prepend col-lg-4">
+                                                    <div className="input-group-prepend col-lg-5">
                                                         <div htmlFor="lglv" className="input-group-text">{element.phone_number}</div>
                                                     </div> 
                                                     <button className="btn btn-danger" onClick={() => {
-                                                        
                                                     }} >Remove</button>
                                                 </div>                 
                                             }} />
+                                            <EachMethod of={this.state.contact_list} render={(element,index) => {
+                                                return  (element.messenger_name!=""&&element.messenger_name!=null)?<div className="input-group ">
+                                                    <div className="input-group-prepend col-lg-5">
+                                                        <div htmlFor="lglv" className="input-group-text"><i className="bi bi-facebook"></i>&nbsp;{element.messenger_name}</div>
+                                                    </div> 
+                                                    <button className="btn btn-danger" onClick={() => {                                                        
+                                                        this.updateMessenger({
+                                                            fullname: "", 
+                                                            fb_id: "",
+                                                            email: "",
+                                                            dmode: "remove"
+                                                        });
+                                                    }} >Remove</button>
+                                                </div>:null
+                                            }} />
                                         </div>
                                         <div className="row" >
-                                            <div className={`${(this.state.contact_list.length>0)?'form-inline col-lg-6 pt-2':'form-inline col-lg-6'}`}>
+                                            <div className={`${(this.state.contact_list.length>0)?'form-inline col-lg-6 pt-2':'form-inline col-lg-2'}`}>
                                                 <div className="input-group">
                                                     <div className="input-group-prepend">
                                                         <div htmlFor="lglv" className="input-group-text">Phone Number : </div>
                                                     </div>
-                                                    <input type="number" className="form-control col-2" id="phonenumber" maxLength={12} defaultValue="09758955082" placeholder="09000000000" required="" />
+                                                    <input type="number" className="form-control" id="phonenumber" maxLength={12} defaultValue="" placeholder="09000000000" required="" />
                                                     <button className="btn btn-primary" onClick={() => {
                                                         let temp_numbers = this.state.contact_list;
                                                         let phonenumber = $("#phonenumber").val();
@@ -516,6 +764,10 @@ export default class EditParents extends Component {
 
                                                     }}>Add</button>
                                                 </div>
+                                                <br />
+                                                <button className="btn btn-primary" onClick={() => {
+                                                    $('#fbmessenger').modal('show');
+                                                }}>Add Messenger</button>
                                             </div>  
                                         </div>
                                     </div>
@@ -564,7 +816,11 @@ export default class EditParents extends Component {
                     <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title fs-5">Camera Capture</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={() => {
+                            this.setState({ 
+                                cameraOn: false
+                            });
+                        }} aria-label="Close"> 
                         </button>
                     </div>
                     <div className="modal-body">
@@ -584,7 +840,11 @@ export default class EditParents extends Component {
                     />:null}
                     </div>
                     <div className="modal-footer"> 
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-secondary" onClick={() => {
+                            this.setState({ 
+                                cameraOn: false
+                            });
+                        }} data-bs-dismiss="modal">Close</button>
                         <button type="button" className="btn btn-primary" onClick={()=> { 
                             try {
                                 this.setState({
@@ -598,6 +858,41 @@ export default class EditParents extends Component {
                                 alert("Pleasse try again")
                             }
                          }}>Capture</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="fbmessenger" data-bs-backdrop="static">
+                <div className="modal-dialog modal-lg" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5"><i className="bi bi-facebook"></i> Messenger</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={() => {
+                            this.setState({ 
+                                cameraOn: false
+                            });
+                        }} aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body"> 
+
+                    <ReactTable
+                        key={"react-tables"}
+                        className={"table table-bordered table-striped "}
+                        data={this.state.data} 
+                        columns={this.state.columns}
+                    />
+                    </div>
+                    <div className="modal-footer"> 
+                        <button type="button" className="btn btn-info" onClick={() => {
+                            this.fetchFBList();
+                        }} >Fetch </button>
+                        <button type="button" className="btn btn-secondary" onClick={() => {
+                            this.setState({ 
+                                cameraOn: false
+                            });
+                        }} data-bs-dismiss="modal">Close</button>
                     </div>
                     </div>
                 </div>

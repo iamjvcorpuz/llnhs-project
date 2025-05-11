@@ -24,6 +24,6 @@ export default defineConfig({
         outDir: 'public/build',
     },
     define: {
-        'process.env.APP_URL': JSON.stringify(process.env.APP_URL || 'https://llnhs-staging-965004554169.us-central1.run.app'),
+        'process.env.APP_URL': JSON.stringify(process.env.APP_URL || 'https://correct-snapper-remarkably.ngrok-free.app'),
     }
 });

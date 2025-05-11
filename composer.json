@@ -8,7 +8,6 @@
     "require": {
         "php": "^8.2",
         "almasaeed2010/adminlte": "~3.2",
-        "casperlaitw/laravel-fb-messenger": "^2.1",
         "doctrine/dbal": "^4.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
