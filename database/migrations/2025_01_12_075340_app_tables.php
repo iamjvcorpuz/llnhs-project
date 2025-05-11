@@ -183,9 +183,11 @@ return new class extends Migration
                 $table->string('type')->nullable();
                 $table->string('student_id')->nullable();
                 $table->string('teacher_id')->nullable();
-                $table->string('guardian_id')->nullable(); 
-                $table->string('phone_number'); 
+                $table->string('guardian_id')->nullable();
+                $table->string('phone_number')->nullable(); 
                 $table->string('telephone_number')->nullable(); 
+                $table->string('messenger_name')->nullable(); 
+                $table->string('messenger_id')->nullable(); 
                 $table->string('email')->nullable(); 
                 $table->string('status')->nullable(); 
                 $table->timestampsTz(precision: 0);

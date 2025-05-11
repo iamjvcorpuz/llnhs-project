@@ -205,6 +205,58 @@ class ParentsController extends Controller
 
 
     }
+    public function updateMessenger(Request $request)
+    {
+        $validator = null;
+        if($request->dmode == "update") {
+            
+            $validator = Validator::make($request->all(), [ 
+                'id' => 'required',
+                'messenger_name' => 'required|string',
+                'messenger_id' => 'required|int',
+                'messenger_email' => 'required|string',
+                'contact_id' => 'required|int',
+            ]);
+             
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+        }
+
+
+
+        // echo $request;
+        $Student = DB::table('parents')->where('id', $request->id)->get(); 
+        $contacts = DB::table('contacts')->where('id', $request->contact_id)->get(); 
+
+        if($Student->count()==1&&$contacts->count()>0) {
+
+            DB::table('contacts')->where('id', $request->contact_id)->update([
+                'messenger_name' => $request->messenger_name,
+                'messenger_id' => $request->messenger_id
+            ]); 
+
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => []
+            ], 201);
+            
+        } else {
+            return response()->json([
+                'status' => 'data_not_exist',
+                'error' => "DATA NOT FOUND",
+                'data' => []
+            ], 200);
+        }
+
+
+    }
     public function remove(Request $request) {
         $Student = DB::table('parents')->where('id', $request->id)->get();
         if($Student->count()==1) {

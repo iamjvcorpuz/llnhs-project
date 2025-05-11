@@ -135,12 +135,12 @@ return [
         * Application Service Providers...
         */
         App\Providers\AppServiceProvider::class,
-        Casperlaitw\LaravelFbMessenger\LaravelFbMessengerServiceProvider::class,
+        // Casperlaitw\LaravelFbMessenger\LaravelFbMessengerServiceProvider::class,
     ])->toArray(),
     
     'aliases' => [
         'Process' => Illuminate\Support\Facades\Process::class,
-        'Menu' => Casperlaitw\LaravelFbMessenger\Facades\MessengerMenu::class,
+        // 'Menu' => Casperlaitw\LaravelFbMessenger\Facades\MessengerMenu::class,
     ]
     
 ];

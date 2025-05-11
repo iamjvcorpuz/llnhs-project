@@ -20,6 +20,14 @@ return new class extends Migration
         //     $table->timestampsTz(precision: 0);
         // });
 
+        // Schema::create('messenger', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('fullname')->nullable();
+        //     $table->string('email')->nullable();
+        //     $table->string('fb_id')->nullable(); 
+        //     $table->timestampsTz(precision: 0);
+        // });
+
         // Schema::create('school_class', function (Blueprint $table) {
         //     $table->id();
         //     $table->string('level')->nullable();

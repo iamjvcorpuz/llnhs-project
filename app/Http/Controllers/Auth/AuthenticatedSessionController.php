@@ -19,7 +19,7 @@ class AuthenticatedSessionController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
-            // 'canResetPassword' => Route::has('password.request'),
+            'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
             'version' => "v0.8.7"
         ]);
@@ -45,7 +45,13 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
     public static function getAuthId() { 
-        return Auth::user()->user_id;
+        // if (isset(Auth::user()->user_id)) {
+            return isset(Auth::user()->user_id) ? Auth::user()->user_id: null;
+        // } else {
+        //     http_response_code(500);
+        //     // echo json_encode( [ 'success' => false , 'message' => 'Crazy thing just happened!' ]);
+        //     exit();
+        // }
     }
 
     /**

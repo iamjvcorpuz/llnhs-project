@@ -10,6 +10,7 @@ use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\HolidaysController;
+use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProgramsCurricularController;
 use App\Http\Controllers\SchoolSectionController;
@@ -45,6 +46,7 @@ Route::post('/contacts',[ContactsController::class,'store']);
 Route::get('/parents',[ParentsController::class,'index']);
 Route::post('/parents',[ParentsController::class,'store']);
 Route::post('/parents/update',[ParentsController::class,'update']);
+Route::post('/parents/update/messenger',[ParentsController::class,'updateMessenger']);
 Route::delete('/parents',[ParentsController::class,'remove']);
 
 Route::get('/advisory',[AdvisoryController::class,'getRequiredAllData']);
@@ -130,5 +132,20 @@ Route::get('/teacher/class/subjects',function() {
     $id = AuthenticatedSessionController::getAuthId();
     return ClassSubjectTeachingController::getAllTeacherClass($id);
 });
+
+Route::post('/messenger/recepient',[MessengerController::class,'getRecipients']);
+// Route::post('/messenger/recepient/sync',[MessengerController::class,'pullMessengerClientData']);
+Route::post('/messenger/recepient/sync',function() {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return [MessengerController::pullMessengerClientData()];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+// Route::post('/messenger/send/message',[MessengerController::class,'sendMessage'])->middleware('auth');
+Route::post('/messenger/send/message',[MessengerController::class,'sendMessage']);
 // Route::post('/holidays/update',[HolidaysController::class,'update']);
 // Route::delete('/holidays',[HolidaysController::class,'destroy']);

@@ -22,7 +22,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="{{ config('app.name', 'llnhs') }}">
-        <meta name="application-name" content="{{ config('app.name', 'llnhs') }}">         
+        <meta name="application-name" content="{{ config('app.name', 'llnhs') }}">
 
         <link rel="stylesheet" media="screen, print" href="{{ asset('adminlte/src/assets/font/bootstrap-icons.min.css') }}">
         <link rel="stylesheet" href="{{ url('adminlte/dist/css/adminlte.min.css') }}" />
@@ -34,8 +34,8 @@
     </head>
     <body class="sidebar-mini sidebar-expand-lg bg-body-tertiary layout-fixed fixed-header fixed-footer">
       
-      @inertia
-      <div id="app"></div> 
+      @inertia('llnhs-app')
+      {{-- <div id="llnhs-app"></div>  --}}
       {{-- @viteReactRefresh--}}
       {{-- @vite(['resources/js/app.jsx'])  --}}
 

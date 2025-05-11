@@ -25,6 +25,7 @@ const cleanApp = () => {
 };
 
 createInertiaApp({
+    id: 'llnhs-app',
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
         resolvePageComponent(
@@ -37,7 +38,7 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
-});
+}).then(cleanApp);
 
 
 // import React, { Component } from 'react';

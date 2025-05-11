@@ -229,6 +229,12 @@ Route::get('/admin/dashboard/holidays', function () {
         "holidays" => HolidaysController::getAll()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/dashboard/messenger', function () {
+    return Inertia::render('Admin/Messenger',[ 
+        "holidays" => HolidaysController::getAll()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 // ======================================== teacher ================================
 Route::get('/teacher/dashboard', function () {
     $id = AuthenticatedSessionController::getAuthId();
@@ -419,6 +425,10 @@ Route::get('/attendance/kiosk', function () {
 });
 Route::get('/attendance/mobile', function () {
     return Inertia::render('AttendanceMobilePage');
+});
+
+Route::get('/sf2', function () {
+    return Inertia::render('SF2');
 });
 
 require __DIR__.'/auth.php';
