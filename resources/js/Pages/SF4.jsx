@@ -13,7 +13,7 @@ import jsPDF from 'jspdf';
 import { autoTable } from 'jspdf-autotable';
 import QRCode from 'qrcode';
 
-export default class SF2 extends Component {
+export default class SF4 extends Component {
     constructor(props) {
 		super(props);
         this.state = {

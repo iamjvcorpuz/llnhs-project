@@ -232,12 +232,24 @@ class AdvisoryController extends Controller
 
         // echo $request;
         $advisory = DB::table('advisory')
-                ->where('teacher_id',  $request->teacher_id)
-                ->Where('school_sections_id', $request->school_sections_id) 
-                ->Where('status', 'active')
-                ->get();
+        ->where('teacher_id',  $request->teacher_id)
+        ->Where('school_sections_id', $request->school_sections_id) 
+        ->Where('school_year', $request->schoolyear) 
+        ->Where('status', 'active')
+        ->get();
 
-        if($advisory->count()==0) { 
+        $advisory_section_taken = DB::table('advisory')
+        ->Where('school_sections_id', $request->school_sections_id)
+        ->Where('school_year', $request->schoolyear) 
+        ->Where('status', 'active')
+        ->get();
+
+        $advisory_teacher = DB::table('advisory')
+        ->where('teacher_id',  $request->teacher_id)
+        ->Where('status', 'active')
+        ->get();
+
+        if($advisory->count()==0 && $advisory_section_taken->count()==0 && $advisory_teacher->count()==0) { 
             $code = RandomValueController::GetRandome('advisory','qrcode');
             $add = Advisory::create([
                 'qrcode' => $code,
@@ -254,6 +266,18 @@ class AdvisoryController extends Controller
                 'status' => 'success',
                 'error' => null,
                 'data' => $add
+            ], 201);
+        } elseif($advisory_teacher->count() > 0) {  
+            return response()->json([
+                'status' => 'teacher_taken',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } elseif($advisory_section_taken->count() > 0) {  
+            return response()->json([
+                'status' => 'section_taken',
+                'error' => null,
+                'data' => []
             ], 201);
         } else {
             return response()->json([
@@ -287,7 +311,88 @@ class AdvisoryController extends Controller
      */
     public function update(Request $request, Advisory $advisory)
     {
-        //
+        $validator = Validator::make($request->all(), [  
+            'teacher_id' => 'required',
+            'school_sections_id' => 'required',
+            'section_name' => 'required|string',
+            'schoolyear' => 'required|string', 
+            'year_level' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // echo $request;
+        $advisory = DB::table('advisory')
+        ->where('id',  $request->id)
+        ->Where('status', 'active')
+        ->get();
+
+        $advisory_teacher = DB::table('advisory')
+        ->where('id', '!=' ,  $request->id)
+        ->where('teacher_id',  $request->teacher_id)
+        ->Where('status', 'active')
+        ->get();
+
+        $advisory_section_taken = DB::table('advisory')
+        ->Where('school_sections_id', $request->school_sections_id)
+        ->Where('school_year', $request->schoolyear) 
+        ->Where('status', 'active')
+        ->get();
+        
+
+        if($advisory->count()==1 && $advisory_section_taken->count()==1 && $advisory_teacher->count() == 0) { 
+            // $code = RandomValueController::GetRandome('advisory','qrcode');
+            // $add = Advisory::create([
+            //     'qrcode' => $code,
+            //     'teacher_id' => (int)$request->teacher_id,
+            //     'school_sections_id' => (int)$request->school_sections_id,
+            //     'section_name' => $request->section_name,
+            //     'year_level' => $request->grade,
+            //     'school_year' => $request->schoolyear,
+            //     'subject_id' => (int)$request->subject_id,
+            //     'description' => '',
+            //     'status' => 'active'
+            // ]);
+            $update = DB::table('advisory')->where('id', $request->id)->update([
+                'teacher_id' => (int)$request->teacher_id,
+                'school_sections_id' => (int)$request->school_sections_id,
+                'section_name' => $request->section_name,
+                'year_level' => $request->grade,
+                'school_year' => $request->schoolyear,
+                'subject_id' => (int)$request->subject_id,
+                'description' => '',
+                'status' => 'active'
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } elseif($advisory_teacher->count() > 0) {  
+            return response()->json([
+                'status' => 'teacher_taken',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } elseif($advisory_section_taken->count() > 0) {  
+            return response()->json([
+                'status' => 'section_taken',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'data_not_exist',
+                'error' => "DATA NOT EXIST",
+                'data' => []
+            ], 200);
+        }
     }
 
     /**

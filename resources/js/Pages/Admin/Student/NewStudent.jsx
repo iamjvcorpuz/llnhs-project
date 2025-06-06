@@ -276,13 +276,13 @@ export default class NewStudent extends Component {
                         parents: self.state.selected_quardians,// self.state.added_guardians
                         relationship: self.state.relationship
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/student',datas).then(function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: false,
@@ -318,7 +318,7 @@ export default class NewStudent extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -332,7 +332,7 @@ export default class NewStudent extends Component {
                                         closeOnClickOutside: false,  
                                         dangerMode: true,
                                     });
-                                    console.log(typeof(data.data)!="undefined",data.data.length>0)
+                                    // console.log(typeof(data.data)!="undefined",data.data.length>0)
                                     if(typeof(data.data)!="undefined"&&data.data.length>0) {
                                         data.data.forEach((val,i,arr) => {
                                             console.log(val)

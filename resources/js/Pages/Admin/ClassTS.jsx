@@ -280,7 +280,7 @@ export default class ClassTS extends Component {
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -430,7 +430,7 @@ export default class ClassTS extends Component {
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,

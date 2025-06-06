@@ -202,7 +202,7 @@ export default class EditParents extends Component {
                         current_address: self.state.address,
                         contact_list: self.state.contact_list
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/parents/update',datas).then( async function (response) {
                         // handle success
                         // console.log(response);
@@ -212,14 +212,14 @@ export default class EditParents extends Component {
                                     let phone_list = [];
                                     self.state.contact_list.forEach( async element => {
                                         // phone_list.push();
-                                        console.log({
-                                            type: null,
-                                            student_id: null,
-                                            teacher_id: response.data.data.id,
-                                            guardian_id: null,
-                                            phone_number: element.phone_number,
-                                            telephone_number: element.phone_number
-                                        })
+                                        // console.log({
+                                        //     type: null,
+                                        //     student_id: null,
+                                        //     teacher_id: response.data.data.id,
+                                        //     guardian_id: null,
+                                        //     phone_number: element.phone_number,
+                                        //     telephone_number: element.phone_number
+                                        // })
                                         axios.post('/contacts',{
                                             type: null,
                                             student_id: null,
@@ -269,7 +269,7 @@ export default class EditParents extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -289,7 +289,7 @@ export default class EditParents extends Component {
                             }
                       }).catch(function (error) {
                         // handle error
-                        console.log(error);
+                        // console.log(error);
                         if(error) {
                             if(error.status == "422") {
                                 Swal.fire({  
@@ -442,7 +442,7 @@ export default class EditParents extends Component {
                 contact_id: self.state.contact_list[0].id, 
                 contact_list: self.state.contact_list
             };
-            console.log(datas);
+            // console.log(datas);
             Swal.fire({
                 title: "To pair this messenger account to parent account click to continue to connect or pair", 
                 showCancelButton: true,
@@ -472,7 +472,7 @@ export default class EditParents extends Component {
                         // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
     
                                     Swal.fire({  
                                         title: "Successfuly save!", 
@@ -510,7 +510,7 @@ export default class EditParents extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -530,7 +530,7 @@ export default class EditParents extends Component {
                             }
                     }).catch(function (error) {
                     // handle error
-                    console.log(error);
+                    // console.log(error);
                     if(error) {
                         if(error.status == "422") {
                             Swal.fire({  

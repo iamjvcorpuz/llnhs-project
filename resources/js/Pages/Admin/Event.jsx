@@ -3,6 +3,13 @@ import { Link } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod'
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
+import moment from 'moment';
+import Select from 'react-select'  
+import QRCode from "react-qr-code";
+import Webcam from "react-webcam";
+import { ImageCrop } from '@/Components/ImageCrop';
+import axios from 'axios';
+import ApexCharts from 'apexcharts'
 
 import ReactTable from "@/Components/ReactTable"; 
 
@@ -44,6 +51,18 @@ export default class Event extends Component {
                     className: "center"
                 },   
                 {
+                    id: "time",
+                    Header: 'Time',  
+                    width: 100,
+                    accessor: 'time_start',
+                    className: "center",
+                    Cell: ({row}) => { 
+                       return <>
+                       {row.original.time_start} - {row.original.time_end}
+                       </>            
+                    }
+                },   
+                {
                     id: "description",
                     Header: 'Description',  
                     width: 300,
@@ -77,9 +96,10 @@ export default class Event extends Component {
             floor_no: "",
             building_no: "",
             description: "",
-            selectedData: {}
+            selectedData: {},
+            todayDate: moment(new Date()).format('YYYY-MM-DD')
         };
-        // console.log(this.props)
+        console.log(this.props.events)
         this.delete = this.delete.bind(this);
         this.selectSubject = this.selectSubject.bind(this);
         this.getAllData = this.getAllData.bind(this);
@@ -96,6 +116,7 @@ export default class Event extends Component {
         $("#utime_start").val(data.time_start);
         $("#utime_end").val(data.time_end); 
         $("#udescription").val(data.description);
+        $("#ufacilitator").val(data.facilitator);
         // $('#updateHoliday').modal('show');
 
         this.setState({selectedData:data},() => {
@@ -105,7 +126,7 @@ export default class Event extends Component {
 
     getAllData() {
         let self = this;
-        axios.get('/holidays').then(function (response) {
+        axios.get('/events').then(function (response) {
             console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
@@ -131,6 +152,7 @@ export default class Event extends Component {
         let time_start = $("#time_start").val();
         let time_end = $("#time_end").val(); 
         let description = $("#description").val();
+        let facilitator = $("#facilitator").val();
 
         if( holidayType != "" && event_name != "" && date != "" ) { 
             Swal.fire({
@@ -157,6 +179,7 @@ export default class Event extends Component {
                         }
                     });
                     let datas =  { 
+                        facilitator,
                         holidayType,
                         event_name,
                         date,
@@ -165,12 +188,12 @@ export default class Event extends Component {
                         description
                     };
                     // console.log(datas);
-                    axios.post('/holidays',datas).then( async function (response) {
+                    axios.post('/events',datas).then( async function (response) {
                         // handle success
                         // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -281,6 +304,7 @@ export default class Event extends Component {
         let time_start = $("#utime_start").val();
         let time_end = $("#utime_end").val(); 
         let description = $("#udescription").val();
+        let facilitator = $("#ufacilitator").val();
 
         if( holidayType != "" && event_name != "" && date != "" ) { 
             Swal.fire({
@@ -308,6 +332,7 @@ export default class Event extends Component {
                     });
                     let datas =  { 
                         id: self.state.selectedData.id,
+                        facilitator,
                         holidayType,
                         event_name,
                         date,
@@ -316,12 +341,12 @@ export default class Event extends Component {
                         description
                     };
                     console.log(datas);
-                    axios.post('/holidays/update',datas).then( async function (response) {
+                    axios.post('/events/update',datas).then( async function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -443,12 +468,12 @@ export default class Event extends Component {
                     }
                 });
                 console.log(id)
-                axios.delete('/holidays',{data: {id:id}}).then(function (response) {
+                axios.delete('/events',{data: {id:id}}).then(function (response) {
                     // handle success
                     console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "201" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                            if(data.status ="sucess") {
+                            if(data.status == "success") {
 
                                 self.getAllData();
                                 Swal.fire({  
@@ -603,22 +628,27 @@ export default class Event extends Component {
                                     <option disabled >--Select Type--</option>
                                     <option value="" ></option> 
                                     <option value="Regular" >Regular</option> 
-                                    <option value="Special Non-Working" >Special Non-Working</option> 
-                                    <option value="Special Working Holiday" >Special Working Holiday</option> 
-                                    <option value="Other Considerations" ></option>
+                                    <option value="Special" >Special</option>
+                                    <option value="Other" >Other</option>
                                 </select>
                                 <div id="holidayType-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             
                             <div className="col-md-12">
                                 <label htmlFor="event_name" className="form-label">Event Name</label>
-                                <input type="text" className="form-control" id="event_name" defaultValue="" required="" onChange={(e) => {  $("#event_name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({room: e.target.value})}}  />
+                                <input type="text" className="form-control" id="event_name" defaultValue="" required="" onChange={(e) => {  $("#event_name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({event_name: e.target.value})}}  />
                                 <div id="event_name-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+
+                            <div className="col-md-12">
+                                <label htmlFor="facilitator" className="form-label">Facilitator </label>
+                                <input type="text" className="form-control" id="facilitator" defaultValue="" required="" onChange={(e) => {  $("#facilitator-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({facilitator: e.target.value})}}  />
+                                <div id="facilitator-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             
                             <div className="col-md-12">
                                 <label htmlFor="date" className="form-label">Date</label>
-                                <input type="date" className="form-control"id="date" defaultValue="08:00" min={"08:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#date-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <input type="date" className="form-control"id="date" defaultValue="08:00" min={`${this.state.todayDate}`} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#date-alert").removeAttr('class').addClass('invalid-feedback');}}  />
                                 <div id="date-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-6">
@@ -653,7 +683,7 @@ export default class Event extends Component {
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title fs-5">Update Holidays</h5>
+                    <h5 className="modal-title fs-5">Update Event</h5>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
                     </button>
                 </div>
@@ -663,7 +693,7 @@ export default class Event extends Component {
                         <div className="row g-3"> 
 
                         <div className="col-md-12">
-                                <label htmlFor="grade" className="form-label">Holiday Type</label>                                            
+                                <label htmlFor="grade" className="form-label">Select Type</label>                                            
                                 {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
 
                                 <select name="uholidayType" id="uholidayType" className="form-control" onChange={(e) => { 
@@ -675,9 +705,8 @@ export default class Event extends Component {
                                     <option disabled >--Select Type--</option>
                                     <option value="" ></option> 
                                     <option value="Regular" >Regular</option> 
-                                    <option value="Special Non-Working" >Special Non-Working</option> 
-                                    <option value="Special Working Holiday" >Special Working Holiday</option> 
-                                    <option value="Other Considerations" ></option>
+                                    <option value="Special" >Special</option>  
+                                    <option value="Other" >Other</option>
                                 </select>
                                 <div id="uholidayType-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
@@ -689,8 +718,14 @@ export default class Event extends Component {
                             </div>
                             
                             <div className="col-md-12">
+                                <label htmlFor="ufacilitator" className="form-label">Facilitator </label>
+                                <input type="text" className="form-control" id="ufacilitator" defaultValue="" required="" onChange={(e) => {  $("#ufacilitator-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({facilitator: e.target.value})}}  />
+                                <div id="ufacilitator-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+
+                            <div className="col-md-12">
                                 <label htmlFor="udate" className="form-label">Date</label>
-                                <input type="date" className="form-control" id="udate" defaultValue="08:00" min={"08:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#udate-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <input type="date" className="form-control" id="udate" defaultValue="08:00"  min={`${this.state.todayDate}`} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#udate-alert").removeAttr('class').addClass('invalid-feedback');}}  />
                                 <div id="udate-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
 

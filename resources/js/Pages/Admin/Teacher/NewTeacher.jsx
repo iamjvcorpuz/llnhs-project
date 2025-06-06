@@ -156,13 +156,13 @@ export default class NewTeacher extends Component {
                         sex:self.state.sex,
                         contact_list: self.state.contact_list
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/teacher',datas).then( async function (response) {
                         // handle success
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     let phone_list = [];
                                     self.state.contact_list.forEach( async element => {
                                         // phone_list.push();
@@ -226,7 +226,7 @@ export default class NewTeacher extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",

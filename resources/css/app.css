@@ -653,3 +653,43 @@ img {
     /* background-color: rebeccapurple; */
        
 }
+.attendance_icons {
+    position:relative;
+    /* become a flex container */
+  /* its children will be flex items */
+  display: flex;
+  /* place items in column */
+  flex-direction: column;
+  /* center flex items horizontally */
+  align-items: center;
+  /* center all content vertically */
+  justify-content: center;
+}
+.attendance_prof_img {
+    height: 50px;
+    width: 50px; 
+    position:absolute;
+    /* right:0; */
+    top:-15px
+}
+.teacher_chair {
+    height: 70px;
+    width: 80px;
+}
+.student_chair {
+    height: 50px;
+    width: 50px;
+}
+.student_chair_present {
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);    
+}
+.student_chair_absent {
+    filter: invert(20%) sepia(96%) saturate(7428%) hue-rotate(359deg) brightness(112%) contrast(110%); 
+}
+.btn-xs
+{
+    padding: 1px 5px !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    border-radius: 3px !important;
+}

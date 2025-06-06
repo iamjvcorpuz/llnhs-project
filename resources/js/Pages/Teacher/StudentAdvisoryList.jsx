@@ -194,7 +194,7 @@ export default class StudentAdvisoryList extends Component {
                     // console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "201" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                            if(data.status ="sucess") {
+                            if(data.status == "success") {
                                 Swal.fire({  
                                     title: "Successfuly remove!", 
                                     showCancelButton: false,
@@ -230,7 +230,7 @@ export default class StudentAdvisoryList extends Component {
                             }
                         } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                            if(data.status ="data_not_exist") { 
+                            if(data.status == "data_not_exist") { 
                                 Swal.fire({  
                                     title: "Data Not Exist", 
                                     cancelButtonText: "Ok",
@@ -279,7 +279,7 @@ export default class StudentAdvisoryList extends Component {
         let advisory_id = self.state.advisory.id;
 
 
-        console.log(selected_student,select_student_id);
+        // console.log(selected_student,select_student_id);
         // return;
         if(selected_student != "" && typeof(select_student_id) != "undefined" && typeof(advisory_id) != "undefined") { 
             Swal.fire({
@@ -309,13 +309,13 @@ export default class StudentAdvisoryList extends Component {
                         advisory_id,
                         select_student_id
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/teacher/advisory/student/add',datas).then( async function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -352,7 +352,7 @@ export default class StudentAdvisoryList extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: selected_student.toLocaleUpperCase() + " is ready added", 
                                         cancelButtonText: "Ok",

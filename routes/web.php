@@ -7,6 +7,7 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ClassSubjectTeachingController;
 use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProfileController;
@@ -220,7 +221,7 @@ Route::get('/admin/dashboard/class/subject/teacher', function () {
 
 Route::get('/admin/dashboard/events', function () {
     return Inertia::render('Admin/Event',[ 
-        "events" => []
+        "events" => EventsController::getAll()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -292,9 +293,24 @@ Route::get('/teacher/dashboard/settings', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/teacher/my/attendance', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('AttendanceMobilePage',[
+        "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
+        "events" => []
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/teacher/attendance/scan', function () {
     $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('AttendanceMobilePage',[
+        "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
+        "events" => []
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/teacher/attendance/student', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Teacher/AttendancePage',[
         "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
         "events" => []
     ]);

@@ -170,7 +170,7 @@ export default class Holidays extends Component {
                         // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -207,7 +207,7 @@ export default class Holidays extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -321,7 +321,7 @@ export default class Holidays extends Component {
                         console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -358,7 +358,7 @@ export default class Holidays extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -485,7 +485,7 @@ export default class Holidays extends Component {
                             }
                         } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                            if(data.status ="data_not_exist") { 
+                            if(data.status == "data_not_exist") { 
                                 Swal.fire({  
                                     title: "Data Not Exist", 
                                     cancelButtonText: "Ok",
