@@ -30,7 +30,7 @@ export default class DashboardLayout extends Component {
         // let adminlte = new window.adminlte.PushMenu();
         // console.log(adminlte)
         // const user = usePage();
-        console.log(this.props);
+        // console.log(this.props);
         this.loadInits = this.loadInits.bind(this);
     }
     componentDidMount() {

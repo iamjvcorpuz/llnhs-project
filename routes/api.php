@@ -8,6 +8,7 @@ use App\Http\Controllers\ClassSubjectTeachingController;
 use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\MessengerController;
@@ -51,6 +52,7 @@ Route::delete('/parents',[ParentsController::class,'remove']);
 
 Route::get('/advisory',[AdvisoryController::class,'getRequiredAllData']);
 Route::post('/advisory',[AdvisoryController::class,'store']);
+Route::post('/advisory/update',[AdvisoryController::class,'update']);
 Route::delete('/advisory',[AdvisoryController::class,'remove']);
 
 Route::post('/user/update/auth',[UserAccountsController::class,'update']);
@@ -111,6 +113,10 @@ Route::post('/holidays',[HolidaysController::class,'store']);
 Route::post('/holidays/update',[HolidaysController::class,'update']);
 Route::delete('/holidays',[HolidaysController::class,'destroy']);
 
+Route::get('/events',[EventsController::class,'getAll']);
+Route::post('/events',[EventsController::class,'store']);
+Route::post('/events/update',[EventsController::class,'update']);
+Route::delete('/events',[EventsController::class,'destroy']);
 ///teacher/advisory
 
 

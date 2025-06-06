@@ -3,10 +3,18 @@ import { Link } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod'
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
+import moment from 'moment';
+import Select from 'react-select'  
+import QRCode from "react-qr-code";
+import Webcam from "react-webcam";
+import { ImageCrop } from '@/Components/ImageCrop';
+import axios from 'axios';
+import ApexCharts from 'apexcharts'
 
 import ReactTable from "@/Components/ReactTable"; 
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
+
 
 
 export default class ClassSubjectTeacher extends Component {
@@ -21,6 +29,7 @@ export default class ClassSubjectTeacher extends Component {
             sectionList: [],
             yeargrade: this.props.schoolyeargrades,
             class: this.props.class,
+            selected_id: "",
             selected_grade: "",
             selected_grade_id: "",
             selected_section: "",
@@ -97,8 +106,8 @@ export default class ClassSubjectTeacher extends Component {
                     className: "center",
                     Cell: ({row}) => { 
                        return <>                       
-                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteAdvisory(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
-                        <button className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-pen"></i> Edit</button> 
+                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.delete(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
+                        <button className="btn btn-info btn-block btn-sm col-12" onClick={()=>{this.viewData(row.original);}}> <i className="bi bi-pen"></i> Edit</button> 
                        </>            
                     }
                 }
@@ -113,8 +122,8 @@ export default class ClassSubjectTeacher extends Component {
         this.saveData = this.saveData.bind(this);
         this.updateData = this.updateData.bind(this);
         this.selectSubject = this.selectData.bind(this);
-        this.getAllData = this.getAllData.bind(this);
-        console.log(this.props);
+        this.getAllData = this.getAllData.bind(this); 
+        // console.log(this.props);
     }
     
     componentDidMount() {
@@ -128,7 +137,7 @@ export default class ClassSubjectTeacher extends Component {
 
     selectData(data) {
         let self = this;
-        console.log(data);
+        // console.log(data);
         if(data.level == "Junior") {
             let temp = self.state.yeargrade_temp.filter(e =>  e.year_grade=="Grade 7"||e.year_grade=="Grade 8" );
             self.setState({
@@ -163,7 +172,7 @@ export default class ClassSubjectTeacher extends Component {
     getAllData() {
         let self = this;
         axios.get('/class/subject/teacher').then(function (response) {
-            console.log(response);
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                 if(Object.keys(data).length>0) {
@@ -261,7 +270,7 @@ export default class ClassSubjectTeacher extends Component {
                 showLoaderOnConfirm: true, 
                 closeOnClickOutside: false,  
                 dangerMode: true,
-            }).then((result) => {
+            }).then( async (result) => {
                 // console.log("result",result)
                 if(result.isConfirmed) {
                     Swal.fire({  
@@ -298,13 +307,14 @@ export default class ClassSubjectTeacher extends Component {
                         saturday,
                         sunday
                     };
-                    console.log(datas);
-                    axios.post('/class/subject/teacher',datas).then( async function (response) {
+                    // console.log(datas);
+                    axios.post('/class/subject/teacher',datas).then( function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                const data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                // console.log("data",data);
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -342,6 +352,21 @@ export default class ClassSubjectTeacher extends Component {
                                             $("#newClassTeaching").modal('hide');
                                             self.getAllData();
                                         }
+                                    });
+                                } else if(data.status == "confict") {
+                                    Swal.fire({  
+                                        title: "Conflict Schedule", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
                                     });
                                 } else {
                                     Swal.fire({  
@@ -416,18 +441,114 @@ export default class ClassSubjectTeacher extends Component {
         }
     }
 
+    viewData(val) {
+        let self = this;
+        // console.log("val",val);
+        self.setState({
+            selected_id: val.id
+        },() => {
+            $("#editClassTeaching").modal('show');
+            let teacher = self.state.teachers.find(e=>e.id== val.teacher_id);
+            console.log("teacher",teacher)
+            $("#eteacher").val(`${teacher.last_name}, ${teacher.first_name}`); 
+            // let teacher_id = "";
+            $("#etime_start").val(val.time_start); 
+            $("#etime_end").val(val.time_end); 
+            $("#edescription").val(val.description); 
+            $("#eclassts").val(val.class_id); 
+            // $("#eyearlevel").val(val.time_start); 
+            $("#esubject").val(val.subject_id); 
+            let data = self.state.class.filter(ee => ee.id==val.class_id)[0]
+            $("#eyearlevel").val(data.level);
+            $("#eyearlevel").val(data.grade_id);
+            $("#eschoolyear").val(data.school_year); 
+            $("#eflsh_track").val(data.track); 
+            $("#eflsh_strand").val(data.strands); 
+            $("#esectionname").val(data.section_name); 
+
+            $("#emonday").prop('checked', (val.monday=="1"?true:false));  
+            $("#etuesday").prop('checked', (val.tuesday=="1"?true:false));  
+            $("#ewednesday").prop('checked', (val.wednesday=="1"?true:false));  
+            $("#ethursday").prop('checked', (val.thursday=="1"?true:false));  
+            $("#efriday").prop('checked', (val.friday=="1"?true:false));  
+            $("#esaturday").prop('checked', (val.saturday=="1"?true:false));  
+            $("#esunday").prop('checked', (val.sunday=="1"?true:false));  
+            // let subject_name = this.state.subjects.find( e => e.id == $("#subject").val()).subject_name; 
+            // $("#eyearlevel").val(); 
+            // $("#eclassroom").val(); 
+            // $("#eschoolyear").val();
+            // $("#eflsh_track").val();
+            // $("#eflsh_strand").val();  
+            // $("#esectionname").val();  
+            // $("#emonday").is(':checked');  
+            // $("#etuesday").is(':checked');  
+            // $("#ewednesday").is(':checked');  
+            // $("#ethursday").is(':checked');  
+            // $("#efriday").is(':checked');  
+            // $("#esaturday").is(':checked');  
+            // $("#esunday").is(':checked');  
+        });
+        
+    }
+
     updateData() {
-        let self = this;  
-        let yearlevel = $("#uyearlevel").val(); 
-        let grade = $("#ugrade").val(); 
-        let classroom = $("#uclassroom").val(); 
-        let schoolyear = $("#uschoolyear").val();
-        let flsh_track = $("#uflsh_track").val();
-        let flsh_strand = $("#uflsh_strand").val();  
-        let section_name = $("#usectionname").val();  
+        let self = this; 
+        let teacher = $("#eteacher").val(); 
+        let teacher_id = "";
+        let time_start = $("#etime_start").val(); 
+        let time_end = $("#etime_end").val(); 
+        let description = $("#edescription").val(); 
+        let classts = $("#eclassts").val(); 
+        let yearlevel = $("#eyearlevel").val(); 
+        let subject = $("#esubject").val(); 
+        let subject_name = this.state.subjects.find( e => e.id == $("#esubject").val()).subject_name; 
+        let grade = $("#eyearlevel").val(); 
+        let classroom = $("#eclassroom").val(); 
+        let schoolyear = $("#eschoolyear").val();
+        let flsh_track = $("#eflsh_track").val();
+        let flsh_strand = $("#eflsh_strand").val();  
+        let section_name = $("#esectionname").val();  
+        let monday = $("#emonday").is(':checked');  
+        let tuesday = $("#etuesday").is(':checked');  
+        let wednesday = $("#ewednesday").is(':checked');  
+        let thursday = $("#ethursday").is(':checked');  
+        let friday = $("#efriday").is(':checked');  
+        let saturday = $("#esaturday").is(':checked');  
+        let sunday = $("#esunday").is(':checked');  
 
 
-        if(yearlevel != "" && grade != "" && classroom != "" && schoolyear != ""&& flsh_track != ""&& flsh_strand != "" ) { 
+        try {
+            teacher_id = self.state.teachers.find(e=>`${e.last_name}, ${e.first_name}`== teacher).id;
+        } catch (error) {
+            
+        }
+        // console.log({ 
+        //     id: self.state.selected_id,
+        //     teacher_id,
+        //     teacher,
+        //     time_start,
+        //     time_end,
+        //     description,
+        //     subject,
+        //     subject_name,
+        //     classts,
+        //     yearlevel,
+        //     grade,
+        //     classroom,
+        //     schoolyear,
+        //     flsh_track,
+        //     flsh_strand,
+        //     section_name,
+        //     monday,
+        //     tuesday,
+        //     wednesday,
+        //     thursday,
+        //     friday,
+        //     saturday,
+        //     sunday
+        // })
+
+        if(time_start != "" && time_end != "" && description != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != "") { // && flsh_track != ""&& flsh_strand != "" 
             Swal.fire({
                 title: "If all fields are correct and please click to continue to save", 
                 showCancelButton: true,
@@ -438,7 +559,7 @@ export default class ClassSubjectTeacher extends Component {
                 showLoaderOnConfirm: true, 
                 closeOnClickOutside: false,  
                 dangerMode: true,
-            }).then((result) => {
+            }).then( async (result) => {
                 // console.log("result",result)
                 if(result.isConfirmed) {
                     Swal.fire({  
@@ -452,22 +573,38 @@ export default class ClassSubjectTeacher extends Component {
                         }
                     });
                     let datas =  { 
-                        id: self.state.selectedData.id,
+                        id: self.state.selected_id,
+                        teacher_id,
+                        teacher,
+                        time_start,
+                        time_end,
+                        description,
+                        subject,
+                        subject_name,
+                        classts,
                         yearlevel,
                         grade,
                         classroom,
                         schoolyear,
                         flsh_track,
                         flsh_strand,
-                        section_name
+                        section_name,
+                        monday,
+                        tuesday,
+                        wednesday,
+                        thursday,
+                        friday,
+                        saturday,
+                        sunday
                     };
                     // console.log(datas);
-                    axios.post('/class/subject/teacher/update',datas).then( async function (response) {
+                    axios.post('/class/subject/teacher/update',datas).then( function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                const data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                // console.log("data",data);
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -481,10 +618,45 @@ export default class ClassSubjectTeacher extends Component {
                                     }).then(function (result2) {
                                         if(result2.isConfirmed) { 
                                             Swal.close();
-                                            // window.location.reload();
-                                            $("#updateClass").modal('hide');
+                                            
+                                            $("#monday").prop('checked', false);  
+                                            $("#tuesday").prop('checked', false);  
+                                            $("#wednesday").prop('checked', false);  
+                                            $("#thursday").prop('checked', false);  
+                                            $("#friday").prop('checked', false);  
+                                            $("#saturday").prop('checked', false);  
+                                            $("#sunday").prop('checked', false);  
+                                            
+                                            $("#teacher").val('');
+                                            $("#time_start").val('');
+                                            $("#time_end").val('');
+                                            $("#description").val('');
+                                            $("#subject").val('');
+                                            $("#yearlevel").val('');
+                                            $("#grade").val('');
+                                            $("#classroom").val('');
+                                            $("#schoolyear").val(''); 
+                                            $("#flsh_track").val(''); 
+                                            $("#flsh_strand").val(''); 
+                                            $("#sectionname").val(""); 
+                                            $("#editClassTeaching").modal('hide');
                                             self.getAllData();
                                         }
+                                    });
+                                } else if(data.status == "confict") {
+                                    Swal.fire({  
+                                        title: "Conflict Schedule", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
                                     });
                                 } else {
                                     Swal.fire({  
@@ -547,14 +719,14 @@ export default class ClassSubjectTeacher extends Component {
             });            
         } else {
             if(subject_name == "") {
-                $("#usubject_name-alert").removeAttr('class');
-                $("#usubject_name-alert").html('Required Field');
-                $("#usubject_name-alert").addClass('d-block invalid-feedback');
+                $("#subject_name-alert").removeAttr('class');
+                $("#subject_name-alert").html('Required Field');
+                $("#subject_name-alert").addClass('d-block invalid-feedback');
             }
             if(description == "") {
-                $("#udescription-alert").removeAttr('class');
-                $("#udescription-alert").html('Required Field');
-                $("#udescription-alert").addClass('d-block invalid-feedback');
+                $("#description-alert").removeAttr('class');
+                $("#description-alert").html('Required Field');
+                $("#description-alert").addClass('d-block invalid-feedback');
             }
         }
     }
@@ -754,7 +926,7 @@ export default class ClassSubjectTeacher extends Component {
                                 
                                 <div className="col-md-6">
                                     <label htmlFor="time_start" className="form-label">Time Start</label>
-                                    <input type="time" className="form-control"id="time_start" defaultValue="08:00" min={"08:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#time_start-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                    <input type="time" className="form-control"id="time_start" defaultValue="07:00" min={"07:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#time_start-alert").removeAttr('class').addClass('invalid-feedback');}}  />
                                     <div id="time_start-alert" className="invalid-feedback">Please select a valid state.</div>
                                 </div>
                                 <div className="col-md-6">
@@ -927,7 +1099,197 @@ export default class ClassSubjectTeacher extends Component {
                     </div>
                     </div>
                 </div>
+        </div>
+
+        <div className="modal fade" tabIndex="-1" role="dialog" id="editClassTeaching" aria-hidden="true" data-bs-backdrop="static">
+            <div className="modal-dialog modal-lg" role="document">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title fs-5">Teaching Class</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                    </button>
+                </div>
+                <div className="modal-body">
+                    
+                    <div className="card-body"> 
+                        <div className="row g-3"> 
+                            
+                            <div className="col-md-6">
+                                <label htmlFor="time_start" className="form-label">Time Start</label>
+                                <input type="time" className="form-control"id="etime_start" defaultValue="00:00" min={"07:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#time_start-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <div id="time_start-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            <div className="col-md-6">
+                                <label htmlFor="time_end" className="form-label">Time End</label>
+                                <input type="time" className="form-control" id="etime_end" min={this.state.time_start} defaultValue={this.state.time_start} required="" onChange={(e) => {  $("#time_end-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <div id="time_end-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            <div className="col-md-12">
+                                <div className="row">
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="emonday" type="checkbox" />
+                                            <label className="form-check-label">Monday</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="etuesday" type="checkbox" />
+                                            <label className="form-check-label">Tuesday</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="ewednesday" type="checkbox" />
+                                            <label className="form-check-label">Wednesday</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="ethursday" type="checkbox" />
+                                            <label className="form-check-label">Thursday</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="efriday" type="checkbox" />
+                                            <label className="form-check-label">Friday</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="esaturday" type="checkbox" />
+                                            <label className="form-check-label">Saturday</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-check">
+                                            <input className="form-check-input" id="esunday" type="checkbox" />
+                                            <label className="form-check-label">Sunday</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <label htmlFor="description" className="form-label">Description</label>
+                                <input type="text" className="form-control"  id="edescription" defaultValue="" required="" onChange={(e) => {  $("#description-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <div id="description-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            
+                            <div className="col-md-12">
+                                <label htmlFor="subject" className="form-label">Subject</label>
+                                <select className="form-select" id="esubject" required="" onChange={(e) => {  $("#subject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
+                                    <option disabled >Choose...</option>
+                                    <option></option>
+                                    <EachMethod of={this.state.subjects} render={(element,index) => {
+                                        return <option value={element.id}>{element.subject_name}</option>
+                                    }} />
+                                </select>
+                                <div id="subject-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            
+                            <div className="col-md-12">
+                                <label htmlFor="teacher" className="form-label">Teacher</label>
+                                <input type="text" className="form-control" list="selectedTeacher" id="eteacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedTeacher: e.target.value})}}  />
+                                <div id="teacher-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            <div className="col-md-12">
+                                <label htmlFor="classts" className="form-label">Class Name</label>                                            
+                                {/* <input type="text" className="form-control" list="selectedYearLevel" id="classts" defaultValue="" required=""   /> */}
+
+                                <select name="eclassts" id="eclassts" className="form-control" onChange={(e) => { 
+                                        $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); 
+                                        $('#esection').val(""); 
+                                        if(e.target.value != "") { 
+                                        let data = this.state.class.filter(ee => ee.id==e.target.value)[0]
+                                        $("#eyearlevel").val(data.level);
+                                        $("#eyearlevel").val(data.grade_id);
+                                        $("#eschoolyear").val(data.school_year); 
+                                        $("#eflsh_track").val(data.track); 
+                                        $("#eflsh_strand").val(data.strands); 
+                                        $("#esectionname").val(data.section_name); 
+                                        // this.setState({selectedYearLevel: e.target.value,sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==e.target.value)})  
+                                        }
+                                        }}>
+
+                                    <option disabled >--Select Section--</option>
+                                    <option value="" ></option>
+                                    <EachMethod of={this.state.class} render={(element,index) => {
+                                        return <option value={`${element.id}`} >{`${element.section_name} (Room:${element.classroom})`}   </option>
+                                    }} />
+                                </select>
+                                <div id="classts-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            <div className="col-md-12">
+                                <label htmlFor="yearlevel" className="form-label">Grade</label>                                            
+                                {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
+
+                                <select name="eyearlevel" id="eyearlevel" className="form-control"  aria-readonly onChange={(e) => { 
+                                        $("#eteacher-alert").removeAttr('class').addClass('invalid-feedback'); 
+                                        $('#esection').val("");
+                                        console.log(e.target.value)
+                                        if(e.target.value != "") {
+                                        // this.setState({selectedYearLevel: e.target.value,sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==e.target.value)})  
+                                        }
+                                        }}>
+                                        <option disabled >--Select Grade--</option>
+                                        <option value="" ></option>
+                                    <EachMethod of={this.state.yeargrade} render={(element,index) => {
+                                        return <option value={`${element.id}`} >{`${element.year_grade}`}</option>
+                                    }} />
+                                </select>
+                                <div id="yearlevel-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            {/* <div className="col-md-12">
+                                <label htmlFor="section" className="form-label">Class Section</label>
+                                <input type="text" className="form-control" list="selectedSection" id="section" defaultValue="" required="" onChange={(e) => {  $("#section-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSection: e.target.value})}}  />
+                                <div id="section-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div> */}
+
+                            <div className="col-md-12">
+                                <label htmlFor="sectionname" className="form-label">Section Name</label>
+                                <input type="text" className="form-control" id="esectionname" defaultValue="" required="" onChange={(e) => {  $("#sectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
+                                <div id="sectionname-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            <div className="col-md-12">
+                                <label htmlFor="schoolyear" className="form-label">School Year</label>
+                                <input type="text" className="form-control" list="selectedSY" id="eschoolyear" defaultValue="" required="" onChange={(e) => {  $("#schoolyear-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
+                                <div id="schoolyear-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
+                            <div className="col-md-12">
+                                <label htmlFor="flsh_track" className="form-label">Track</label>
+                                {/* <input type="text" className="form-control" id="flsh_track" defaultValue="" required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  /> */}
+                                <select name="eflsh_track" id="eflsh_track" className="form-control"  onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
+                                    <option value=""></option>
+                                        <EachMethod of={this.state.track} render={(element,index) => {
+                                            return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                        }} />
+                                </select>
+                                <div id="flsh_track-alert" className="valid-feedback">Looks good!</div>
+                            </div> 
+                            <div className="col-md-12">
+                                <label htmlFor="flsh_strand" className="form-label">Strand</label>
+                                {/* <input type="text" className="form-control" id="flsh_strand" defaultValue="" required="" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}  /> */}
+                                <select name="eflsh_strand" id="eflsh_strand" className="form-control" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
+                                    <option value=""></option>
+                                        <EachMethod of={this.state.strand} render={(element,index) => {
+                                            return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
+                                        }} />
+                                </select>
+                                <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
+                            </div>
+
+                        </div> 
+                    </div>
+
+                </div>
+                <div className="modal-footer"> 
+                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.updateData() }}> <i className="bi bi-save"></i> Update</button>   
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
             </div>
+        </div>
 
     </DashboardLayout>}
 }

@@ -217,30 +217,30 @@ export default class ClassSubjectTeacher extends Component {
         } catch (error) {
             
         }
-        console.log({ 
-            teacher_id,
-            teacher,
-            time_start,
-            time_end,
-            description,
-            subject,
-            subject_name,
-            classts,
-            yearlevel,
-            grade,
-            classroom,
-            schoolyear,
-            flsh_track,
-            flsh_strand,
-            section_name,
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday
-        })
+        // console.log({ 
+        //     teacher_id,
+        //     teacher,
+        //     time_start,
+        //     time_end,
+        //     description,
+        //     subject,
+        //     subject_name,
+        //     classts,
+        //     yearlevel,
+        //     grade,
+        //     classroom,
+        //     schoolyear,
+        //     flsh_track,
+        //     flsh_strand,
+        //     section_name,
+        //     monday,
+        //     tuesday,
+        //     wednesday,
+        //     thursday,
+        //     friday,
+        //     saturday,
+        //     sunday
+        // })
 
         if(time_start != "" && time_end != "" && description != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != ""&& flsh_track != ""&& flsh_strand != "" ) { 
             Swal.fire({
@@ -290,13 +290,13 @@ export default class ClassSubjectTeacher extends Component {
                         saturday,
                         sunday
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/class/subject/teacher',datas).then( async function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -353,7 +353,7 @@ export default class ClassSubjectTeacher extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -456,10 +456,10 @@ export default class ClassSubjectTeacher extends Component {
                     // console.log(datas);
                     axios.post('/class/subject/teacher/update',datas).then( async function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     Swal.fire({  
                                         title: "Successfuly save!", 
                                         showCancelButton: true,
@@ -496,7 +496,7 @@ export default class ClassSubjectTeacher extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
@@ -575,13 +575,13 @@ export default class ClassSubjectTeacher extends Component {
                       Swal.showLoading();
                     }
                 });
-                console.log(id)
+                // console.log(id)
                 axios.delete('/class/subject/teacher',{data: {id:id}}).then(function (response) {
                     // handle success
-                    console.log(response);
+                    // console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "201" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                            if(data.status ="sucess") {
+                            if(data.status == "success") {
 
                                 self.getAllData();
                                 Swal.fire({  

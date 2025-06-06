@@ -54,13 +54,13 @@ export default function SideNav({
                 </a>
                 <ul className="nav nav-treeview">
                   <li className="nav-item">
-                    <Link href="/teacher/attendance/list" className="nav-link">
+                    <Link href="/teacher/my/attendance" className="nav-link">
                       <i className="nav-icon bi bi-calendar2-check"></i>
                       <p>My Attendance</p>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link href="/teacher/attendance/list" className="nav-link">
+                    <Link href="/teacher/attendance/student" className="nav-link">
                       <i className="nav-icon bi bi-calendar2-check"></i>
                       <p>Student</p>
                     </Link>

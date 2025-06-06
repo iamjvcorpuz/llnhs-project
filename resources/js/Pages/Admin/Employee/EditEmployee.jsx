@@ -122,7 +122,7 @@ export default class EditEmployee extends Component {
     
     saveData() {
         let self = this;
-        console.log(self.state)
+        // console.log(self.state)
         if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "") {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
@@ -172,24 +172,24 @@ export default class EditEmployee extends Component {
                         contact_list: self.state.contact_list,
                         employee_type: self.state.employee_type
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/employee/update',datas).then( async function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     let phone_list = [];
                                     self.state.contact_list.forEach( async element => {
                                         // phone_list.push();
-                                        console.log({
-                                            type: null,
-                                            student_id: null,
-                                            teacher_id: response.data.data.id,
-                                            guardian_id: null,
-                                            phone_number: element.phone_number,
-                                            telephone_number: element.phone_number
-                                        })
+                                        // console.log({
+                                        //     type: null,
+                                        //     student_id: null,
+                                        //     teacher_id: response.data.data.id,
+                                        //     guardian_id: null,
+                                        //     phone_number: element.phone_number,
+                                        //     telephone_number: element.phone_number
+                                        // })
                                         axios.post('/contacts',{
                                             type: null,
                                             student_id: null,
@@ -238,7 +238,7 @@ export default class EditEmployee extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",
