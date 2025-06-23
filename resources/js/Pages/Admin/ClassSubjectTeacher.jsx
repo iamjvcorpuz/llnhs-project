@@ -676,9 +676,23 @@ export default class ClassSubjectTeacher extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
+                                        cancelButtonText: "Ok",
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false, 
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                } else if(data.status == "data_not_exist") { 
+                                    Swal.fire({  
+                                        title: "Fail to save. Data not Found", 
                                         cancelButtonText: "Ok",
                                         showCancelButton: true,
                                         showConfirmButton: false,

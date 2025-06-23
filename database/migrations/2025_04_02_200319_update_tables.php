@@ -38,6 +38,27 @@ return new class extends Migration
         //     $table->string('school_year')->nullable();
         //     $table->timestampsTz(precision: 0);
         // });
+
+        // Schema::create('classrooms_seats', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('class_teaching_id')->nullable();
+        //     $table->string('class_id')->nullable();
+        //     $table->string('subject_id')->nullable();
+        //     $table->string('number_rows')->nullable();
+        //     $table->string('number_columns')->nullable();
+        //     $table->string('total_students')->nullable(); 
+        //     $table->string('description')->nullable();
+        //     $table->timestampsTz(precision: 0);
+        // });
+
+        // Schema::create('classrooms_seats_assign', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('classrooms_seats_id')->nullable();
+        //     $table->string('class_id')->nullable();
+        //     $table->string('student_id')->nullable();
+        //     $table->string('seat_number')->nullable();
+        //     $table->timestampsTz(precision: 0);
+        // });
     }
 
     /**
@@ -45,8 +66,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
         // Schema::dropIfExists('classrooms');
         // Schema::dropIfExists('school_class');
+        // Schema::dropIfExists('classrooms_seats');
+        // Schema::dropIfExists('classrooms_seats_assign');
     }
 };

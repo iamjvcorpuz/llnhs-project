@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 
 class ClassSubjectTeachingController extends Controller
 {
@@ -69,6 +70,7 @@ class ClassSubjectTeachingController extends Controller
     {
         $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class;');
         $class_teaching = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
+        class_teaching.id,
         subject_id,
         teacher_id,
         class_id,
@@ -77,6 +79,7 @@ class ClassSubjectTeachingController extends Controller
         school_class.track,
         school_class.strands,
         school_class.level,
+        (SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS 'grade',
         school_class.classroom AS 'classroom_number',
         subject_name,
         time_start,
@@ -110,6 +113,7 @@ class ClassSubjectTeachingController extends Controller
     public static function getAllTeacherClassTeaching($id)
     {
         $class_teaching = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
+        class_teaching.id,
         subject_id,
         teacher_id,
         class_id,
@@ -135,6 +139,102 @@ class ClassSubjectTeachingController extends Controller
         LEFT JOIN employee ON employee.id = class_teaching.teacher_id
         WHERE class_teaching.teacher_id = ?;",[$id]); 
         return $class_teaching;
+    }
+    public static function getTeacherClassTeaching($id)
+    {
+        $class_teaching = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
+        class_teaching.id,
+        subject_id,
+        teacher_id,
+        class_id,
+        CONCAT(employee.last_name , ', ' , employee.first_name) AS 'teacher_name',
+        school_class.section_name ,
+        school_class.track,
+        school_class.strands,
+        school_class.level,
+        school_class.classroom AS 'classroom_number',
+        subject_name,
+        time_start,
+        time_end,
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday,
+        sunday,
+        description
+        FROM class_teaching 
+        LEFT JOIN school_class ON school_class.id = class_teaching.class_id 
+        LEFT JOIN employee ON employee.id = class_teaching.teacher_id
+        WHERE class_teaching.id = ?;",[$id]); 
+        return $class_teaching;
+    }
+    public static function getTeacherClassStudentsTeaching($id)
+    {
+        $class_teaching = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
+        class_teaching.id,
+        subject_id,
+        teacher_id,
+        class_id,
+        CONCAT(employee.last_name , ', ' , employee.first_name) AS 'teacher_name',
+        school_class.section_name ,
+        school_class.track,
+        school_class.strands,
+        school_class.level,
+        school_class.classroom AS 'classroom_number',
+        subject_name,
+        time_start,
+        time_end,
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday,
+        sunday,
+        description
+        FROM class_teaching 
+        LEFT JOIN school_class ON school_class.id = class_teaching.class_id 
+        LEFT JOIN employee ON employee.id = class_teaching.teacher_id
+        WHERE class_teaching.id = ?;",[$id]); 
+        return $class_teaching;
+    }
+    public static function getStudentAssignedSeats(Request $request) {
+        $class_teaching = DB::table('class_teaching')
+        ->where('id',  $request->id)
+        ->get();
+        $classrooms_seats = DB::table('classrooms_seats')
+        ->where('class_teaching_id',  $request->id)
+        ->get();
+        $classrooms_seats_assign = DB::table('classrooms_seats_assign')
+        ->where('classrooms_seats_id',  $request->id)
+        ->get();
+
+        $student = DB::select("SELECT
+        student.id as 'student_id',
+        student.qr_code,
+        student.lrn,
+        student.last_name,
+        student.first_name,
+        student.middle_name,
+        student.extension_name,
+        CONCAT(student.last_name , ', ' , student.first_name, COALESCE(CONCAT(' ' ,student.extension_name),''), COALESCE(CONCAT(' ' ,student.middle_name),'')) AS 'fullname'
+        FROM 
+        student LEFT JOIN classrooms_seats_assign ON student.id = classrooms_seats_assign.student_id
+        WHERE classrooms_seats_assign.classrooms_seats_id = ?;",[$request->id]); 
+
+        $object = new stdClass();
+        $object->classrooms_seats_assign = $classrooms_seats_assign;
+        $object->classrooms_seats = $classrooms_seats;
+        $object->student = $student;
+        $object->class_teaching = $class_teaching;
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $object
+        ], 201);
     }
     /**
      * Show the form for creating a new resource.
@@ -328,7 +428,7 @@ class ClassSubjectTeachingController extends Controller
         $exist_class->get(); 
         $exist_class_result = $exist_class->first();
 
-        $advisory = DB::table('class_teaching')
+        $class_teaching_exist = DB::table('class_teaching') 
         ->Where('subject_id', $request->subject)
         ->Where('teacher_id', $request->teacher_id)
         ->Where('class_id', $request->classts)
@@ -337,13 +437,18 @@ class ClassSubjectTeachingController extends Controller
         // ->dumpRawSql()
         ->get();
 
-        // echo "--";
-        // print_r($exist_class_result);
-        // echo $exist_class_result->class_id;
+        $class_teaching_not_exist = DB::table('class_teaching')
+        ->Where('id', $request->id)
+        // ->dumpRawSql()
+        ->get();
+
         // echo "--";
         // echo $advisory->count();
         // echo "--";
-        if($advisory->count()==1) {  
+        // print_r($exist_class_result);
+        // // echo $exist_class_result->class_id;
+        // echo "--";
+        if($class_teaching_not_exist->count()==1&&$class_teaching_exist->count()==0) {  
             if($exist_class->count() > 0) {
                 if($exist_class->count() == 1) {
                     if($exist_class_result->class_id == $request->classts && $exist_class_result->teacher_id == $request->teacher_id && $exist_class_result->subject_id == $request->subject ) {
@@ -404,7 +509,7 @@ class ClassSubjectTeachingController extends Controller
 
         } else {
             return response()->json([
-                'status' => 'data_exist',
+                'status' => 'data_not_exist',
                 'error' => "DATA EXIST",
                 'data' => []
             ], 200);

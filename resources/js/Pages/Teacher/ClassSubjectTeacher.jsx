@@ -54,7 +54,7 @@ export default class ClassSubjectTeacher extends Component {
                     id: "year_level",
                     Header: 'Grade Level',  
                     width: 200,
-                    accessor: 'level'
+                    accessor: 'grade'
                 },
                 {
                     id: "room",
@@ -84,13 +84,13 @@ export default class ClassSubjectTeacher extends Component {
                 },
                 {
                     id: "Action",
-                    Header: 'Status',  
+                    Header: 'Action',  
                     width: 150,
                     accessor: 'index',
                     className: "center",
                     Cell: ({row}) => { 
                        return <>
-                        <button className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-eye"></i> View</button> 
+                        <Link href={`/teacher/class/seat/${row.original.class_id}/${row.original.id}`} className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-diagram-2-fill"></i> Seating</Link> 
                        </>            
                     }
                 }
@@ -106,7 +106,7 @@ export default class ClassSubjectTeacher extends Component {
         this.updateData = this.updateData.bind(this);
         this.selectSubject = this.selectData.bind(this);
         this.getAllData = this.getAllData.bind(this);
-        // console.log(this.props);
+        console.log(this.props);
     }
     
     componentDidMount() {

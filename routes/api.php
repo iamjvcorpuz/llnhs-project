@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdvisoryController;
+use App\Http\Controllers\AssignSeatsController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ClassroomController;
@@ -65,7 +66,7 @@ Route::post('/attendance/time/today/all/timelogs',[AttendanceController::class,'
 Route::post('/attendance/time/new/entry',[AttendanceController::class,'insertTimelogs']);
 Route::post('/attendance/time/logs',[AttendanceController::class,'getTimelogs']);
 // Route::post('/attendance/class/students',[AttendanceController::class,'getClassStudents']);
-Route::post('/attendance/class/students',[AdvisoryController::class,'TeachersAllStudentClass']);
+Route::post('/attendance/class/students',[ClassSubjectTeachingController::class,'getStudentAssignedSeats']);
 Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClass']);
 Route::post('/attendance/time/today/timelogs',[AttendanceController::class,'getTodaysTimelogsClass']);
 // Route::post('/attendance/class/students',function($id) { 
@@ -95,6 +96,9 @@ Route::post('/classroom',[ClassroomController::class,'store']);
 Route::post('/classroom/update',[ClassroomController::class,'update']);
 Route::delete('/classroom',[ClassroomController::class,'remove']);
 
+Route::post('/classroom/seating/update',[AssignSeatsController::class,'update']);
+
+
 
 Route::get('/tsclass',[ClassTSController::class,'getAll2']);
 Route::post('/tsclass',[ClassTSController::class,'store']);
@@ -123,7 +127,7 @@ Route::delete('/events',[EventsController::class,'destroy']);
 Route::get('/teacher/advisory/student/{code}',function($code) {
     $id = AuthenticatedSessionController::getAuthId();
     return [
-        "students" =>  AdvisoryController::TeachersAllStudentAdvisories($id), 
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
         "studentsList" =>  StudentController::getAllNonAdvisory($id), 
         "advisory" =>  AdvisoryController::TeachersAdvisories($id,$code), 
         "sections" => SchoolSectionController::getAll(),

@@ -63,8 +63,10 @@ export default class PrintID extends Component {
         // })
         // console.log(this.props.data.track.find(e => e.name == this.props.data.student.flsh_track))
         try {
-            let track = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track).acronyms;
-            let strand = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand).acronyms;
+            let track_ = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track);
+            let strand_ = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand);
+            let track = typeof(track_)!="undefined"?track_.acronyms:"";
+            let strand = typeof(strand_)!="undefined"?strand_.acronyms:"";
 
             let t = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].track:"";
             let s = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].strand:"";
@@ -78,7 +80,7 @@ export default class PrintID extends Component {
                 picture: this.props.data.student.picture_base64,
                 fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
                 lastname: this.props.data.student.last_name,
-                track_strand: track + "-" + strand,
+                track_strand: (track!=""||track!="")?track + "-" + strand:"",
                 // grade: this.props.data.grade,
                 // section: this.props.data.section,
                 // sy: this.props.data.sy,
@@ -96,6 +98,7 @@ export default class PrintID extends Component {
                 this.singleId();
             });            
         } catch (error) {
+            console.log(error);
             Swal.fire({
                 title: "Cannot continue because info is not completed", 
                 showCancelButton: true,
@@ -231,7 +234,7 @@ export default class PrintID extends Component {
                             }, 10000);
                         }
                     });
-                }else { 
+                } else { 
                     $('#obj1').attr('data',doc.output("datauristring"));
                     // $('#frame1').attr('src',doc.output("datauristring"));  
                 }
