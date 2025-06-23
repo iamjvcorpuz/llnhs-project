@@ -39,6 +39,7 @@ export default class DashboardLayout extends Component {
 
     loadInits() {
         let self = this;
+        let t = null;
         try {
             $(function () { 
                 const Default$1 = {
@@ -49,6 +50,7 @@ export default class DashboardLayout extends Component {
                 if($('[data-lte-toggle="treeview"]').length > 0) {
                     const button = document.querySelectorAll('[data-lte-toggle="treeview"]');
                     button.forEach(btn => {
+                        // console.log("btn",btn);
                         btn.addEventListener('click', event => {
                             const target = event.target;
                             const targetItem = target.closest('.nav-item');
@@ -61,8 +63,41 @@ export default class DashboardLayout extends Component {
                                 data.toggle();
                             }
                         });
+
                     });
+
+ 
+                    let links = document.querySelectorAll('.sidebar-menu'); 
+                    for (var i = 0; i < links[0].children.length; i++) { 
+                        if (links[0].children[i].children.length == 1 && links[0].children[i].children[0].href === window.origin+window.location.pathname) {   
+                            try { 
+                                links[0].children[i].children[0].classList.add("active"); 
+                            } catch (error) {
+                                console.log("error 1",error);
+                            }  
+                        } else if (links[0].children[i].children.length == 2 && Array.from(links[0].children[i].children[1].children).some(e=>e.children[0].href===window.origin+window.location.pathname)) {  
+                            try {
+                                links[0].children[i].classList.add("menu-open");
+                                for (var ii = 0; ii < links[0].children[i].children.length; ii++) { 
+                                    if( typeof(links[0].children[i].children[1].children[ii].children[0]) != "undefined" && links[0].children[i].children[1].children[ii].children[0].href === window.origin+window.location.pathname) {
+                                        links[0].children[i].children[1].children[ii].children[0].classList.add("active");
+                                    }
+                                }
+                            } catch (error) {
+                                console.log("error 2",error);
+                            }  
+                        } else {
+                            try {                
+                                // x[0].children[i].children[0].classList.remove("active"); 
+                            } catch (error) {
+                                // console.log("error 2",error);
+                                
+                            }
+                        }
+                    } 
                 }
+
+                
                 
                 if( $('[data-lte-toggle="sidebar"]').length > 0) {
     

@@ -5,11 +5,13 @@ import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import Select from 'react-select'  
-import QRCode from "react-qr-code";
+// import QRCode from "react-qr-code";
 import Webcam from "react-webcam";
 import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
 import ApexCharts from 'apexcharts'
+
+import QRCode from 'qrcode';
 
 import ReactTable from "@/Components/ReactTable"; 
 
@@ -71,6 +73,10 @@ export default class StudentAdvisoryList extends Component {
             track: this.props.track,
             strand: this.props.strand,
             advisory: (typeof(this.props.advisory)!="undefined"&&this.props.advisory.length>0)?this.props.advisory[0]:{},
+            qr_code: "",
+            qr_code_data: "",
+            room_name: "",
+            room_number: ""
         }
         this._isMounted = false;
         this.loadStudentList = this.loadStudentList.bind(this);
@@ -403,6 +409,16 @@ export default class StudentAdvisoryList extends Component {
         }
     }
 
+    async generateQR (text) {
+        let self = this;
+        try {
+            let sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' ,width: 500 });
+            self.setState({qr_code: text, qr_code_data: sgv});
+        } catch (err) {
+        console.error(err)
+        }
+    }
+
     render() { 
         return <DashboardLayout title="Student" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
@@ -467,7 +483,25 @@ export default class StudentAdvisoryList extends Component {
                                     }} />
                             </select>
                             <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
-                        </div>                
+                        </div>
+                        <div className="col-md-6 pt-4">
+                            <button className="btn btn-info" onClick={ async ()=>{ 
+                                if(typeof(this.state.advisory.qrcode)!="undefined"&&this.state.advisory.qrcode!=null) {
+                                    await this.generateQR(this.state.advisory.qrcode); 
+                                    // let room_no  = "";
+                                    // try {
+                                    //     room_no  = this.state.classroom_temp.find(e => e.id==row.original.classroom_id).room_number;
+                                    // } catch (error) {
+                                        
+                                    // }
+                                    this.setState({
+                                        room_name: this.state.advisory.section_name,
+                                        room_number: this.state.advisory.room_number
+                                    })
+                                    $('#qrcode').modal('show');
+                                }
+                            }}> <i className="bi bi-qr-code"></i> QR</button>
+                        </div>
                     </div>
                     <br />
                     <div className="row">
@@ -576,6 +610,49 @@ export default class StudentAdvisoryList extends Component {
                     </div>
                     <div className="modal-footer"> 
                         <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveStudent() }}> <i className="bi bi-save"></i> Add</button>   
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode" aria-hidden="false" data-bs-backdrop="static">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5">QR</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        
+                        <div className="card-body"> 
+                            <div className="row g-3"> 
+                                <div className="my-qr-code ">
+                                    <div className="my-qr-code-content">
+                                        <div className="center">
+                                            <strong>
+                                            {this.state.room_name.toLocaleUpperCase()}
+                                            </strong>
+                                            <br />
+                                            <strong>
+                                            Room No.:{this.state.room_number.toLocaleUpperCase()}
+                                            </strong>
+                                        </div>
+                                        <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            let w=window.open();
+                            w.document.write($('.my-qr-code').html());
+                            w.print();
+                            w.close();
+                        }} ><i className="bi bi-printer"></i> Print</button>
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                     </div>

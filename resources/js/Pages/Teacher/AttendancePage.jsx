@@ -65,8 +65,13 @@ export default class AttendancePage extends Component {
             subject_id:"",
             subject_name:"",
             classStudentList: [],
+            assign_students: [],
+            student_list: [],
+            teaching_class: [],
+            seats: [],
             table_row: 4,
-            table_column: 8
+            table_column: 8,
+            loaded_data: false
         }
         this.intervals = null;
         let loop_test = 0;
@@ -80,7 +85,8 @@ export default class AttendancePage extends Component {
         this.speak = this.speak.bind(this);
         this.AlertSound = AlertSound;
         this.timeoutScan = null;
-        console.log(this.state.userdata);
+
+        console.log(this.props);
     }
 
     componentDidMount() {
@@ -594,19 +600,54 @@ export default class AttendancePage extends Component {
 
     loadStudentClass(id) {
         let self = this;
-        let date = moment(new Date()).format("YYYY-MM-DD")
+        let date = moment(new Date()).format("YYYY-MM-DD");
+        // console.log({id:id})
         axios.post('/attendance/class/students',{id:id}).then(function (response) {
             console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 console.log("loadStudentClass",response.data.status,data);
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    self.setState({classStudentList: data,start_scanning: true,loading_subject_fetch:false});
+                    self.setState({
+                        teaching_class: data.class_teaching,
+                        table_row: Number(data.classrooms_seats[0].number_rows),
+                        table_column: Number(data.classrooms_seats[0].number_columns),
+                        classStudentList: data.student,
+                        seats:  data.classrooms_seats_assign,
+                        assign_students:  data.classrooms_seats_assign,
+                        start_scanning: true,
+                        loading_subject_fetch:false
+                    },() => {
+                        self.assignedStudentList();
+                    });
                 }
             }
         });
     }
+
+    assignedStudentList() {
+
+        let self = this;
+        let remapStudentList = [];
+        if(this.state.assign_students.length>0) {
+            this.state.assign_students.forEach((element,i,arr) => {
+                if(self.state.classStudentList.some(e=>e.student_id===Number(element.student_id)) === true) {
+                    let temp = self.state.classStudentList.find(e=>e.student_id==element.student_id) ;
+                    remapStudentList.push({
+                        ...element,
+                        ...temp,
+                        seat_number: Number(element.seat_number)
+                    });
+                }
+                if((i + 1) == arr.length) {
+                    self.setState({seats: remapStudentList,loaded_data: true}); 
+                }
+            });
+        }
+
+    }
     
+
     speak(text) {
         // Create a SpeechSynthesisUtterance
         const utterance = new SpeechSynthesisUtterance(text);
@@ -638,7 +679,7 @@ export default class AttendancePage extends Component {
                     {(this.state.scan_type=="class_attendance")?<div className="form-group">
                         <label>Class Subject Option</label>
                         <select name="subject" className="form-control" id="subject" onChange={(e) => {
-                            let temp = this.state.class_teaching.find(ee=>ee.class_id==e.target.value);
+                            let temp = this.state.class_teaching.find(ee=>ee.id==e.target.value);
                             this.setState({
                                 subject_id: e.target.value,
                                 subject_name: `${temp.section_name} (${temp.subject_name})`,
@@ -650,7 +691,7 @@ export default class AttendancePage extends Component {
                         }}>
                             <option value="">-- Select --</option> 
                             <EachMethod of={this.state.class_teaching} render={(element,index) => {
-                                return <option value={element.class_id} >{`${element.section_name} (${element.subject_name}) Time: ${element.time_start} - ${element.time_end}`}  {(element.monday==1)?"Mon-":""}
+                                return <option value={element.id} >{`${element.section_name} (${element.subject_name}) Time: ${element.time_start} - ${element.time_end}`}  {(element.monday==1)?"Mon-":""}
                                 {(element.tuesday==1)?"Tue-":""}
                                 {(element.wednesday==1)?"Wed-":""}
                                 {(element.thursday==1)?"Thu-":""}
@@ -682,46 +723,67 @@ export default class AttendancePage extends Component {
                 </div>
                 </div>}
             </div>
-
-            <div className="mx-auto mt-5">
-                <div className="container text-center">
-                    {Array.from({length: this.state.table_row}).map((v,a) => {
-                        return  <div key={`seat_${a}`} className="row align-items-center">
-                            {Array.from({length: this.state.table_column}).map((v,b) => {
-                                return  <div key={`seat_${a}_${b}`} className="col mt-3 mb-3">
-                                            <center>                                                
-                                                <div className="attendance_icons">
-                                                <img src="/images/student_chair.png" id={`col_${b}_row_${a}_chair`} className="student_chair" alt="" />
-                                                    <img src="/adminlte/dist/assets/img/avatar.png" className="attendance_prof_img rounded-circle shadow auto-margin-lr" alt=""  />
+            
+            <div className="app-content">
+                <div className="container-fluid">
+                    {this.state.loaded_data==true?<div className="mx-auto mt-5">
+                    <div className="row">
+                        <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Subject: {(this.state.teaching_class.length>0)?this.state.teaching_class[0].subject_name:""}</h3></div>
+                        <div className="col-sm-6">
+                            <ol className="breadcrumb float-sm-end">
+                            <li className="breadcrumb-item active"><a href="#">TIME {(this.state.teaching_class.length>0)?this.state.teaching_class[0].time_start + " - " + this.state.teaching_class[0].time_end:""}</a></li> 
+                            </ol>
+                        </div>
+                    </div> 
+                        <div className="container text-center">
+                            {Array.from({length: this.state.table_row}).map((v,a) => {
+                                let count = a*this.state.table_column;
+                                return  <div key={`seat_${a}`} className="row align-items-center">
+                                    {Array.from({length: this.state.table_column}).map((v,b) => {
+                                        count++;
+                                        let count_=this.state.table_row*this.state.table_column-count;
+                                        return  <div key={`seat_${a}_${b}`} className="col mt-3 mb-3">
+                                                    <center>                                                
+                                                        <div className="attendance_icons">
+                                                            <img src="/images/student_chair.png" id={`col_${b}_row_${a}_chair`} className="student_chair" alt="" />
+                                                            {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<img src="/adminlte/dist/assets/img/avatar.png" className="attendance_prof_img rounded-circle shadow auto-margin-lr" alt=""  />:null}
+                                                                        
+                                                        </div>
+                                                        {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<><label id={`col_${b}_row_${a}_name`} className="badge text-bg-success" >{this.state.seats.find(e=>e.seat_number==(count_+1)).fullname}</label><br /></>:<></>}
+                                                        <label id={`col_${b}_row_${a}_count`} className="badge text-bg-primary" ># {count_+1}</label>
+                                                        <div>
+                                                        <button className="btn btn-xs btn-success" onClick={() => {
+                                                            $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_absent');  
+                                                            $(`#col_${b}_row_${a}_chair`).addClass('student_chair_present');
+                                                        }}><i className="bi bi-check"></i></button>
+                                                        <button className="btn btn-xs btn-danger" onClick={() => {
+                                                            $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_present');
+                                                            $(`#col_${b}_row_${a}_chair`).addClass('student_chair_absent');
+                                                        }}><i className="bi bi-x"></i></button>
+                                                        </div>
+                                                    </center>
                                                 </div>
-                                                <label id={`col_${b}_row_${a}_name`} >Juan Dela Cruz</label>
-                                                <div>
-                                                <button className="btn btn-xs btn-success" onClick={() => {
-                                                    $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_absent');  
-                                                    $(`#col_${b}_row_${a}_chair`).addClass('student_chair_present');
-                                                }}><i className="bi bi-check"></i></button>
-                                                <button className="btn btn-xs btn-danger" onClick={() => {
-                                                    $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_present');
-                                                    $(`#col_${b}_row_${a}_chair`).addClass('student_chair_absent');
-                                                }}><i className="bi bi-x"></i></button>
-                                                </div>
-                                            </center>
-                                        </div>
+                                    })}
+                                </div>
                             })}
                         </div>
-                    })}
+                    </div>:<></>}
+                    {this.state.loaded_data==true?<div className="container text-center mt-5">
+                        <div className="row align-items-center">
+                            <div className="col align-self-center">
+                                <center>
+                                    <img src="/images/teacher_chair.png" className="teacher_chair mx-atuo" />
+                                    <button className="btn btn-lg btn-primary">Submit</button>
+                                </center>
+                            </div>
+                        </div>
+                    </div>:<></>}                    
                 </div>
             </div>
-            <div className="container text-center mt-5">
-                <div className="row align-items-center">
-                    <div className="col align-self-center">
-                        <center>
-                            <img src="/images/teacher_chair.png" className="teacher_chair mx-atuo" />
-                            <button className="btn btn-lg btn-primary">Submit</button>
-                        </center>
-                    </div>
-                </div>
-            </div>
+
+
+
+            
             <div className="modal fade" tabIndex="-1" role="dialog" id="attendance" data-bs-backdrop="static">
                 <div className="modal-dialog modal-fullscreen" role="document">
                     <div className="modal-content">

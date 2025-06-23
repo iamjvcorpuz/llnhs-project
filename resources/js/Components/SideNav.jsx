@@ -20,8 +20,8 @@ export default function SideNav({
         <div className="sidebar-wrapper">
           <nav className="mt-2">
             <ul className="nav nav-sidebar sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="true" >
-              <li className="nav-item menu-open">
-                <Link href="/admin/dashboard" className="nav-link active">
+              <li className="nav-item">
+                <Link href="/admin/dashboard" className="nav-link">
                   <i className="nav-icon bi bi-speedometer"></i>
                   <p>
                     Dashboard 
