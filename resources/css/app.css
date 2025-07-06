@@ -701,3 +701,11 @@ img {
 .hands {
     height: 50px!important;
 }
+
+.present_profile_picture {
+    box-shadow: 0 0 2px 2px #005930!important;
+}
+
+.absent_profile_picture {
+    box-shadow: 0 0 2px 2px #d10707!important;
+}

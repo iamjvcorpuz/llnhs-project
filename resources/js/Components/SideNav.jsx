@@ -130,6 +130,21 @@ export default function SideNav({
                   <p>Users</p>
                 </Link>
               </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-gear"></i>
+                  <p>System</p>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/teacher/attendance/list" className="nav-link">
+                      <i className="nav-icon bi bi-gear"></i>
+                      <p>Notification Settings</p>
+                    </Link>
+                  </li>
+                </ul>
+              </li>
               {/* <li className="nav-item" disabled="disabled" >
                 <Link href="/admin/dashboard/settings" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>

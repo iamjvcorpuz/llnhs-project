@@ -36,12 +36,14 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        
         $school_year_grades = SchoolYearGradesController::getAll();
         $school_year_grades->each(function($val) {
             SchoolSection::factory(50)->state(new Sequence(
                 ['year_grade_id' => $val->id,'year_grade' => $val->year_grade]
             ))->create();
         });
+
         // $school_section = SchoolSection::factory(50)->create();
         // $school_section_room_no = 1;
         // $school_section->each(function($val) { 

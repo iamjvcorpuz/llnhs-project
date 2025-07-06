@@ -209,7 +209,8 @@ export default class PrintID extends Component {
             doc.text(this.state.guardiancontact.toLocaleUpperCase(), 90, 64,{align:'left',maxWidth: 70});
             doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
 
-            $("#obj1").height(window.innerHeight - 8);
+            // $("#obj1").height(window.innerHeight - 8);
+            $("#frame1").height(window.innerHeight - 8);
             // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
             console.log(doc.output().length >= 1000000,doc.output().length)
             setTimeout(() => {
@@ -232,11 +233,13 @@ export default class PrintID extends Component {
                             setTimeout(() => {
                                 window.close();
                             }, 10000);
+                        } else {
+                            window.close();
                         }
                     });
                 } else { 
-                    $('#obj1').attr('data',doc.output("datauristring"));
-                    // $('#frame1').attr('src',doc.output("datauristring"));  
+                    // $('#obj1').attr('data',doc.output("datauristring"));
+                    $('#frame1').attr('src',doc.output("datauristring"));  
                 }
             }, 1000);
 
@@ -256,6 +259,7 @@ export default class PrintID extends Component {
                 closeOnClickOutside: false,  
                 dangerMode: true,
             }).then((result) => { 
+                // console.log(result)
                 // if(result.isConfirmed) {
                     
                 // }
@@ -369,17 +373,17 @@ export default class PrintID extends Component {
     
     render() {
         return <div className="" >
-        <object
+        {/* <object
             id="obj1"
             type="application/pdf"
             width="100%"
             height="100">
-            {/* <iframe
+        </object> */}
+            <iframe
                 id="frame1"
                 src="#view=FitH&toolbar=0"
                 width="100%"
                 height="100%"
-            ></iframe> */}
-        </object>
+            ></iframe>
     </div>}
 }

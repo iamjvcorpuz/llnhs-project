@@ -45,6 +45,13 @@ return new class extends Migration
         //     $table->string('description')->nullable(); 
         //     $table->timestampsTz(precision: 0);
         // });  
+
+        // Schema::create('system_settings', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('setting')->nullable();
+        //     $table->string('value')->nullable();
+        //     $table->timestampsTz(precision: 0);
+        // });
     }
 
     /**

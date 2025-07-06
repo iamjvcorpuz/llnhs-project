@@ -223,6 +223,45 @@ class StudentController extends Controller
         // $student = Student::findOrFail($id);
         return $student;
     }
+    public static function getQRcode(Request $request) {
+        $class_teaching = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
+        class_teaching.id,
+        subject_id,
+        teacher_id,
+        class_id,
+        CONCAT(employee.last_name , ', ' , employee.first_name) AS 'teacher_name',
+        school_class.section_name ,
+        school_class.track,
+        school_class.strands,
+        school_class.level,
+        school_class.classroom AS 'classroom_number',
+        subject_name,
+        time_start,
+        time_end,
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday,
+        sunday,
+        description,
+        'class' AS 'type',
+        (SELECT JSON_ARRAYAGG(JSON_OBJECT('student_id',classrooms_seats_assign.student_id,'qr_code',(SELECT qr_code FROM student WHERE id = classrooms_seats_assign.student_id))) FROM classrooms_seats_assign WHERE classrooms_seats_id = class_teaching.id) AS 'student_list' 
+        FROM class_teaching 
+        LEFT JOIN school_class ON school_class.id = class_teaching.class_id 
+        LEFT JOIN employee ON employee.id = class_teaching.teacher_id
+        WHERE school_class.qr_code = ?;",[$request->code]); 
+        // print_r($class_teaching);
+        if(count($class_teaching) > 0) {
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $class_teaching
+            ], 200);
+        }
+
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

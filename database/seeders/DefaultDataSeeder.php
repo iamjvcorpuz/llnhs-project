@@ -39,6 +39,11 @@ class DefaultDataSeeder extends Seeder
         ]);
 
         Roles::create([
+            'name' => 'Employee',
+            'description' => 'For Employee role only',
+        ]);
+
+        Roles::create([
             'name' => 'Student',
             'description' => 'For student role only',
         ]);
@@ -47,6 +52,8 @@ class DefaultDataSeeder extends Seeder
             'name' => 'Guardian',
             'description' => 'For guardian role only',
         ]);
+
+        
 
         Subjects::factory()->create([
             'subject_name' => 'English',
@@ -292,6 +299,40 @@ class DefaultDataSeeder extends Seeder
             "updated_at" => \Carbon\Carbon::now()
         ]);
 
+        DB::table('system_settings')->insert([
+            'setting' => 'ENABLE_SMS', 
+            'value' => 'false',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+        DB::table('system_settings')->insert([
+            'setting' => 'ENABLE_FB_MESSENGER', 
+            'value' => 'false',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+        
+        DB::table('system_settings')->insert([
+            'setting' => 'ENABLE_PUSH_NOTIFICATION', 
+            'value' => 'false',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+        
+        DB::table('system_settings')->insert([
+            'setting' => 'ATTENDANCE_CLASS_STUDENT_ABSENT', 
+            'value' => 'Matagumpay naka pasok sa klase si %s sa saktong oras ng %s %s',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+        
+        DB::table('system_settings')->insert([
+            'setting' => 'ATTENDANCE_CLASS_STUDENT_PRESENT', 
+            'value' => 'Matagumpay naka %s sa klase si %s sa saktong %s %s',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+    
         //----end for default data lang ni
     }
 }
