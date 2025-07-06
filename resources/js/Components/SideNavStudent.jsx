@@ -20,19 +20,21 @@ export default function SideNav({
         <div className="sidebar-wrapper">
           <nav className="mt-2">
             <ul className="nav nav-sidebar sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="true" >
+
+              <li className="nav-item">
+                <Link href="/student/scan" className="nav-link">
+                  <i className="nav-icon bi bi-qr-code"></i>
+                  <p>
+                    Scan
+                  </p>
+                </Link> 
+              </li>
+
               <li className="nav-item">
                 <Link href="/student/dashboard" className="nav-link">
                   <i className="nav-icon bi bi-list-columns"></i>
                   <p>
                     Bulletin
-                  </p>
-                </Link> 
-              </li>
-              <li className="nav-item">
-                <Link href="/student/qrcode" className="nav-link">
-                  <i className="nav-icon bi bi-qr-code"></i>
-                  <p>
-                    QR CODE
                   </p>
                 </Link> 
               </li>
@@ -62,6 +64,14 @@ export default function SideNav({
                   <p>My ID</p>
                 </Link>
               </li> 
+              <li className="nav-item">
+                <Link href="/student/qrcode" className="nav-link">
+                  <i className="nav-icon bi bi-qr-code"></i>
+                  <p>
+                    QR CODE
+                  </p>
+                </Link> 
+              </li>
               {/* <li className="nav-item">
                 <Link href="/teacher/dashboard/settings" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>

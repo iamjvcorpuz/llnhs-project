@@ -296,16 +296,15 @@ Route::get('/teacher/dashboard/settings', function () {
 
 Route::get('/teacher/my/attendance', function () {
     $id = AuthenticatedSessionController::getAuthId();
-    return Inertia::render('AttendanceMobilePage',[
-        "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
-        "events" => []
+    return Inertia::render('Teacher/Attendance',[
+        "timelogs" => AttendanceController::myTimelogs('employee',$id)
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/teacher/attendance/scan', function () {
     $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('AttendanceMobilePage',[
         "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
-        "events" => []
+        "events" => EventsController::getAllActive()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -313,7 +312,7 @@ Route::get('/teacher/attendance/student', function () {
     $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('Teacher/AttendancePage',[
         "class_teaching" => ClassSubjectTeachingController::getAllTeacherClassTeaching($id),
-        "events" => []
+        "events" => EventsController::getAllActive()
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -362,6 +361,11 @@ Route::get('/profile/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/teacher/events', function () {
+    return Inertia::render('Teacher/Event',[ 
+        "events" => EventsController::getAllActive()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 // ======================================== teacher ================================
 // ======================================== parents ================================
 Route::get('/parents/dashboard', function () {
@@ -417,7 +421,10 @@ Route::get('/student/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/student/dashboard/attendance', function () {
-    return Inertia::render('Student/Attendance',['props' => null,]);
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Student/Attendance',[
+        "timelogs" => AttendanceController::myTimelogs('student',$id)
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
@@ -426,8 +433,16 @@ Route::get('/student/grades', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/student/attendance', function () {
+    $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('Student/Attendance',[
-        'holidays' => HolidaysController::getAll()
+        "timelogs" => AttendanceController::myTimelogs('student',$id)
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/student/scan', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Student/Scan',[
+        "timelogs" => AttendanceController::myTimelogs('student',$id)
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

@@ -351,6 +351,12 @@ export const AlertSound = {
         });
         // document.createElement('audio')
     },
+    speech: async function(message) {
+        const utterance = new SpeechSynthesisUtterance(message);
+        const voices = speechSynthesis.getVoices();
+        utterance.voice = voices[0]; 
+        speechSynthesis.speak(utterance);
+    },
     loading_data: async function(){        
         let a = new Audio('/sound/loading_data.mp3'); 
         a.addEventListener("canplaythrough", (event) => { 

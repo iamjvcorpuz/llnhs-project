@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contacts;
+use App\Models\Employee;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,11 +22,11 @@ class TeacherController extends Controller
     }
     public static function getAll() 
     {
-        return Teacher::all();
+        return  Employee::all();
     }
     public static function getData($id)
     {
-        $teacher = Teacher::findOrFail($id);
+        $teacher =  Employee::findOrFail($id);
         return $teacher;
     }
     public static function getData2($id)
@@ -41,7 +42,7 @@ class TeacherController extends Controller
     }
     public function show($id)
     {
-        $student = Teacher::findOrFail($id);
+        $student =  Employee::findOrFail($id);
         return response()->json([
             'status' => 'success',
             'error' => null,

@@ -22,7 +22,11 @@ class EventsController extends Controller
         $events = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM events;');
         return  $events;
     }
-
+    public static function getAllActive()
+    {
+        $events = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM events WHERE `date` = DATE_FORMAT(CURDATE(), \'%Y-%m-%d\');');
+        return  $events;
+    }
 
     /**
      * Show the form for creating a new resource.

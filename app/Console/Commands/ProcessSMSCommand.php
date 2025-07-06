@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\SMSController;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -31,18 +32,21 @@ class ProcessSMSCommand extends Command
         $fbid = $this->argument('fbid');
         $message = $this->argument('message');
         $id = $this->argument('id');
+        try {
+            $sms_result = SMSController::_SendSMS_($fbid,$message);
 
-        $sms_result = SMSController::_SendSMS_($fbid,$message);
-
-        $jsonStart = strpos($sms_result, '{');
-        $jsonBody = substr($sms_result, $jsonStart);
-        $data = json_decode($jsonBody, true); 
-        
-        if($data['status'] == "success") {
-            DB::table('notifications')->where('id', $id)->update(['status'=>'sent']); 
-        } else {
+            $jsonStart = strpos($sms_result, '{');
+            $jsonBody = substr($sms_result, $jsonStart);
+            $data = json_decode($jsonBody, true); 
+            
+            if($data['status'] == "success") {
+                DB::table('notifications')->where('id', $id)->update(['status'=>'sent']); 
+            } else {
+                DB::table('notifications')->where('id', $id)->update(['status'=>'fail']); 
+            }
+        }
+        catch(\Throwable $th) {
             DB::table('notifications')->where('id', $id)->update(['status'=>'fail']); 
-        }        
-
+        }
     }
 }

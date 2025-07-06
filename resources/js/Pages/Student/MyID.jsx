@@ -37,34 +37,11 @@ export default class PrintID extends Component {
     }
 
     componentDidMount() {
-        // $("#frame1").height(window.innerHeight - 8);
-        // const urlParams = new URLSearchParams(window.location.search);
-        // const stamp = urlParams.get('id');
-        // // console.log(stamp)
-        // if(stamp!=null) {
-        //     this.setState({
-        //         code:stamp
-        //     });
-        // }
-        // console.log({
-        //     code: this.props.data.student.qr_code,
-        //     lrn: this.props.data.student.lrn,
-        //     picture: this.props.data.student.picture_base64,
-        //     fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
-        //     lastname: this.props.data.student.last_name,
-        //     track_strand: this.props.data.student.flsh_track + "-" + this.props.data.student.flsh_strand,
-        //     grade: this.props.data.grade,
-        //     section: this.props.data.section,
-        //     sy: this.props.data.sy,
-        //     guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
-        //     relationship: this.props.data.guardian[0].relationship,
-        //     guardiancontact: this.props.data.guardian[0].phone_number,
-        //     address: this.props.data.guardian[0].current_address
-        // })
-        // console.log(this.props.data.track.find(e => e.name == this.props.data.student.flsh_track))
         try {
-            let track = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track).acronyms;
-            let strand = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand).acronyms;
+            let track_ = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track);
+            let strand_ = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand);
+            let track = typeof(track_)!="undefined"?track_.acronyms:"";
+            let strand = typeof(strand_)!="undefined"?strand_.acronyms:"";
 
             let t = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].track:"";
             let s = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].strand:"";
@@ -78,9 +55,10 @@ export default class PrintID extends Component {
                 picture: this.props.data.student.picture_base64,
                 fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
                 lastname: this.props.data.student.last_name,
-                track_strand: track + "-" + strand,
+                track_strand: (track!=""||track!="")?track + "-" + strand:"",
                 // grade: this.props.data.grade,
                 // section: this.props.data.section,
+                // sy: this.props.data.sy,
                 guardianname: this.props.data.guardian[0].first_name + " " + this.props.data.guardian[0].middle_name + " " + this.props.data.guardian[0].last_name,
                 relationship: this.props.data.guardian[0].relationship,
                 guardiancontact: this.props.data.guardian[0].phone_number,
@@ -196,14 +174,7 @@ export default class PrintID extends Component {
 
             doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
-            if(this.state.section.length>9) {
-                doc.text(this.state.grade.toLocaleUpperCase() , 109, 29,{align:'center',maxWidth: 45});
-                doc.setFontSize(10);
-                doc.text(this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
-            } else {
-
-                doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
-            }
+            doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
             doc.text(this.state.sy.toLocaleUpperCase(), 139, 34,{align:'left',maxWidth: 50});
 
             doc.setFont("helvetica", "normal");
@@ -213,36 +184,14 @@ export default class PrintID extends Component {
             doc.text(this.state.guardiancontact.toLocaleUpperCase(), 90, 64,{align:'left',maxWidth: 70});
             doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
 
-            $("#obj1").height(window.innerHeight - 128);
-            $('#obj1').attr('data',doc.output("datauristring"));
-            // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
+            // $("#obj1").height(window.innerHeight - 128);
+            // $('#obj1').attr('data',"");
+            $("#frame1").height(window.innerHeight - 128);
+            $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
             // console.log(doc.output().length >= 1000000,doc.output().length)
             // setTimeout(() => {
-            //     Swal.close();
-            //     if(!self.browser_check_preview() && doc.output().length >= 1000000){
-            //         // alert('For Browser data limitation. This will save automaticaly.');
-            //         Swal.fire({
-            //             title: "For Browser data limitation. This will save automaticaly.", 
-            //             showCancelButton: true,
-            //             allowOutsideClick: false,
-            //             allowEscapeKey: false,
-            //             confirmButtonText: "Download", 
-            //             icon: "warning",
-            //             showLoaderOnConfirm: true, 
-            //             closeOnClickOutside: false,  
-            //             dangerMode: true,
-            //         }).then((result) => { 
-            //             if(result.isConfirmed) {
-            //                 doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
-            //                 setTimeout(() => {
-            //                     window.close();
-            //                 }, 10000);
-            //             }
-            //         });
-            //     }else { 
-            //         $('#obj1').attr('data',doc.output("datauristring"));
-            //         // $('#frame1').attr('src',doc.output("datauristring"));  
-            //     }
+            //     $('#obj1').attr('data',doc.output("datauristring"));
+            //     $('#frame1').attr('src',doc.output("datauristring")); 
             // }, 1000);
 
                 
@@ -261,6 +210,7 @@ export default class PrintID extends Component {
                 closeOnClickOutside: false,  
                 dangerMode: true,
             }).then((result) => { 
+                console.log(result)
                 // if(result.isConfirmed) {
                     
                 // }
@@ -374,17 +324,11 @@ export default class PrintID extends Component {
     
     render() {
         return <DashboardLayout title="ID" user={this.props.auth.user} profile={this.props.auth.profile}><div className="noselect">
-        <object
-            id="obj1"
-            type="application/pdf"
-            width="100%"
-            height="100">
-            {/* <iframe
+            <iframe
                 id="frame1"
                 src="#view=FitH&toolbar=0"
                 width="100%"
                 height="100%"
-            ></iframe> */}
-        </object>
+            ></iframe>
     </div></DashboardLayout>}
 }

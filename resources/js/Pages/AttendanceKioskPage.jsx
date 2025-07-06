@@ -404,7 +404,8 @@ export default class AttendancePage extends Component {
                                 mode: mode
                             }]
                         },() => {                
-                            self.AlertSound.success_timelogs();
+                            self.AlertSound.speech(`${self.state.fullname}. successfuly. time ${mode}`);
+                            // self.AlertSound.success_timelogs();
                             Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
                                 // console.log(result)
                                 if(typeof(result)!="undefined") { 
@@ -484,7 +485,7 @@ export default class AttendancePage extends Component {
             callback();
         }).finally(function () {
             // always executed
-            callback();
+            // callback();
         });
     }
 

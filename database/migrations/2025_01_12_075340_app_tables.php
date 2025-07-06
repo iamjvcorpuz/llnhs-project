@@ -404,7 +404,14 @@ return new class extends Migration
             });
         }
 
-
+        if (Schema::hasTable('system_settings') == false) { 
+            Schema::create('system_settings', function (Blueprint $table) {
+                $table->id();
+                $table->string('setting')->nullable();
+                $table->string('value')->nullable();
+                $table->timestampsTz(precision: 0);
+            });
+        }
 
 
     }

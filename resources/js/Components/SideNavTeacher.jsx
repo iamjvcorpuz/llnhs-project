@@ -56,13 +56,13 @@ export default function SideNav({
                   <li className="nav-item">
                     <Link href="/teacher/my/attendance" className="nav-link">
                       <i className="nav-icon bi bi-calendar2-check"></i>
-                      <p>My Attendance</p>
+                      <p>My Timelogs</p>
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link href="/teacher/attendance/student" className="nav-link">
                       <i className="nav-icon bi bi-calendar2-check"></i>
-                      <p>Student</p>
+                      <p>Class</p>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -74,7 +74,7 @@ export default function SideNav({
                 </ul>
               </li>
               <li className="nav-item">
-                <Link href="/teacher/dashboard/settings" className="nav-link">
+                <Link href="/teacher/events" className="nav-link">
                   <i className="nav-icon bi bi-calendar3-event"></i>
                   <p>Events</p>
                 </Link>

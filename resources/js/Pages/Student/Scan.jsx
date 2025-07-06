@@ -22,10 +22,11 @@ setInterval( async () => {
     $("#timesdates").text(timedates);
 }, 800);
 
-export default class AttendancePage extends Component {
+export default class Scan extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            student_id: this.props.auth.user.user_id,
             class_teaching: this.props.class_teaching,
             events: this.props.events,
             userdata: this.props.auth.user,
@@ -59,7 +60,7 @@ export default class AttendancePage extends Component {
             pagenationIndex: 0,
             scanned_code: "",
             scan_paused: false,
-            start_scanning: false,
+            start_scanning: true,
             loading_subject_fetch: false,
             scan_type: "",
             subject_id:"",
@@ -72,7 +73,7 @@ export default class AttendancePage extends Component {
         this.handleFocusableElements = true;
         this.eventKeys = this.eventKeys.bind(this);
         this.eventKeys2 = this.eventKeys2.bind(this);
-        this.queryAccounts = this.queryAccounts.bind(this);
+        this.queryQR = this.queryQR.bind(this);
         this.queryAttendanceLogs = this.queryAttendanceLogs.bind(this);
         this.insertLogs = this.insertLogs.bind(this);
         this.loadStudentClass = this.loadStudentClass.bind(this);
@@ -81,7 +82,7 @@ export default class AttendancePage extends Component {
         this.speak = this.speak.bind(this);
         this.AlertSound = AlertSound;
         this.timeoutScan = null;
-        console.log(this.state.userdata);
+        // console.log(this.state.userdata);
     }
 
     componentDidMount() {
@@ -120,8 +121,11 @@ export default class AttendancePage extends Component {
                 //     time_logs_status: "bg-success",
                 //     time_logs_status_message:"Time Out"
                 // });
-        window.addEventListener('keydown', this.eventKeys);
-        this.getAllTodaysTimeLogs();
+        // window.addEventListener('keydown', this.eventKeys);
+        // this.getAllTodaysTimeLogs();
+        // setTimeout(() => {
+        //     this.queryQR("c7acd5bc597685e611ebf20207fa7e06");
+        // }, 2000);
     }
 
     paganationPosition(index) { 
@@ -227,7 +231,7 @@ export default class AttendancePage extends Component {
                         self.timeoutScan = null;
                         self.setState({scan_paused: false});
                     }, 5000);
-                    self.queryAccounts(key);
+                    self.queryQR(key);
                     self.setState({
                         scanned_code: ""
                     });
@@ -292,17 +296,59 @@ export default class AttendancePage extends Component {
         });
     }
 
-    queryAccounts(code) {
-        let self = this;
-        // console.log("queryAccounts code",code);
-        axios.post('/attendance/account/find',{code: code}).then(function (response) {
+    queryQR(code) {
+        let self = this; 
+        axios.post('/student/scan/qr',{code: code}).then(function (response) {
             // handle success
             // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                // console.log("aw",response.data.status,data);
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{}; 
                 if(typeof(response.data) != "undefined" && response.data.status == "success") {
-                    // console.log("aw",data);
+                    let date = moment(new Date()).format("YYYY-MM-DD");
+                    let time = moment(new Date()).format('hh:mm A'); 
+                    let student_list = [];
+                    let student_data = {};
+                    let class_data = {};
+                    if(data.length>0&&typeof(data[0].student_list)!="undefined") {
+                        student_list = JSON.parse(data[0].student_list);
+                        class_data = data[0];
+                    } 
+                    if(student_list.some(e=>e.student_id==self.state.student_id) == true) {
+                        student_data = student_list.find(e=>e.student_id==self.state.student_id); 
+                        self.setState({
+                            scan_paused: true,
+                            userdata: self.state.userdata,
+                            _id: data.id,
+                            lrn: typeof(student_data.lrn)!="undefined"?student_data.lrn:student_data.qr_code,
+                            idnumber: data.id
+                        },() => {
+                            self.insertLogs({
+                                code: code,
+                                date: date,
+                                time: time,
+                                mode: "IN",
+                                class_id: class_data.class_id
+                            },{
+                                id: self.state.student_id,
+                                type: 'student'
+                            }, () => {
+                                self.AlertSound.success_timelogs();
+                            });
+                        });
+                    } else {
+                        self.AlertSound.denied();
+                        self.speak(`Sorry. not allowed`);
+                        self.alertMessages();
+                        self.setState({
+                            scan_paused: false,
+                            idnumber: "",
+                            fullname: "",
+                            logger_type: "",
+                            logger_section: "",
+                            time_logs_status: "bg-danger",
+                            time_logs_status_message:"Sorry Please Try Again"
+                        });
+                    }
                     if(self.state.scan_type == "class_attendance") {
                         if(self.state.classStudentList.student.length>0) {
                             if(self.state.classStudentList.student.some(e=>e.qr_code==code)) {
@@ -658,37 +704,20 @@ export default class AttendancePage extends Component {
         });
     }
 
-    insertLogs(logsdata,userdata,callback) {
-        console.log(logsdata,userdata);
+    insertLogs(logsdata,userdata,callback) { 
         let self = this;
         delete userdata.picture_base64;
-        axios.post('/attendance/time/new/entry/by/class',{
+        // console.log(logsdata,userdata);
+        axios.post('/attendance/time/new/entry/by/student',{
             logsdata:logsdata,
             userdata:userdata
-        }).then(function (response) {
-            // handle success
-            // console.log(response)
+        }).then(function (response) {  
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 // console.log("aw",response.data.status,data);
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    console.log("aw",data);
-                    // self.setState({
-                    //     userdata: data,
-                    //     _id: data.id,
-                    //     lrn: typeof(data.lrn)!="undefined"?data.lrn:data.qr_code,
-                    //     profileImageBase64: data.picture_base64,
-                    //     fullname: `${data.first_name} ${data.last_name}`.toLocaleUpperCase(),
-                    //     idnumber: data.id,
-                    //     logger_type: data.type,
-                    //     logger_section: typeof(data.section)!="undefined"?data.section:""
-                    // },() => {
-                    //     self.queryAttendanceLogs(code,data);
-                    //     self.alertMessages();
-                    // });
-                    callback();
-                    self.getAllTodaysTimeLogs();
                     self.alertMessages();
+                    callback();
                 } else if(typeof(response.data)!="undefined"&&response.data.status == "not_found") { 
                     self.AlertSound.denied();
                     self.alertMessages();
@@ -912,7 +941,8 @@ export default class AttendancePage extends Component {
                     <div className="row">  
                         <div className="col-lg-6 center" id="timers">-</div>  
                         <div className="col-lg-6 center" id="timesdates" >-</div>
-                    </div> 
+                    </div>
+
                     <div className="">
                         <Scanner 
                             scanDelay={5000}
@@ -928,22 +958,14 @@ export default class AttendancePage extends Component {
                         />
                     </div>
 
-                    <div className="row">
-                        <div className="col-lg-9 mt-3">
-                            Status: {this.state.time_logs_status_message} <br />
-                            Total Logs: {this.state.attendance_data.length}
-                        </div>
-                        <div className="col-lg-3 mt-3">
+                    <div className="row"> 
+                        <div className="col-lg-12 mt-3">
                             <div className="row mb-1">
                                 <button className="btn btn-danger float-right" onClick={() => { this.setState({start_scanning: false,scan_type: ""}) }} > <i className="bi bi-qr-code"></i> Stop</button>
-                            </div>
-                            <div className="row">
-                                <button className="btn btn-primary float-right" onClick={() => {
-                                    $("#attendance").modal('show')
-                                }}> <i className="bi bi-list"></i> View</button>
-                            </div>                            
+                            </div>                 
                         </div>
                     </div> 
+
                 </div>:<div className="log-center-data-mobile">
                 <div className="row">
                     <div className="form-group">

@@ -14,6 +14,7 @@ use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\ParentsController;
+use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\ProgramsCurricularController;
 use App\Http\Controllers\SchoolSectionController;
 use App\Http\Controllers\SchoolYearGradesController;
@@ -24,6 +25,8 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use Illuminate\Support\Facades\Route;
 
+use Gumlet\ImageResize;
+
 Route::get('/desktop',[StudentController::class,'index']);
 Route::get('/generate/code',[GeneralController::class,'generateCode']);
 
@@ -31,6 +34,7 @@ Route::get('/student',[StudentController::class,'index']);
 Route::post('/student',[StudentController::class,'store']); 
 Route::post('/student/update',[StudentController::class,'update']);
 Route::delete('/student',[StudentController::class,'remove']);
+Route::post('/student/scan/qr',[StudentController::class,'getQRcode']);
  
 Route::get('/teacher',[TeacherController::class,'index']);
 Route::post('/teacher',[TeacherController::class,'store']);
@@ -67,8 +71,15 @@ Route::post('/attendance/time/new/entry',[AttendanceController::class,'insertTim
 Route::post('/attendance/time/logs',[AttendanceController::class,'getTimelogs']);
 // Route::post('/attendance/class/students',[AttendanceController::class,'getClassStudents']);
 Route::post('/attendance/class/students',[ClassSubjectTeachingController::class,'getStudentAssignedSeats']);
-Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClass']);
+Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClassV1']);
+Route::post('/attendance/time/new/entry/by/event',[AttendanceController::class,'insertTimeTogsByEvent']);
+Route::post('/attendance/time/new/entry/by/student',[AttendanceController::class,'insertTimeTogsClassByStudent']);
 Route::post('/attendance/time/today/timelogs',[AttendanceController::class,'getTodaysTimelogsClass']);
+Route::post('/attendance/time/today/class/timelogs',[AttendanceController::class,'getTodaysTimelogsClass']);
+
+
+Route::post('/send/emergency/notification',[AttendanceController::class,'insertTimeTogsByEmergency']);
+
 // Route::post('/attendance/class/students',function($id) { 
 //     return AdvisoryController::TeachersAllStudentClass($id);
 // });
@@ -159,3 +170,26 @@ Route::post('/messenger/recepient/sync',function() {
 Route::post('/messenger/send/message',[MessengerController::class,'sendMessage']);
 // Route::post('/holidays/update',[HolidaysController::class,'update']);
 // Route::delete('/holidays',[HolidaysController::class,'destroy']);
+
+
+Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        $base64_data = ProfilePhotoController::getPhoto($usrtype,$usrid); 
+        if($base64_data != "") {
+            header ('Content-Type: image/png');
+            $base64_data = str_replace("data:image/png;base64,", "",$base64_data);
+            $base64_decode = base64_decode($base64_data);
+            $base64_size = strlen($base64_decode); 
+            $image = ImageResize::createFromString($base64_decode);
+            $image->scale(30); 
+            header('Content-length: ' . strlen($image->getImageAsString())); 
+            echo $image->output(); 
+        } else {
+            abort(404, 'Opps Sorry!');
+        }
+
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
+});
