@@ -44,12 +44,7 @@ export default class Student extends Component {
                         let timelogs = "wait";
                         let key = row.original.id;
                         timelogs = row.original.logs.map((element,i) => {
-                            if(element.mode == "absent") {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'primary':'danger')} mr-1`} >{key} {element.mode.toUpperCase()}: {element.time}</div>;
-                            } else {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'primary':'danger')} mr-1`} >{key} TIME {element.mode}: {element.time}</div>;
-                            }
-                            
+                            return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'primary':'danger')} mr-1`} >{key} TIME {element.mode}: {element.time}</div>;
                         });
                        return <div key={`t_${key}`}> 
                         {timelogs}
@@ -105,13 +100,13 @@ export default class Student extends Component {
         }
         this._isMounted = false;
         this.loadAttendanceList = this.loadAttendanceList.bind(this); 
-        console.log(this.props)
     }
     
     componentDidMount() {
         this._isMounted = true;
         let date = moment(new Date()).format('YYYY-MM')
         this.loadAttendanceList(date);
+        console.log(this.props)
         // if(typeof(this.props.holidays)!="undefined"&&this.props.holidays!=null&&this.props.holidays.length>0) {
         //     let holidaysList = [];
         //     this.props.holidays.forEach((val,i,arr) => {

@@ -69,6 +69,7 @@ Route::post('/attendance/account/find',[AttendanceController::class,'findAccount
 Route::post('/attendance/time/today/all/timelogs',[AttendanceController::class,'getTodaysTimelogs']);
 Route::post('/attendance/time/new/entry',[AttendanceController::class,'insertTimelogs']);
 Route::post('/attendance/time/logs',[AttendanceController::class,'getTimelogs']);
+Route::post('/attendance/all/time/logs',[AttendanceController::class,'getAllTimelogs']);
 // Route::post('/attendance/class/students',[AttendanceController::class,'getClassStudents']);
 Route::post('/attendance/class/students',[ClassSubjectTeachingController::class,'getStudentAssignedSeats']);
 Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClassV1']);

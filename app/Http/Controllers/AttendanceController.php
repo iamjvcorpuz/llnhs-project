@@ -282,6 +282,21 @@ class AttendanceController extends Controller
         ], 200);
 
     }
+    public function getAllTimelogs(Request $request) {
+        $logs = [];
+        if($request->type == "student") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND student_id = ? ',[$request->id]);
+        } else if($request->type == "teacher") {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND teacher_id = ? ',[$request->id]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $logs
+        ], 200);
+
+    }
     public function getClassTimelogs(Request $request) {
         $logs = (object)array();
 
@@ -1226,7 +1241,7 @@ class AttendanceController extends Controller
                 }
             }
             return $map_attendance;
-        } else if($utype == "employee") {
+        } else if($utype != "student") {
             $logs = DB::select('SELECT * FROM attendance WHERE type <> "student" AND teacher_id = ? ',[$id]);  
             $start_date = current($logs)->date; 
             $dates = $start_date; 

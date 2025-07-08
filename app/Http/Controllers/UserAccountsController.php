@@ -22,7 +22,14 @@ class UserAccountsController extends Controller
             'data' => $useraccounts
         ],200);
     }
+
     public static function getAll()
+    {
+        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
+        return  $useraccounts;
+    }
+
+    public static function getAllStudents()
     {
         $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
         return  $useraccounts;
