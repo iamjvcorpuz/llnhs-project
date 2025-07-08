@@ -64,8 +64,8 @@ export default class MyQR extends Component {
         // })
         // console.log(this.props.data.track.find(e => e.name == this.props.data.student.flsh_track))
         try {
-            let track = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track).acronyms;
-            let strand = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand).acronyms;
+            let track = typeof(this.props.data.track.filter(e => e.name == this.props.data.student.flsh_track).acronyms)!="undefined"?this.props.data.track.filter(e => e.name == this.props.data.student.flsh_track).acronyms:"";
+            let strand = typeof(this.props.data.strand.filter(e => e.name == this.props.data.student.flsh_strand).acronyms)!="undefined"?this.props.data.strand.filter(e => e.name == this.props.data.student.flsh_strand).acronyms:"";
 
             let t = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].track:"";
             let s = (this.props.data.getSchoolStats!=null&&this.props.data.getSchoolStats.length>0)?this.props.data.getSchoolStats[0].strand:"";

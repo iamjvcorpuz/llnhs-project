@@ -186,6 +186,68 @@ class StudentController extends Controller
             'getSchoolStats' => $getSchoolStats
         ];
     }
+    public static function getStudentDataID()
+    {
+        // $student = Student::all();
+        $guardian = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
+        parents.id, 
+        student_guardians.student_id,
+        qr_code, 
+        first_name, 
+        last_name, 
+        middle_name, 
+        extension_name, 
+        sex,
+        current_address,
+        (SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS 'relationship', 
+        status, 
+        picture_base64, 
+        email, 
+        (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,
+        (SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as 'phone_number',
+        (SELECT messenger_id FROM contacts WHERE guardian_id = parents.id) as 'facebook_messenger' 
+        FROM parents LEFT JOIN student_guardians ON student_guardians.parents_id = parents.id
+        WHERE 
+        student_guardians.student_id IS NOT NULL");
+        $student = DB::select("SELECT 
+        ROW_NUMBER() OVER () as no, 
+        CONCAT(student.last_name , ', ' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.picture_base64 AS photo,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS 'student_status',
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section,
+        school_class.track AS track,
+        school_class.strands AS strand,
+        school_class.level AS grade_level
+        FROM student 
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = 'active'
+        LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
+        LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
+        WHERE
+        student.picture_base64 <> '' AND
+        student.status = 'active' AND
+        school_class.level IS NOT NULL");
+        return  [
+            'student' => $student,
+            'guardian' => $guardian,
+            'sy' => "",
+            'grade' => "",
+            'section' => "",
+            'track' => ProgramsCurricularController::getTrack(),
+            'strand' => ProgramsCurricularController::getStrand()
+        ];
+    }
     public static function getSchoolStats($id)
     {
         $getSchoolStats = DB::select('SELECT 

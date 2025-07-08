@@ -15,17 +15,14 @@ import ReactTable from "@/Components/ReactTable";
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
+import { Pagination , AlertSound,sortTimeDESC} from '@/Components/commonFunctions'; 
+
 
 export default class MyProfile extends Component {
     constructor(props) {
 		super(props);
-        // fullname: "Nina Mcintire",
-        // grade_level: "Grade 7",
-        // level: "Junior",
-        // section: "Section 1",
-        // _track: "ACAD",
-        // _strand: "STEM",
         this.state = {
+            student_id: this.props.auth.user.user_id,
             fullname: "",
             grade_level: "",
             level: "",
@@ -86,10 +83,14 @@ export default class MyProfile extends Component {
             parent_columns: [
                 {
                     id: "no",
-                    accessor: 'no',
+                    accessor: 'id',
                     Header: 'No.', 
                     width: 50,
-                    className: "center"
+                    className: "center",
+                    Cell: ({row}) => { 
+                        console.log(row)
+                       return <>     </>            
+                    }
                 },  
                 {
                     id: "fullname",
@@ -134,10 +135,13 @@ export default class MyProfile extends Component {
             attendance_columns: [
                 {
                     id: "no",
-                    accessor: 'no',
+                    accessor: 'id',
                     Header: 'No.', 
                     width: 50,
-                    className: "center"
+                    className: "center",
+                    Cell: ({row}) => { 
+                       return <> {(row.index + 1)}</>            
+                    }
                 },  
                 {
                     Header: 'Time',
@@ -183,7 +187,9 @@ export default class MyProfile extends Component {
             ],
         }
         console.log(this.props); 
+        this.getAttendanceLogs = this.getAttendanceLogs.bind(this);
     }
+
     componentDidMount() {
 
         $('#tabs a').on('click', function (event) {
@@ -216,20 +222,24 @@ export default class MyProfile extends Component {
             _strand: typeof(_strand)!="undefined"&&_strand!=null?_strand.acronyms:""
         });
 
+        this.attendancePieRender(0,0);
+        this.getAttendanceLogs();
+    }
+
+    attendancePieRender(present,absent) {
         const pie_chart_options = {
-            series: [12, 2,2],
+            series: [present, absent],
             chart: {
               type: "donut",
               height: "240vh",
             },
-            labels: ["No. of Present", "No. of Absences", "No. of Tardy"],
+            labels: ["No. of Present", "No. of Absences"],
             dataLabels: {
               enabled: false,
             },
             colors: [
               "#0d6efd",
-              "#f85555",
-              "#d63384",
+              "#f85555"
             ],
           };
     
@@ -239,6 +249,27 @@ export default class MyProfile extends Component {
           );
           pie_chart.render();
     }
+
+    getAttendanceLogs() {
+        let self = this;
+        let date = moment(new Date()).format("YYYY-MM-DD")
+        axios.post('/attendance/all/time/logs',{id:self.state.student_id,type: 'student'}).then(function (response) {
+            console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                    let absent = data.filter(e=>e.status==""&&e.mode=="absent").length;
+                    let present = data.filter(e=>e.status=="class_present"&&e.mode=="IN").length;
+                    console.log("absent",absent);
+                    console.log("present",present);
+                    self.attendancePieRender(present,absent);
+
+                    self.setState({attendance_data: data.sort(sortTimeDESC)},() => {  });
+                }
+            }
+        });
+    }
+
     render() {
         return <DashboardLayout title="Profile" user={this.props.auth.user} profile={this.props.auth.profile} ><div className="noselect">
             <div className="app-content-header"> 
@@ -303,7 +334,7 @@ export default class MyProfile extends Component {
                                 <ul id="tabs" className="nav nav-pills" role="tablist">
                                     <li className="nav-item"><a className="nav-link active" href="#profiles" data-toggle="tab">Profile</a></li>
                                     <li className="nav-item"><a className="nav-link " href="#attendance" data-toggle="tab">Attendance</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="#activity" data-toggle="tab">Activity Logs</a></li> 
+                                    {/* <li className="nav-item"><a className="nav-link " href="#activity" data-toggle="tab">Activity Logs</a></li>  */}
                                 </ul>
                             </div>
                             <div className="tab-content">
@@ -817,7 +848,7 @@ export default class MyProfile extends Component {
                                     <div className="col-lg-12">
                                         <div className="card mb-4">
                                             <div className="card-header">
-                                                Attendance
+                                                Overall Class Attendance
                                             </div>
                                             <div className="card-body">
                                                 <div  id="pie-chart"></div>
@@ -832,12 +863,13 @@ export default class MyProfile extends Component {
                                                 data={this.state.attendance_data} 
                                                 columns={this.state.attendance_columns}
                                                 showHeader={true}
-                                                showPagenation={false}
+                                                showPagenation={true}
                                                 defaultPageSize={5}
                                             />
                                         </div>
                                     </div>
                                 </div>
+
                                 <div className="tab-pane " id="activity">
                                     <div className="card">
                                         <ReactTable

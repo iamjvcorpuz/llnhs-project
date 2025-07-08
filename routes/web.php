@@ -163,6 +163,30 @@ Route::get('/admin/dashboard/users', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/admin/users/ids', function () {
+
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        return Inertia::render('Admin/IDS',[
+            'user_list' => UserAccountsController::getAll(),
+            'data' => UserAccountsController::getAllUsers()
+        ]);
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin/student/print/ids', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        return Inertia::render('Admin/PrintIDs',[ 
+            'data' => StudentController::getStudentDataID()
+        ]);
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/admin/dashboard/settings', function () {
     return Inertia::render('Admin/Users',[
         'user_list' => UserAccountsController::getAll(),
@@ -426,7 +450,6 @@ Route::get('/student/dashboard/attendance', function () {
         "timelogs" => AttendanceController::myTimelogs('student',$id)
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 
 Route::get('/student/grades', function () {
     return Inertia::render('Student/Grades',['props' => null,]);

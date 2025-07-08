@@ -33,10 +33,27 @@ export default class PrintID extends Component {
         }
         $('body').attr('class', '');
         this.singleId = this.singleId.bind(this);
-        console.log(this.props)
+        
     }
 
     componentDidMount() {
+        $("#frame1").height(0);
+        Swal.fire({
+            title: "Generating ID. Please wait.", 
+            showCancelButton: false,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "Download", 
+            cancelButtonText: "Close",
+            icon: "info",
+            showLoaderOnConfirm: false, 
+            closeOnClickOutside: false,  
+            dangerMode: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         // $("#frame1").height(window.innerHeight - 8);
         // const urlParams = new URLSearchParams(window.location.search);
         // const stamp = urlParams.get('id');
@@ -158,17 +175,21 @@ export default class PrintID extends Component {
             const doc = new jsPDF({});
             // const width = doc.getPageWidth();
             const width = 210.1;         
-            doc.addImage("/images/id/front.png", "PNG", 5, 5, 81, 130);
-            doc.addImage("/images/id/back.png", "PNG", 87, 5, 81, 130);
+            // doc.addImage("/images/id/front.png", "PNG", 5, 5, 81, 130);
+            // doc.addImage("/images/id/back.png", "PNG", 87, 5, 81, 130);
+
+            doc.addImage("/images/id/front.png", "PNG", 5, 10, 54, 88);
+            doc.addImage("/images/id/back.png", "PNG", 60, 10, 54, 88);
+            
             if(this.state.picture != "") {
-                doc.addImage(this.state.picture, "PNG", 9, 30, 38, 36);
+                doc.addImage(this.state.picture, "PNG", 7.5, 26.5, 26, 25);
             }
             const generateQR = async text => {
                 try {
-                    sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' });
+                    sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H',margin: 1 });
                     // console.log(sgv)
                     // doc.addSvgAsImage( sgv , 87, 5, 20, 20);
-                    doc.addImage(sgv, 8, 74, 30, 27);
+                    doc.addImage(sgv, 7.7, 57, 18, 18);
                 } catch (err) {
                 console.error(err)
                 }
@@ -176,38 +197,45 @@ export default class PrintID extends Component {
             await generateQR(this.state.lrn);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(255, 255, 255);
-            doc.text(this.state.lrn.toLocaleUpperCase(), 22, 72,{align:'left',color: "white"});
+            doc.setFontSize(11);
+            doc.text(this.state.lrn.toLocaleUpperCase(), 17, 55,{align:'left',color: "white"});
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(12);
-            doc.text(this.state.fullname1.toLocaleUpperCase(), 39, 78,{align:'left',maxWidth: 50});
+            doc.setFontSize(11);
+            if(this.state.fullname1.length >= 11) {
+                doc.setFontSize(8);
+            }
+            doc.text(this.state.fullname1.toLocaleUpperCase(), 28, 60,{align:'left',maxWidth: 50});
             doc.setFont("helvetica", "bold"); 
             doc.setFontSize(15);
 
-            let fname_y = 83;// 89 nextline 83 ang defaul
+            let fname_y = 66;// 89 nextline 83 ang defaul
             if(this.state.fullname1.length >= 18) {
-                fname_y = 89;
+                fname_y = 70;
             }
             // max 14 for the size of 15
-            if(this.state.lastname.length < 14) {
-                doc.setFontSize(20);
-                fname_y = 85;
+            if(this.state.lastname.length > 10) {
+                doc.setFontSize(10);
+                fname_y = 64;
             }
-            doc.text(this.state.lastname.toLocaleUpperCase() , 39, fname_y,{align:'left',maxWidth: 50});
+            if(this.state.lastname.length > 13) {
+                doc.setFontSize(7); 
+            }
+            doc.text(this.state.lastname.toLocaleUpperCase() , 28, fname_y,{align:'left',maxWidth: 50});
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(15);
-            doc.text(this.state.track_strand.toLocaleUpperCase(), 39, 96,{align:'left',maxWidth: 50});
+            doc.setFontSize(9);
+            doc.text(this.state.track_strand.toLocaleUpperCase(), 28, 73,{align:'left',maxWidth: 50});
 
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
-            doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 109, 34,{align:'center',maxWidth: 45});
-            doc.text(this.state.sy.toLocaleUpperCase(), 139, 34,{align:'left',maxWidth: 50});
+            doc.setFontSize(7);
+            doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 76, 30,{align:'center',maxWidth: 45});
+            doc.text(this.state.sy.toLocaleUpperCase(), 94, 30,{align:'left',maxWidth: 50});
 
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(10);
-            doc.text(this.state.guardianname.toLocaleUpperCase(), 90, 56,{align:'left',maxWidth: 80});
-            doc.text(this.state.relationship.toLocaleUpperCase(), 90, 60,{align:'left',maxWidth: 50});
-            doc.text(this.state.guardiancontact.toLocaleUpperCase(), 90, 64,{align:'left',maxWidth: 70});
-            doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
+            doc.setFontSize(8);
+            doc.text(this.state.guardianname.toLocaleUpperCase(), 63, 43.5,{align:'left',maxWidth: 80});
+            doc.text(this.state.relationship.toLocaleUpperCase(), 63, 46,{align:'left',maxWidth: 50});
+            doc.text(this.state.guardiancontact.toLocaleUpperCase(), 63, 49,{align:'left',maxWidth: 70});
+            doc.text(this.state.address.toLocaleUpperCase(), 63, 52,{align:'left',maxWidth: 79});
 
             // $("#obj1").height(window.innerHeight - 8);
             $("#frame1").height(window.innerHeight - 8);
@@ -215,32 +243,32 @@ export default class PrintID extends Component {
             console.log(doc.output().length >= 1000000,doc.output().length)
             setTimeout(() => {
                 Swal.close();
-                if(!self.browser_check_preview() && doc.output().length >= 1000000){
-                    // alert('For Browser data limitation. This will save automaticaly.');
-                    Swal.fire({
-                        title: "For Browser data limitation. This will save automaticaly.", 
-                        showCancelButton: true,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        confirmButtonText: "Download", 
-                        icon: "warning",
-                        showLoaderOnConfirm: true, 
-                        closeOnClickOutside: false,  
-                        dangerMode: true,
-                    }).then((result) => { 
-                        if(result.isConfirmed) {
-                            doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
-                            setTimeout(() => {
-                                window.close();
-                            }, 10000);
-                        } else {
-                            window.close();
-                        }
-                    });
-                } else { 
-                    // $('#obj1').attr('data',doc.output("datauristring"));
-                    $('#frame1').attr('src',doc.output("datauristring"));  
-                }
+                // if(!self.browser_check_preview() && doc.output().length >= 1000000){
+                //     // alert('For Browser data limitation. This will save automaticaly.');
+                //     Swal.fire({
+                //         title: "For Browser data limitation. This will save automaticaly.", 
+                //         showCancelButton: true,
+                //         allowOutsideClick: false,
+                //         allowEscapeKey: false,
+                //         confirmButtonText: "Download", 
+                //         icon: "warning",
+                //         showLoaderOnConfirm: true, 
+                //         closeOnClickOutside: false,  
+                //         dangerMode: true,
+                //     }).then((result) => { 
+                //         if(result.isConfirmed) {
+                //             doc.save(self.state.lastname +',' + self.state.fullname1 + '.pdf');
+                //             setTimeout(() => {
+                //                 window.close();
+                //             }, 10000);
+                //         } else {
+                //             window.close();
+                //         }
+                //     });
+                // } else { 
+                //     // $('#obj1').attr('data',doc.output("datauristring"));
+                    $('#frame1').attr('src',doc.output("bloburl"));  
+                // }
             }, 1000);
 
                 
@@ -366,7 +394,7 @@ export default class PrintID extends Component {
         doc.text(this.state.address.toLocaleUpperCase(), 90, 68,{align:'left',maxWidth: 79});
 
         // $('#obj1').attr('data',doc.output("datauristring"));
-        $('#frame1').attr('src',doc.output("datauristring")); 
+        $('#frame1').attr('src',doc.output("bloburl")); 
         // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
 
     }

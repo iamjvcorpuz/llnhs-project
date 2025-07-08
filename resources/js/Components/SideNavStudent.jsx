@@ -30,14 +30,14 @@ export default function SideNav({
                 </Link> 
               </li>
 
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link href="/student/dashboard" className="nav-link">
                   <i className="nav-icon bi bi-list-columns"></i>
                   <p>
                     Bulletin
                   </p>
                 </Link> 
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link href="/student/profiles" className="nav-link ">
                   <i className="nav-icon bi bi-person-vcard"></i>

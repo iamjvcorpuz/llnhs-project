@@ -33,10 +33,26 @@ export default class PrintID extends Component {
         }
         // $('body').attr('class', '');
         this.singleId = this.singleId.bind(this);
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     componentDidMount() {
+        Swal.fire({
+            title: "Generating ID. Please wait.", 
+            showCancelButton: false,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "Download", 
+            cancelButtonText: "Close",
+            icon: "info",
+            showLoaderOnConfirm: false, 
+            closeOnClickOutside: false,  
+            dangerMode: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         try {
             let track_ = this.props.data.track.find(e => e.name == this.props.data.student.flsh_track);
             let strand_ = this.props.data.strand.find(e => e.name == this.props.data.student.flsh_strand);
@@ -128,9 +144,10 @@ export default class PrintID extends Component {
     
     async singleId() {
         try {
+            Swal.close();
             let self = this;
             let sgv = "";
-            const doc = new jsPDF({});
+            const doc = new jsPDF({compressPdf: true});
             // const width = doc.getPageWidth();
             const width = 210.1;         
             doc.addImage("/images/id/front.png", "PNG", 5, 5, 81, 130);
@@ -154,6 +171,9 @@ export default class PrintID extends Component {
             doc.text(this.state.lrn.toLocaleUpperCase(), 22, 72,{align:'left',color: "white"});
             doc.setFont("helvetica", "normal");
             doc.setFontSize(12);
+            if(this.state.fullname1.length >= 11) {
+                doc.setFontSize(8);
+            }
             doc.text(this.state.fullname1.toLocaleUpperCase(), 39, 78,{align:'left',maxWidth: 50});
             doc.setFont("helvetica", "bold"); 
             doc.setFontSize(15);
@@ -186,13 +206,14 @@ export default class PrintID extends Component {
 
             // $("#obj1").height(window.innerHeight - 128);
             // $('#obj1').attr('data',"");
-            $("#frame1").height(window.innerHeight - 128);
-            $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
+            $("#frame1").height(window.innerHeight - 120);
             // console.log(doc.output().length >= 1000000,doc.output().length)
-            // setTimeout(() => {
-            //     $('#obj1').attr('data',doc.output("datauristring"));
-            //     $('#frame1').attr('src',doc.output("datauristring")); 
-            // }, 1000);
+            setTimeout(() => {
+                // $('#obj1').attr('data',doc.output("datauristring"));
+                // $('#frame1').attr('src',null); 
+                // doc.save('Test.pdf');
+                $('#frame1').attr('src',doc.output("bloburl") + '#view=Fit&toolbar=1'); 
+            }, 1000);
 
                 
         } catch (error) {

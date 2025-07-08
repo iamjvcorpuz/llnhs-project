@@ -125,6 +125,12 @@ export default function SideNav({
                 </ul>
               </li>
               <li className="nav-item">
+                <Link href="/admin/users/ids" className="nav-link">
+                  <i className="nav-icon bi bi-printer"></i>
+                  <p>ID's</p>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link href="/admin/dashboard/users" className="nav-link">
                   <i className="nav-icon bi bi-person-gear"></i>
                   <p>Users</p>
