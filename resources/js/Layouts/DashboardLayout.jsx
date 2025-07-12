@@ -17,6 +17,9 @@ import $ from 'jquery';
 // console.log(window.adminlte)
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+import { ReactNotificationContainer } from '@/Components/Notification'; 
+
 export default class DashboardLayout extends Component {
     constructor(props) {
 		super(props);
@@ -181,6 +184,7 @@ export default class DashboardLayout extends Component {
     
     render() {
         return ((this.state.viewer_mode=="desktop")?<div className="app-wrapper">
+            <ReactNotificationContainer />
             <Head title={this.props.title} />
             <TopNav user={this.props} />
             {(this.state.user.user_type=="Admin")?<SideNav user={this.props} />:null}

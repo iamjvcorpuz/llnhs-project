@@ -21,4 +21,5 @@ class Events extends Model
         'time_start',
         'time_end',
         'description'
-    ];}
+    ];
+}

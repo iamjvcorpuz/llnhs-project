@@ -10,6 +10,7 @@ use App\Http\Controllers\ClassTSController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EventsController;
+use App\Http\Controllers\FinalGradeController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\MessengerController;
@@ -25,7 +26,8 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use Illuminate\Support\Facades\Route;
 
-use Gumlet\ImageResize;
+use Gumlet\ImageResize; 
+use Illuminate\Http\Request;
 
 Route::get('/desktop',[StudentController::class,'index']);
 Route::get('/generate/code',[GeneralController::class,'generateCode']);
@@ -35,6 +37,7 @@ Route::post('/student',[StudentController::class,'store']);
 Route::post('/student/update',[StudentController::class,'update']);
 Route::delete('/student',[StudentController::class,'remove']);
 Route::post('/student/scan/qr',[StudentController::class,'getQRcode']);
+Route::post('/student/grades',[StudentController::class,'getStudentGrade']);
  
 Route::get('/teacher',[TeacherController::class,'index']);
 Route::post('/teacher',[TeacherController::class,'store']);
@@ -154,6 +157,46 @@ Route::get('/teacher/class/subjects',function() {
     $id = AuthenticatedSessionController::getAuthId();
     return ClassSubjectTeachingController::getAllTeacherClass($id);
 });
+
+
+Route::post('/class/subject/ginal/grade/update',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId(); 
+    if($id!=null) {
+       return FinalGradeController::updateGrade($request);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+Route::post('/teacher/class/final/grading/{classid}/{ids}',function($classid,$ids) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return [
+        "class_teaching" => ClassSubjectTeachingController::getTeacherClassTeaching($ids),
+        "assign_class_seats" => AssignSeatsController::getAssignClassSeatsOthers($classid),
+        "assign_class_seats_assigned" => AssignSeatsController::getAssignClassSeatAssignedOthers($classid),
+        "assign_class_teaching" => AssignSeatsController::getAssignClassSeats($ids),
+        "assign_students" => AssignSeatsController::getStudentAssignedSeats($ids),
+        "students" => AssignSeatsController::getTeachersAllStudentClass($classid),
+        "teacher" => EmployeeController::getAllTeacher(),
+        "class" => ClassTSController::getAll(),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+       ];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
 
 Route::post('/messenger/recepient',[MessengerController::class,'getRecipients']);
 // Route::post('/messenger/recepient/sync',[MessengerController::class,'pullMessengerClientData']);

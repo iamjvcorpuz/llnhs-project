@@ -104,6 +104,7 @@ export default class ClassSubjectTeacher extends Component {
                     Cell: ({row}) => { 
                        return <>
                         <Link href={`/teacher/class/seat/${row.original.class_id}/${row.original.id}`} className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-diagram-2-fill"></i> Seating</Link> 
+                        <Link href={`/teacher/class/final/grading/${row.original.class_id}/${row.original.id}`} className="btn btn-success btn-block btn-sm col-12 mt-1" > <i className="bi bi-card-checklist"></i> Final Grades </Link> 
                        </>            
                     }
                 }
