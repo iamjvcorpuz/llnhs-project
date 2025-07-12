@@ -10,6 +10,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client'; 
 
+
 // import * as bootstrap from "bootstrap";
 // import App from './AppRoute';
 import $ from 'jquery';
@@ -20,7 +21,7 @@ window.DataTable = DataTable;
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
  
-const cleanApp = () => {
+const cleanApp = () => { 
     document.getElementById('llnhs-app').removeAttribute('data-page');
 };
 

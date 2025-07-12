@@ -72,16 +72,17 @@ export default class Advisory extends Component {
                 {
                     id: "Action",
                     Header: 'Action',  
-                    width: 100,
+                    width: 150,
                     accessor: 'status',
                     className: "center",
                     Cell: ({row}) => { 
                        return <>  
                         <Link href={`/teacher/advisory/students/${row.original.qrcode}?stamp=${moment(new Date()).toString()}`}  className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-eye"></i> View</Link> 
+                        <Link href={`/teacher/advisory/final/grading/${row.original.qrcode}`} className="btn btn-success btn-block btn-sm col-12 mt-1" > <i className="bi bi-card-checklist"></i> Final Grades </Link> 
                        </>            
                     }
                 }
-            ]            
+            ]
         }
         this._isMounted = false;
         // this.saveData = this.getAllRequiredData.bind(this);

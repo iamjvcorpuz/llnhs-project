@@ -17,6 +17,7 @@ use App\Http\Controllers\SchoolSectionController;
 use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use App\Models\SchoolYearGrades;
@@ -378,6 +379,36 @@ Route::get('/teacher/class/seat/{classid}/{ids}', function ($classid,$ids) {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/teacher/class/final/grading/{classid}/{ids}', function ($classid,$ids) {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Teacher/FinalGrade',[ 
+        "class_teaching" => ClassSubjectTeachingController::getTeacherClassTeaching($ids),
+        "assign_class_seats" => AssignSeatsController::getAssignClassSeatsOthers($classid),
+        "assign_class_seats_assigned" => AssignSeatsController::getAssignClassSeatAssignedOthers($classid),
+        "assign_class_teaching" => AssignSeatsController::getAssignClassSeats($ids),
+        "assign_students" => AssignSeatsController::getStudentAssignedSeats($ids),
+        "students" => AssignSeatsController::getStudentGrades($classid),
+        "teacher" => EmployeeController::getAllTeacher(),
+        "class" => ClassTSController::getAll(),
+        "classroom" => ClassroomController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/teacher/advisory/final/grading/{code}', function ($code) {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Teacher/AdvisoryFinalGrade',[
+        "code" => $code,
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisories($code), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id), 
+        "advisory" =>  AdvisoryController::TeachersAdvisories($id,$code), 
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/profile/dashboard', function () {
     return Inertia::render('Profile/Default',[
@@ -451,8 +482,13 @@ Route::get('/student/dashboard/attendance', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/student/grades', function () {
-    return Inertia::render('Student/Grades',['props' => null,]);
+Route::get('/student/grades', function (Request $request) {
+    $id = AuthenticatedSessionController::getAuthId(); 
+    $request->merge(['id' => $id]);
+    return Inertia::render('Student/Grades',[
+        "mygrades" => StudentController::getStudentGrade($request),
+        'sy' => SystemSettingsController::getCurrentSY()
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/student/attendance', function () {
@@ -507,6 +543,14 @@ Route::get('/attendance/mobile', function () {
 
 Route::get('/sf2', function () {
     return Inertia::render('SF2');
+});
+
+Route::get('/student/{id}/print/grade', function ($id,Request $request) {
+    $request->merge(['id' => $id]);
+    return Inertia::render('PrintGrade',[
+        "grades" => StudentController::getStudentGrade($request),
+        "data" => StudentController::getDataID($id)
+    ]);
 });
 
 require __DIR__.'/auth.php';

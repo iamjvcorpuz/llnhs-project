@@ -332,7 +332,12 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
-    
+        DB::table('system_settings')->insert([
+            'setting' => 'SCHOOL_YEAR', 
+            'value' => '2025 - 2026',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
         //----end for default data lang ni
     }
 }

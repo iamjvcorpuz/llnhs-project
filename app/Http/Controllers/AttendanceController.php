@@ -1222,43 +1222,47 @@ class AttendanceController extends Controller
 
         if($utype == "student") {
             $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND student_id = ? ',[$id]);
-            $start_date = current($logs)->date; 
-            $dates = $start_date; 
-            $month = date("Y-m", strtotime($dates));
-            $map_attendance_timelogs = [];
-            foreach ($logs as $key => $value) {
-                if($dates == $value->date) {
-                    array_push($map_attendance_timelogs, $value);
-                } else if($dates != $value->date) {
-                    array_push($map_attendance, (object)[
-                        'date' => $dates,
-                        'month' => $month,
-                        'logs' => $map_attendance_timelogs
-                    ]);
-                    $map_attendance_timelogs = [];
-                    $dates = $value->date;
-                    array_push($map_attendance_timelogs, $value);
+            if(count($logs) > 0) {
+                $start_date = current($logs)->date; 
+                $dates = $start_date; 
+                $month = date("Y-m", strtotime($dates));
+                $map_attendance_timelogs = [];
+                foreach ($logs as $key => $value) {
+                    if($dates == $value->date) {
+                        array_push($map_attendance_timelogs, $value);
+                    } else if($dates != $value->date) {
+                        array_push($map_attendance, (object)[
+                            'date' => $dates,
+                            'month' => $month,
+                            'logs' => $map_attendance_timelogs
+                        ]);
+                        $map_attendance_timelogs = [];
+                        $dates = $value->date;
+                        array_push($map_attendance_timelogs, $value);
+                    }
                 }
             }
             return $map_attendance;
         } else if($utype != "student") {
             $logs = DB::select('SELECT * FROM attendance WHERE type <> "student" AND teacher_id = ? ',[$id]);  
-            $start_date = current($logs)->date; 
-            $dates = $start_date; 
-            $month = date("Y-m", strtotime($dates));
-            $map_attendance_timelogs = [];
-            foreach ($logs as $key => $value) {
-                if($dates == $value->date) {
-                    array_push($map_attendance_timelogs, $value);
-                } else if($dates != $value->date) {
-                    array_push($map_attendance, (object)[
-                        'date' => $dates,
-                        'month' => $month,
-                        'logs' => $map_attendance_timelogs
-                    ]);
-                    $map_attendance_timelogs = [];
-                    $dates = $value->date;
-                    array_push($map_attendance_timelogs, $value);
+            if(count($logs) > 0) {
+                $start_date = current($logs)->date; 
+                $dates = $start_date; 
+                $month = date("Y-m", strtotime($dates));
+                $map_attendance_timelogs = [];
+                foreach ($logs as $key => $value) {
+                    if($dates == $value->date) {
+                        array_push($map_attendance_timelogs, $value);
+                    } else if($dates != $value->date) {
+                        array_push($map_attendance, (object)[
+                            'date' => $dates,
+                            'month' => $month,
+                            'logs' => $map_attendance_timelogs
+                        ]);
+                        $map_attendance_timelogs = [];
+                        $dates = $value->date;
+                        array_push($map_attendance_timelogs, $value);
+                    }
                 }
             }
             return $map_attendance;

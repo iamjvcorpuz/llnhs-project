@@ -152,6 +152,8 @@ class ClassSubjectTeachingController extends Controller
         school_class.track,
         school_class.strands,
         school_class.level,
+        school_class.grade,
+        school_class.school_year,
         school_class.classroom AS 'classroom_number',
         subject_name,
         time_start,
@@ -169,6 +171,37 @@ class ClassSubjectTeachingController extends Controller
         LEFT JOIN employee ON employee.id = class_teaching.teacher_id
         WHERE class_teaching.id = ?;",[$id]); 
         return $class_teaching;
+    }
+    public static function getStudentGrades($id) {
+        $students = DB::select("SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        CONCAT(student.last_name , ', ' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track,
+        student.id AS student_id,
+        student.lrn,
+        student.qr_code,
+        student.sex,
+        student.status AS 'student_status',
+        student_final_grades.subject_id,
+        student_final_grades.subject_name,
+        student_final_grades.sy,
+        student_final_grades.grade_level,
+        student_final_grades.q1,
+        student_final_grades.q2,
+        student_final_grades.q3,
+        student_final_grades.q4
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        LEFT JOIN student_final_grades ON student_final_grades.student_id = student.id AND student_final_grades.status = 'default'
+        WHERE advisory_group.status = 'active' AND advisory.status = 'active' AND advisory.school_sections_id = ?",[$id]);
+        return $students;
     }
     public static function getTeacherClassStudentsTeaching($id)
     {

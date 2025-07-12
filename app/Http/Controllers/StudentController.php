@@ -147,7 +147,7 @@ class StudentController extends Controller
     public static function getDataID($id)
     {
         $student = Student::findOrFail($id);
-        $guardian = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address,(SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
+        $guardian = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,CONCAT(last_name , \', \' , first_name) as fullname, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address,(SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
         $getSchoolStats = DB::select('SELECT 
         ROW_NUMBER() OVER () as no, 
         CONCAT(student.last_name , \', \' , student.first_name) as fullname,
@@ -183,7 +183,8 @@ class StudentController extends Controller
             'section' => "",
             'track' => ProgramsCurricularController::getTrack(),
             'strand' => ProgramsCurricularController::getStrand(),
-            'getSchoolStats' => $getSchoolStats
+            'getSchoolStats' => $getSchoolStats,
+            'school' => SystemSettingsController::getSchoolRegistration()
         ];
     }
     public static function getStudentDataID()
@@ -285,6 +286,45 @@ class StudentController extends Controller
         // $student = Student::findOrFail($id);
         return $student;
     }
+    public static function getStudentGrade(Request $request)
+    {
+        // var_dump($request->id);
+        $sy = SystemSettingsController::getCurrentSY(); 
+        $mygrades = DB::select("SELECT
+        school_subjects.id,
+        school_subjects.subject_name,
+        (SELECT q1 FROM student_final_grades 
+            WHERE student_final_grades.student_id 
+            AND student_final_grades.status = 'default' 
+            AND student_final_grades.sy = ? 
+            AND student_final_grades.student_id = ?
+            AND student_final_grades.subject_name = school_subjects.subject_name
+        ) as 'q1',
+        (SELECT q2 FROM student_final_grades 
+            WHERE student_final_grades.student_id 
+            AND student_final_grades.status = 'default' 
+            AND student_final_grades.sy = ? 
+            AND student_final_grades.student_id = ?
+            AND student_final_grades.subject_name = school_subjects.subject_name
+        ) as 'q2',
+        (SELECT q3 FROM student_final_grades 
+            WHERE student_final_grades.student_id 
+            AND student_final_grades.status = 'default' 
+            AND student_final_grades.sy = ? 
+            AND student_final_grades.student_id = ?
+            AND student_final_grades.subject_name = school_subjects.subject_name
+        ) as 'q3',
+        (SELECT q4 FROM student_final_grades 
+            WHERE student_final_grades.student_id 
+            AND student_final_grades.status = 'default' 
+            AND student_final_grades.sy = ? 
+            AND student_final_grades.student_id = ?
+            AND student_final_grades.subject_name = school_subjects.subject_name
+        ) as 'q4'
+        FROM school_subjects",[$sy,$request->id,$sy,$request->id,$sy,$request->id,$sy,$request->id]); 
+        return $mygrades;
+    }
+    
     public static function getQRcode(Request $request) {
         $class_teaching = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
         class_teaching.id,
