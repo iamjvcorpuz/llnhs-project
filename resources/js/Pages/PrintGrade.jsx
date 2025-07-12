@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 // import QRCode from "react-qr-code";
 import ReactTable from "@/Components/ReactTable"; 
+import {getAge} from "@/Components/commonFunctions"; 
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import jsPDF from 'jspdf';
@@ -13,7 +14,7 @@ import 'jspdf-autotable';
 import QRCode from 'qrcode';
 import { autoTable } from 'jspdf-autotable';
 
-export default class PrintID extends Component {
+export default class PrintGrade extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -60,7 +61,9 @@ export default class PrintID extends Component {
         });
         
         try {
-            this.generate();
+            setTimeout(() => {
+                this.generate();
+            }, 2000);
         } catch (error) {
             console.log(error); 
         }
@@ -71,12 +74,11 @@ export default class PrintID extends Component {
         Swal.close();
         try {
             let self = this;
-            let sgv = "";
-            // const doc = new jsPDF({});
+            let sgv = ""; 
             const width = 210.1;
             let lrn = self.state.getSchoolStats.lrn;
             let fullname = self.state.getSchoolStats.last_name + ", " + self.state.getSchoolStats.first_name + ((self.state.getSchoolStats.extension_name!=null)?" " + self.state.getSchoolStats.extension_name:" ") + self.state.getSchoolStats.middle_name;
-            let age = "";
+            let age = await getAge(self.state.studentDetails.bdate);
             let sex = self.state.getSchoolStats.sex;
             let sy  = self.state.getSchoolStats.sy;
             let gs = self.state.getSchoolStats.grade + " " + self.state.getSchoolStats.section;
@@ -108,12 +110,13 @@ export default class PrintID extends Component {
             doc.text("LEARNER'S PROGRESS REPORT CARD", pageWidth / 2, 54,{align:'center'});
 
             doc.setFontSize(12);
-            doc.text('LRN : ' + lrn, 15, 74 - 3,{align:'left'});
-            doc.text('Name : ' + fullname, 15, 79 - 3,{align:'left'});
+            doc.text('LRN : ' + lrn, 15, 73 - 3,{align:'left'});
+            doc.text('Name : ' + fullname, 15, 78 - 3,{align:'left'});
             doc.text('Age : ' + age, 15, 83 - 3,{align:'left'});
-            doc.text('Sex : ' + sex, 126, 74 - 3,{align:'left'});
-            doc.text('School Year : ' + sy, 126, 79 - 3,{align:'left'});
-            doc.text('Grade & Section : ' + gs, 126, 83 - 3,{align:'left'});
+
+            doc.text('Sex : ' + sex, 116, 73 - 3,{align:'left'});
+            doc.text('School Year : ' + sy, 116, 78 - 3,{align:'left'});
+            doc.text('Grade & Section : ' + gs, 116, 83 - 3,{align:'left'});
 
             let temp_data = []; 
             let ga = "";
@@ -150,7 +153,7 @@ export default class PrintID extends Component {
                     },
                     {
                         content: overall_total,
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 25,fontSize: 7}
+                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 15,fontSize: 7}
                     },
                     {
                         content: "",
@@ -167,7 +170,7 @@ export default class PrintID extends Component {
             autoTable(doc,{ 
                 theme: 'plain',
                 startY: 90,
-                margin: 4,
+                margin: 10,
                 useCss: true,
                 head: [[
                         {
@@ -192,7 +195,7 @@ export default class PrintID extends Component {
                             content: "REMARKS",
                             colSpan: 1,
                             rowSpan: 3,
-                            styles: {  halign: 'center',valign: 'middle', fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 38},
+                            styles: {  halign: 'center',valign: 'middle', fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 30},
                         },
                 ],[],[
                     {
@@ -232,7 +235,7 @@ export default class PrintID extends Component {
                         content: "",
                         colSpan: 1,
                         rowSpan: 3,
-                        styles: {  halign: 'center',valign: 'middle', fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 38},
+                        styles: {  halign: 'center',valign: 'middle', fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 30},
                     },
                 ]],
                 didDrawCell: function (data) {
@@ -266,7 +269,7 @@ export default class PrintID extends Component {
             doc.line(15, startY_ + 20, 85, startY_ + 20);
 
  
-            doc.text(self.state.school.head_name, 160, startY_ + 18,{align:'center'});
+            doc.text(self.state.getSchoolStats.teacher_name, 160, startY_ + 18,{align:'center'});
             doc.text('Adviser', 160, startY_ + 24,{align:'center'}); 
             doc.line(120 , startY_ + 20, 195, startY_ + 20);
 

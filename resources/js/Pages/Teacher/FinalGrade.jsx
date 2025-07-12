@@ -713,12 +713,12 @@ export default class FinalGrade extends Component {
                 final_grade: text_value
             };
 
-            console.log(datas,val);
+            // console.log(datas,val);
             axios.post('/class/subject/ginal/grade/update',datas).then( async function (response) { 
-                console.log(response);
+                // console.log(response);
                 if( typeof(response.status) != "undefined" && response.status == "201" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                    console.log(data)
+                    // console.log(data)
                     if(data.status == "success") {
                         ReactNotificationManager.success('Save','Successfuly Update!')
                     } else {
