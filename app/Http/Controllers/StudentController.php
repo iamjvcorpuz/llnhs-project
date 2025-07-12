@@ -168,11 +168,14 @@ class StudentController extends Controller
         advisory.section_name AS section,
         school_class.track AS track,
         school_class.strands AS strand,
-        school_class.level AS grade_level
+        school_class.level AS grade_level,
+        advisory.teacher_id,
+        CONCAT(employee.first_name , \' \' , employee.extension_name , \' \' , employee.last_name , \' \' , employee.extension_name  ) AS \'teacher_name\'
         FROM student 
         LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
+        LEFT JOIN employee ON employee.id = advisory.teacher_id
         WHERE
         student.id = ?;',[$id]);
         return  [
