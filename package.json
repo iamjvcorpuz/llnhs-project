@@ -4,7 +4,7 @@
     "scripts": {
         "start_php": "php artisan serve --port 8000 ",
         "start_php_host": "php artisan serve --host=0.0.0.0 --port 8000 ",
-        "start_php_https": "php artisan serve --host=https://0.0.0.0 --port 8000 ",
+        "start_php_ngrok": "php artisan serve --host=0.0.0.0 --port 8100 ",
         "build": "vite build",
         "dev": "vite",
         "dev_npm_22": "nvm use 22 && vite",
