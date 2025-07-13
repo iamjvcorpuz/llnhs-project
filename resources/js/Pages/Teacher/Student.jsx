@@ -62,7 +62,7 @@ export default class Student extends Component {
                        return <>                       
                         <button className="btn btn-primary btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-person"></i> View Profile</button>
                         <a target="_blank" href={`/student/${row.original.student_id}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
-                        <button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={() => { }}> <i className="bi bi-card-checklist"></i> Grades </button>
+                        <button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={() => {  window.open(`/student/${row.original.student_id}/print/grade`,'_blank'); }}> <i className="bi bi-card-checklist"></i> Grades </button>
                         {/* <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button> */}
                        </>            
                     }
