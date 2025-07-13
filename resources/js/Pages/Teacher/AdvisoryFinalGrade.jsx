@@ -463,10 +463,10 @@ export default class StudentAdvisoryList extends Component {
     viewGrades(val) {
         let self = this;
         $('#view_grades').modal('show');
-        console.log(val);
+        // console.log(val);
         this.setState({data_student_grande_loading: true,data_student_grande:[],student_id:val.student_id})
         axios.post('/student/grades/',{id:val.student_id}).then(function (response) {
-            console.log(response);
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                 if(Object.keys(data).length>0) {
