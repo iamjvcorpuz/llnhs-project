@@ -197,6 +197,18 @@ Route::post('/teacher/class/final/grading/{classid}/{ids}',function($classid,$id
     }
 });
 
+Route::post('/teacher/advisory/sf2/{code}',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return [
+        "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
+       ];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
 
 Route::post('/messenger/recepient',[MessengerController::class,'getRecipients']);
 // Route::post('/messenger/recepient/sync',[MessengerController::class,'pullMessengerClientData']);

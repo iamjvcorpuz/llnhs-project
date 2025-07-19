@@ -79,6 +79,7 @@ export default class Advisory extends Component {
                        return <>  
                         <Link href={`/teacher/advisory/students/${row.original.qrcode}?stamp=${moment(new Date()).toString()}`}  className="btn btn-info btn-block btn-sm col-12"> <i className="bi bi-eye"></i> View</Link> 
                         <Link href={`/teacher/advisory/final/grading/${row.original.qrcode}`} className="btn btn-success btn-block btn-sm col-12 mt-1" > <i className="bi bi-card-checklist"></i> Final Grades </Link> 
+                        <Link href={`/teacher/advisory/sf2/${row.original.qrcode}`} className="btn btn-primary btn-block btn-sm col-12 mt-1" > <i className="bi bi-file-earmark-spreadsheet"></i> School Form 2 </Link> 
                        </>            
                     }
                 }
