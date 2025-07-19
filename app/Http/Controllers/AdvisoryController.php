@@ -17,10 +17,12 @@ class AdvisoryController extends Controller
     {
         //
     }
+    
     public static function getAll()
     {
         return DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id WHERE advisory.status = \'active\'');
     }
+    
     public static function getRequiredAllData()
     {
         return [
@@ -34,6 +36,7 @@ class AdvisoryController extends Controller
             'strand' => ProgramsCurricularController::getStrand()
         ];
     }
+    
     public static function TeachersAllAdvisories($id)
     {
         return  DB::select('
@@ -52,6 +55,7 @@ class AdvisoryController extends Controller
         FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id 
         WHERE advisory.status = \'active\' AND teacher_id = ?',[$id]);
     }
+    
     public static function TeachersAdvisories($id,$code)
     {
         return  DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname,
@@ -62,6 +66,7 @@ class AdvisoryController extends Controller
             school_class.classroom,
             classrooms.room_number FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id LEFT JOIN school_class ON school_class.id = advisory.school_sections_id LEFT JOIN classrooms ON classrooms.id = school_class.classroom WHERE advisory.status = \'active\' AND advisory.teacher_id = ? AND advisory.qrcode = ?',[$id,$code]);
     }
+    
     public static function TeachersAdvisoriesStudentsList($id)
     {
         return  DB::select('SELECT 
@@ -85,6 +90,7 @@ class AdvisoryController extends Controller
         LEFT JOIN student ON student.id = advisory_group.student_id
         WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory.teacher_id = ?',[$id]);
     }
+    
     public static function TeachersAllStudentAdvisories($id)
     {
         return  DB::select('
@@ -110,6 +116,7 @@ class AdvisoryController extends Controller
         WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory_group.advisory_id = ?
         ',[$id]);
     }
+    
     public static function TeachersAllStudentAdvisoriesQR($qrcode)
     {
         return  DB::select('
@@ -135,6 +142,7 @@ class AdvisoryController extends Controller
         WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory.qrcode = ?
         ',[$qrcode]);
     }
+    
     public static function TeachersAllStudentClass(Request $request)
     {
         $students = DB::select('
@@ -164,6 +172,7 @@ class AdvisoryController extends Controller
             'data' => $students
         ], 201);
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -259,6 +268,11 @@ class AdvisoryController extends Controller
                 'data' => []
             ], 200);
         }
+    }
+
+    public static function sf2($id,$month,$qrcode)
+    {
+        return  DB::select("SELECT * FROM attendance WHERE type = 'student' AND terminal_id LIKE '%class_id%' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code IN (SELECT student.lrn FROM advisory_group LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id LEFT JOIN student ON student.id = advisory_group.student_id WHERE advisory_group.status = 'active' AND advisory.status = 'active' AND advisory.qrcode = ?);",[$month,$qrcode]);   
     }
 
     /**

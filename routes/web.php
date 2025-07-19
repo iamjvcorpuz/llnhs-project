@@ -305,6 +305,21 @@ Route::get('/teacher/advisory/students/{code}', function ($code) {
         "sections" => SchoolSectionController::getAll(),
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand(),
+        'school' => SystemSettingsController::getSchoolRegistration()
+    ]);
+})->middleware(['auth', 'verified']);
+
+Route::get('/teacher/advisory/sf2/{code}', function ($code) {
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Teacher/SF2',[
+        "code" => $code,
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id), 
+        "advisory" =>  AdvisoryController::TeachersAdvisories($id,$code), 
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
         'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified']);
@@ -543,6 +558,10 @@ Route::get('/attendance/mobile', function () {
 
 Route::get('/sf2', function () {
     return Inertia::render('SF2');
+});
+
+Route::get('/sf4', function () {
+    return Inertia::render('SF4');
 });
 
 Route::get('/student/{id}/print/grade', function ($id,Request $request) {

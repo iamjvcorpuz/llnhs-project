@@ -1,6 +1,7 @@
 import React from 'react';  
 import $ from "jquery";
 import { Link } from '@inertiajs/react';
+import moment from 'moment';
 //#region 
 export const sortTimeDESC = function(a,b){
     let t1 = new Date(Date.parse(a.created_at));
@@ -347,6 +348,32 @@ export const uniques = (arr) => {
     return a;
 }
 
+export const sortFullnameAZ = function(a,b){
+    if(a.fullname.toLowerCase().trim() < b.fullname.toLowerCase().trim()){
+        return -1;
+    }
+    if(a.fullname.toLowerCase().trim() > b.fullname.toLowerCase().trim()){
+        return 1;
+    }
+    return 0;
+}
+
+export const weekCount = (year, month_number, startDayOfWeek) => {
+    // month_number is in the range 1..12
+  
+    // Get the first day of week week day (0: Sunday, 1: Monday, ...)
+    var firstDayOfWeek = startDayOfWeek || 0;
+  
+    var firstOfMonth = new Date(year, month_number-1, 1);
+    var lastOfMonth = new Date(year, month_number, 0);
+    var numberOfDaysInMonth = lastOfMonth.getDate();
+    var firstWeekDay = (firstOfMonth.getDay() - firstDayOfWeek + 7) % 7;
+  
+    var used = firstWeekDay + numberOfDaysInMonth;
+  
+    return Math.ceil( used / 7);
+  }
+
 export const AlertSound = {
     /*
     messagebox
@@ -402,4 +429,162 @@ export const AlertSound = {
         });
     }
 }
+export const getWeeksInMonth = (year_month,callback) => {
+    let totalWeeks = new Date(moment(year_month)).getWeekOfMonth();
+    let temp = [];
+
+    for (let week = 0; week < totalWeeks; week++) {
+        temp.push({
+            week: week,
+            sun: null,
+            mon: null,
+            tue: null,
+            wed: null,
+            thu: null,
+            fri: null,
+            sat: null
+        });
+    }
+
+    const weeks = [],
+        firstDate = new Date(moment(year_month).startOf('month')),
+        lastDate = new Date(moment(year_month).endOf('month')),
+        numDays = lastDate.getDate();
+
+    let dayOfWeekCounter = firstDate.getDay();
+
+    for (let date = 1; date <= numDays; date++) {
+      if (dayOfWeekCounter === 0 || weeks.length === 0) {
+        weeks.push([]);
+      }
+      weeks[weeks.length - 1].push(date);
+      dayOfWeekCounter = (dayOfWeekCounter + 1) % 7;
+    }
+    // console.log(temp,weeks);
+
+    for (let i = 0; i < weeks.length; i++) {
+        let val = weeks[i]; 
+        if(temp.some(e => e.week==i)){
+            val.forEach(element_ => {                    
+                if(moment(year_month + "-" + element_).format('ddd') == "Mon") {
+                    temp[i].mon = {
+                        date: element_, 
+                        fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+                        logs: {
+                            status: '',
+                            morning: '',
+                            afternoon:''
+                        }
+                    };
+                } else if(moment(year_month + "-" + element_).format('ddd') == "Tue") {
+                    temp[i].tue = {
+                        date: element_, 
+                        fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+                        logs: {
+                            status: '',
+                            morning: '',
+                            afternoon:''
+                        }
+                    };
+                } else if(moment(year_month + "-" + element_).format('ddd') == "Wed") {
+                    temp[i].wed = {
+                        date: element_, 
+                        fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+                        logs: {
+                            status: '',
+                            morning: '',
+                            afternoon:''
+                        }
+                    };
+                } else if(moment(year_month + "-" + element_).format('ddd') == "Thu") {
+                    temp[i].thu = {
+                        date: element_, 
+                        fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+                        logs: {
+                            status: '',
+                            morning: '',
+                            afternoon:''
+                        }
+                    };
+                } else if(moment(year_month + "-" + element_).format('ddd') == "Fri") {
+                    temp[i].fri = {
+                        date: element_, 
+                        fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+                        logs: {
+                            status: '',
+                            morning: '',
+                            afternoon:''
+                        }
+                    };
+                }
+            });
+        }
+    }
+    // weeks.forEach((val,i,arr) => {
+    //     if(temp.some(e => e.week==i)){
+    //         val.forEach(element_ => {                    
+    //             if(moment(year_month + "-" + element_).format('ddd') == "Mon") {
+    //                 temp[i].mon = {
+    //                     date: element_, 
+    //                     fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+    //                     logs: {
+    //                         status: '',
+    //                         morning: '',
+    //                         afternoon:''
+    //                     }
+    //                 };
+    //             } else if(moment(year_month + "-" + element_).format('ddd') == "Tue") {
+    //                 temp[i].tue = {
+    //                     date: element_, 
+    //                     fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+    //                     logs: {
+    //                         status: '',
+    //                         morning: '',
+    //                         afternoon:''
+    //                     }
+    //                 };
+    //             } else if(moment(year_month + "-" + element_).format('ddd') == "Wed") {
+    //                 temp[i].wed = {
+    //                     date: element_, 
+    //                     fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+    //                     logs: {
+    //                         status: '',
+    //                         morning: '',
+    //                         afternoon:''
+    //                     }
+    //                 };
+    //             } else if(moment(year_month + "-" + element_).format('ddd') == "Thu") {
+    //                 temp[i].thu = {
+    //                     date: element_, 
+    //                     fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+    //                     logs: {
+    //                         status: '',
+    //                         morning: '',
+    //                         afternoon:''
+    //                     }
+    //                 };
+    //             } else if(moment(year_month + "-" + element_).format('ddd') == "Fri") {
+    //                 temp[i].fri = {
+    //                     date: element_, 
+    //                     fulldate: year_month + "-" + String(element_).padStart(2, '0'),
+    //                     logs: {
+    //                         status: '',
+    //                         morning: '',
+    //                         afternoon:''
+    //                     }
+    //                 };
+    //             }
+    //         });
+    //     }
+    // });
+    // return temp;
+    callback(temp)
+  }
+//  ------------- prototypes ----------------
+Date.prototype.getWeekOfMonth = function () {
+    var firstDay = new Date(this.setDate(1)).getDay();
+    var totalDays = new Date(this.getFullYear(), this.getMonth() + 1, 0).getDate();
+    return Math.ceil((firstDay + totalDays) / 7);
+}
+
 //#endregion
