@@ -121,7 +121,7 @@ export default class PrintIDs extends Component {
             let y = 0;
             // console.log(doc);
             this.state.student_list.forEach(async(val,i,arr) => {
-                // console.log("val",val);
+                console.log("val",val);
                 let track_ = self.state.track.find(e => e.name == val.flsh_track);
                 let strand_ = self.state.strand.find(e => e.name == val.flsh_strand);
                 let track = typeof(track_)!="undefined"?track_.acronyms:"";
@@ -185,7 +185,12 @@ export default class PrintIDs extends Component {
                     doc.setFontSize(7);
                     doc.text(grade.toLocaleUpperCase() + "-" + section.toLocaleUpperCase(), 76, 30,{align:'center',maxWidth: 45});
                     doc.text(sy.toLocaleUpperCase(), 94, 30,{align:'left',maxWidth: 50});
-        
+
+                    doc.setTextColor(9,72,164);
+                    doc.setFontSize(11);
+                    doc.text(level.toLocaleUpperCase() , 28.5, 89.7,{align:'right',maxWidth: 50});
+                    doc.setTextColor(255, 255, 255);
+
                     doc.setFont("helvetica", "normal");
                     doc.setFontSize(8);
                     doc.text(guardianname.toLocaleUpperCase(), 63, 43.5,{align:'left',maxWidth: 80});
@@ -237,6 +242,11 @@ export default class PrintIDs extends Component {
                     doc.setFontSize(7);
                     doc.text(grade.toLocaleUpperCase() + "-" + section.toLocaleUpperCase(), 76, 30,{align:'center',maxWidth: 45});
                     doc.text(sy.toLocaleUpperCase(), 94, 30,{align:'left',maxWidth: 50});
+                    
+                    doc.setTextColor(9,72,164);
+                    doc.setFontSize(11);
+                    doc.text(level.toLocaleUpperCase() , 143.5, 89.7,{align:'right',maxWidth: 50});
+                    doc.setTextColor(255, 255, 255);
         
                     doc.setFont("helvetica", "normal");
                     doc.setFontSize(8);

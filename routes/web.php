@@ -72,6 +72,18 @@ Route::get('/admin/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified']);
 
+
+Route::get('/admin/attendance', function () {
+    return Inertia::render('Admin/Attendance',[
+        "teacher" => EmployeeController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+    ]);
+})->middleware(['auth', 'verified']);
+
 Route::get('/admin/dashboard/student', function () {
     return Inertia::render('Admin/Student',['props' => null,]);
 })->middleware(['auth', 'verified']);

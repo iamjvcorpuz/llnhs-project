@@ -6,8 +6,8 @@ export default function SideNav({
     children,
     ...props
 }) {
-    return (<aside className="app-sidebar shadow bg-info " data-bs-theme=""> 
-        <div className="sidebar-brand bg-info"> 
+    return (<aside className="app-sidebar shadow bg-navy " data-bs-theme=""> 
+        <div className="sidebar-brand bg-navy"> 
           <a href="#" className="brand-link"> 
             <img
               src="/images/ic_launcher.png"
@@ -29,6 +29,12 @@ export default function SideNav({
                 </Link> 
               </li>
               <li className="nav-item">
+                <Link href="/admin/attendance" className="nav-link">
+                  <i className="nav-icon bi bi-calendar-week"></i>
+                  <p>Attendance</p>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link href="/admin/dashboard/student" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
                   <p>Student</p>
@@ -46,36 +52,35 @@ export default function SideNav({
                   <p>Employee</p>
                 </Link>
               </li>
+
               <li className="nav-item">
-                <Link href="/admin/dashboard/class/subject/teacher" className="nav-link">
-                  <i className="nav-icon bi bi-microsoft-teams"></i>
-                  <p>Class Teacher</p>
-                </Link>
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-journal"></i>
+                  <p>CLASS</p>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/advisory" className="nav-link">
+                      <i className="nav-icon bi bi-book-half"></i>
+                      <p>Class Advisory</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/class/subject/teacher" className="nav-link">
+                      <i className="nav-icon bi bi-microsoft-teams"></i>
+                      <p>Class Subject</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/class" className="nav-link">
+                      <i className="nav-icon bi bi-people-fill"></i>
+                      <p>Class</p>
+                    </Link>
+                  </li>
+                </ul>
               </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/advisory" className="nav-link">
-                  <i className="nav-icon bi bi-book-half"></i>
-                  <p>Class Advisory</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/class" className="nav-link">
-                  <i className="nav-icon bi bi-people-fill"></i>
-                  <p>Class</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/class/rooms" className="nav-link">
-                  <i className="nav-icon bi bi-door-closed"></i>
-                  <p>Classroom</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/school/subjects" className="nav-link">
-                  <i className="nav-icon bi bi-journals"></i>
-                  <p>Subjects</p>
-                </Link>
-              </li>
+
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-calendar-check-fill"></i>
@@ -90,24 +95,6 @@ export default function SideNav({
                     </Link>
                   </li>
                 </ul>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/programs/curricular" className="nav-link" title="Track & Strand">
-                  <i className="nav-icon bi bi-list"></i>
-                  <p>Programs & Curricular </p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/events" className="nav-link">
-                  <i className="nav-icon bi bi-calendar"></i>
-                  <p>Events</p>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/admin/dashboard/holidays" className="nav-link">
-                  <i className="nav-icon bi bi-calendar"></i>
-                  <p>Holiday</p>
-                </Link>
               </li>
               <li className="nav-item">
                 <a href="#" className="nav-link">
@@ -131,10 +118,53 @@ export default function SideNav({
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/admin/dashboard/users" className="nav-link">
-                  <i className="nav-icon bi bi-person-gear"></i>
-                  <p>Users</p>
-                </Link>
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-gear"></i>
+                  <p>MANAGEMENT</p>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/school/subjects" className="nav-link">
+                      <i className="nav-icon bi bi-journals"></i>
+                      <p>Subjects</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/class/rooms" className="nav-link">
+                      <i className="nav-icon bi bi-door-closed"></i>
+                      <p>Classroom</p>
+                    </Link>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/programs/curricular" className="nav-link" title="Track & Strand">
+                      <i className="nav-icon bi bi-list"></i>
+                      <p>Programs & Curricular </p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/events" className="nav-link">
+                      <i className="nav-icon bi bi-calendar"></i>
+                      <p>Events</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/holidays" className="nav-link">
+                      <i className="nav-icon bi bi-calendar"></i>
+                      <p>Holiday</p>
+                    </Link>
+                  </li>
+                  
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/users" className="nav-link">
+                      <i className="nav-icon bi bi-person-gear"></i>
+                      <p>Users</p>
+                    </Link>
+                  </li>
+
+                </ul>
               </li>
               <li className="nav-item">
                 <a href="#" className="nav-link">
