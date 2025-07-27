@@ -4,21 +4,67 @@
 
 
 @font-face {
-  font-family: "SF Pro Text, Light";
-  /* ../../public/fonts/sf/SFProText-Light.ttf */
-  /* /fonts/sf/SFProText-Light.ttf */
-  src: url('../../public/fonts/sf/SFProText-Light.ttf'); 
+  src: url('../../public/fonts/century-gothic/century-gothic-bold.woff'); 
+  font-family: 'Century Gothic Paneuropean' !important; 
+  /* font-weight: 400;
+  font-style: bold; */
 }
+
+@font-face { font-family: century-gothic-reg; font-style: normal; font-weight: normal; src: url("../../public/fonts/century-gothic/century-gothic-reg.eot"); src: url("../../public/fonts/century-gothic/century-gothic-reg.eot?#iefix") format("embedded-opentype"), url("../../public/fonts/century-gothic/century-gothic-reg.woff") format("woff"), url("../../public/fonts/century-gothic/century-gothic-reg.ttf") format("truetype"); }
+
+@font-face { font-family: century-gothic-bold; font-style: normal; font-weight: normal; src: url("../../public/fonts/century-gothic/century-gothic-bold.eot"); src: url("../../public/fonts/century-gothic/century-gothic-bold.eot?#iefix") format("embedded-opentype"), url("../../public/fonts/century-gothic/century-gothic-bold.woff") format("woff"), url("../../public/fonts/century-gothic/century-gothic-bold.ttf") format("truetype"); }
+
 html,
 body {
-  background-color: #a9a9a92e!important;  
-  /* -webkit-tap-highlight-color: transparent;  */
-  font-family: "SF Pro Text, Light";
-  /* overflow: hidden; */
-  /* background-image: linear-gradient(70deg, rgb(33, 24, 83), rgb(21, 121, 37)); */
+  background-color: #a9a9a92e!important;   
+  font-family: 'century-gothic-bold' !important;
+  /* font-weight: 400;
+  font-style: bold; */
   
 }
 
+.bg-navy {
+    --bs-bg-opacity: 1;
+    background-color: #1b5675 !important;
+}
+
+.bg-navy , .brand-text {
+    color: #fff !important;
+}
+
+.bg-navy .sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.5rem;
+    padding: .8125rem .5rem;
+    overflow: hidden;
+    font-size: 1.25rem;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--bs-border-color);
+    transition: width .3s ease-in-out;
+}
+.bg-navy .sidebar-mini.sidebar-collapse .sidebar-menu .nav-link {
+    width: 3.6rem;
+}
+.bg-navy .sidebar-menu .nav-item>.nav-link {
+    margin-bottom: .2rem;
+}
+.bg-navy .sidebar-menu, .sidebar-menu .nav-link, .sidebar-menu>.nav-header {
+    white-space: nowrap;
+}
+.bg-navy .sidebar-menu .nav-link {
+    position: relative;
+    transition: width ease-in-out .3s;
+    border-radius: .375rem;
+}
+.bg-navy .sidebar-wrapper .nav-link {
+    display: flex;
+    justify-content: flex-start;
+}
+.bg-navy .sidebar-wrapper a {
+    color: #fff !important;
+}
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
       -webkit-user-select: none; /* Safari */
