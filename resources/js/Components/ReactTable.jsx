@@ -14,7 +14,7 @@ import { Filter, DefaultColumnFilter } from './ReactTableFilter';
  * As in the previous versions, a react-table has data that consist of an array of JSONs
  */
 
-const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaultPageSize,loading}) => {
+const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaultPageSize,loading,getTrProps}) => {
   // console.log(columns_, data_,columns_!==undefined,data_!== undefined)
   // console.log(defaultPageSize);
   // let columns = React.useMemo(() => (columns!=undefined)?columns:[],[]); 
@@ -80,7 +80,8 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
     previousPage,
     setPageSize,
     selectedFlatRows,
-    state: { pageIndex, pageSize, selectedRowIds },
+    onRowSelectionChange,
+    state: { pageIndex, pageSize, selectedRowIds }
   } = useTable({
     columns: columns,
     data: mainData,
@@ -115,10 +116,7 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
         })}
 
       {headerGroups.map(headerGroup => {
-          const { key, ...getHeaderGroupProps } = headerGroup.getHeaderGroupProps();
-          console.log(
-            
-          )
+          const { key, ...getHeaderGroupProps } = headerGroup.getHeaderGroupProps(); 
           if(headerGroup.headers != null && headerGroup.headers.length > 0 && (headerGroup.headers.some(e => e.hasOwnProperty("filterable")) || headerGroup.headers.some(e => e.hasOwnProperty("filterMethod")) || headerGroup.headers.some(e => e.hasOwnProperty("filterMethod")))) {
             return <tr key={`tr_filter_${key}`}  >
                 {headerGroup.headers.map(column => {  
@@ -130,13 +128,13 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
       })} 
       </thead>:null} 
       <tbody {...getTableBodyProps()} className="table-group-divider">
-      {page.map((row, i) => {
+      {rows.map((row, i) => {
         prepareRow(row);
-        const { key, ...getRowProps } = row.getRowProps(); 
+        const { key, ...getRowProps } = row.getRowProps(getTrProps && getTrProps(row.original));
         return (
             <tr key={key} {...getRowProps}>
-                {row.cells.map(cell => {
-                    const { key, ...restCellProps } = cell.getCellProps({style: {...cell},className: cell.column.className});
+                {row.cells.map(cell => { 
+                    const { key, ...restCellProps } = cell.getCellProps({style: {width: cell.column.width},className: cell.column.className});
                     if(typeof(cell.value)!="undefined") {
                       return <td key={key} {...restCellProps}>{cell.render("Cell")}</td>
                     } else { 

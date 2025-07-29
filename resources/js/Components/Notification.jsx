@@ -19,8 +19,8 @@ export const ReactNotificationManager =  {
          title: title,
          message: message,
          type: "info",
-         insert: "buttom",
-         container: "buttom-right",
+         insert: "top",
+         container: "top-right",
          animationIn: ["animate__animated", "animate__fadeIn"],
          animationOut: ["animate__animated", "animate__fadeOut"],
          dismiss: {
@@ -48,8 +48,8 @@ export const ReactNotificationManager =  {
          title: title,
          message: message,
          type: "warning",
-         insert: "buttom",
-         container: "buttom-right",
+         insert: "top",
+         container: "top-right",
          animationIn: ["animate__animated", "animate__fadeIn"],
          animationOut: ["animate__animated", "animate__fadeOut"],
          dismiss: {

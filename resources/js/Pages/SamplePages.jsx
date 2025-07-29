@@ -1,6 +1,7 @@
 import React,{ Component } from "react";
 import { Link } from '@inertiajs/react';
 import { EachMethod } from '@/Components/EachMethod'
+import { ReactNotificationManager,ReactNotificationContainer } from '@/Components/Notification';  
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';

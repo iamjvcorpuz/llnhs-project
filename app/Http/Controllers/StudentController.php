@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\StudentGuardian;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -179,6 +180,7 @@ class StudentController extends Controller
         WHERE
         student.id = ?;',[$id]);
         return  [
+            'secret' => env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj") . '/' . Crypt::encryptString($id),
             'student' => $student,
             'guardian' => $guardian,
             'sy' => "",

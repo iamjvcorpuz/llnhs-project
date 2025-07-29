@@ -69,7 +69,7 @@ export default function SideNav({
                   <li className="nav-item">
                     <Link href="/admin/dashboard/class/subject/teacher" className="nav-link">
                       <i className="nav-icon bi bi-microsoft-teams"></i>
-                      <p>Class Subject</p>
+                      <p>Class Teacher</p>
                     </Link>
                   </li>
                   <li className="nav-item">

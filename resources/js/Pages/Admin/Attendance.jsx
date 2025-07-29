@@ -34,7 +34,7 @@ export default class Student extends Component {
             columns: [
                 {
                     Header: 'Date', 
-                    width: 100,
+                    width: 200,
                     accessor: 'date',
                     className: "text-start"
                 },  
@@ -42,7 +42,7 @@ export default class Student extends Component {
                     Header: 'Time Logs', 
                     accessor: 'logs',
                     className: "text-wrap",
-                    minWidth: 800,
+                    width: 800,
                     Cell: ({row}) => {  
                         let timelogs = "wait";
                         let key = row.original.id;
