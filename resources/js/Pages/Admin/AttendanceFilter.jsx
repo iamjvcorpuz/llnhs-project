@@ -8,8 +8,6 @@ import axios from 'axios';
 import QRCode from "react-qr-code";
 import ReactTable from "@/Components/ReactTable"; 
 
-import {capitalizeWords} from "@/Components/commonFunctions";
-
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { ReactNotificationManager,ReactNotificationContainer } from '@/Components/Notification'; 
 // const generateQR = async text => {
@@ -105,10 +103,10 @@ export default class Student extends Component {
             student_list: this.props.student,
             employee_list: this.props.employee,
             data_list: [],
-            monthYear: typeof(this.props.result)!="undefined"&&typeof(this.props.result.date)!="undefined"?this.props.result.date:"",
+            monthYear: "",
             loading: false,
-            queryType: typeof(this.props.result)!="undefined"&&typeof(this.props.result.type)!="undefined"?this.props.result.type:"",
-            selectedQr: typeof(this.props.result)!="undefined"&&typeof(this.props.result.qrcode)!="undefined"?this.props.result.qrcode:"",
+            queryType: "",
+            selectedQr: "",
             selectedID: ""
         }
         this._isMounted = false;
@@ -119,9 +117,10 @@ export default class Student extends Component {
     }
     
     componentDidMount() {
+        // console.log(typeof(this.props.result)!="undefined"&&typeof(this.props.result.logs)!="undefined"?this.props.result.logs:[])
         this._isMounted = true;
         let self = this;
-        let selected = $("#data-list" ).select2({
+        $("#data-list" ).select2({
             theme: "bootstrap",
             selectionCssClass: 'form-control',
             containerCssClass: 'form-control'
@@ -132,15 +131,6 @@ export default class Student extends Component {
                 selectedQr: selectedData.id
             }) 
         });
-        if(this.state.queryType == "employee") {
-            this.setState({data_list: this.state.employee_list},() => {
-                selected.val(this.state.selectedQr).trigger('change'); 
-            });
-        } else if(this.state.queryType == "student") { 
-            this.setState({data_list: this.state.student_list},() => {
-                selected.val(this.state.selectedQr).trigger('change'); 
-            });
-        }
         // this.loadStudentList();
         // console.log(this.props)
         if(typeof(this.props.holidays)!="undefined"&&this.props.holidays!=null&&this.props.holidays.length>0) {
@@ -268,10 +258,10 @@ export default class Student extends Component {
                                 <div className="col-lg-2">
                                     <div className="form-group">
                                         <label >Type</label>
-                                        <select id="type" className="form-control" value={capitalizeWords(this.state.queryType)} onChange={e => this.loadFilter(e.target.value)}>
+                                        <select id="type" className="form-control" onChange={e => this.loadFilter(e.target.value)}>
                                             <option></option>
-                                            <option value={"Employee"}>Employee</option> 
-                                            <option value={"Student"}>Student</option> 
+                                            <option>Employee</option> 
+                                            <option>Student</option> 
                                         </select>
                                     </div>
                                 </div>
@@ -293,7 +283,7 @@ export default class Student extends Component {
                                 <div className="col-lg-2">
                                     <div className="form-group">
                                         <label >Month</label>
-                                        <input type="month" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
+                                        <input type="month" className="form-control" onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
                                     </div> 
                                 </div>
 

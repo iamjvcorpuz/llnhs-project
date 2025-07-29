@@ -20,12 +20,14 @@ export default class Parents extends Component {
                     accessor: 'no',
                     Header: 'No.', 
                     width: 50,
-                    className: "center"
+                    className: "center",
+                    filterable: false,
                 }, 
                 {
                     id: "picture",
                     Header: 'Picture',  
                     accessor: 'photo',
+                    filterable: false,
                     Cell: ({row}) => {
                        return <img className="" height={100} width={100}  onError={(e)=>{ 
                         e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
@@ -36,13 +38,17 @@ export default class Parents extends Component {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
-                    accessor: 'fullname'
+                    accessor: 'fullname',
+                    disableSortBy: false,
+                    filterable: true,
                 }, 
                 {
                     id: "student",
                     Header: 'No. of Students',  
                     width: 150,
                     className: 'center',
+                    disableSortBy: false,
+                    filterable: true,
                     accessor: 'total_student',
                     Cell: ({row}) => { 
                        return <>
@@ -57,7 +63,26 @@ export default class Parents extends Component {
                     Header: 'Status',  
                     width: 150,
                     accessor: 'status',
-                    className: "center"
+                    className: "center",
+                    disableSortBy: false,
+                    filterMethod: (filter, row) => {
+                        console.log(filter)
+                        try {
+                            if(filter.value=="All") {             
+                                return true;
+                            } else {
+                                return false;
+                            }                        
+                        } catch (error) {
+                            return false;
+                        }
+                    },
+                    filterInput: ({ filter, onChange }) =>
+                        <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            <option value="">All</option> 
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option> 
+                        </select>   
                 },
                 {
                     id: "action",
@@ -265,7 +290,7 @@ export default class Parents extends Component {
                                 <div className="card-body">
                                 <ReactTable
                                     key={"react-tables"}
-                                    className={"table table-bordered table-striped "}
+                                    className={"table table-bordered table-striped table-hover"}
                                     data={this.state.data} 
                                     columns={this.state.columns}
                                 />

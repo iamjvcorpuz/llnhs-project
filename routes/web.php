@@ -75,7 +75,21 @@ Route::get('/admin/dashboard', function () {
 
 Route::get('/admin/attendance', function () {
     return Inertia::render('Admin/Attendance',[
-        "teacher" => EmployeeController::getAll(),
+        "employee" => EmployeeController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+    ]);
+})->middleware(['auth', 'verified']);
+
+
+Route::get('/admin/attendance/{type}/{code}/{date}', function ($type,$code,$date,Request $request) {
+    $request->merge(['type' => $type,'qrcode' => $code,'date' => $date]);
+    return Inertia::render('Admin/Attendance',[
+        'result' => AttendanceController::getFilterTimelogs_($request),
+        "employee" => EmployeeController::getAll(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
@@ -567,6 +581,12 @@ Route::get('/attendance/kiosk', function () {
 Route::get('/attendance/mobile', function () {
     return Inertia::render('AttendanceMobilePage');
 });
+
+Route::get('/student/verifier/qr/scan', function () {
+    return Inertia::render('QRCodeScannStudent',[
+        
+    ]);
+})->middleware(['auth', 'verified']);
 
 Route::get('/sf2', function () {
     return Inertia::render('SF2');

@@ -17,6 +17,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 //     }
 //   }
 
+import moment from 'moment';
 export default class Student extends Component {
     constructor(props) {
 		super(props);
@@ -33,7 +34,8 @@ export default class Student extends Component {
                 {
                     id: "qr",
                     accessor: 'lrn',
-                    Header: 'QR Code',   
+                    Header: 'QR Code',
+                    filterable: true,
                     Cell: ({row}) => { 
                         return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
                             window.open(`/qrcode?code=${row.original.lrn}`)
@@ -55,35 +57,46 @@ export default class Student extends Component {
                     accessor: 'lrn',
                     Header: 'LRN NO.', 
                     maxWidth: 100,
+                    filterable: true,
                 },
                 {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
-                    accessor: 'fullname'
+                    accessor: 'fullname',
+                    filterable: true,
                 },  
                 {
                     id: "level",
                     Header: 'Level',  
                     width: 200,
-                    accessor: 'level'
+                    accessor: 'level',
+                    filterable: true,
                 },  
                 {
                     id: "section",
                     Header: 'Section',  
                     width: 200,
-                    accessor: 'section'
+                    accessor: 'section',
+                    filterable: true,
                 },
                 {
                     id: "Status",
                     Header: 'Status',  
                     width: 200,
                     accessor: 'status',
-                    className: "center"
+                    className: "center",
+                    filterable: true,
+                    filterInput: ({ filter, onChange }) =>
+                        <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            <option value="">All</option> 
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option> 
+                        </select>   
                 },
                 {
                     id: "Action",
-                    Header: 'Status',  
+                    Header: 'Action',  
                     width: 200,
                     accessor: 'status',
                     className: "center",
@@ -92,6 +105,7 @@ export default class Student extends Component {
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>    
                         <Link href={`/admin/dashboard/student/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
                         <a target="_blank" href={`/student/${row.original.id}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
+                        <Link href={`/admin/attendance/student/${row.original.lrn}/${moment(Date.now()).format('YYYY-MM')}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-calendar"></i> Attendance</Link> 
                        </>            
                     }
                 }
@@ -308,7 +322,7 @@ export default class Student extends Component {
                                     </div>
                                     
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                 <ReactTable
                                     key={"react-tables"}
                                     className={"table table-bordered table-striped "}

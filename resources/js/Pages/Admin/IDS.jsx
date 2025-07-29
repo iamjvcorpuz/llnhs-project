@@ -35,7 +35,7 @@ export default class IDS extends Component {
                     accessor: 'lrn',
                     Header: 'QR Code',   
                     Cell: ({row}) => { 
-                        return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
+                        return <QRCode value={row.original.lrn} size={106} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
                             window.open(`/qrcode?code=${row.original.lrn}`)
                         }} />             
                     }
