@@ -9,6 +9,7 @@ import ReactTable from "@/Components/ReactTable";
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 
+import moment from 'moment';
 export default class Employee extends Component {
     constructor(props) {
 		super(props);
@@ -64,6 +65,7 @@ export default class Employee extends Component {
                        return <>
                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteTeacher(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
                        <Link href={`/admin/dashboard/employee/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
+                       <Link href={`/admin/attendance/employee/${row.original.qr_code}/${moment(Date.now()).format('YYYY-MM')}`} className="btn btn-info btn-block btn-sm col-12 mb-1"> <i className="bi bi-calendar"></i> Attendance</Link>
                        {/* <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</button>     */}
                        </>            
                     }
@@ -108,7 +110,8 @@ export default class Employee extends Component {
                             employee_type: element.employee_type,
                             no: index + 1,
                             photo: element.picture_base64,
-                            lrn: element.lrn,
+                            lrn: element.qr_code,
+                            qr_code: element.qr_code,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
                             level: "None",
                             section: element.total_advisory,

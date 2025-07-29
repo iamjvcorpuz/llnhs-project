@@ -9,12 +9,16 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client'; 
-
-
+import select2 from "select2";
+import "/node_modules/select2/dist/css/select2.css";
+import "/node_modules/select2-bootstrap-theme/dist/select2-bootstrap.css";
 // import * as bootstrap from "bootstrap";
 // import App from './AppRoute';
 import $ from 'jquery';
 window.jQuery = window.$ = $
+
+select2();
+$.fn.select2.defaults.set( "theme", "bootstrap" );
 
 import DataTable from 'datatables.net';
 window.DataTable = DataTable;
@@ -40,6 +44,7 @@ createInertiaApp({
         color: '#4B5563',
     },
 }).then(cleanApp);
+
 
 
 // import React, { Component } from 'react';

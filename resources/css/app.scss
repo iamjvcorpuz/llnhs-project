@@ -4,7 +4,8 @@
 // @import '../../public/fonts/font-awesome/fontawesome-webfont.ttf';
 // @import 'bootstrap/scss/bootstrap';
 // @import "node_modules/bootstrap/scss/bootstrap";
-
+@import "/node_modules/select2/dist/css/select2.css";
+@import "/node_modules/select2-bootstrap-theme/dist/select2-bootstrap.css";
 @font-face {
     font-family: "SF Pro Text, Light";
     src: url('../../public/fonts/sf/SFProText-Light.ttf'); 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { Table } from "react-bootstrap";
-import { useTable, usePagination, useRowSelect } from "react-table";
+import { useTable, usePagination, useRowSelect,useSortBy ,useFilters} from "react-table";
+import { Filter, DefaultColumnFilter } from './ReactTableFilter';
 // import styled from 'styled-components'
 // import {
 //     createColumnHelper,
@@ -13,7 +14,7 @@ import { useTable, usePagination, useRowSelect } from "react-table";
  * As in the previous versions, a react-table has data that consist of an array of JSONs
  */
 
-const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaultPageSize}) => {
+const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaultPageSize,loading}) => {
   // console.log(columns_, data_,columns_!==undefined,data_!== undefined)
   // console.log(defaultPageSize);
   // let columns = React.useMemo(() => (columns!=undefined)?columns:[],[]); 
@@ -83,25 +84,51 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
   } = useTable({
     columns: columns,
     data: mainData,
+    defaultColumn: { Filter: DefaultColumnFilter },
     initialState: {pageSize : defaultPageSize_}
   },
+  useFilters,
+  useSortBy, 
   usePagination,
   useRowSelect);
   //{pageSize : defaultPageSize}
-
+  const generateSortingIndicator = column => {
+    return column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""
+  }
   return (<>
+
+    {(typeof(loading)!="undefined"&&loading==true)?<div id="loadingSpinner" className="loading-spinner d-flex justify-content-center align-items-center" >
+        <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+        </div>
+    </div>:null}
     <table className={className} {...getTableProps()}>
       {(showHeader==undefined||(typeof(showHeader)!=undefined&&showHeader==true?true:false))?<thead>
         {headerGroups.map(headerGroup => {
             const { key, ...getHeaderGroupProps } = headerGroup.getHeaderGroupProps();
             return <tr key={key} {...getHeaderGroupProps} >
                 {headerGroup.headers.map(column => {
-                const { key, ...getHeaderProps } = column.getHeaderProps({ style: {...column},className: column.className}); 
-                return <th key={key} {...getHeaderProps} >{column.render("Header")}</th>
+                const { key, ...getHeaderProps } = column.getHeaderProps({ style: {width: column.width},className: column.className,...column.getSortByToggleProps()}); 
+                return <th key={key} {...getHeaderProps} >{column.render("Header")} {generateSortingIndicator(column)} </th>
                 })}
             </tr>
         })}
-      </thead>:null}      
+
+      {headerGroups.map(headerGroup => {
+          const { key, ...getHeaderGroupProps } = headerGroup.getHeaderGroupProps();
+          console.log(
+            
+          )
+          if(headerGroup.headers != null && headerGroup.headers.length > 0 && (headerGroup.headers.some(e => e.hasOwnProperty("filterable")) || headerGroup.headers.some(e => e.hasOwnProperty("filterMethod")) || headerGroup.headers.some(e => e.hasOwnProperty("filterMethod")))) {
+            return <tr key={`tr_filter_${key}`}  >
+                {headerGroup.headers.map(column => {  
+                  const { key, ...getHeaderProps } = column.getHeaderProps({ style: {width: column.width},className: column.className});
+                  return <td key={`td_filter_${key}`}  {...getHeaderProps} ><Filter column={column} /> </td> 
+                })}
+            </tr>
+          }
+      })} 
+      </thead>:null} 
       <tbody {...getTableBodyProps()} className="table-group-divider">
       {page.map((row, i) => {
         prepareRow(row);

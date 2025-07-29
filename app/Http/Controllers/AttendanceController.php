@@ -270,9 +270,9 @@ class AttendanceController extends Controller
         $logs = (object)array();
 
         if($request->type == "student") {
-            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qrcode = ?',[$request->date,$request->qrcode]);
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$request->date,$request->qrcode]);
         } else if($request->type == "teacher") {
-            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qrcode = ?',[$request->date,$request->qrcode]);
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "employee" AND date = ? AND qr_code = ?',[$request->date,$request->qrcode]);
         }
 
         return response()->json([
@@ -280,6 +280,123 @@ class AttendanceController extends Controller
             'error' => null,
             'data' => $logs
         ], 200);
+
+    }
+    public function getFilterTimelogs(Request $request) {
+        $logs = (object)array();
+
+        $map_attendance = [];
+
+        if($request->type == "student") {
+            $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+            if(count($logs) > 0) {
+                $start_date = current($logs)->date; 
+                $dates = $start_date; 
+                $month = date("Y-m", strtotime($dates));
+                $map_attendance_timelogs = [];
+                foreach ($logs as $key => $value) {
+                    if($dates == $value->date) {
+                        array_push($map_attendance_timelogs, $value);
+                    } else if($dates != $value->date) {
+                        array_push($map_attendance, (object)[
+                            'date' => $dates,
+                            'month' => $month,
+                            'logs' => $map_attendance_timelogs
+                        ]);
+                        $map_attendance_timelogs = [];
+                        $dates = $value->date;
+                        array_push($map_attendance_timelogs, $value);
+                    }
+                }
+            }
+        } else if($request->type == "employee") {
+            $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+            if(count($logs) > 0) {
+                $start_date = current($logs)->date; 
+                $dates = $start_date; 
+                $month = date("Y-m", strtotime($dates));
+                $map_attendance_timelogs = [];
+                foreach ($logs as $key => $value) {
+                    if($dates == $value->date) {
+                        array_push($map_attendance_timelogs, $value);
+                    } else if($dates != $value->date) {
+                        array_push($map_attendance, (object)[
+                            'date' => $dates,
+                            'month' => $month,
+                            'logs' => $map_attendance_timelogs
+                        ]);
+                        $map_attendance_timelogs = [];
+                        $dates = $value->date;
+                        array_push($map_attendance_timelogs, $value);
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $map_attendance
+        ], 200);
+
+    }
+    public static function getFilterTimelogs_(Request $request) {
+        $logs = (object)array();
+
+        $map_attendance = [];
+
+        if($request->type == "student") {
+            $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+            if(count($logs) > 0) {
+                $start_date = current($logs)->date; 
+                $dates = $start_date; 
+                $month = date("Y-m", strtotime($dates));
+                $map_attendance_timelogs = [];
+                foreach ($logs as $key => $value) {
+                    if($dates == $value->date) {
+                        array_push($map_attendance_timelogs, $value);
+                    } else if($dates != $value->date) {
+                        array_push($map_attendance, (object)[
+                            'date' => $dates,
+                            'month' => $month,
+                            'logs' => $map_attendance_timelogs
+                        ]);
+                        $map_attendance_timelogs = [];
+                        $dates = $value->date;
+                        array_push($map_attendance_timelogs, $value);
+                    }
+                }
+            }
+        } else if($request->type == "employee") {
+            $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+            if(count($logs) > 0) {
+                $start_date = current($logs)->date; 
+                $dates = $start_date; 
+                $month = date("Y-m", strtotime($dates));
+                $map_attendance_timelogs = [];
+                foreach ($logs as $key => $value) {
+                    if($dates == $value->date) {
+                        array_push($map_attendance_timelogs, $value);
+                    } else if($dates != $value->date) {
+                        array_push($map_attendance, (object)[
+                            'date' => $dates,
+                            'month' => $month,
+                            'logs' => $map_attendance_timelogs
+                        ]);
+                        $map_attendance_timelogs = [];
+                        $dates = $value->date;
+                        array_push($map_attendance_timelogs, $value);
+                    }
+                }
+            }
+        }
+
+        return [
+            'date' => $request->date,
+            'qrcode' => $request->qrcode,
+            'type' => $request->type,
+            'logs' => $map_attendance
+        ];
 
     }
     public function getAllTimelogs(Request $request) {

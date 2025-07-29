@@ -230,6 +230,11 @@ export default class PrintID extends Component {
             doc.text(this.state.grade.toLocaleUpperCase() + "-" + this.state.section.toLocaleUpperCase(), 76, 30,{align:'center',maxWidth: 45});
             doc.text(this.state.sy.toLocaleUpperCase(), 94, 30,{align:'left',maxWidth: 50});
 
+            doc.setTextColor(9,72,164);
+            doc.setFontSize(11);
+            doc.text(this.state.level.toLocaleUpperCase() , 28.5, 89.7,{align:'right',maxWidth: 50});
+            doc.setTextColor(255, 255, 255);
+
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
             doc.text(this.state.guardianname.toLocaleUpperCase(), 63, 43.5,{align:'left',maxWidth: 80});
