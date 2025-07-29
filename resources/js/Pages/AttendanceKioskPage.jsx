@@ -543,7 +543,7 @@ export default class AttendancePage extends Component {
                         <p className="h6">Poblacion III Lebak, Sultan Kudarat, 9807 Philippines</p>
                     </div> 
                     <div className="col-lg-2">
-                        <img src="/images/bagongtae.png" alt="AdminLTE Logo" className="img-circle" width={220} /> 
+                        <img src="/images/bagongtae.png" alt="AdminLTE Logo" className="" width={220} /> 
                     </div> 
                 </div>
             </nav>

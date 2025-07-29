@@ -9,6 +9,8 @@ import ReactTable from "@/Components/ReactTable";
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 import QRCode from 'qrcode';
+import { ReactNotificationManager,ReactNotificationContainer } from '@/Components/Notification'; 
+import moment from 'moment';
 
 export default class ClassTS extends Component {
     constructor(props) {
@@ -38,13 +40,15 @@ export default class ClassTS extends Component {
                     Header: 'Level',  
                     accessor: 'level',
                     className: "center",
+                    filterable: true,
                     width: 126,
                 }, 
                 {
                     id: "grade",
                     Header: 'Grade', 
                     width: 126,
-                    accessor: 'grade'
+                    accessor: 'grade',
+                    filterable: true,
                 }, 
                 {
                     id: "classroom",
@@ -58,6 +62,7 @@ export default class ClassTS extends Component {
                     Header: 'Section Name',  
                     width: 300,
                     accessor: 'section_name',
+                    filterable: true,
                     className: "center"
                 },   
                 {
@@ -65,6 +70,7 @@ export default class ClassTS extends Component {
                     Header: 'TRACK',  
                     width: 300,
                     accessor: 'track',
+                    filterable: true,
                     className: "center"
                 },   
                 {
@@ -72,6 +78,7 @@ export default class ClassTS extends Component {
                     Header: 'STRAND',  
                     width: 300,
                     accessor: 'strands',
+                    filterable: true,
                     className: "center"
                 },   
                 {
@@ -134,13 +141,14 @@ export default class ClassTS extends Component {
             room_name: "",
             room_number: ""
         }
-        console.log(this.props)
+        // console.log(this.props)
         this.delete = this.delete.bind(this);
         this.saveData = this.saveData.bind(this);
         this.updateData = this.updateData.bind(this);
         this.selectSubject = this.selectData.bind(this);
         this.getAllData = this.getAllData.bind(this);
         this.generateQR = this.generateQR.bind(this);
+        this.notiTimeout = null;
     }
 
     componentDidMount() {
@@ -672,6 +680,24 @@ export default class ClassTS extends Component {
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
+                                        getTrProps={(original) => {
+                                            return {
+                                                onClick: (e) => {
+                                                    // console.log(e); 
+                                                    // this.notiTimeout = setTimeout(() => {
+                                                    //     if( this.notiTimeout != null) {
+                                                    //         ReactNotificationManager.info('Sorry','Double click the row to redirect')   
+                                                    //     }
+                                                    // }, 2000);
+                                                },
+                                                onDoubleClick: (e) => {
+                                                    this.notiTimeout = null;
+                                                    clearTimeout(this.notiTimeout);
+                                                    console.log(original); 
+                                                    window.location.replace(`/admin/class/schedule/${original.qr_code}`)
+                                                }
+                                            };
+                                        }}
                                     />
                                 </div>
                             </div>

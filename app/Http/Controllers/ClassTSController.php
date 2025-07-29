@@ -23,6 +23,35 @@ class ClassTSController extends Controller
         return  $school_class;
     }
 
+    public static function getAllSchedules($id)
+    {
+        $school_class = DB::select("
+        SELECT 
+        * 
+        FROM 
+        school_class 
+        LEFT JOIN class_teaching ON class_teaching.class_id = school_class.id
+        LEFT JOIN school_subjects ON school_subjects.id = class_teaching.subject_id
+        WHERE
+        school_class.qr_code = ?
+        ;",[$id]);
+        return  $school_class;
+    }
+
+    public static function getClassDetails($id)
+    {
+        $school_class = DB::select("
+        SELECT 
+        * 
+        FROM
+        school_class
+        WHERE
+        school_class.qr_code = ?
+        ;",[$id]);
+        return  $school_class;
+    }
+
+
     public static function getAll2()
     {
         $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",qr_code,id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');

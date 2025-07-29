@@ -48,17 +48,20 @@ export default class Advisory extends Component {
                     Header: 'Teacher',  
                     width: 200,
                     accessor: 'teacher_fullname',
+                    filterable: true,
                     className: ""
                 },
                 {
                     id: "section",
                     Header: 'Section/Room',  
                     accessor: 'section_name', 
+                    filterable: true,
                     width: 200,
                 },
                 {
                     id: "year_level",
                     Header: 'Grade Level',  
+                    filterable: true,
                     width: 200,
                     accessor: 'year_level'
                 },  
@@ -804,12 +807,23 @@ export default class Advisory extends Component {
                                         $("#newAdvisory").modal('show');
                                     }} > <i className="bi bi-plus"></i> Add</button>  
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                     <ReactTable
                                         key={"react-tables"}
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
+                                        getTrProps={(original) => {
+                                            return {
+                                                onDoubleClick: (e) => { 
+                                                    let temp = this.state.class.find(e=>e.id==String(original.school_sections_id)); 
+                                                    if(typeof(temp) != "undefined") {
+                                                        window.location.replace(`/admin/class/advisory/details/${temp.qr_code}/${original.qrcode}`)
+                                                    }
+                                                    // 
+                                                }
+                                            };
+                                        }}
                                     />
                                 </div>
                             </div>

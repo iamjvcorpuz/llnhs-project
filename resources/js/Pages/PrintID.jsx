@@ -29,11 +29,12 @@ export default class PrintID extends Component {
             relationship: "",
             guardiancontact: "",
             address: "",
-            list: []
+            list: [],
+            vurl: ""
         }
         $('body').attr('class', '');
         this.singleId = this.singleId.bind(this);
-        
+        console.log(this.props);
     }
 
     componentDidMount() {
@@ -92,6 +93,7 @@ export default class PrintID extends Component {
             let _strand = (this.props.data.strand.length>0)?this.props.data.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
 
             this.setState({
+                vurl: this.props.data.secret,
                 code: this.props.data.student.qr_code,
                 lrn: this.props.data.student.lrn,
                 picture: this.props.data.student.picture_base64,
@@ -194,7 +196,18 @@ export default class PrintID extends Component {
                 console.error(err)
                 }
             }
+            const generateQRV = async text => {
+                try {
+                    sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H',margin: 1 });
+                    // console.log(sgv)
+                    // doc.addSvgAsImage( sgv , 87, 5, 20, 20);
+                    doc.addImage(sgv, 95, 79, 18, 18);
+                } catch (err) {
+                console.error(err)
+                }
+            }
             await generateQR(this.state.lrn);
+            await generateQRV(this.state.vurl);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(11);

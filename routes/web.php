@@ -22,11 +22,12 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use App\Models\SchoolYearGrades;
 use App\Models\UserAccounts;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Crypt;
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),
@@ -183,6 +184,22 @@ Route::get('/admin/dashboard/advisory/new', function () {
     ]);
 })->middleware(['auth', 'verified']);
 
+
+Route::get('/admin/class/advisory/details/{id}/{code}', function ($id,$code) {
+    return Inertia::render('Admin/AdvisoryDetails',[
+        "schedules" => ClassTSController::getAllSchedules($id),
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "classDetails" => ClassTSController::getClassDetails($id),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified']);
+
 Route::get('/admin/dashboard/users', function () {
     return Inertia::render('Admin/Users',[
         'user_list' => UserAccountsController::getAll(),
@@ -237,6 +254,20 @@ Route::get('/admin/dashboard/school/subjects', function () {
 Route::get('/admin/dashboard/class', function () {
     return Inertia::render('Admin/ClassTS',[
         "class" => ClassTSController::getAll(),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified']);
+
+Route::get('/admin/class/schedule/{id}', function ($id) {
+    return Inertia::render('Admin/ClassSchedule',[
+        "schedules" => ClassTSController::getAllSchedules($id),
+        "classDetails" => ClassTSController::getClassDetails($id),
         "classroom" => ClassroomController::getAll(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
@@ -585,6 +616,27 @@ Route::get('/attendance/mobile', function () {
 Route::get('/student/verifier/qr/scan', function () {
     return Inertia::render('QRCodeScannStudent',[
         
+    ]);
+})->middleware(['auth', 'verified']);
+
+Route::get('/student/verifier/{_id}', function ($_id) {
+    // http://localhost:8000/student/verifier/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
+    $id = "";
+    try {
+        $id = Crypt::decryptString($_id);
+    } catch (DecryptException $e) {
+        // ...
+    }
+    return Inertia::render('StudentVerifier',[
+        'parents' => ParentsController::getAll(),
+        'student' => StudentController::getData($id),
+        'guardians' => StudentController::getStudentGuardian($id),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(), 
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        "getSchoolStats" => StudentController::getSchoolStats($id)
     ]);
 })->middleware(['auth', 'verified']);
 
