@@ -29,30 +29,35 @@ class DefaultDataSeeder extends Seeder
     {
         //----start for default data lang ni
         Roles::create([
+            'id' => 1,
             'name' => 'Admin',
             'description' => 'For admin role only',
         ]);
                  
         Roles::create([
+            'id' => 2,
             'name' => 'Teacher',
             'description' => 'For teacher role only',
         ]);
 
         Roles::create([
-            'name' => 'Employee',
-            'description' => 'For Employee role only',
-        ]);
-
-        Roles::create([
+            'id' => 3,
             'name' => 'Student',
             'description' => 'For student role only',
         ]);
 
         Roles::create([
+            'id' => 4,
             'name' => 'Guardian',
             'description' => 'For guardian role only',
         ]);
 
+
+        Roles::create([
+            'id' => 5,
+            'name' => 'Employee',
+            'description' => 'For Employee role only',
+        ]);
         
 
         Subjects::factory()->create([
@@ -332,9 +337,17 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('system_settings')->insert([
             'setting' => 'SCHOOL_YEAR', 
             'value' => '2025 - 2026',
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ]);
+
+        DB::table('system_settings')->insert([
+            'setting' => 'VERIFIER_URL', 
+            'value' => 'https://tinyurl.com/4v4uxjfj',
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);

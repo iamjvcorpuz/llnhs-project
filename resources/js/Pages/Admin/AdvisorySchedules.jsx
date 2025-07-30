@@ -17,7 +17,7 @@ import ReactTable from "@/Components/ReactTable";
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 
-export default class AdvisoryDetails extends Component {
+export default class AdvisorySchedules extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -130,7 +130,7 @@ export default class AdvisoryDetails extends Component {
                     Header: 'Fullname', 
                     width: 800,
                     accessor: 'fullname',
-                    filterable: true,
+                    filterable: true
                 },
             ],
             adviser: "",
@@ -250,18 +250,18 @@ export default class AdvisoryDetails extends Component {
                                     <div className="">
                                         <ul className="nav nav-tabs" id="custom-tabs" role="tablist">
                                             <li className="nav-item">
-                                                <a className="nav-link active" id="student_list" data-toggle="pill" href="#page_student_list" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">Student List</a>
-                                            </li>
-                                            <li className="nav-item">
-                                                <a className="nav-link" id="schedule_list" data-toggle="pill" href="#page_schedule_list" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">Schedules</a>
+                                                <a className="nav-link active" id="schedule_list" data-toggle="pill" href="#page_schedule_list" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">Schedules</a>
                                             </li> 
+                                            <li className="nav-item">
+                                                <a className="nav-link " id="student_list" data-toggle="pill" href="#page_student_list" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">Student List</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div className="card-body p-0"> 
 
                                     <div className="tab-content" id="custom-tabs-three-tabContent">
-                                        <div className="tab-pane fade active show" id="page_student_list" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+                                        <div className="tab-pane fade" id="page_student_list" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
                                             
                                             <ReactTable
                                                 key={"react-tables"}
@@ -271,7 +271,7 @@ export default class AdvisoryDetails extends Component {
                                             />
 
                                         </div>
-                                        <div className="tab-pane fade" id="page_schedule_list" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
+                                        <div className="tab-pane fade active show" id="page_schedule_list" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
                                             <div className="col-lg-12 ml-5 mr-5 mt-2 mb-2">
                                                 <button className="btn btn-primary mr-1" onClick={() => {
                                                     this.loadSched("monday");

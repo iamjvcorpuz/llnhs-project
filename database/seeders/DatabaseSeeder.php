@@ -98,6 +98,7 @@ class DatabaseSeeder extends Seeder
         // });
 
         $teacher = Employee::factory(10)->create();
+        
         $teacher->each(function($val) {
             Contacts::factory()->state([
                 'type' => 'teacher',
