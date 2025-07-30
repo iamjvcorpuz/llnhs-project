@@ -74,6 +74,7 @@ return new class extends Migration
         //     $table->string('sex');
         //     $table->timestampsTz(precision: 0);
         // });
+
         if (Schema::hasTable('employee') == false) {
             Schema::create('employee', function (Blueprint $table) {
                 $table->id();
@@ -139,6 +140,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });        
         }
+
         if (Schema::hasTable('student_guardians') == false) {
             Schema::create('student_guardians', function (Blueprint $table) {
                 $table->id();
@@ -149,6 +151,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });
         }
+
         if (Schema::hasTable('attendance') == false) {
             Schema::create('attendance', function (Blueprint $table) {
                 $table->id();
@@ -165,6 +168,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });        
         }
+
         if (Schema::hasTable('notifications') == false) {
             Schema::create('notifications', function (Blueprint $table) {
                 $table->id();
@@ -215,7 +219,8 @@ return new class extends Migration
                 $table->string('status')->nullable(); 
                 $table->timestampsTz(precision: 0);
             });
-        }        
+        }
+        
         if (Schema::hasTable('advisory_group') == false) { 
             Schema::create('advisory_group', function (Blueprint $table) {
                 $table->id();
@@ -226,6 +231,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+
         if (Schema::hasTable('school_sections') == false) { 
             Schema::create('school_sections', function (Blueprint $table) {
                 $table->id();
@@ -240,6 +246,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+
         if (Schema::hasTable('school_year_grades') == false) { 
             Schema::create('school_year_grades', function (Blueprint $table) {
                 $table->id();
@@ -247,6 +254,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+
         if (Schema::hasTable('user_accounts') == false) { 
             Schema::create('user_accounts', function (Blueprint $table) {
                 $table->id();
@@ -262,6 +270,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+
         if (Schema::hasTable('roles') == false) { 
             Schema::create('roles', function (Blueprint $table) {
                 $table->id();
@@ -270,6 +279,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });        
         }
+
         if (Schema::hasTable('user_roles') == false) { 
             Schema::create('user_roles', function (Blueprint $table) {
                 $table->id();
@@ -278,6 +288,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+
         if (Schema::hasTable('user_roles_permissions') == false) { 
             Schema::create('user_roles_permissions', function (Blueprint $table) {
                 $table->id();
@@ -286,6 +297,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });        
         }
+
         if (Schema::hasTable('specific_programs') == false) {
             Schema::create('specific_programs', function (Blueprint $table) {
                 $table->id();
@@ -296,6 +308,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });
         }
+
         if (Schema::hasTable('specialize_program') == false) {
             Schema::create('specialize_program', function (Blueprint $table) {
                 $table->id();
@@ -306,6 +319,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });
         }
+
         if (Schema::hasTable('classrooms') == false) {
             Schema::create('classrooms', function (Blueprint $table) {
                 $table->id();
@@ -316,6 +330,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+
         if (Schema::hasTable('school_class') == false) {
             Schema::create('school_class', function (Blueprint $table) {
                 $table->id();
@@ -379,6 +394,7 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });            
         }
+        
         if (Schema::hasTable('classrooms_seats') == false) { 
             Schema::create('classrooms_seats', function (Blueprint $table) {
                 $table->id();

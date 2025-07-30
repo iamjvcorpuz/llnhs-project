@@ -89,7 +89,7 @@ export default function SideNav({
                 </a>
                 <ul className="nav nav-treeview">
                   <li className="nav-item">
-                    <Link href="/teacher/attendance/list" className="nav-link">
+                    <Link href="/admin/dashboard/advisory/schedules" className="nav-link">
                       <i className="nav-icon bi bi-calendar2-check"></i>
                       <p>Advisory Schedules</p>
                     </Link>

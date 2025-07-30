@@ -176,6 +176,19 @@ Route::get('/admin/dashboard/advisory', function () {
     ]);
 })->middleware(['auth', 'verified']);
 
+Route::get('/admin/dashboard/advisory/schedules', function () {
+    return Inertia::render('Admin/AdvisoryList',[
+        "teacher" => EmployeeController::getAllTeacher(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        "class" => ClassTSController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified']);
+
 Route::get('/admin/dashboard/advisory/new', function () {
     return Inertia::render('Admin/Advisory/NewAdvisory',[
         "teacher" => TeacherController::getAll(),
@@ -184,6 +197,21 @@ Route::get('/admin/dashboard/advisory/new', function () {
     ]);
 })->middleware(['auth', 'verified']);
 
+
+Route::get('/admin/class/advisory/schedules/details/{id}/{code}', function ($id,$code) {
+    return Inertia::render('Admin/AdvisorySchedules',[
+        "schedules" => ClassTSController::getAllSchedules($id),
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "classDetails" => ClassTSController::getClassDetails($id),
+        "classroom" => ClassroomController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified']);
 
 Route::get('/admin/class/advisory/details/{id}/{code}', function ($id,$code) {
     return Inertia::render('Admin/AdvisoryDetails',[
