@@ -347,6 +347,32 @@ Route::get('/admin/dashboard/messenger', function () {
         "holidays" => HolidaysController::getAll()
     ]);
 })->middleware(['auth', 'verified']);
+
+Route::get('/admin/report/sf2', function () {
+    $code = "";
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Admin/SF2',[
+        "code" => $code,
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id),   
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand(),
+        "employee" => EmployeeController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+    ]);
+    // "teacher" =>  EmployeeController::getData($id),
+    // "advisory" => AdvisoryController::TeachersAllAdvisories($id),
+    // "subjects" => SubjectController::getAll(),
+    // "sections" => SchoolSectionController::getAll(),
+    // "schoolyeargrades" => SchoolYearGradesController::getAll()
+})->middleware(['auth', 'verified']);
+
+
 // ======================================== teacher ================================
 Route::get('/teacher/dashboard', function () {
     $id = AuthenticatedSessionController::getAuthId();

@@ -24,6 +24,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
+use App\Models\Advisory;
 use Illuminate\Support\Facades\Route;
 
 use Gumlet\ImageResize; 
@@ -203,6 +204,20 @@ Route::post('/teacher/advisory/sf2/{code}',function(Request $request) {
     if($id!=null) {
        return [
         "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
+       ];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+Route::post('/admin/sf2/{code}',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return [
+        "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
+        "studentsList" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($request->code), 
        ];
     } else {
         http_response_code(500);

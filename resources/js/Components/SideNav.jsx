@@ -104,9 +104,15 @@ export default function SideNav({
                 </a>
                 <ul className="nav nav-treeview">
                   <li className="nav-item">
-                    <Link href="/teacher/attendance/list" className="nav-link">
-                      <i className="nav-icon bi bi-calendar2-check"></i>
-                      <p>Advisory Schedules</p>
+                    <Link href="/admin/report/sf2" className="nav-link">
+                      <i className="nav-icon bi bi-file-pdf"></i>
+                      <p>SF2</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/report/sf4" className="nav-link">
+                      <i className="nav-icon bi bi-file-pdf"></i>
+                      <p>SF4</p>
                     </Link>
                   </li>
                 </ul>

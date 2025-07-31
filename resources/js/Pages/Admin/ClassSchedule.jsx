@@ -185,21 +185,17 @@ export default class ClassSchedule extends Component {
                                 <div className="card-header">
 
                                     <div className="row mb-2">
-                                        <div className="col-lg-5"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3></div>
-                                        <div className="col-lg-3">
-                                            <h3 className="mb-0">
-                                                SY: {(this.state.classDetails.length>0)?this.state.classDetails[0].school_year:""}
-                                            </h3>
-                                        </div>
+                                        <div className="col-lg-10"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3></div>
                                         <div className="col-lg-2">
-                                            <h3 className="mb-0">
-                                                Grade: {(this.state.classDetails.length>0)?this.state.classDetails[0].grade:""}
-                                            </h3>
-                                        </div>
-                                        <div className="col-lg-2">
-                                            <h3 className="mb-0">
-                                                Level: {(this.state.classDetails.length>0)?this.state.classDetails[0].level:""}
-                                            </h3>
+                                            <div className="col-lg-12"> 
+                                                    SY: {(this.state.classDetails.length>0)?this.state.classDetails[0].school_year:""} 
+                                            </div>
+                                            <div className="col-lg-12"> 
+                                                    Grade: {(this.state.classDetails.length>0)?this.state.classDetails[0].grade:""} 
+                                            </div>
+                                            <div className="col-lg-12"> 
+                                                    Level: {(this.state.classDetails.length>0)?this.state.classDetails[0].level:""} 
+                                            </div>
                                         </div>
                                        
                                     </div> 
