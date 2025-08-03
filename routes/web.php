@@ -363,7 +363,24 @@ Route::get('/admin/report/sf2', function () {
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
         "student" => StudentController::getAll(),
-        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+    // "teacher" =>  EmployeeController::getData($id),
+    // "advisory" => AdvisoryController::TeachersAllAdvisories($id),
+    // "subjects" => SubjectController::getAll(),
+    // "sections" => SchoolSectionController::getAll(),
+    // "schoolyeargrades" => SchoolYearGradesController::getAll()
+})->middleware(['auth', 'verified']);
+
+Route::get('/admin/report/sf4', function () {
+    $code = "";
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Admin/SF4',[
+        "advisory" => AdvisoryController::getAll(), 
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
     ]);
     // "teacher" =>  EmployeeController::getData($id),
     // "advisory" => AdvisoryController::TeachersAllAdvisories($id),
@@ -431,7 +448,9 @@ Route::get('/teacher/advisory/sf2/{code}', function ($code) {
         "sections" => SchoolSectionController::getAll(),
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),
-        'strand' => ProgramsCurricularController::getStrand()
+        'strand' => ProgramsCurricularController::getStrand(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
     ]);
 })->middleware(['auth', 'verified']);
 
@@ -699,7 +718,11 @@ Route::get('/sf2', function () {
 });
 
 Route::get('/sf4', function () {
-    return Inertia::render('SF4');
+    return Inertia::render('SF4',[
+        "advisory" => AdvisoryController::getAll(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
 });
 
 Route::get('/student/{id}/print/grade', function ($id,Request $request) {

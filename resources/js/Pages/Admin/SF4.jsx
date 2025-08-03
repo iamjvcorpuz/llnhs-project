@@ -1,22 +1,42 @@
 import React,{ Component } from "react";
-import { Link } from '@inertiajs/react';
-import { EachMethod } from '@/Components/EachMethod'
+import { Head, Link } from '@inertiajs/react';
+import { EachMethod } from '@/Components/EachMethod';
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
-
-// import QRCode from "react-qr-code";
+import axios from 'axios'; 
 import ReactTable from "@/Components/ReactTable"; 
 
+import {capitalizeWords,getWeeksInMonth,sortFullnameAZ} from "@/Components/commonFunctions";
+
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import { ReactNotificationManager,ReactNotificationContainer } from '@/Components/Notification'; 
+// const generateQR = async text => {
+//     try {
+//       console.log(await QRCode.toDataURL(text))
+//     } catch (err) {
+//       console.error(err)
+//     }
+//   }
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
 import jsPDF from 'jspdf';
 // import 'jspdf-autotable'; 
 import { autoTable } from 'jspdf-autotable';
 import QRCode from 'qrcode';
 
-export default class SF4 extends Component {
+export default class SF2 extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+
+            class_list: this.props.advisory,
+            subjects: this.props.subjects, 
+            teachers: this.props.teacher,
+            advisoryList: this.props.advisory,
+            sectionListTemp: this.props.sections,
+            sectionList: [],
+            yeargrade: this.props.schoolyeargrades,
+
             code: "",
             lrn: "",
             picture: "",
@@ -31,21 +51,61 @@ export default class SF4 extends Component {
             guardiancontact: "",
             address: "",
             list: [],
+            student_list: [],
+            employee_list: this.props.employee,
+            data_list: [],
+            monthYear: typeof(this.props.result)!="undefined"&&typeof(this.props.result.date)!="undefined"?this.props.result.date:"",
+            loading: false,
+            queryType: "student",
+            selectedQr: typeof(this.props.result)!="undefined"&&typeof(this.props.result.qrcode)!="undefined"?this.props.result.qrcode:"",
+            selectedID: "",
+            student_male_list: [],
+            student_female_list: [],
             shcool_id: "",
             school_name: "",
             schoolRegistry: this.props.schoolRegistry,
-            selectedMonthYear: "",
             advisory: this.props.advisory
-        }
-        $('body').attr('class', '');
-        this.loadPDF = this.loadPDF.bind(this);
+        } 
+        this.loadPDF = this.loadPDF.bind(this);  
+        this.fetchData = this.fetchData.bind(this);
         console.log(this.props)
     }
 
     componentDidMount() { 
-        this.loadPDF();
+        // this.loadPDF();
+        this._isMounted = true;
+        let self = this;
+        let selected = $("#data-list" ).select2({
+            theme: "bootstrap",
+            selectionCssClass: 'form-control',
+            containerCssClass: 'form-control'
+        });
+        $('#data-list').on('select2:select', function (e) { 
+            var selectedData = e.params.data; 
+            console.log(selectedData,e.params);
+            let temp = self.state.class_list.find(e=>e.qrcode==selectedData.id);
+            console.log(temp);
+            self.setState({
+                grade: temp.year_level,
+                section: temp.section_name,
+                selectedQr: selectedData.id
+            }) 
+        });
+        // if(this.state.queryType == "student") { 
+        //     this.setState({data_list: this.state.student_list},() => {
+        //         selected.val(this.state.selectedQr).trigger('change'); 
+        //     });
+        // }
+        // getWeeksInMonth('2025-07',(getWeeksInMonth_) => {
+        //     console.log(getWeeksInMonth_);
+        //     this.setState({getWeeksInMonth:getWeeksInMonth_})
+        //     setTimeout(() => {
+        //         this.loadPDFTest();
+        //         this.setState({loading: false})
+        //     }, 2000);
+        // });
     }
-    
+
     async loadPDF() {
         console.log("loading pdf")
         try {
@@ -820,12 +880,12 @@ export default class SF4 extends Component {
                 }
             }
 
-            // $("#obj1").height(window.innerHeight - 8);
+            $("#obj1").height(window.innerHeight - 8);
             $("#frame1").height(window.innerHeight - 8);
             // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
         
             // $('#obj1').attr('data',doc.output("datauristring")+ '#view=Fit&toolbar=1');
-            $('#frame1').attr('src',doc.output("bloburl") + '#view=Fit&toolbar=1'); 
+            $('#obj1').attr('data',doc.output("bloburl") + '#view=Fit&toolbar=1'); 
             // $('#obj1').attr('data',doc.output("datauristring"));
             // $('#frame1').attr('src',doc.output("datauristring"));  
                 
@@ -833,6 +893,7 @@ export default class SF4 extends Component {
             console.log(error)
         }
     }
+
 
     browser_check_preview(){ // check para disable ang preview
 		let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -873,14 +934,193 @@ export default class SF4 extends Component {
 		}
 	}
  
+    selectedMonthYear(val) {
+        // console.log("val",val);
+        this.setState({selectedMonthYear: val});
+    }
+
+    loadAttendanceList() {
+        let self = this;
+        let date = moment(new Date()).format("YYYY-MM-DD");
+        if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
+            self.setState({loading: true})
+            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
+            axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
+                // console.log(response)
+                if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                    let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                    console.log("aw",response.data.status,data);
+                    if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                        self.setState({data: data,loading: false});
+                    }
+                }
+            });            
+        } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
+            ReactNotificationManager.error('Sorry','Please fill required field first')   
+        } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
+            ReactNotificationManager.error('Sorry','Please select Year and Month')   
+        } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
+            if(this.state.queryType == "student") {
+                ReactNotificationManager.error('Sorry','Please select Student')   
+            } else if(this.state.queryType == "employee") {
+                ReactNotificationManager.error('Sorry','Please select Employee')   
+            }
+        } else if(typeof(this.state.queryType) != "undefined" && this.state.queryType == "" ) {
+            ReactNotificationManager.error('Sorry','Please select Type field')   
+        }
+
+    }
+
+    fetchData() {
+        let self = this;
+        this.loadPDF();
+        // console.log(self.state.selectedQr,self.state.selectedMonthYear) 
+        // getWeeksInMonth(self.state.selectedMonthYear,(c) => {
+        //     const getWeeksInMonth_ = c;
+        //     console.log(getWeeksInMonth_)
+        //     self.setState({getWeeksInMonth:getWeeksInMonth_},() => {
+        //         axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
+        //             // console.log(response);
+        //             if( typeof(response.status) != "undefined" && response.status == "200" ) {
+        //                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+        //                 if(Object.keys(data).length>0) {
+        //                     self.setState({
+        //                         student_list: data.studentsList,
+        //                         loading: false
+        //                     },() => {
+
+        //                         self.generateData(data.sf2_data);
+        //                     });
+        //                 }
+        //             }
+        //         }); 
+        //     }); 
+        // });
+
+
+    }
+
+    generateData(data) {
+        // console.log(data)
+        // console.log(this.state.getWeeksInMonth)
+        let self = this;
+        const student = self.state.student_list;
+        let student_list = []; 
+        // console.log("student",student);
+        student.forEach((val,i_,arr) => {
+            const temp_student_list = {...val,WeeksInMonth: JSON.parse(JSON.stringify(this.state.getWeeksInMonth))}
+            // let getWeeksInMonth = this.state.getWeeksInMonth;
+            let getWeeksInMonth_temp = [];
+            for (let i = 0; i < temp_student_list.WeeksInMonth.length; i++) {
+                let week = temp_student_list.WeeksInMonth[i]; 
+                if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code) == true) { 
+                    week.mon.logs = { status: 'full',morning: '',afternoon:''}; 
+                } else if(week.tue != null && data.length > 0 && data.some(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code) == true) {
+                    week.tue.logs = { status: 'full',morning: '',afternoon:''};  
+                } else if(week.wed != null && data.length > 0 && data.some(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code) == true) {
+                    week.wed.logs = { status: 'full',morning: '',afternoon:''};  
+                } else if(week.thu != null && data.length > 0 && data.some(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code) == true) {
+                    week.thu.logs = { status: 'full',morning: '',afternoon:''};  
+                } else if(week.fri != null && data.length > 0 && data.some(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code) == true) {
+                    week.fri.logs = { status: 'full',morning: '',afternoon:''};  
+                } 
+                getWeeksInMonth_temp.push(week)
+            } 
+            student_list.push({...val,WeeksInMonth: getWeeksInMonth_temp});
+        });
+
+        this.setState({
+            student_list: student_list,
+            student_male_list: student_list.filter(e => e.sex=="Male"),
+            student_female_list: student_list.filter(e => e.sex=="Female"),
+        },() => {
+            this.loadPDF();
+        })
+        // console.log(student_list);
+    }
+
     
     render() {
-        return <div className="" >
-            <iframe
-                id="frame1"
-                src="#view=FitH&toolbar=0"
-                width="100%"
-                height="100%"
-            ></iframe>
-    </div>}
+        return <DashboardLayout title="Attendance" user={this.props.auth.user} profile={this.props.auth.profile}>
+            <div className="app-content-header"> 
+                <div className="container-fluid"> 
+                    <div className="row">
+                    <div className="col-sm-9">
+                        <h3 className="mb-0"><i className="nav-icon bi bi-calendar-month"></i> Monthly Learner's Movement and Attendance</h3>
+                        <small>School Form 4 (SF4)</small>
+                    </div>
+                    <div className="col-sm-3">
+                        <ol className="breadcrumb float-sm-end">
+                            <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/parents/dashboard">Dashboard</Link></li> 
+                        </ol>
+                    </div>
+                    </div> 
+                </div> 
+            </div>
+
+            <div className="app-content">
+                <div className="container-fluid">
+                    <div className="card card-default color-palette-box">
+                        <div className="card-header">
+                            <div className="row"> 
+
+                                {/* <div className="col-lg-9">
+
+                                    <div className="form-group">
+                                        <label >Select Class Section</label>
+                                        <select id="data-list" className="form-control">
+                                            <option></option> 
+                                            <EachMethod of={this.state.class_list} render={(element,index) => {
+                                                return <option value={element.qrcode} >{`${element.section_name} (${element.teacher_fullname}) - ${element.year_level} - ${element.school_year}`}</option>
+                                            }} />
+                                        </select>
+                                    </div>
+
+                                </div> */}
+
+                                <div className="col-lg-2">
+                                    <div className="form-group">
+                                        <label >Month</label>
+                                        <input type="month" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
+                                    </div> 
+                                </div>
+
+                                <div className="col-lg-1">
+                                    <br />
+                                    <button className="btn btn-primary" onClick={() => {
+                                        this.fetchData();
+                                    }}>
+                                        <i className="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="card-body p-0">
+
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="" >
+                                        <object
+                                            id="obj1"
+                                            type="application/pdf"
+                                            width="100%"
+                                            height="100">
+                                            {/* <iframe
+                                                id="frame1"
+                                                src="#view=FitH&toolbar=0"
+                                                width="100%"
+                                                height="100%"
+                                            ></iframe> */}
+                                        </object>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </DashboardLayout>}
 }
