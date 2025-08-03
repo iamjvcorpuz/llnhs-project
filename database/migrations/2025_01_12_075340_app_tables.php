@@ -428,7 +428,39 @@ return new class extends Migration
                 $table->timestampsTz(precision: 0);
             });
         }
-
+        if (Schema::hasTable('school_registry') == false) { 
+            Schema::create('school_registry', function (Blueprint $table) {
+                $table->id();
+                $table->string('region')->nullable();
+                $table->string('division')->nullable();
+                $table->string('district')->nullable();
+                $table->string('school_id')->nullable();
+                $table->string('school_name')->nullable();
+                $table->string('school_address')->nullable();
+                $table->string('school_year')->nullable();
+                $table->string('head_name')->nullable();
+                $table->string('head_position')->nullable();
+                $table->timestampsTz(precision: 0);
+            });
+        }
+        if (Schema::hasTable('student_final_grades') == false) { 
+            Schema::create('student_final_grades', function (Blueprint $table) {
+                $table->id();
+                $table->string('grade_level')->nullable();
+                $table->string('sy')->nullable();
+                $table->string('student_id')->nullable();
+                $table->string('teacher_id')->nullable();
+                $table->string('class_id')->nullable();
+                $table->string('subject_id')->nullable();
+                $table->string('subject_name')->nullable();
+                $table->string('q1')->nullable();
+                $table->string('q2')->nullable();
+                $table->string('q3')->nullable();
+                $table->string('q4')->nullable();
+                $table->string('status')->nullable();
+                $table->timestampsTz(precision: 0);
+            });
+        }
 
     }
 

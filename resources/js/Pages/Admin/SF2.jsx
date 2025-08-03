@@ -60,7 +60,10 @@ export default class SF2 extends Component {
             selectedQr: typeof(this.props.result)!="undefined"&&typeof(this.props.result.qrcode)!="undefined"?this.props.result.qrcode:"",
             selectedID: "",
             student_male_list: [],
-            student_female_list: []
+            student_female_list: [],
+            shcool_id: "",
+            school_name: "",
+            schoolRegistry: this.props.schoolRegistry
         } 
         this.loadPDF = this.loadPDF.bind(this); 
         this.loadPDFTest = this.loadPDFTest.bind(this);
@@ -80,7 +83,11 @@ export default class SF2 extends Component {
         $('#data-list').on('select2:select', function (e) { 
             var selectedData = e.params.data; 
             console.log(selectedData,e.params);
+            let temp = self.state.class_list.find(e=>e.qrcode==selectedData.id);
+            console.log(temp);
             self.setState({
+                grade: temp.year_level,
+                section: temp.section_name,
                 selectedQr: selectedData.id
             }) 
         });
@@ -101,7 +108,7 @@ export default class SF2 extends Component {
     
     async loadPDF() {
         // console.log("loading pdf",this.state.student_male_list,this.state.student_female_list)
-
+        let self = this;
         let green = {fillColor:[0,128,0]};
         let red = {fillColor:[216,78,75]};
         let img_none = '/images/sf2/1.png';
@@ -854,12 +861,12 @@ export default class SF2 extends Component {
             doc.text('(This replaces Form 1, Form 2 & STS Form 4 - Absenteeism and Dropout Profile)', pageWidth / 2, 20,{align:'center'});
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(9);
-            doc.text('School ID : ', 36.5, 26,{align:'left'});
-            doc.text('School Year : ', 96, 26,{align:'left'});
-            doc.text('Report for the Month of : ', 161, 26,{align:'left'});
-            doc.text('Name of School : ', 28, 31,{align:'left'});
-            doc.text('Grade Level : ', 176, 31,{align:'left'});
-            doc.text('Section : ', 216, 31,{align:'left'});
+            doc.text('School ID : ' + self.state.schoolRegistry.school_id, 36.5, 26,{align:'left'});
+            doc.text('School Year : ' + self.props.sy, 96, 26,{align:'left'});
+            doc.text('Report for the Month of : ' + self.state.selectedMonthYear, 161, 26,{align:'left'});
+            doc.text('Name of School : ' + self.state.schoolRegistry.school_name, 28, 31,{align:'left'});
+            doc.text('Grade Level : ' + self.state.grade, 176, 31,{align:'left'});
+            doc.text('Section : ' + self.state.section, 216, 31,{align:'left'});
 
             doc.setFontSize(8);
             autoTable(doc,{ 
@@ -2069,7 +2076,7 @@ export default class SF2 extends Component {
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");
             let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
             let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-            console.log(doc.getFontList());
+            // console.log(doc.getFontList());
             doc.addImage("/images/deped-d.png", "PNG", 5, 10, 24, 24);
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(15);
@@ -2627,9 +2634,9 @@ export default class SF2 extends Component {
         getWeeksInMonth(self.state.selectedMonthYear,(c) => {
             const getWeeksInMonth_ = c;
             console.log(getWeeksInMonth_)
-            this.setState({getWeeksInMonth:getWeeksInMonth_},() => {
+            self.setState({getWeeksInMonth:getWeeksInMonth_},() => {
                 axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
-                    console.log(response);
+                    // console.log(response);
                     if( typeof(response.status) != "undefined" && response.status == "200" ) {
                         let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                         if(Object.keys(data).length>0) {

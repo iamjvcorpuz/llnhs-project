@@ -25,8 +25,8 @@ export default class SF2 extends Component {
             fullname1: "",
             lastname: "",
             track_strand: "",
-            grade: "",
-            section: "",
+            grade: typeof(this.props.advisory)!="undefined"&&this.props.advisory.length>0?this.props.advisory[0].year_level:"",
+            section: typeof(this.props.advisory)!="undefined"&&this.props.advisory.length>0?this.props.advisory[0].section_name:"",
             sy: "",
             guardianname:"",
             relationship: "",
@@ -46,7 +46,11 @@ export default class SF2 extends Component {
             student_attendance: [],
             loading: true,
             month: "",
-            getWeeksInMonth: []
+            getWeeksInMonth: [],
+            shcool_id: "",
+            school_name: "",
+            schoolRegistry: this.props.schoolRegistry
+
         }
         // $('body').attr('class', '');
         this.loadPDF = this.loadPDF.bind(this);
@@ -74,7 +78,7 @@ export default class SF2 extends Component {
             console.log(getWeeksInMonth_)
             this.setState({getWeeksInMonth:getWeeksInMonth_},() => {
                 axios.post(`/teacher/advisory/sf2/${self.props.code}`,{code:self.props.code,month: self.state.month}).then(function (response) {
-                    console.log(response);
+                    // console.log(response);
                     if( typeof(response.status) != "undefined" && response.status == "200" ) {
                         let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                         if(Object.keys(data).length>0) {
@@ -885,12 +889,12 @@ export default class SF2 extends Component {
             doc.text('(This replaces Form 1, Form 2 & STS Form 4 - Absenteeism and Dropout Profile)', pageWidth / 2, 20,{align:'center'});
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(9);
-            doc.text('School ID : ', 36.5, 26,{align:'left'});
-            doc.text('School Year : ', 96, 26,{align:'left'});
-            doc.text('Report for the Month of : ', 161, 26,{align:'left'});
-            doc.text('Name of School : ', 28, 31,{align:'left'});
-            doc.text('Grade Level : ', 176, 31,{align:'left'});
-            doc.text('Section : ', 216, 31,{align:'left'});
+            doc.text('School ID : ' + self.state.schoolRegistry.school_id, 36.5, 26,{align:'left'});
+            doc.text('School Year : ' + self.props.sy, 96, 26,{align:'left'});
+            doc.text('Report for the Month of : ' + self.state.month, 161, 26,{align:'left'});
+            doc.text('Name of School : '  + self.state.schoolRegistry.school_name, 28, 31,{align:'left'});
+            doc.text('Grade Level : ' + self.state.grade, 176, 31,{align:'left'});
+            doc.text('Section : ' + self.state.section, 216, 31,{align:'left'});
 
             doc.setFontSize(8);
             autoTable(doc,{ 
@@ -2110,12 +2114,12 @@ export default class SF2 extends Component {
             doc.text('(This replaces Form 1, Form 2 & STS Form 4 - Absenteeism and Dropout Profile)', pageWidth / 2, 20,{align:'center'});
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(9);
-            doc.text('School ID : ', 36.5, 26,{align:'left'});
-            doc.text('School Year : ', 96, 26,{align:'left'});
-            doc.text('Report for the Month of : ', 161, 26,{align:'left'});
-            doc.text('Name of School : ', 28, 31,{align:'left'});
-            doc.text('Grade Level : ', 176, 31,{align:'left'});
-            doc.text('Section : ', 216, 31,{align:'left'});
+            doc.text('School ID : ' + self.state.schoolRegistry.school_id, 36.5, 26,{align:'left'});
+            doc.text('School Year : ' + self.props.sy, 96, 26,{align:'left'});
+            doc.text('Report for the Month of : ' + self.state.month, 161, 26,{align:'left'});
+            doc.text('Name of School : '  + self.state.schoolRegistry.school_name, 28, 31,{align:'left'});
+            doc.text('Grade Level : ' + self.state.grade, 176, 31,{align:'left'});
+            doc.text('Section : ' + self.state.section, 216, 31,{align:'left'});
 
             doc.setFontSize(8);
             autoTable(doc,{ 
@@ -2271,9 +2275,12 @@ export default class SF2 extends Component {
             let t1y = doc.internal.getNumberOfPages();
             // const startY = doc.lastAutoTable.finalY + 2;
             const startY = 12;
-            doc.addPage({orientation: 'l',format: 'letter',compressPdf:true});
-            // -------------------------------------
-            doc.setFont("Arial Narrow Bold", "bold");
+            doc.addPage({orientation: 'l',format: 'letter',compressPdf:true});            doc.text('School ID : ' + self.state.shcool_id, 36.5, 26,{align:'left'});
+            doc.text('School Year : ', 96, 26,{align:'left'});
+            doc.text('Report for the Month of : ' + self.state.month, 161, 26,{align:'left'});
+            doc.text('Name of School : '  + self.state.schoolRegistry.school_name, 28, 31,{align:'left'});
+            doc.text('Grade Level : ' + self.state.grade, 176, 31,{align:'left'});
+            doc.text('Section : ' + self.state.section, 216, 31,{align:'left'});
             doc.text('GUIDELINES: ', 5, startY + 2,{align:'left'});
             doc.setFont("Helvetica",""); 
             doc.setFontSize(6);
