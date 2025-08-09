@@ -287,7 +287,7 @@ export default class Parents extends Component {
                                     <h3 className="card-title"> <i className="bi bi-person"></i> Parent List</h3> 
                                     <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/parents/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                 <ReactTable
                                     key={"react-tables"}
                                     className={"table table-bordered table-striped table-hover"}

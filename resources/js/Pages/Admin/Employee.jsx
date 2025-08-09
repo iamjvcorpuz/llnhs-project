@@ -39,6 +39,7 @@ export default class Employee extends Component {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
+                    filterable: true,
                     accessor: 'fullname'
                 }, 
                 {
@@ -46,6 +47,7 @@ export default class Employee extends Component {
                     Header: 'Type',  
                     width: 100,
                     accessor: 'employee_type',
+                    filterable: true,
                     className: "center"
                 },  
                 {
@@ -53,6 +55,7 @@ export default class Employee extends Component {
                     Header: 'Status',  
                     width: 100,
                     accessor: 'status',
+                    filterable: true,
                     className: "center"
                 },
                 {
@@ -261,7 +264,7 @@ export default class Employee extends Component {
                                     <h3 className="card-title  mt-2"> <i className="bi bi-person"></i> Teacher List</h3> 
                                     <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/employee/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>    
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                 <ReactTable
                                     key={"react-tables"}
                                     className={"table table-bordered table-striped "}

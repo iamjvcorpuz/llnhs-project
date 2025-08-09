@@ -48,12 +48,14 @@ export default class Advisory extends Component {
                     id: "section",
                     Header: 'Section',  
                     accessor: 'section_name', 
+                    filterable: true,
                     width: 300,
                 },
                 {
                     id: "year_level",
                     Header: 'Grade Level',  
                     width: 200,
+                    filterable: true,
                     accessor: 'year_level'
                 },  
                 {

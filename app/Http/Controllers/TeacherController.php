@@ -36,6 +36,13 @@ class TeacherController extends Controller
         $teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' AND id = ?;',[$id]);
         return $teacher;
     }
+    public static function getDataQR($id)
+    {
+        // $student = Teacher::findOrFail($id);
+        // return $student;
+        $teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,employee_type,picture_base64,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' AND qr_code = ?;',[$id]);
+        return $teacher;
+    }
     public static function getContacts($id)
     { 
         return  DB::select('SELECT * FROM contacts WHERE teacher_id = ?',[$id]);

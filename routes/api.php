@@ -22,6 +22,7 @@ use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
 use App\Models\Advisory;
@@ -219,6 +220,17 @@ Route::post('/admin/sf2/{code}',function(Request $request) {
         "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
         "studentsList" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($request->code), 
        ];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+Route::post('/admin/school/details/update',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return SystemSettingsController::update($request);
     } else {
         http_response_code(500);
         echo json_encode(['message' => 'Crazy thing just happened!' ]);

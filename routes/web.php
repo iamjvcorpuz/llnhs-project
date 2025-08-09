@@ -73,6 +73,13 @@ Route::get('/admin/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified']);
 
+Route::get('/admin/school/details', function () {
+    return Inertia::render('Admin/SchoolRegistry',[
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+})->middleware(['auth', 'verified']);
+
 
 Route::get('/admin/attendance', function () {
     return Inertia::render('Admin/Attendance',[
@@ -84,6 +91,25 @@ Route::get('/admin/attendance', function () {
         "todayAttendance" => AttendanceController::_getTodaysTimelogs()
     ]);
 })->middleware(['auth', 'verified']);
+
+
+Route::get('/admin/attendance/print/{type}/{id}/{month}', function ($type,$id,$month) {
+    $user = "";
+    if($type=="employee") {
+        $user = TeacherController::getDataQR($id);
+    } else if($type=="student") {
+        $user = StudentController::getDataQRfilter($id);
+    }
+
+    return Inertia::render('Admin/EmployeeAttendancePrint',[
+        'type' => $type,
+        'id' => $id,
+        'month' => $month,
+        'user' => $user,
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+})->middleware(['auth', 'verified']);
+
 
 
 Route::get('/admin/attendance/{type}/{code}/{date}', function ($type,$code,$date,Request $request) {
@@ -110,6 +136,17 @@ Route::get('/admin/dashboard/student/new', function () {
         'strand' => ProgramsCurricularController::getStrand()
     ]);
 })->middleware(['auth', 'verified']);
+
+Route::get('/admin/dashboard/student/print/{id}', function ($id) {
+    return Inertia::render('Admin/Student/PrintStudent',[
+        'parents' => ParentsController::getAll(),
+        'student' => StudentController::getData($id),
+        'guardians' => StudentController::getStudentGuardian($id),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand()
+    ]);
+})->middleware(['auth', 'verified']);
+
 Route::get('/admin/dashboard/student/update/{id}', function (String $id) {
     return Inertia::render('Admin/Student/EditStudent',[
         'parents' => ParentsController::getAll(),
@@ -123,14 +160,20 @@ Route::get('/admin/dashboard/student/update/{id}', function (String $id) {
 Route::get('/admin/dashboard/teacher', function () {
     return Inertia::render('Admin/Teacher',['props' => null,]);
 })->middleware(['auth', 'verified']);
+
 Route::get('/admin/dashboard/teacher/new', function () {
     return Inertia::render('Admin/Teacher/NewTeacher',['props' => null,]);
 })->middleware(['auth', 'verified']);
+
 Route::get('/admin/dashboard/teacher/update/{id}', function (String $id) {
     return Inertia::render('Admin/Teacher/EditTeacher',[
         'teacher' => TeacherController::getData($id),
         'contacts' => TeacherController::getContacts($id)
     ]);
+})->middleware(['auth', 'verified']);
+
+Route::get('/admin/employee/attendance', function () {
+    return Inertia::render('EmployeeAttendance',['props' => null,]);
 })->middleware(['auth', 'verified']);
 
 // ----------------------------------------------------------------------------------
@@ -725,6 +768,30 @@ Route::get('/sf4', function () {
     ]);
 });
 
+Route::get('/student/pdf', function () {
+    return Inertia::render('SF4',[
+        "advisory" => AdvisoryController::getAll(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+});
+
+Route::get('/lesf', function () {
+    return Inertia::render('LESF',[
+        "advisory" => AdvisoryController::getAll(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+});
+
+Route::get('/beef', function () {
+    return Inertia::render('BEEF',[
+        "advisory" => AdvisoryController::getAll(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+});
+
 Route::get('/student/{id}/print/grade', function ($id,Request $request) {
     $request->merge(['id' => $id]);
     return Inertia::render('PrintGrade',[
@@ -732,6 +799,10 @@ Route::get('/student/{id}/print/grade', function ($id,Request $request) {
         "data" => StudentController::getDataID($id)
     ]);
 });
+
+Route::get('/employeeattendance', function () {
+    return Inertia::render('EmployeeAttendance',['props' => null,]);
+})->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
 require __DIR__.'/api.php';

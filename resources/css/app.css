@@ -792,3 +792,30 @@ img {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+.modal .overlay.dark, .info-box .overlay.dark, .overlay-wrapper .overlay.dark, .small-box .overlay.dark {
+    background-color: rgba(0, 0, 0, .5);
+}
+.modal-body .overlay {
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: .25rem;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, .7);
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    z-index: 50;
+}
+.modal>.loading-img, .modal>.overlay, .info-box>.loading-img, .info-box>.overlay, .overlay-wrapper>.loading-img, .overlay-wrapper>.overlay, .small-box>.loading-img, .small-box>.overlay {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
