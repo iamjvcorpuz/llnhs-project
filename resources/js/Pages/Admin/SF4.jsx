@@ -64,7 +64,8 @@ export default class SF2 extends Component {
             shcool_id: "",
             school_name: "",
             schoolRegistry: this.props.schoolRegistry,
-            advisory: this.props.advisory
+            advisory: this.props.advisory,
+            selectedMonthYear: ""
         } 
         this.loadPDF = this.loadPDF.bind(this);  
         this.fetchData = this.fetchData.bind(this);
@@ -72,7 +73,7 @@ export default class SF2 extends Component {
     }
 
     componentDidMount() { 
-        // this.loadPDF();
+        this.loadPDF();
         this._isMounted = true;
         let self = this;
         let selected = $("#data-list" ).select2({
@@ -112,401 +113,404 @@ export default class SF2 extends Component {
             let self = this;
             let sgv = "";
             let temp_data = [];
-            
-            // Array.from({length:5}).forEach((e,x) => {
-            //     temp_data.push([ 
-            //         {
-            //             content:"",// grade level
-            //             styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:15,fontSize: 7}
-            //         },
-            //         {
-            //             content:"", // section
-            //             styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:30,fontSize: 7}
-            //         },
-            //         {
-            //             content:"", // name of adviser
-            //             styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:40,fontSize: 7}
-            //         },
-            //         {
-            //             content: "", // registered lerners
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // registered lerners
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// registered lerners
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // attendance da 
-            //             styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// attendance da
-            //             styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// attendance da
-            //             styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // attendance pm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// attendance pm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// attendance pm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // DROPPED OUT cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// DROPPED OUT cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// DROPPED OUT cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // DROPPED OUT fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// DROPPED OUT fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// DROPPED OUT fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // DROPPED OUT cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// DROPPED OUT cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// DROPPED OUT cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // TRANSFERRED OUT cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED OUT cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED OUT cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // TRANSFERRED OUT fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED OUT fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED OUT fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // TRANSFERRED OUT cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED OUT cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED OUT cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // TRANSFERRED IN cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED IN cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED IN cpm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // TRANSFERRED IN fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED IN fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED IN fm
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "", // TRANSFERRED IN cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED IN cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         {
-            //             content: "",// TRANSFERRED IN cem
-            //             styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,fontSize: 4}
-            //         // },
-            //         // {
-            //         //     content: "",
-            //         //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,fontSize: 4}
-            //         // },
-            //     ]);
-            // });
+            if(self.state.selectedMonthYear == "") {
 
-            self.state.advisory.forEach(element => {
-                temp_data.push([ 
-                    {
-                        content: element.year_level,// grade level
-                        styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:15,fontSize: 7}
-                    },
-                    {
-                        content: element.section_name, // section
-                        styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:30,fontSize: 7}
-                    },
-                    {
-                        content:element.teacher_fullname, // name of adviser
-                        styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:40,fontSize: 7}
-                    },
-                    {
-                        content: "", // registered lerners
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // registered lerners
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// registered lerners
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // attendance da 
-                        styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// attendance da
-                        styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// attendance da
-                        styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // attendance pm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// attendance pm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// attendance pm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // DROPPED OUT cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// DROPPED OUT cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// DROPPED OUT cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // DROPPED OUT fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// DROPPED OUT fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// DROPPED OUT fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // DROPPED OUT cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// DROPPED OUT cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// DROPPED OUT cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // TRANSFERRED OUT cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED OUT cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED OUT cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // TRANSFERRED OUT fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED OUT fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED OUT fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // TRANSFERRED OUT cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED OUT cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED OUT cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // TRANSFERRED IN cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED IN cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED IN cpm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // TRANSFERRED IN fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED IN fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED IN fm
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "", // TRANSFERRED IN cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED IN cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    },
-                    {
-                        content: "",// TRANSFERRED IN cem
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
-                    }
-                ]);
-            });
+                Array.from({length:5}).forEach((e,x) => {
+                    temp_data.push([ 
+                        {
+                            content:"",// grade level
+                            styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:15,fontSize: 7}
+                        },
+                        {
+                            content:"", // section
+                            styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:30,fontSize: 7}
+                        },
+                        {
+                            content:"", // name of adviser
+                            styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:40,fontSize: 7}
+                        },
+                        {
+                            content: "", // registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // attendance da 
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance da
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance da
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,fontSize: 4}
+                        // },
+                        // {
+                        //     content: "",
+                        //     styles: {halign: 'center',minWidth: 0,minCellHeight: 0,fontSize: 4}
+                        // },
+                    ]);
+                });
 
+            }
+            if(self.state.selectedMonthYear != "") {
+                self.state.advisory.forEach(element => {
+                    temp_data.push([ 
+                        {
+                            content: element.year_level,// grade level
+                            styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:15,fontSize: 7}
+                        },
+                        {
+                            content: element.section_name, // section
+                            styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:30,fontSize: 7}
+                        },
+                        {
+                            content:element.teacher_fullname, // name of adviser
+                            styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:40,fontSize: 7}
+                        },
+                        {
+                            content: "", // registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // attendance da 
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance da
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance da
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "", // TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        },
+                        {
+                            content: "",// TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                        }
+                    ]);
+                });                   
+            }
             const doc = new jsPDF({orientation: 'l',format: 'letter',compressPdf:true});
             doc.addFont('/fonts/arial/ARIALNB.TTF','Arial Narrow Bold', "bold");
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");

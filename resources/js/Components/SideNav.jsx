@@ -115,6 +115,12 @@ export default function SideNav({
                       <p>SF4</p>
                     </Link>
                   </li>
+                  {/* <li className="nav-item">
+                    <Link href="/admin/report/lesf" className="nav-link">
+                      <i className="nav-icon bi bi-file-pdf"></i>
+                      <p>LEARNER ENROLLMENT AND SURVEY FORM</p>
+                    </Link>
+                  </li> */}
                 </ul>
               </li>
               <li className="nav-item">
@@ -179,6 +185,12 @@ export default function SideNav({
                   <i className="nav-arrow bi bi-chevron-right"></i>
                 </a>
                 <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/admin/school/details" className="nav-link">
+                      <i className="nav-icon bi bi-house-gear-fill"></i>
+                      <p>School Details</p>
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link href="/teacher/attendance/list" className="nav-link">
                       <i className="nav-icon bi bi-gear"></i>

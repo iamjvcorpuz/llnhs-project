@@ -295,6 +295,15 @@ export default class Student extends Component {
                                         <i className="bi bi-search"></i>
                                     </button>
                                 </div>
+                                
+                                <div className="col-lg-1">
+                                    <br />
+                                    <button className="btn btn-primary" onClick={() => {
+                                        this.loadAttendanceList();
+                                    }}>
+                                        <i className="bi bi-search"></i>
+                                    </button>
+                                </div>
                             </div>
 
                         </div>

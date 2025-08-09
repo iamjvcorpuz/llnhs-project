@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 class SystemSettingsController extends Controller
 {
@@ -25,4 +27,56 @@ class SystemSettingsController extends Controller
             return "";
         }
     }
+    public static function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [ 
+            'school_name' => 'required',
+            'school_id' => 'required', 
+            'school_address' => 'required', 
+            'school_district' => 'required', 
+            'school_division' => 'required', 
+            'school_region' => 'required', 
+            'school_head_teacher' => 'required', 
+            'school_head_teacher_position' => 'required', 
+            'school_sy' => 'required', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        // // echo $request;
+        $school_registry = DB::table('school_registry')->get();
+
+        if($school_registry->count()==1) {
+            $school_registry = DB::table('school_registry')->update([
+                'school_name' => $request->school_name,
+                'school_id' => $request->school_id,
+                'school_address' => $request->school_address,
+                'district' => $request->school_district,
+                'division' => $request->school_division,
+                'region' => $request->school_region,
+                'head_name' => $request->school_head_teacher,
+                'head_position' => $request->school_head_teacher_position,
+                'school_year' => $request->school_sy,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $request->all()
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'data_not_exist',
+                'error' => "DATA NOT FOUND",
+                'data' => []
+            ], 200);
+        }
+
+
+    }
+
 }

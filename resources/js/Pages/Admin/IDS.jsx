@@ -33,7 +33,7 @@ export default class IDS extends Component {
                 {
                     id: "qr",
                     accessor: 'lrn',
-                    Header: 'QR Code',   
+                    Header: 'QR Code',
                     Cell: ({row}) => { 
                         return <QRCode value={row.original.lrn} size={106} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
                             window.open(`/qrcode?code=${row.original.lrn}`)
@@ -54,30 +54,35 @@ export default class IDS extends Component {
                     id: "lrn",
                     accessor: 'lrn',
                     Header: 'LRN NO.', 
+                    filterable: true,
                     maxWidth: 100,
                 },
                 {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
+                    filterable: true,
                     accessor: 'fullname'
                 },  
                 {
                     id: "level",
                     Header: 'Level',  
                     width: 200,
+                    filterable: false,
                     accessor: 'level'
                 },  
                 {
                     id: "section",
                     Header: 'Section',  
                     width: 200,
+                    filterable: true,
                     accessor: 'section'
                 },
                 {
                     id: "Status",
                     Header: 'Status',  
                     width: 200,
+                    filterable: true,
                     accessor: 'status',
                     className: "center"
                 },

@@ -145,6 +145,29 @@ class StudentController extends Controller
         ");
         return $student;
     }
+    public static function getDataQRfilter($qr)
+    {
+        $student = DB::select("
+            SELECT 
+            id,
+            qr_code,
+            lrn,
+            psa_cert_no,
+            first_name,
+            last_name,
+            middle_name,
+            extension_name,
+            bdate,
+            sex,
+            picture_base64,
+            status
+            FROM
+            student
+            WHERE
+            qr_code = ?
+        ",[$qr]);
+        return $student;
+    }
     public static function getDataID($id)
     {
         $student = Student::findOrFail($id);

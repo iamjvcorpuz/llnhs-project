@@ -200,6 +200,7 @@ export default class Student extends Component {
     loadAttendanceList() {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD");
+        $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             self.setState({loading: true})
             // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
@@ -210,7 +211,9 @@ export default class Student extends Component {
                     console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
                         self.setState({data: data,loading: false});
+                        self.forceUpdate();
                     }
+                    $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
                 }
             });            
         } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
@@ -276,7 +279,7 @@ export default class Student extends Component {
                                     </div>
                                 </div>
 
-                                <div className="col-lg-7">
+                                <div className="col-lg-6">
 
                                     <div className="form-group">
                                         <label >Find</label>
@@ -297,13 +300,18 @@ export default class Student extends Component {
                                     </div> 
                                 </div>
 
-                                <div className="col-lg-1">
+                                <div className="col-lg-1 text-center">
                                     <br />
-                                    <button className="btn btn-primary" onClick={() => {
+                                    <button className="btn btn-primary btn-block" title="Load Search" onClick={() => {
                                         this.loadAttendanceList();
                                     }}>
                                         <i className="bi bi-search"></i>
                                     </button>
+                                </div>
+
+                                <div className="col-lg-1 text-center">
+                                    <br />
+                                    <a target="_blank" id="printbtn" disable="disabled" href={"javascript:void(0)"} className="btn btn-primary btn-block" title="Print" ><i className="bi bi-printer"></i></a>
                                 </div>
                             </div>
 
