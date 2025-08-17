@@ -1034,6 +1034,7 @@ export default class ClassTS extends Component {
                 </div>
             </div>
         </div>
+        
         <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode_print" aria-hidden="false" data-bs-backdrop="static">
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
