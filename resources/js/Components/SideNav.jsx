@@ -34,12 +34,42 @@ export default function SideNav({
                   <p>Attendance</p>
                 </Link>
               </li>
+
               <li className="nav-item">
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-person-lines-fill"></i>
+                  <p>Student</p>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/student" className="nav-link">
+                      <i className="nav-icon bi bi-person-gear"></i>
+                      <p>Info</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/report/sf4" className="nav-link">
+                      <i className="nav-icon bi bi-arrows-move"></i>
+                      <p>Movement</p>
+                    </Link>
+                  </li>
+                  {/* <li className="nav-item">
+                    <Link href="/admin/report/lesf" className="nav-link">
+                      <i className="nav-icon bi bi-file-pdf"></i>
+                      <p>LEARNER ENROLLMENT AND SURVEY FORM</p>
+                    </Link>
+                  </li> */}
+                </ul>
+              </li>
+
+              {/* <li className="nav-item">
                 <Link href="/admin/dashboard/student" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
                   <p>Student</p>
                 </Link>
-              </li>
+              </li> */}
+
               <li className="nav-item">
                 <Link href="/admin/dashboard/parents" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
@@ -75,13 +105,19 @@ export default function SideNav({
                   <li className="nav-item">
                     <Link href="/admin/dashboard/class" className="nav-link">
                       <i className="nav-icon bi bi-people-fill"></i>
-                      <p>Class</p>
+                      <p>Class Info</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/dashboard/advisory/schedules" className="nav-link">
+                      <i className="nav-icon bi bi-calendar2-check"></i>
+                      <p>Advisory Schedules</p>
                     </Link>
                   </li>
                 </ul>
               </li>
 
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-calendar-check-fill"></i>
                   <p>Schedule</p>
@@ -95,7 +131,7 @@ export default function SideNav({
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-printer"></i>

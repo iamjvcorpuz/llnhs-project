@@ -20,7 +20,7 @@ class AdvisoryController extends Controller
     
     public static function getAll()
     {
-        return DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id WHERE advisory.status = \'active\'');
+        return DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname,(SELECT room_no FROM school_sections WHERE id = advisory.school_sections_id) as \'classroom\' FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id WHERE advisory.status = \'active\'');
     }
     
     public static function getRequiredAllData()

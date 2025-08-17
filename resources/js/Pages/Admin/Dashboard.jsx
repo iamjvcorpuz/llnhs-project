@@ -7,6 +7,7 @@ import ApexCharts from 'apexcharts'
 
 // import DashboardLayout from '@/Layouts/DashboardLayout';
 import DashboardLayout from '../../Layouts/DashboardLayout';
+import moment from 'moment';
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -17,23 +18,127 @@ export default class Dashboard extends Component {
             advisoryList: this.props.advisory,    
             student: this.props.student,
             todayAttendance: [],
-            sections: this.props.sections
+            sections: this.props.sections,
+            annualTimelogs: this.props.annualTimelogs
         }
         this.speak = this.speak.bind(this);
         console.log(this.props)
     }
 
     componentDidMount() {
+        // const sales_chart_options = {
+        //     series: [
+        //       {
+        //         name: 'Beign Present',
+        //         data: [0],
+        //       },
+        //       {
+        //         name: 'Beign Absent',
+        //         data: [0],
+        //       },
+        //     ],
+        //     chart: {
+        //       height: 300,
+        //       type: 'area',
+        //       toolbar: {
+        //         show: false,
+        //       },
+        //     },
+        //     legend: {
+        //       show: false,
+        //     },
+        //     colors: ['#0d6efd', '#20c997'],
+        //     dataLabels: {
+        //       enabled: false,
+        //     },
+        //     stroke: {
+        //       curve: 'smooth',
+        //     },
+        //     xaxis: {
+        //       type: 'datetime',
+        //       categories: [
+        //         '2023-01-01',
+        //         '2023-02-01',
+        //         '2023-03-01',
+        //         '2023-04-01',
+        //         '2023-05-01',
+        //         '2023-06-01',
+        //         '2023-07-01',
+        //       ],
+        //     },
+        //     tooltip: {
+        //       x: {
+        //         format: 'MMMM yyyy',
+        //       },
+        //     },
+        // };
+    
+        // const sales_chart = new ApexCharts(
+        // document.querySelector('#revenue-chart'),
+        // sales_chart_options,
+        // );
+        // sales_chart.render();
+        if(this.props.auth.user.user_type!="Admin") {
+            if(this.props.auth.user.user_type == "Teacher") {
+                window.location.href = "/teacher/dashboard";
+            } else if(this.props.auth.user.user_type == "Student") {
+                window.location.href = "/student/dashboard";
+            } else if(this.props.auth.user.user_type == "Guardian") {
+                window.location.href = "/parents/dashboard";
+            }
+        }
+        
+        this.loadAnnualTimelogs();
+    }
+    loadAnnualTimelogs() {
+        let self = this;
+        let months = [];
+        let present = [0,0,0,0,0,0,0,0,0,0];
+        let absent = [0,0,0,0,0,0,0,0,0,0];
+        let tardy = [0,0,0,0,0,0,0,0,0,0];
+        for (let month = 0; month < 12; month++) { 
+            let present_count = 0;
+            let absent_count = 0;
+            let tardy_count = 0;
+            const momentMonth = moment(new Date()).month(month).startOf('month');
+            let yearmonth=momentMonth.format('YYYY-MM')
+            months.push(yearmonth);
+            if(self.state.annualTimelogs.length>0) {
+                self.state.annualTimelogs.forEach((val,i,arr) => {
+                    if(val.date.indexOf(yearmonth) > -1 && val.status == "") {
+                        present_count++;
+                    }
+                    if(val.date.indexOf(yearmonth) > -1 && val.mode == "absent") {
+                        absent_count++;
+                    }
+                    if(val.date.indexOf(yearmonth) > -1 && val.mode == "tardy") {
+                        tardy_count++;
+                    }
+                    if((i+1) == arr.length) {
+                        present[month] = present_count;
+                        absent[month] = absent_count;
+                        tardy[month] = tardy_count;
+                    }
+                });
+            }
+        }
         const sales_chart_options = {
             series: [
-              {
-                name: 'Beign Present',
-                data: [0],
-              },
-              {
-                name: 'Beign Absent',
-                data: [0],
-              },
+                {
+                    type: 'area',
+                    name: 'Present',
+                    data: present,
+                },
+                {
+                    type: 'area',
+                    name: 'Absent',
+                    data: absent,
+                },
+                {
+                    type: 'area',
+                    name: 'Tardy',
+                    data: tardy,
+                }
             ],
             chart: {
               height: 300,
@@ -43,9 +148,9 @@ export default class Dashboard extends Component {
               },
             },
             legend: {
-              show: false,
+              show: true,
             },
-            colors: ['#0d6efd', '#20c997'],
+            colors: ['#86bc85','#df5d5d', '#be9f41'],
             dataLabels: {
               enabled: false,
             },
@@ -54,39 +159,21 @@ export default class Dashboard extends Component {
             },
             xaxis: {
               type: 'datetime',
-              categories: [
-                '2023-01-01',
-                '2023-02-01',
-                '2023-03-01',
-                '2023-04-01',
-                '2023-05-01',
-                '2023-06-01',
-                '2023-07-01',
-              ],
+              categories: months
             },
             tooltip: {
               x: {
                 format: 'MMMM yyyy',
               },
             },
-          };
+        };
     
-          const sales_chart = new ApexCharts(
-            document.querySelector('#revenue-chart'),
-            sales_chart_options,
-          );
-          sales_chart.render();
-          if(this.props.auth.user.user_type!="Admin") {
-            if(this.props.auth.user.user_type == "Teacher") {
-                window.location.href = "/teacher/dashboard";
-            } else if(this.props.auth.user.user_type == "Student") {
-                window.location.href = "/student/dashboard";
-            } else if(this.props.auth.user.user_type == "Guardian") {
-                window.location.href = "/parents/dashboard";
-            }
-        }
+        const sales_chart = new ApexCharts(
+        document.querySelector('#revenue-chart'),
+        sales_chart_options,
+        );
+        sales_chart.render();
     }
-    
     speak(text) {
         // Create a SpeechSynthesisUtterance
         const utterance = new SpeechSynthesisUtterance(text);
@@ -287,7 +374,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header"><h3 className="card-title">Attendance Chart</h3></div>
-                                <div className="card-body"><div id="revenue-chart"></div></div>
+                                <div className="card-body p-0"><div id="revenue-chart"></div></div>
                             </div>
                         </div>
                     </div>

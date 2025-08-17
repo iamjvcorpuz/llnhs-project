@@ -7,6 +7,9 @@ import Swal from 'sweetalert2';
 import ReactTable from "@/Components/ReactTable"; 
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
+
+import QRCode from 'qrcode';
+
 document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener('hide.bs.modal', function (event) {
         if (document.activeElement) {
@@ -74,14 +77,36 @@ export default class Advisory extends Component {
                     Cell: ({row}) => { 
                        return <>                       
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteAdvisory(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
-                        <button className="btn btn-info btn-block btn-sm col-12" onClick={() => { this.viewData(row.original); }}> <i className="bi bi-pen"></i> Edit</button> 
+                        <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={() => { this.viewData(row.original); }}> <i className="bi bi-pen"></i> Edit</button> 
+                        {(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null)?<button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
+                            if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
+                                await this.generateQR(row.original.qrcode); 
+                                let room_no  = "";
+                                try {
+                                    room_no  = row.original.classroom;
+                                } catch (error) {
+                                    
+                                }
+                                this.setState({
+                                    room_name: row.original.section_name,
+                                    room_number: room_no,
+                                    teacher_fullname: row.original.teacher_fullname
+                                })
+                                $('#qrcode').modal('show');
+                            }
+                        }}> <i className="bi bi-qr-code"></i> QR</button>:null}
                        </>            
                     }
                 }
             ],
             track: this.props.track,
             strand: this.props.strand,
-            selectedData: {}
+            selectedData: {},
+            qr_code: "",
+            qr_code_data: "",
+            room_name: "",
+            room_number: "",
+            teacher_fullname: ""
         }
         this._isMounted = false;
         // this.saveData = this.getAllRequiredData.bind(this);
@@ -90,7 +115,8 @@ export default class Advisory extends Component {
         this.getAllData = this.getAllData.bind(this);
         this.viewData = this.viewData.bind(this);
         this.updateData = this.updateData.bind(this);
-        // console.log(this.props)
+        this.generateQR = this.generateQR.bind(this);
+        console.log(this.props)
     }
 
     componentDidMount() {
@@ -522,6 +548,15 @@ export default class Advisory extends Component {
         $("#updateAdvisory").modal('show');
     }
 
+    async generateQR (text) {
+        let self = this;
+        try {
+            let sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' ,width: 500 });
+            self.setState({qr_code: text, qr_code_data: sgv});
+        } catch (err) {
+        console.error(err)
+        }
+    }
 
     updateData() {
         let self = this; 
@@ -835,7 +870,9 @@ export default class Advisory extends Component {
 
             <datalist id="selectedTeacher">
                 <EachMethod of={this.state.teachers} render={(element,index) => {
-                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                    if(this.state.data.some(e=>Number(e.teacher_id)==element.id)===false) {
+                        return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                    }
                 }} />
             </datalist>
 
@@ -1109,6 +1146,53 @@ export default class Advisory extends Component {
                     </div>
                     <div className="modal-footer"> 
                         <button className="btn btn-success float-right mr-1" onClick={() =>{ this.updateData() }}> <i className="bi bi-save"></i> Update</button>   
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode" aria-hidden="false" data-bs-backdrop="static">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5">QR</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        
+                        <div className="card-body"> 
+                            <div className="row g-3"> 
+                                <div className="my-qr-code ">
+                                    <div className="my-qr-code-content">
+                                        <div className="center">
+                                            <strong>
+                                            {this.state.room_name.toLocaleUpperCase()}
+                                            </strong>
+                                            <br />
+                                            <strong>
+                                            Room No. : {this.state.room_number.toLocaleUpperCase()}
+                                            </strong>
+                                            <br />
+                                            <strong>
+                                            Adviser : {this.state.teacher_fullname.toLocaleUpperCase()}
+                                            </strong>
+                                        </div>
+                                        <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            let w=window.open();
+                            w.document.write($('.my-qr-code').html());
+                            w.print();
+                            w.close();
+                        }} ><i className="bi bi-printer"></i> Print</button>
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                     </div>

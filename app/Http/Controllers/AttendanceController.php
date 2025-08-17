@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\Attendance;
 use App\Models\Notifications;
 use Illuminate\Http\Request; 
@@ -282,6 +283,14 @@ class AttendanceController extends Controller
         ], 200);
 
     }
+    public static function getTimelogsAnnual() {
+        $logs = (object)array();
+
+        $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y') = ?",['2025']);
+
+        return  $logs;
+
+    }
     public function getFilterTimelogs(Request $request) {
         $logs = (object)array();
 
@@ -294,19 +303,36 @@ class AttendanceController extends Controller
                 $dates = $start_date; 
                 $month = date("Y-m", strtotime($dates));
                 $map_attendance_timelogs = [];
+                // echo "start date " . $start_date;
                 foreach ($logs as $key => $value) {
-                    if($dates == $value->date) {
+                    // echo "<pre>";
+                    // print_r($value);
+                    // echo "<pre/>" . $dates;
+
+                    // echo "<pre>";
+                    // echo $value->date;
+                    // echo "<pre/>";
+
+                    if($dates == $value->date) { 
                         array_push($map_attendance_timelogs, $value);
-                    } else if($dates != $value->date) {
+                        if ($key === array_key_last($logs)) {
+                            array_push($map_attendance, (object)[
+                                'date' => $dates,
+                                'month' => $month,
+                                'logs' => $map_attendance_timelogs
+                            ]);
+                        }
+                    } else if($dates != $value->date) { 
                         array_push($map_attendance, (object)[
                             'date' => $dates,
                             'month' => $month,
                             'logs' => $map_attendance_timelogs
                         ]);
-                        $map_attendance_timelogs = [];
                         $dates = $value->date;
+                        $map_attendance_timelogs = [];            
                         array_push($map_attendance_timelogs, $value);
                     }
+                    
                 }
             }
         } else if($request->type == "employee") {
@@ -319,6 +345,13 @@ class AttendanceController extends Controller
                 foreach ($logs as $key => $value) {
                     if($dates == $value->date) {
                         array_push($map_attendance_timelogs, $value);
+                        if ($key === array_key_last($logs)) {
+                            array_push($map_attendance, (object)[
+                                'date' => $dates,
+                                'month' => $month,
+                                'logs' => $map_attendance_timelogs
+                            ]);
+                        }
                     } else if($dates != $value->date) {
                         array_push($map_attendance, (object)[
                             'date' => $dates,
@@ -339,6 +372,69 @@ class AttendanceController extends Controller
             'data' => $map_attendance
         ], 200);
 
+    }
+    public function getFilterClassroomTimelogs(Request $request) {
+        // $id = AuthenticatedSessionController::getAuthId(); 
+        // if($id!=null) { 
+
+            $logs = (object)array();
+            // print_r($request->all());
+            $student_attendance = [];
+            if($request->type == "classroom" ) { 
+                
+                $map_student_list = DB::select('
+                SELECT 
+                ROW_NUMBER() OVER () as no,
+                advisory_group.id,
+                student.qr_code,
+                CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+                student.first_name,
+                student.last_name,
+                student.middle_name,
+                student.extension_name,
+                student.flsh_strand,
+                student.flsh_track,
+                student.picture_base64 AS photo,
+                student.id AS student_id,
+                student.lrn,
+                student.qr_code,
+                student.sex,
+                student.status AS \'student_status\'
+                FROM advisory_group 
+                LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+                LEFT JOIN student ON student.id = advisory_group.student_id
+                WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' AND advisory.qrcode = ?
+                ',[$request->qrcode]);
+                
+                foreach ($map_student_list as $key => $svalue) {
+
+                    $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);
+                    if(count($logs) > 0) {
+
+                        $obj1 = array_merge((array)$svalue,(array)['logs' => $logs]);
+                        array_push($student_attendance, $obj1);
+
+                    } else {
+                        
+                        $obj1 = array_merge((array)$svalue,(array)['logs' => []]);
+                        array_push($student_attendance, $obj1);
+                    
+                    }
+                    
+                    
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $student_attendance
+            ], 200);
+        // } else {
+        //     http_response_code(500);
+        //     echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        //     exit();
+        // }
     }
     public static function getFilterTimelogs_(Request $request) {
         $logs = (object)array();

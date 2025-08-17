@@ -69,7 +69,8 @@ Route::get('/admin/dashboard', function () {
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
         "student" => StudentController::getAll(),
-        "todayAttendance" => AttendanceController::_getTodaysTimelogs()
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        "annualTimelogs" => AttendanceController::getTimelogsAnnual()
     ]);
 })->middleware(['auth', 'verified']);
 

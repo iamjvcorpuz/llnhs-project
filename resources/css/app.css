@@ -819,3 +819,6 @@ img {
     top: 0;
     width: 100%;
 }
+.form-group .select2-container, .input-group .select2-container {
+    width: 100% !important; /* Forces Select2 to take full width of its parent */
+}

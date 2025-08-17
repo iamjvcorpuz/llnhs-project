@@ -30,13 +30,20 @@ export default class Student extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            data: typeof(this.props.result)!="undefined"&&typeof(this.props.result.logs)!="undefined"?this.props.result.logs:[],
+            data: [],
+            data_temp: [],
             columns: [
                 {
                     Header: 'Date', 
-                    width: 200,
+                    width: 130,
                     accessor: 'date',
                     className: "text-start"
+                },  
+                {
+                    Header: 'Day', 
+                    width: 100,
+                    accessor: 'day',
+                    className: "center"
                 },  
                 {
                     Header: 'Time Logs', 
@@ -47,14 +54,79 @@ export default class Student extends Component {
                         let timelogs = "wait";
                         let key = row.original.id;
                         timelogs = row.original.logs.map((element,i) => {
-                            if(element.mode != "absent") {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'primary':'danger')} mr-1`} >{key} TIME {element.mode}: {element.time}</div>;
-                            }                            
+                            let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
+                            // console.log(attendancestatus)
+                            if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element.mode != "absent") {
+                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'success':'info')} mr-1`} >TIME {element.mode}: {element.time}</div>;
+                            } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element.mode == "absent") {
+                                return <div key={`xt_${i}`} className={`btn btn-xs btn-danger mr-1`} >Absent</div>;
+                            } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && element.mode != "absent") {
+                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'success':'info')} mr-1`} >TIME {element.mode}: {element.time}</div>;
+                            } else if(typeof(attendancestatus) != "undefined"  && attendancestatus == "absent" && element.mode == "absent") {
+                                return <div key={`xt_${i}`} className={`btn btn-xs btn-danger mr-1`} >Absent</div>;
+                            }
                         });
                        return <div key={`t_${key}`}> 
                         {timelogs}
                        </div>            
                     }
+                }
+            ],
+            columns_classroom_status_monthly: [
+                {
+                    Header: 'Date', 
+                    width: 200,
+                    accessor: 'date',
+                    className: "text-start"
+                },  
+                {
+                    Header: 'Student Name', 
+                    accessor: 'logs',
+                    className: "text-wrap",
+                    width: 800,
+                    Cell: ({row}) => {  
+                        let timelogs = "";
+                        let key = row.original.id;
+                        let date = row.original.date;
+                        let filter_redundunt = [];
+                        if(typeof(row.original) != "undefined") {
+                            timelogs = row.original.logs.map((element1,i1) => {
+                                if( typeof(element1.logs) !="undefined" &&  element1.logs.length > 0) {
+                                    return element1.logs.map((element,i) => {
+                                        if(element.date == date) {
+                                            if(filter_redundunt.includes(element1.fullname) == false){
+                                                filter_redundunt.push(element1.fullname);
+                                                if(element.mode == "absent") {
+                                                    return <div key={`xt_${i1+i}`} title="Absent" className={"btn btn-xs btn-danger mr-1"} >{element1.fullname}</div>;
+                                                } else {
+                                                    return <div key={`xt_${i1+i}`} title="Present" className={"btn btn-xs btn-success mr-1"} >{element1.fullname}</div>;
+                                                }
+                                            } 
+                                        }
+                                    });
+                                } else {
+                                    return <></>
+                                }
+                            });                            
+                        }
+                    return <div key={`t_${key}`}> 
+                        {timelogs}
+                    </div>            
+                    }
+                }
+            ],
+            columns_classroom_status_daily: [ 
+                {
+                    Header: 'Student Name', 
+                    accessor: 'fullname',
+                    className: "text-wrap",
+                    width: 800
+                },
+                {
+                    Header: 'Status', 
+                    accessor: 'no',
+                    className: "text-wrap",
+                    width: 200
                 }
             ],
             eventsList: [],
@@ -104,18 +176,21 @@ export default class Student extends Component {
             ],
             student_list: this.props.student,
             employee_list: this.props.employee,
+            advisory_list: this.props.advisory,
             data_list: [],
             monthYear: typeof(this.props.result)!="undefined"&&typeof(this.props.result.date)!="undefined"?this.props.result.date:"",
             loading: false,
             queryType: typeof(this.props.result)!="undefined"&&typeof(this.props.result.type)!="undefined"?this.props.result.type:"",
             selectedQr: typeof(this.props.result)!="undefined"&&typeof(this.props.result.qrcode)!="undefined"?this.props.result.qrcode:"",
-            selectedID: ""
+            selectedID: "",
+            calendar: "monthly",
         }
         this._isMounted = false;
         this.loadAttendanceList = this.loadAttendanceList.bind(this);
         this.loadFilter = this.loadFilter.bind(this);
         this.selectedMonthYear = this.selectedMonthYear.bind(this);
-        console.log(this.props)
+        this.loadAttendanceClassroom = this.loadAttendanceClassroom.bind(this);
+        // console.log(this.props)
     }
     
     componentDidMount() {
@@ -124,14 +199,85 @@ export default class Student extends Component {
         let selected = $("#data-list" ).select2({
             theme: "bootstrap",
             selectionCssClass: 'form-control',
-            containerCssClass: 'form-control'
+            containerCssClass: 'form-control',
+            width: '100%'
         });
+        
         $('#data-list').on('select2:select', function (e) { 
             var selectedData = e.params.data; 
             self.setState({
                 selectedQr: selectedData.id
             }) 
         });
+
+        $('input:radio[name="attendancestatus"]').on('change', function (e) { 
+            let calendar = $('input:radio[name="calendar"]:checked').val();
+            self.setState({loading: true});
+            // console.log(e.target.value,self.state.data_temp.length,self.state.queryType,calendar); 
+            if(self.state.data_temp.length > 0) { 
+                let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
+                let data = self.state.data_temp;
+                if(calendar == "monthly") {
+                    let temp_list = [];
+                    if(self.state.queryType == "classroom") { 
+                        for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                            let atten = [];
+                            let atten_data = {};
+                            let atten_data_temp = {};                                
+                            data.forEach((dval,di,darr) => {
+                                atten_data = dval.logs.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`);   
+                                if(typeof(atten_data)!="undefined" && typeof(atten_data)!="undefined" && Object.keys(atten_data).length > 0) {
+                                    try {
+                                        if( typeof(attendancestatus) != "undefined" && attendancestatus == "all") {
+                                            atten.push(dval)
+                                        } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "absent" && (atten_data.mode == "absent" || atten_data.status == "class_absent")) {
+                                            atten.push(dval)
+                                        } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "present" && (atten_data.mode == "IN" || atten_data.mode == "OUT" || atten_data.status == "class_present")) {
+                                            atten.push(dval)
+                                        }
+                                    } catch (error) {
+                                        console.log("error",error)
+                                    }
+                                } 
+                            });
+                            // console.log({ id: `list2_` + index+1});
+                            temp_list.push({
+                                id: `list2_` + index+1,
+                                date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
+                                logs: atten,
+                                month: self.state.selectedMonthYear
+                            });
+                        }
+                    } else {
+                        for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                            let atten = [];
+                            if(data.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
+                                try {                                        
+                                    atten = data.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).logs;
+                                } catch (error) {
+                                    
+                                }
+                            }
+                            temp_list.push({
+                                id: `list1_` +index+1,
+                                date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
+                                logs: atten,
+                                month: self.state.selectedMonthYear
+                            });                                
+                        }
+                    }
+                    self.setState({data: temp_list,loading: false});
+                } else {
+                    self.setState({data: data,loading: false});
+                }               
+            } else {
+                self.setState({loading: false});                
+            }
+
+        });
+
         if(this.state.queryType == "employee") {
             this.setState({data_list: this.state.employee_list},() => {
                 selected.val(this.state.selectedQr).trigger('change'); 
@@ -140,7 +286,12 @@ export default class Student extends Component {
             this.setState({data_list: this.state.student_list},() => {
                 selected.val(this.state.selectedQr).trigger('change'); 
             });
+        } else if(this.state.queryType == "classroom") { 
+            this.setState({data_list: this.state.advisory_list},() => {
+                selected.val(this.state.selectedQr).trigger('change'); 
+            });
         }
+
         // this.loadStudentList();
         // console.log(this.props)
         if(typeof(this.props.holidays)!="undefined"&&this.props.holidays!=null&&this.props.holidays.length>0) {
@@ -196,10 +347,10 @@ export default class Student extends Component {
     //    const list = [...holidays, ...leaves]
     }
 
-
     loadAttendanceList() {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD");
+        let calendar = $('input:radio[name="calendar"]:checked').val();
         $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             self.setState({loading: true})
@@ -208,12 +359,35 @@ export default class Student extends Component {
                 // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                    console.log("aw",response.data.status,data);
+                    // console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                        self.setState({data: data,loading: false});
+                        if(calendar == "monthly") {
+                            let temp_list = [];
+
+                            for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                                let atten = [];
+                                if(data.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
+                                    try {                                        
+                                        atten = data.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).logs;
+                                    } catch (error) {
+                                        
+                                    }
+                                }
+                                temp_list.push({
+                                    id: `list1_` +index+1,
+                                    date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                    day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
+                                    logs: atten,
+                                    month: self.state.selectedMonthYear
+                                });                                
+                            }
+                            self.setState({data: temp_list,data_temp: temp_list ,loading: false});
+                        } else {
+                            self.setState({data: data,data_temp: data,loading: false});
+                        }
                         self.forceUpdate();
                     }
-                    $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
+                    $("#printbtn").attr("href",`/admin/attendance/print/${self.state.queryType}/${self.state.selectedQr}/${self.state.selectedMonthYear}`);
                 }
             });            
         } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
@@ -232,21 +406,160 @@ export default class Student extends Component {
 
     }
 
-    loadFilter(val) {
-        // console.log(val);
-        this.setState({data_list: [],queryType: ''},() => {
-            if(val == "Employee") {
-                this.setState({data_list: this.state.employee_list,queryType: 'employee'});
-            } else if(val == "Student") {
-                this.setState({data_list: this.state.student_list,queryType: 'student'});
+
+    loadAttendanceAllList() {
+        let self = this;
+        let date = moment(new Date()).format("YYYY-MM-DD");
+        let calendar = $('input:radio[name="calendar"]:checked').val();
+        $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
+        if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
+            self.setState({loading: true})
+            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
+            axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
+                // console.log(response)
+                if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                    let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                    // console.log("aw",response.data.status,data);
+                    if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                        if(calendar == "monthly") {
+                            let temp_list = [];
+
+                            for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                                let atten = [];
+                                if(data.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
+                                    try {                                        
+                                        atten = data.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).logs;
+                                    } catch (error) {
+                                        
+                                    }
+                                }
+                                temp_list.push({
+                                    date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                    day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
+                                    logs: atten,
+                                    month: self.state.selectedMonthYear
+                                });                                
+                            }
+
+                            self.setState({data: temp_list,data_temp: temp_list,loading: false});
+                        } else {
+                            self.setState({data: data,data_temp: data,loading: false});
+                        }
+                        self.forceUpdate();
+                    }
+                    $("#printbtn").attr("href",`/admin/attendance/print/${self.state.queryType}/${self.state.selectedQr}/${self.state.selectedMonthYear}`);
+                }
+            });            
+        } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
+            ReactNotificationManager.error('Sorry','Please fill required field first')   
+        } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
+            ReactNotificationManager.error('Sorry','Please select Year and Month')   
+        } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
+            if(this.state.queryType == "student") {
+                ReactNotificationManager.error('Sorry','Please select Student')   
+            } else if(this.state.queryType == "employee") {
+                ReactNotificationManager.error('Sorry','Please select Employee')   
             }
+        } else if(typeof(this.state.queryType) != "undefined" && this.state.queryType == "" ) {
+            ReactNotificationManager.error('Sorry','Please select Type field')   
+        }
+
+    }
+
+    loadAttendanceClassroom() {
+        let self = this;
+        let date = moment(new Date()).format("YYYY-MM-DD");
+        // $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
+        if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
+            self.setState({loading: true})
+            let calendar = $('input:radio[name="calendar"]:checked').val();
+            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear},calendar);
+            axios.post('/attendance/filter/time/logs/classroom',{qrcode: this.state.selectedQr,type: this.state.queryType ,date: this.state.selectedMonthYear}).then(function (response) {
+                // console.log(response)
+                if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                    let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                    // console.log("aw loadAttendanceClassroom",response.data.status,data);
+                    if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                        if(calendar == "monthly") {
+
+                            let temp_list = [];
+                            for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                                let atten = [];
+                                let atten_data = {};
+                                let atten_data_temp = {};                                
+                                data.forEach((dval,di,darr) => {
+                                    atten_data = dval.logs.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`);   
+                                    if(typeof(atten_data)!="undefined" && typeof(atten_data)!="undefined" && Object.keys(atten_data).length > 0) {
+                                        try {
+                                            atten.push(dval)
+                                        } catch (error) {
+                                            console.log("error",error)
+                                        }
+                                    } 
+                                });                              
+                                temp_list.push({
+                                    id: `list2_` + index+1,
+                                    date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                    day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
+                                    logs: atten,
+                                    month: self.state.selectedMonthYear
+                                });
+                            }
+                            // console.log("temp_list",temp_list);
+                            self.setState({data: temp_list,data_temp: data,loading: false});
+                        } else {
+                            // console.log("data",data);
+                            self.setState({data: data,data_temp: data,loading: false});
+                        }
+
+                        // self.setState({data: data,loading: false});
+                        self.forceUpdate();
+                    }
+                    // $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
+                }
+            });            
+        } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
+            ReactNotificationManager.error('Sorry','Please fill required field first')   
+        } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
+            ReactNotificationManager.error('Sorry','Please select Year and Month')   
+        } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
+            if(this.state.queryType == "student") {
+                ReactNotificationManager.error('Sorry','Please select Student')   
+            } else if(this.state.queryType == "employee") {
+                ReactNotificationManager.error('Sorry','Please select Employee')   
+            }
+        } else if(typeof(this.state.queryType) != "undefined" && this.state.queryType == "" ) {
+            ReactNotificationManager.error('Sorry','Please select Type field')   
+        }
+    }
+
+    loadFilter(val) {
+        let self = this;
+        console.log(val);
+        // $('input:radio[name="attendancestatus"]').prop('checked', false);
+        $('input:radio[name="attendancestatus"]:first').prop('checked', true);
+        self.setState({data_list: [],data:[],data_temp:[],selectedQr:""},() => {
+            setTimeout(() => {
+                self.setState({queryType: val},() => {
+                    if(val == "employee") {
+                        self.setState({data_list: self.state.employee_list});
+                    } else if(val == "student") {
+                        self.setState({data_list: self.state.student_list});
+                    } else if(val == "classroom") {
+                        self.setState({data_list: self.state.advisory_list});
+                    }
+                })
+            }, 1000);
         });
     }
 
     selectedMonthYear(val) {
         // console.log("val",val);
-        this.setState({selectedMonthYear: val});
+        let calendar = $('input:radio[name="calendar"]:checked').val();
+        this.setState({selectedMonthYear: val,calendar:calendar});
+        
     }
+
     render() { 
         return <DashboardLayout title="Attendance" user={this.props.auth.user} profile={this.props.auth.profile}>
             <div className="app-content-header"> 
@@ -271,50 +584,120 @@ export default class Student extends Component {
                                 <div className="col-lg-2">
                                     <div className="form-group">
                                         <label >Type</label>
-                                        <select id="type" className="form-control" value={capitalizeWords(this.state.queryType)} onChange={e => this.loadFilter(e.target.value)}>
+                                        <select id="type" className="form-control" defaultValue={this.state.queryType} onChange={e => this.loadFilter(e.target.value)}>
                                             <option></option>
-                                            <option value={"Employee"}>Employee</option> 
-                                            <option value={"Student"}>Student</option> 
+                                            <option value={"employee"}>Employee</option> 
+                                            <option value={"student"}>Student</option> 
+                                            <option value={"classroom"}>Classroom</option> 
                                         </select>
                                     </div>
                                 </div>
 
-                                <div className="col-lg-6">
+                                {/* {(this.state.queryType=="classroom")?:<></>} */}
+                                <div className="col-lg-1">
+
+                                    <div className="form-group"> 
+                                        <div className="form-check">
+                                            <input type="radio" className="form-check-input" id="radioAll" name="attendancestatus" defaultChecked="checked" value="all" />
+                                            <label htmlFor="radioAll" className="form-check-label">
+                                                All
+                                            </label>
+                                        </div> 
+                                        <div className="form-check">
+                                            <input type="radio" className="form-check-input" id="radioPresent" name="attendancestatus" defaultChecked="" value="present" />
+                                            <label htmlFor="radioPresent" className="form-check-label">
+                                                Present
+                                            </label>
+                                        </div> 
+                                        <div className="form-check">
+                                            <input type="radio" className="form-check-input" id="radioAbsent" name="attendancestatus" defaultChecked="" value="absent" />
+                                            <label htmlFor="radioAbsent" className="form-check-label">
+                                                Absent
+                                            </label>
+                                        </div> 
+                                    </div>
+
+                                </div>
+
+                                <div className={`col-lg-7`}>
 
                                     <div className="form-group">
-                                        <label >Find</label>
-                                        <select id="data-list" className="form-control">
+                                        <label >Select {capitalizeWords(this.state.queryType)}</label>
+                                        <select id="data-list" className="form-control form-block">
                                             <option></option> 
-                                            <EachMethod of={this.state.data_list} render={(element,index) => {
+                                            {(this.state.queryType=="employee"||this.state.queryType=="student")?<EachMethod of={this.state.data_list} render={(element,index) => {
                                                 return <option value={element.qr_code} >{`${element.last_name}, ${element.first_name}`}</option>
-                                            }} />
+                                            }} />:null}
+                                            {(this.state.queryType=="classroom")?<EachMethod of={this.state.data_list} render={(element,index) => {
+                                                return <option value={element.qrcode} >{`Section: ${element.section_name} (${element.teacher_fullname}, ${element.year_level}, ${element.school_year})`}</option>
+                                            }} />:null}
                                         </select>
                                     </div>
 
                                 </div>
-
+{/* 
                                 <div className="col-lg-2">
                                     <div className="form-group">
                                         <label >Month</label>
                                         <input type="month" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
                                     </div> 
+                                </div> */}
+
+                                <div className="col-lg-2">
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }} />
+                                        <label htmlFor="radioMonthly" className="form-check-label">
+                                            Monthly
+                                        </label>
+                                    </div>  
+                                    <input type="month" id="smonthly" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
+                                </div>
+                                {/* <div className="col-lg-2">
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }} />
+                                        <label htmlFor="radioMonthly" className="form-check-label">
+                                            Monthly
+                                        </label>
+                                    </div>  
+                                    <input type="month" id="smonthly" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
                                 </div>
 
-                                <div className="col-lg-1 text-center">
-                                    <br />
-                                    <button className="btn btn-primary btn-block" title="Load Search" onClick={() => {
-                                        this.loadAttendanceList();
+
+                                <div className="col-lg-2">
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" id="radioDaily" name="calendar" defaultChecked="" value="daily" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }}  />
+                                        <label htmlFor="radioDaily" className="form-check-label">
+                                            Daily
+                                        </label>
+                                    </div>  
+                                    <input type="date" id="sdaily" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
+                                </div> */}
+
+                            </div>
+                            <div className="row">
+                                <div className="col-lg-12 mt-2"> 
+                                    <button className="btn btn-primary btn-block mr-1" title="Load Search" onClick={() => {                                        
+                                        if(this.state.queryType=="classroom") {
+                                            this.loadAttendanceClassroom();
+                                        } else {
+                                            this.loadAttendanceList();
+                                        }
                                     }}>
                                         <i className="bi bi-search"></i>
                                     </button>
-                                </div>
+                                    <a target="_blank" id="printbtn" disable="disabled" href={"#!"} className="btn btn-primary btn-block  mr-1" title="Print" ><i className="bi bi-printer"></i></a>
 
-                                <div className="col-lg-1 text-center">
-                                    <br />
-                                    <a target="_blank" id="printbtn" disable="disabled" href={"javascript:void(0)"} className="btn btn-primary btn-block" title="Print" ><i className="bi bi-printer"></i></a>
+                                    <button className="btn btn-primary btn-block" title="Clear Search" onClick={() => {
+                                        this.setState({selectedMonthYear:"",selectedQr:"",queryType:""});
+                                        $("#type").val("");
+                                        $('input:radio[name="attendancestatus"]:first').prop('checked', true);
+                                        $('input:radio[name="calendar"]:first').prop('checked', true);
+
+                                    }}>
+                                        <i className="bi bi-x-circle"></i>
+                                    </button>
                                 </div>
                             </div>
-
                         </div>
                         <div className="card-body p-0">
 
@@ -327,7 +710,34 @@ export default class Student extends Component {
                                             </div>
                                         </div>
                                     </div> */}
-                                    <ReactTable
+                                    {(this.state.queryType=="classroom"&&this.state.calendar=="monthly")?<ReactTable
+                                        key={"react-tables1"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_monthly}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="classroom"&&this.state.calendar=="daily")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_daily}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType!="classroom")?<ReactTable
+                                        key={"react-tables3"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {/* <ReactTable
                                         key={"react-tables"}
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
@@ -335,7 +745,7 @@ export default class Student extends Component {
                                         defaultPageSize={31}
                                         showPagenation={false}
                                         loading={this.state.loading}
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                         </div>

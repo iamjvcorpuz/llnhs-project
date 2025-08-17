@@ -5,7 +5,7 @@ import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import Select from 'react-select'  
-import QRCode from "react-qr-code";
+// import QRCode from "react-qr-code";
 import Webcam from "react-webcam";
 import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
@@ -14,7 +14,7 @@ import ApexCharts from 'apexcharts'
 import ReactTable from "@/Components/ReactTable"; 
 
 import DashboardLayout from '@/Layouts/DashboardLayout';
-
+import QRCode from 'qrcode';
 
 export default class Event extends Component {
     constructor(props) {
@@ -87,6 +87,20 @@ export default class Event extends Component {
                             $("#udescription").val('');  
                             this.selectSubject(row.original);
                         }} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</button>  
+                        {(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null)?<button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
+                            if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
+                                await this.generateQR(row.original.qrcode);  
+                                this.setState({
+                                    event_name: row.original.event_name,
+                                    description: row.original.description,
+                                    time_end: row.original.time_end,
+                                    time_start: row.original.time_start,
+                                    date: row.original.date,
+                                    facilitator: row.original.facilitator
+                                });
+                                $('#qrcode').modal('show');
+                            }
+                        }}> <i className="bi bi-qr-code"></i> QR</button>:null}
                        </>            
                     }
                 }
@@ -94,15 +108,23 @@ export default class Event extends Component {
             id: "",
             room_no: "",
             floor_no: "",
-            building_no: "",
-            description: "",
+            building_no: "", 
             selectedData: {},
+            qr_code: "",
+            qr_code_data: "",
+            event_name: "",
+            description: "",
+            date: "",
+            time_end: "",
+            time_start: "",
+            facilitator: "", 
             todayDate: moment(new Date()).format('YYYY-MM-DD')
         };
         console.log(this.props.events)
         this.delete = this.delete.bind(this);
         this.selectSubject = this.selectSubject.bind(this);
         this.getAllData = this.getAllData.bind(this);
+        this.generateQR = this.generateQR.bind(this);
 
     }
     componentDidMount() {
@@ -122,6 +144,16 @@ export default class Event extends Component {
         this.setState({selectedData:data},() => {
             $("#updateHoliday").modal('show');
         }); 
+    }
+
+    async generateQR (text) {
+        let self = this;
+        try {
+            let sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' ,width: 500 });
+            self.setState({qr_code: text, qr_code_data: sgv});
+        } catch (err) {
+        console.error(err)
+        }
     }
 
     getAllData() {
@@ -756,5 +788,63 @@ export default class Event extends Component {
                 </div>
             </div>
         </div>
+        
+        <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode" aria-hidden="false" data-bs-backdrop="static">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5">QR</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        
+                        <div className="card-body"> 
+                            <div className="row g-3"> 
+                                <div className="my-qr-code ">
+                                    <div className="my-qr-code-content">
+                                        <div className="center">
+                                            <strong>
+                                            Name: {this.state.event_name.toLocaleUpperCase()}
+                                            </strong>
+                                            <br />
+                                            <strong>
+                                            Description. : {this.state.description.toLocaleUpperCase()}
+                                            </strong>
+                                            <br />
+                                            <strong>
+                                            Date : {this.state.date.toLocaleUpperCase()} {this.state.time_start.toLocaleUpperCase()} - {this.state.time_end.toLocaleUpperCase()}
+                                            </strong>
+                                            <br />
+                                            <strong>
+                                            Facilitator. : {this.state.facilitator}
+                                            </strong>
+                                        </div>
+                                        <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        {/* this.setState({
+                                    event_name: row.original.event_name,
+                                    description: row.original.description,
+                                    time_end: row.original.time_end,
+                                    time_start: row.original.time_start,
+                                    date: row.original.date,
+                                    facilitator: row.original.facilitator
+                                }); */}
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            let w=window.open();
+                            w.document.write($('.my-qr-code').html());
+                            w.print();
+                            w.close();
+                        }} ><i className="bi bi-printer"></i> Print</button>
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
     </DashboardLayout>}
 }
