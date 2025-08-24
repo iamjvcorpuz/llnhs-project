@@ -16,6 +16,7 @@ use App\Http\Controllers\ProgramsCurricularController;
 use App\Http\Controllers\SchoolSectionController;
 use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentMovementController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\TeacherController;
@@ -70,7 +71,8 @@ Route::get('/admin/dashboard', function () {
         "sections" => SchoolSectionController::getAll(),
         "student" => StudentController::getAll(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
-        "annualTimelogs" => AttendanceController::getTimelogsAnnual()
+        "annualTimelogs" => AttendanceController::getTimelogsAnnual(),
+        "StudentMovements" => StudentMovementController::getStudentMovements()
     ]);
 })->middleware(['auth', 'verified']);
 

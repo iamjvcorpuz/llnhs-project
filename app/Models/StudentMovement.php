@@ -25,6 +25,7 @@ class StudentMovement extends Model
         'semester_1st',
         'semester_2nd',
         'movement_status',
+        'transferee',
         'transfer_grade_level',
         'transfer_sy_completed',
         'transfer_school_attended',

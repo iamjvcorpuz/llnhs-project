@@ -153,6 +153,10 @@ export default class Movement extends Component {
                             return <span className="badge bg-primary">ACTIVE/REPEAT</span>      
                         } else  if(row.original.status=='active'){
                             return <span className="badge bg-primary">ACTIVE</span>
+                        } else  if(row.original.status=='drop'){
+                            return <span className="badge bg-danger">Drop Out</span>
+                        } else  if(row.original.status=='transfer_out'){
+                            return <span className="badge bg-danger">Transfer Out</span>
                         }
                     }
                 },
@@ -164,8 +168,12 @@ export default class Movement extends Component {
                         if(row.original.status=='active'){
                             return <>                       
                             {/* <button className="btn btn-danger btn-block btn-sm col-12 mb-1"> <i className="bi bi-person-fill-x"></i> Remove</button> */}
-                            <button className="btn btn-danger btn-block btn-sm col-12 mb-1">Drop Out</button>
-                            <button className="btn btn-danger btn-block btn-sm col-12 mb-1">Transfer Out</button>
+                            <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={() => {
+                                this.dropStudent();
+                            }} >Drop Out</button>
+                            <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={() => {
+                                this.transferOutStudent();
+                            }}>Transfer Out</button>
                            </>      
                         } else {
                             return <></>
@@ -186,6 +194,8 @@ export default class Movement extends Component {
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
         this.fetchData = this.fetchData.bind(this);
+        this.dropStudent = this.dropStudent.bind(this);
+        this.transferOutStudent = this.transferOutStudent.bind(this);
         this._isMounted = false;
     }
 
@@ -220,7 +230,8 @@ export default class Movement extends Component {
             var selectedData = e.params.data; 
             self.setState({
                 selectedQr: selectedData.id,
-                readOnly_: false
+                readOnly_: false,
+                transferee: false
             },() => {
                 self.fetchData();
             });
@@ -283,15 +294,225 @@ export default class Movement extends Component {
         })
     }
 
+    dropStudent() {
+        let self = this;
+        if(self.state.id != "" && self.state.lrn != "") {
+            if($('#invalidCheck').prop('checked') == false) {
+                $("#invalidCheck-alert").removeAttr('class'); 
+                $("#invalidCheck-alert").addClass('d-block invalid-feedback');
+                // alert('Please check agree to all fields are correct');
+                swal({
+                    title: "Please check agree if all fields are correct",
+                    icon: 'info'
+                })
+                $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+                return;
+            }
+            Swal.fire({
+                title: "If all fields are correct and please click to continue to save", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    Swal.fire({  
+                        title: 'Submitting Records.\nPlease wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    let datas =  {
+                        id: self.state.id,
+                        lrn: self.state.lrn
+                    };
+                    // console.log(datas);
+                    axios.post('/admin/update/drop/student/movemet',datas).then(function (response) {
+                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "success") {
+                                    Swal.fire({  
+                                        title: "Successfuly save!", 
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        confirmButtonText: "Continue", 
+                                        icon: "success",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    }).then(function (result2) {
+                                        if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            document.getElementById("cancel").click();
+                                        }
+                                    });
+
+                                } else {
+                                    Swal.fire({  
+                                        title: "Fail to drop student", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            }
+                    }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    Swal.fire({  
+                        title: "Server Error", 
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        cancelButtonText: "Ok",
+                        confirmButtonText: "Continue",
+                        confirmButtonColor: "#DD6B55",
+                        icon: "error",
+                        showLoaderOnConfirm: true, 
+                        closeOnClickOutside: false,  
+                        dangerMode: true,
+                    });
+                    })
+                } else if(result.isDismissed) {
+
+                }
+                return false
+            });            
+        }
+    }
+
+    transferOutStudent() {
+        let self = this;
+        if(self.state.id != "" && self.state.lrn != "") {
+            if($('#invalidCheck').prop('checked') == false) {
+                $("#invalidCheck-alert").removeAttr('class'); 
+                $("#invalidCheck-alert").addClass('d-block invalid-feedback');
+                // alert('Please check agree to all fields are correct');
+                swal({
+                    title: "Please check agree if all fields are correct",
+                    icon: 'info'
+                })
+                $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+                return;
+            }
+            Swal.fire({
+                title: "If all fields are correct and please click to continue to save", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    Swal.fire({  
+                        title: 'Submitting Records.\nPlease wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    let datas =  {
+                        id: self.state.id,
+                        lrn: self.state.lrn
+                    };
+                    // console.log(datas);
+                    axios.post('/admin/update/transfer/out/student/movemet',datas).then(function (response) {
+                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "success") {
+                                    Swal.fire({  
+                                        title: "Successfuly save!", 
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        confirmButtonText: "Continue", 
+                                        icon: "success",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    }).then(function (result2) {
+                                        if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            document.getElementById("cancel").click();
+                                        }
+                                    });
+
+                                } else {
+                                    Swal.fire({  
+                                        title: "Fail to drop student", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            }
+                    }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    Swal.fire({  
+                        title: "Server Error", 
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        cancelButtonText: "Ok",
+                        confirmButtonText: "Continue",
+                        confirmButtonColor: "#DD6B55",
+                        icon: "error",
+                        showLoaderOnConfirm: true, 
+                        closeOnClickOutside: false,  
+                        dangerMode: true,
+                    });
+                    })
+                } else if(result.isDismissed) {
+
+                }
+                return false
+            });            
+        }
+    }
+
     saveData() {
         let self = this;
         let repeater = $("#repeatGrade").is(':checked');
-        console.log("repeater",repeater)
-        if(this.state.schoolRegistry.school_year != "" && self.state.selectedQr != "" && this.state.selectedGradeLevel != "") {
-            //flsh_semester_
-            // flsh_track_
-            // flsh_strand_
-        }
+        let elglc = $("#elglc").find(":selected").val();
+        let elsyc = $("#elsyc").val();
+        let elsa = $("#elsa").val();
+        let lesa_school_id = $("#lesa_school_id").val(); 
         if(this.state.schoolRegistry.school_year != "" && self.state.selectedQr != "" && this.state.selectedGradeLevel != "") {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
@@ -336,12 +557,17 @@ export default class Movement extends Component {
                         flsh_semester: self.state.flsh_semester_,
                         flsh_track: self.state.flsh_track_,
                         flsh_strand: self.state.flsh_strand_,
-                        repeater: repeater
+                        repeater: repeater,
+                        elglc:elglc,
+                        elsyc:elsyc,
+                        elsa:elsa,
+                        lesa_school_id:lesa_school_id,
+                        transferee: self.state.transferee
                     };
-                    // console.log(datas);
+                    console.log(datas);
                     axios.post('/admin/update/student/movemet',datas).then(function (response) {
                         // handle success
-                        // console.log(response);
+                        console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 if(data.status == "success") {
@@ -638,22 +864,28 @@ export default class Movement extends Component {
                                         <div className="row g-3" >
                                             <div className="col-md-6">
                                                 <label htmlFor="lglv" className="form-label">Last Grade Level Completed</label>
-                                                <input type="text" className="form-control" id="lglv" defaultValue="" required="" onChange={(e) => { $("#lglv-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lglc: e.target.value})}}  />
+                                                <select className="form-select" id="elglc" required="" onChange={(e) => { $("#lglc-alert").removeAttr('class').addClass('invalid-feedback'); }} >
+                                                    <option disabled>Choose...</option>
+                                                    <option></option>
+                                                    <EachMethod of={this.state.yeargrade} render={(element,index) => {
+                                                        return <option >{`${element.year_grade}`}</option>
+                                                    }} />
+                                                </select>
                                                 <div id="lglv-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsyc" className="form-label">Last School Year Completed</label>
-                                                <input type="text" className="form-control" id="lsyc" defaultValue="" required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="elsyc" defaultValue="" required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
                                                 <div id="lsyc-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsa" className="form-label">Last School Attended</label>
-                                                <input type="text" className="form-control" id="lsa" defaultValue="" required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="elsa" defaultValue="" required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
                                                 <div id="lsa-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsa_school_id" className="form-label">School ID</label>
-                                                <input type="text" className="form-control" id="lsa_school_id" defaultValue="" required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="lesa_school_id" defaultValue="" required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
                                                 <div id="lsa_school_id-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                         </div>

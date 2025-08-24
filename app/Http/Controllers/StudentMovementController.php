@@ -24,12 +24,97 @@ class StudentMovementController extends Controller
         return $datas;
         
     }
+    public static function getStudentMovements() 
+    {
+        // $datas = [];
+        // $datas = DB::select("SELECT * FROM student_movement WHERE student_lrn = ?;",[$qrcode]);
+        // if(count($datas) == 0) {
+        //     $datas = DB::select("SELECT * FROM student_movement WHERE student_id = ?;",[$qrcode]);
+        // }
+        $dropout = DB::select("SELECT * FROM student_movement WHERE status = 'drop';");
+        $transferOut = DB::select("SELECT * FROM student_movement WHERE status = 'transfer_out';");
+        $transferIn = DB::select("SELECT * FROM student_movement WHERE transferee = '1';");;
+
+
+        return [
+            'dropout' => $dropout,
+            'transferOut' => $transferOut,
+            'transferIn' => $transferIn
+        ];
+        
+    }
+    public static function DropStudent(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'lrn' => 'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $StudentLRN = DB::table('student')->where('lrn', $request->lrn) ->get();
+
+        // $StudentMovementSY = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('sy', $request->school_year)->get();
+        // $StudentMovementGL = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('grade_level', $request->selectedGradeLevel)->get();
+
+        if($StudentLRN->count()==1) { 
+            DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'drop']);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'error' => "Internal Error",
+                'data' => []
+            ], 200);
+        }
+    }
+
+    public static function MoveStudent(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'lrn' => 'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $StudentLRN = DB::table('student')->where('lrn', $request->lrn) ->get();
+
+        // $StudentMovementSY = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('sy', $request->school_year)->get();
+        // $StudentMovementGL = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('grade_level', $request->selectedGradeLevel)->get();
+
+        if($StudentLRN->count()==1) { 
+            DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'transfer_out']);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'error' => "Internal Error",
+                'data' => []
+            ], 200);
+        }
+    }
+
     public static function update(Request $request) 
     {
-
-        // echo "<pre>";
-        // echo $request;
-        // echo "</pre>";
 
         $validator = Validator::make($request->all(), [
             'id' => 'required',
@@ -38,18 +123,7 @@ class StudentMovementController extends Controller
             'selectedQr' => 'required|string',
             'selectedGradeLevel' => 'required|string',
         ]);
-        // 'flsh_semester' => 'required|string',
-        // 'flsh_track' => 'required|string',
-        // 'flsh_strand' => 'required',
-        // 'repeater' => 'required'
-        // id: self.state.id,
-        // qr_code: self.state.lrn, 
-        // school_year: self.state.schoolRegistry.school_year,
-        // selectedQr: self.state.selectedQr,
-        // selectedGradeLevel: self.state.selectedGradeLevel,
-        // flsh_semester: self.state.flsh_semester_,
-        // flsh_track: self.state.flsh_track_,
-        // flsh_strand: self.state.flsh_strand_
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -77,10 +151,12 @@ class StudentMovementController extends Controller
         $balik_aral = "";
         $balik_aral_date = "";
         $with_lrn = "Yes";
-        $transfer_grade_level = "";
-        $transfer_sy_completed = "";
-        $transfer_school_attended = "";
-        $transfer_school_id = "";
+        $transfer_grade_level = $request->elglc;
+        $transfer_sy_completed = $request->elsyc;
+        $transfer_school_attended = $request->elsa;
+        $transfer_school_id = $request->lesa_school_id;
+        $transferee = $request->transferee;
+
         if($StudentLRN->count()==1) {
             if($StudentMovementSY->count()==0) {
                 if($StudentMovementGL->count() == 1 && $request->repeater == true) {
@@ -98,6 +174,7 @@ class StudentMovementController extends Controller
                         'semester_1st' => $semester_1st,
                         'semester_2nd' => $semester_2nd,
                         'movement_status' => $movement_status,
+                        'transferee' => $transferee,
                         'transfer_grade_level' => $transfer_grade_level,
                         'transfer_sy_completed' => $transfer_sy_completed,
                         'transfer_school_attended' => $transfer_school_attended,
@@ -124,7 +201,7 @@ class StudentMovementController extends Controller
                     ], 200);
 
                 } else {
-                    
+
                     DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'']);
                     StudentMovement::create([
                         'student_id' => $request->id,
@@ -138,6 +215,7 @@ class StudentMovementController extends Controller
                         'strand_id' => $strand_id,
                         'semester_1st' => $semester_1st,
                         'semester_2nd' => $semester_2nd,
+                        'transferee' => $transferee,
                         'transfer_grade_level' => $transfer_grade_level,
                         'transfer_sy_completed' => $transfer_sy_completed,
                         'transfer_school_attended' => $transfer_school_attended,
@@ -178,32 +256,3 @@ class StudentMovementController extends Controller
         }
     }
 }
-        //         // $customer = Student::update($request->except('parents')); 
-        //         $updateStudent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id','relationship']));
-
-        //         // $updateStudentParent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id']));
-        //         // $StudentParent->count() == 0 && 
-        //         if($StudentParent2->count() > 0 ) {
-
-        //             DB::table('student_guardians')->where('student_id', $request->id)->delete();
-                    
-        //             StudentGuardian::create([
-        //                 'student_id' => $request->id,
-        //                 'parents_id' => $request->parents,
-        //                 'relationship' => $request->relationship
-        //             ]);
-
-        //         } else if($request->parents != "") {
-        //             StudentGuardian::create([
-        //                 'student_id' => $request->id,
-        //                 'parents_id' => $request->parents,
-        //                 'relationship' => $request->relationship
-        //             ]);
-        //         }
-        //         // $parents = $request->input('parents');
-                
-        //         return response()->json([
-        //             'status' => 'success',
-        //             'error' => null,
-        //             'data' => $updateStudent
-        //         ], 201);
