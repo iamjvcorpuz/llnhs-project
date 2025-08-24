@@ -19,7 +19,12 @@ export default class Dashboard extends Component {
             student: this.props.student,
             todayAttendance: [],
             sections: this.props.sections,
-            annualTimelogs: this.props.annualTimelogs
+            annualTimelogs: this.props.annualTimelogs,
+            enrolled: [],
+            unenrolled: [],
+            transferout: this.props.StudentMovements.transferOut,
+            transferin: this.props.StudentMovements.transferIn,
+            dropout: this.props.StudentMovements.dropout
         }
         this.speak = this.speak.bind(this);
         console.log(this.props)
@@ -371,7 +376,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.teachers.length}</h3>
+                                <h3>{this.state.enrolled.length}</h3>
                                 <p>Enrolled</p>
                             </div>
                             <svg
@@ -389,7 +394,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.teachers.length}</h3>
+                                <h3>{this.state.unenrolled.length}</h3>
                                 <p>Unenrolled</p>
                             </div>
                             <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -403,7 +408,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.teachers.length} / {this.state.teachers.length}</h3>
+                                <h3>{this.state.transferout.length} / {this.state.transferin.length}</h3>
                                 <p>Transfer IN / OUT</p>
                             </div>
                             <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -416,7 +421,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.teachers.length}</h3>
+                                <h3>{this.state.dropout.length}</h3>
                                 <p>Dropout</p>
                             </div>
                             <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

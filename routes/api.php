@@ -195,6 +195,30 @@ Route::post('/admin/update/student/movemet',function(Request $request) {
 });
 
 
+Route::post('/admin/update/drop/student/movemet',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId(); 
+    if($id!=null) {
+       return StudentMovementController::DropStudent($request);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+
+Route::post('/admin/update/transfer/out/student/movemet',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId(); 
+    if($id!=null) {
+       return StudentMovementController::MoveStudent($request);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+
 Route::post('/class/subject/ginal/grade/update',function(Request $request) {
     $id = AuthenticatedSessionController::getAuthId(); 
     if($id!=null) {
