@@ -434,6 +434,33 @@ Route::get('/admin/report/sf4', function () {
 })->middleware(['auth', 'verified']);
 
 
+Route::get('/admin/student/movement', function () {
+    // 'parents' => ParentsController::getAll(),
+    // 'student' => StudentController::getData($id),
+    // 'guardians' => StudentController::getStudentGuardian($id),
+    // 'track' => ProgramsCurricularController::getTrack(),
+    // 'strand' => ProgramsCurricularController::getStrand()
+    $code = "";
+    $id = AuthenticatedSessionController::getAuthId();
+    return Inertia::render('Admin/Student/Movement',[
+        "code" => $code,
+        'parents' => ParentsController::getAll(),
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id),   
+        "schoolyeargrades" => SchoolYearGradesController::getAll(),
+        'track' => ProgramsCurricularController::getTrack(),
+        'strand' => ProgramsCurricularController::getStrand(),
+        "employee" => EmployeeController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        'sy' => SystemSettingsController::getCurrentSY(),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]); 
+})->middleware(['auth', 'verified']);
+
 // ======================================== teacher ================================
 Route::get('/teacher/dashboard', function () {
     $id = AuthenticatedSessionController::getAuthId();

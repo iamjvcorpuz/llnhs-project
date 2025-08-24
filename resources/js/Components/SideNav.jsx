@@ -49,7 +49,7 @@ export default function SideNav({
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link href="/admin/report/sf4" className="nav-link">
+                    <Link href="/admin/student/movement" className="nav-link">
                       <i className="nav-icon bi bi-arrows-move"></i>
                       <p>Movement</p>
                     </Link>

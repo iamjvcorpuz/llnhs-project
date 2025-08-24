@@ -36,19 +36,22 @@ export default class Event extends Component {
                     accessor: 'type',
                     className: "center",
                     width: 126,
+                    filterable: true,
                 }, 
                 {
                     id: "event",
                     Header: 'Event', 
                     width: 126,
-                    accessor: 'event_name'
+                    accessor: 'event_name',
+                    filterable: true,
                 }, 
                 {
                     id: "date",
                     Header: 'Date',  
                     width: 100,
                     accessor: 'date',
-                    className: "center"
+                    className: "center",
+                    filterable: true,
                 },   
                 {
                     id: "time",
@@ -67,7 +70,8 @@ export default class Event extends Component {
                     Header: 'Description',  
                     width: 300,
                     accessor: 'description',
-                    className: "center"
+                    className: "center",
+                    filterable: true,
                 },   
                 {
                     id: "action",
@@ -616,11 +620,11 @@ export default class Event extends Component {
                                         $('#newHoliday').modal('show');
                                     }}> <i className="bi bi-calendar"></i> Add</button>    
                                 </div>
-                                <div className="card-body"> 
+                                <div className="card-body p-0"> 
 
                                     <ReactTable
                                         key={"react-tables"}
-                                        className={"table table-bordered table-striped "}
+                                        className={"table table-bordered table-striped table-hover"}
                                         data={this.state.data} 
                                         columns={this.state.columns}
                                     />
@@ -809,7 +813,7 @@ export default class Event extends Component {
                                             </strong>
                                             <br />
                                             <strong>
-                                            Description. : {this.state.description.toLocaleUpperCase()}
+                                            Description. : {(typeof(this.state.description)!="undefined"&&this.state.description!=null)?this.state.description.toLocaleUpperCase():this.state.description}
                                             </strong>
                                             <br />
                                             <strong>
