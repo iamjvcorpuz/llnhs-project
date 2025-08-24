@@ -21,6 +21,7 @@ use App\Http\Controllers\SchoolSectionController;
 use App\Http\Controllers\SchoolYearGradesController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentMovementController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\TeacherController;
@@ -160,6 +161,37 @@ Route::delete('/teacher/advisory/student',[AdvisoryController::class,'removeStud
 Route::get('/teacher/class/subjects',function() {
     $id = AuthenticatedSessionController::getAuthId();
     return ClassSubjectTeachingController::getAllTeacherClass($id);
+});
+
+
+Route::post('/admin/dashboard/student/{id}',function($id) {
+    $id_ = AuthenticatedSessionController::getAuthId(); 
+    if($id_!=null) {
+        return [
+            'parents' => ParentsController::getAll(),
+            'student' => StudentController::getData($id),
+            'guardians' => StudentController::getStudentGuardian($id),
+            'track' => ProgramsCurricularController::getTrack(),
+            'strand' => ProgramsCurricularController::getStrand(),
+            'student_movement' => StudentMovementController::getStudentMovement($id),
+            "getStudentSchoolStatus" => StudentController::getSchoolStats($id)
+        ];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+Route::post('/admin/update/student/movemet',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId(); 
+    if($id!=null) {
+       return StudentMovementController::update($request);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
 });
 
 

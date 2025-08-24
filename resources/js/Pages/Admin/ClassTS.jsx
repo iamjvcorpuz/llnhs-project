@@ -677,7 +677,7 @@ export default class ClassTS extends Component {
 
                                     <ReactTable
                                         key={"react-tables"}
-                                        className={"table table-bordered table-striped "}
+                                        className={"table table-bordered table-striped table-hover "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
                                         getTrProps={(original) => {
