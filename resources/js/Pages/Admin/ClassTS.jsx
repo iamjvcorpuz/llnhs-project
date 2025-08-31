@@ -124,6 +124,10 @@ export default class ClassTS extends Component {
                                 $('#qrcode').modal('show');
                             }
                         }}> <i className="bi bi-qr-code"></i> QR</button>:null}
+                        <button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={()=>{
+                            window.location.replace(`/admin/class/schedule/${row.original.qr_code}`)
+                            
+                        }}> <i className="bi bi-calendar"></i> Schedule</button>    
                        </>
                     }
                 }
@@ -1006,7 +1010,10 @@ export default class ClassTS extends Component {
                         <div className="row g-3"> 
                             <div className="my-qr-code ">
                                 <div className="my-qr-code-content">
-                                    <div className="center">
+                                    <center>
+                                        <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                    </center>
+                                    <center className="center">
                                         <strong>
                                         {this.state.room_name.toLocaleUpperCase()}
                                         </strong>
@@ -1014,8 +1021,7 @@ export default class ClassTS extends Component {
                                         <strong>
                                         Room No.:{this.state.room_number.toLocaleUpperCase()}
                                         </strong>
-                                    </div>
-                                    <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                    </center>
                                 </div>
                             </div>
                         </div> 
@@ -1049,7 +1055,10 @@ export default class ClassTS extends Component {
                         <div className="row g-3"> 
                             <div className="my-qr-code ">
                                 <div className="my-qr-code-content">
-                                    <div className="center">
+                                   <center>
+                                   <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                   </center>
+                                    <center className="center">
                                         <strong>
                                         {this.state.room_name.toLocaleUpperCase()}
                                         </strong>
@@ -1057,8 +1066,7 @@ export default class ClassTS extends Component {
                                         <strong>
                                         Room No.:{this.state.room_number.toLocaleUpperCase()}
                                         </strong>
-                                    </div>
-                                    <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                    </center>
                                 </div>
                             </div>
                         </div> 

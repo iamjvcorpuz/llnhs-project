@@ -28,6 +28,12 @@ class EventsController extends Controller
         return  $events;
     }
 
+    public static function getEvent($id)
+    {
+        $events = DB::select('SELECT *,ROW_NUMBER() OVER () as "index" FROM events WHERE  id = ?;',[$id]);
+        return  $events;
+    }
+
     /**
      * Show the form for creating a new resource.
      */

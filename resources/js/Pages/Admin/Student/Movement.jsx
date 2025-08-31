@@ -796,7 +796,7 @@ export default class Movement extends Component {
                                         </div>  */}
                                         
                                         <div className="col-md-3">
-                                            <label htmlFor="gle" className="form-label">Grade level to Enroll</label>                                            
+                                            <label htmlFor="gle" className="form-label">Promote To</label>                                            
                                             
                                             <select className="form-select" id="gle" required="" value={this.state.selectedGradeLevel} onChange={(e) => { $("#gle-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({selectedGradeLevel: e.target.value,sh_11_12_enable: (e.target.value=="Grade 11"||e.target.value=="Grade 12")?true:false})}} >
                                                 <option disabled>Choose...</option>

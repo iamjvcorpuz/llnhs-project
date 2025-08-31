@@ -92,6 +92,33 @@ class StudentController extends Controller
         ');
         
     }
+    public static function getAllActiveStudent() 
+    {
+        return DB::select('
+        SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        student.qr_code,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track, 
+        student.id AS student_id,
+        student.lrn, 
+        student.sex,
+        student.status AS \'student_status\',
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id
+        WHERE advisory_group.status = \'active\'');
+        
+    }
     public static function show($id)
     {
         $student = Student::findOrFail($id);
@@ -202,8 +229,9 @@ class StudentController extends Controller
         LEFT JOIN employee ON employee.id = advisory.teacher_id
         WHERE
         student.id = ?;',[$id]);
+        //'secret' => env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj") . '/' . Crypt::encryptString($id)
         return  [
-            'secret' => env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj") . '/' . Crypt::encryptString($id),
+            'secret' => env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj") . '/' . $id,
             'student' => $student,
             'guardian' => $guardian,
             'sy' => "",

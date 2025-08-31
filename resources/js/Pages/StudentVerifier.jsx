@@ -185,45 +185,52 @@ export default class StudentVerifier extends Component {
                     className: "center"
                 }
             ],
+            notFound: false
         }
-        console.log(this.props); 
+        // console.log(this.props); 
         this.getAttendanceLogs = this.getAttendanceLogs.bind(this);
     }
 
     componentDidMount() {
+        let self = this;
+        try {
+            $('#tabs a').on('click', function (event) {
+                event.preventDefault()
+                $(this).tab('show')
+            })
 
-        $('#tabs a').on('click', function (event) {
-            event.preventDefault()
-            $(this).tab('show')
-        })
+            let selected_quardians = "";
+            let so = []
+            this.props.parents.forEach(element => {
+                so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
+            });
+            let t = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].track:"";
+            let s = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].strand:"";
+            
+            let _track = (this.props.track.length>0)?this.props.track.find((e) => `${e.name} (${e.acronyms})` === t):"";
+            let _strand = (this.props.strand.length>0)?this.props.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
+            this.setState({
+                selectOptions: so,
+                photobase64final: (this.props.student.picture_base64!=null)?this.props.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
+                ...this.props.student,
+                added_guardians:this.props.guardians,
+                selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
+                relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:"",
+                fullname: this.props.student.first_name + " " + this.props.student.last_name,
+                grade_level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade:"",
+                level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade_level:"",
+                section: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].section:"",
+                _track:  typeof(_track)!="undefined"&&_track!=null?_track.acronyms:"",
+                _strand: typeof(_strand)!="undefined"&&_strand!=null?_strand.acronyms:"",
+                sy: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].sy:"",
+            });            
+        } catch (error) {
+            self.setState({notFound: true})
+        }
 
-        let selected_quardians = "";
-        let so = []
-        this.props.parents.forEach(element => {
-            so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
-        });
-        let t = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].track:"";
-        let s = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].strand:"";
-        
-        let _track = (this.props.track.length>0)?this.props.track.find((e) => `${e.name} (${e.acronyms})` === t):"";
-        let _strand = (this.props.strand.length>0)?this.props.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
-        this.setState({
-            selectOptions: so,
-            photobase64final: (this.props.student.picture_base64!=null)?this.props.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
-            ...this.props.student,
-            added_guardians:this.props.guardians,
-            selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
-            relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:"",
-            fullname: this.props.student.first_name + " " + this.props.student.last_name,
-            grade_level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade:"",
-            level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade_level:"",
-            section: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].section:"",
-            _track:  typeof(_track)!="undefined"&&_track!=null?_track.acronyms:"",
-            _strand: typeof(_strand)!="undefined"&&_strand!=null?_strand.acronyms:""
-        });
 
-        this.attendancePieRender(0,0);
-        this.getAttendanceLogs();
+        // this.attendancePieRender(0,0);
+        // this.getAttendanceLogs();
     }
 
     attendancePieRender(present,absent) {
@@ -257,10 +264,21 @@ export default class StudentVerifier extends Component {
                 <div className="container-fluid"> 
                     <div className="row"> 
                         <div className="col-lg-12 d-flex justify-content-center">
-                            <div className="card card-widget widget-user shadow col-lg-6 mt-5 mb-5"> 
+                            {this.state.notFound==false?<div className="card card-widget widget-user shadow col-lg-6 mt-5 mb-5"> 
                                 <div className="widget-user-header bg-info">
-                                    <h3 className="widget-user-username">{this.state.fullname}</h3>
-                                    <h5 className="widget-user-desc">{this.state.level} &amp; {this.state.grade_level}</h5>
+                                    {/* <h3 className="widget-user-username">{this.state.fullname}</h3> */}
+                                    <div className="row">
+                                        <div className="col">
+                                            <center>
+                                                <img src="/images/ic_launcher.png" alt="AdminLTE Logo" className="" height={100} width={100} />
+                                            </center>
+                                        </div>
+                                        <div className="col">
+                                            <center>
+                                                <img src="/images/deped-d.png" alt="AdminLTE Logo" className="" height={100} width={100} />
+                                            </center>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="widget-user-image">
                                     <img className="img-circle elevation-2" src={this.state.photobase64final!=""?this.state.photobase64final:"/adminlte/dist/assets/img/avatar.png"}
@@ -271,18 +289,21 @@ export default class StudentVerifier extends Component {
                                 </div>
                                 <div className="card-footer">
                                     <div className="row">
-                                        <div className={`${(this.state._track!="")?'col-sm-3':'col-sm-6'} border-right`}>
+                                        <div className="col-sm-12">
                                             <div className="description-block">
-                                                <h5 className="description-header">{this.state.section}</h5>
-                                                <span className="description-text">Section</span>
-                                            </div> 
-                                        </div> 
-                                        <div className={`${(this.state._track!="")?'col-sm-3 border-right':'col-sm-6'}`}>
+                                            <h3 className="widget-user-username">{this.state.fullname}</h3>
+                                            </div>                                    
+                                        </div>
+                                        <div className="col-sm-6">
                                             <div className="description-block">
-                                                <h5 className="description-header">{this.state.grade_level}</h5>
-                                                <span className="description-text">Grade</span>
-                                            </div> 
-                                        </div> 
+                                                <h5 className="description-header">{this.state.level}  {this.state.grade_level}</h5>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="description-block">
+                                                <h5 className="description-header"> SY: {this.state.sy}</h5>
+                                            </div>
+                                        </div>
                                         {this.state._track!=""?<div className="col-sm-3 border-right">
                                             <div className="description-block">
                                                 <h5 className="description-header">{this.state._track}</h5>
@@ -297,7 +318,21 @@ export default class StudentVerifier extends Component {
                                         </div>:null} 
                                     </div> 
                                 </div>
-                            </div>
+                            </div>:<div className="">
+                            <section class="content">
+                                <div class="error-page">
+                                    <h2 class="headline text-warning"> 404</h2>
+
+                                    <div class="error-content">
+                                    <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+
+                                    <p>
+                                        We could not find the page you were looking for.
+                                    </p> 
+                                    </div> 
+                                </div> 
+                                </section>
+                            </div>}
                         </div>
 
                     </div> 

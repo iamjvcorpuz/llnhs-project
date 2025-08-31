@@ -1166,7 +1166,10 @@ export default class Advisory extends Component {
                             <div className="row g-3"> 
                                 <div className="my-qr-code ">
                                     <div className="my-qr-code-content">
-                                        <div className="center">
+                                        <center>
+                                            <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                        </center>
+                                        <center className="center">
                                             <strong>
                                             {this.state.room_name.toLocaleUpperCase()}
                                             </strong>
@@ -1178,8 +1181,7 @@ export default class Advisory extends Component {
                                             <strong>
                                             Adviser : {this.state.teacher_fullname.toLocaleUpperCase()}
                                             </strong>
-                                        </div>
-                                        <img src={this.state.qr_code_data}  className="mx-auto" /> 
+                                        </center>
                                     </div>
                                 </div>
                             </div> 
