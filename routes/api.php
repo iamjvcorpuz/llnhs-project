@@ -77,6 +77,7 @@ Route::post('/attendance/time/new/entry',[AttendanceController::class,'insertTim
 Route::post('/attendance/time/logs',[AttendanceController::class,'getTimelogs']);
 Route::post('/attendance/filter/time/logs',[AttendanceController::class,'getFilterTimelogs']);
 Route::post('/attendance/filter/time/logs/classroom',[AttendanceController::class,'getFilterClassroomTimelogs']);
+Route::post('/attendance/filter/time/logs/events',[AttendanceController::class,'getFilterEventsTimelogs']);
 Route::post('/attendance/all/time/logs',[AttendanceController::class,'getAllTimelogs']);
 // Route::post('/attendance/class/students',[AttendanceController::class,'getClassStudents']);
 Route::post('/attendance/class/students',[ClassSubjectTeachingController::class,'getStudentAssignedSeats']);

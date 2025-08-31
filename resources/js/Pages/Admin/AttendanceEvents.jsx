@@ -26,7 +26,7 @@ import moment from 'moment';
 const localizer = momentLocalizer(moment);
 
 
-export default class Attendance extends Component {
+export default class AttendanceEvents extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -77,8 +77,7 @@ export default class Attendance extends Component {
                     Header: 'Date', 
                     width: 200,
                     accessor: 'date',
-                    className: "text-start",
-                    filterable: true
+                    className: "text-start"
                 },  
                 {
                     Header: 'Student Name', 
@@ -125,24 +124,26 @@ export default class Attendance extends Component {
                     width: 800
                 },
                 {
-                    Header: 'Grade/Section/SY', 
-                    accessor: 'section_grade',
+                    Header: 'Room/Section', 
+                    accessor: 'section_name',
                     className: "text-wrap center",
                     filterable: true,
-                    width: 350
+                    width: 200,
+                    Cell: ({row}) => { 
+                        return <div className={`btn btn-xs btn-primary mr-1`} >{row.original.section_name.toUpperCase()}</div>;
+                    }
                 },
                 {
-                    Header: 'Status',  
-                    accessor: '_id',
+                    Header: 'Status', 
+                    accessor: 'logs',
                     className: "text-wrap center",
                     filterable: true,
-                    width: 200, Cell: ({row}) => {   
-                        if(row.original.absent == 0 && row.original.present == 0 && row.original.tardy == 0) {
-                            return <div title="Absent" className={"btn btn-xs btn-dark mr-1"} >No Attendance</div>;
-                        } else if(row.original.absent > 0) {
-                            return <div title="Absent" className={"btn btn-xs btn-danger mr-1"} >ABSENT</div>;
-                        } else if(row.original.present > 0) { 
-                            return <div title="Present" className={"btn btn-xs btn-success mr-1"} >PRESENT</div>;
+                    width: 150,
+                    Cell: ({row}) => {
+                        if( typeof(row.original.logs) != "undefined" && row.original.logs == "present") {
+                            return <div className={`btn btn-xs btn-success mr-1`} >{row.original.logs.toUpperCase()}</div>;
+                        } else if( typeof(row.original.logs) != "undefined" && row.original.logs == "absent") {
+                            return <div className={`btn btn-xs btn-danger mr-1`} >{row.original.logs.toUpperCase()}</div>;                            
                         }
                     }
                 }
@@ -201,14 +202,15 @@ export default class Attendance extends Component {
             queryType: typeof(this.props.result)!="undefined"&&typeof(this.props.result.type)!="undefined"?this.props.result.type:"",
             selectedQr: typeof(this.props.result)!="undefined"&&typeof(this.props.result.qrcode)!="undefined"?this.props.result.qrcode:"",
             selectedID: "",
-            calendar: "daily",
+            calendar: "monthly",
+            events_list: this.props.eventsAll
         }
         this._isMounted = false;
         this.loadAttendanceList = this.loadAttendanceList.bind(this);
         this.loadFilter = this.loadFilter.bind(this);
         this.selectedMonthYear = this.selectedMonthYear.bind(this);
         this.loadAttendanceClassroom = this.loadAttendanceClassroom.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
     
     componentDidMount() {
@@ -224,99 +226,28 @@ export default class Attendance extends Component {
         $('#data-list').on('select2:select', function (e) { 
             var selectedData = e.params.data; 
             self.setState({
-                selectedQr: selectedData.id,
-                calendar: "monthly"
-            },() => {
-                // $('input:radio[name="calendar"]:checked').prop('checked', true);
-                $('input:radio[name="calendar"][id="radioMonthly"]').prop('checked', true);
-            });
+                selectedQr: selectedData.id
+            }) 
         });
-
-        $('input:radio[name="calendar"][id="radioDaily"]').prop('checked', true);
-
 
         $('input:radio[name="attendancestatus"]').on('change', function (e) { 
             let calendar = $('input:radio[name="calendar"]:checked').val();
             self.setState({loading: true});
-            console.log(e.target.value,self.state.data_temp.length,self.state.queryType,calendar); 
+            // console.log(e.target.value,self.state.data_temp.length,self.state.queryType,calendar); 
             if(self.state.data_temp.length > 0) { 
                 let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
-                let data = self.state.data_temp;
-                if(calendar == "monthly") {
-                    let temp_list = [];
-                    if(self.state.queryType == "classroom") { 
-                        for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
-                            let atten = [];
-                            let atten_data = {};
-                            let atten_data_temp = {};                                
-                            data.forEach((dval,di,darr) => {
-                                atten_data = dval.logs.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`);   
-                                if(typeof(atten_data)!="undefined" && typeof(atten_data)!="undefined" && Object.keys(atten_data).length > 0) {
-                                    try {
-                                        if( typeof(attendancestatus) != "undefined" && attendancestatus == "all") {
-                                            atten.push(dval)
-                                        } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "absent" && (atten_data.mode == "absent" || atten_data.status == "class_absent")) {
-                                            atten.push(dval)
-                                        } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "present" && (atten_data.mode == "IN" || atten_data.mode == "OUT" || atten_data.status == "class_present")) {
-                                            atten.push(dval)
-                                        }
-                                    } catch (error) {
-                                        console.log("error",error)
-                                    }
-                                } 
-                            });
-                            // console.log({ id: `list2_` + index+1});
-                            temp_list.push({
-                                id: `list2_` + index+1,
-                                date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
-                                day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
-                                logs: atten,
-                                month: self.state.selectedMonthYear
-                            });
-                        }
-                    } else {
-                        for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
-                            let atten = [];
-                            if(data.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
-                                try {                                        
-                                    atten = data.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).logs;
-                                } catch (error) {
-                                    
-                                }
-                            }
-                            temp_list.push({
-                                id: `list1_` +index+1,
-                                date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
-                                day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
-                                logs: atten,
-                                month: self.state.selectedMonthYear
-                            });                                
-                        }
-                    }
-                    self.setState({data: temp_list,loading: false});
-                } else if(calendar == "daily" && self.state.selectedQr == "") {
-                    let data = self.state.data_temp;
-                    let temp_list = [];
-                    if( typeof(attendancestatus) != "undefined" && attendancestatus != "all") {
-                        data.forEach((dval,di,darr) => {
-                            if(attendancestatus == "absent") {
-                                if(dval.absent > 0) {
-                                    temp_list.push(dval);
-                                }
-                            } else if(attendancestatus == "present") {
-                                if(dval.present > 0) {
-                                    temp_list.push(dval);
-                                }
-                            }
-
-                        })
-                        self.setState({data: temp_list,loading: false});
-                    } else {
-                        self.setState({data: data,loading: false});
-                    }
+                let data = [];
+                console.log(attendancestatus);
+                if(attendancestatus == "all") {
+                    data = self.state.data_temp;
                 } else {
-                    self.setState({data: data,loading: false});
-                }               
+                    self.state.data_temp.forEach(element => {
+                        if(element.logs == attendancestatus) {
+                            data.push(element);
+                        }
+                    });
+                }
+                self.setState({data: data,loading: false});
             } else {
                 self.setState({loading: false});                
             }
@@ -401,7 +332,7 @@ export default class Attendance extends Component {
             self.setState({loading: true})
             // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -437,9 +368,9 @@ export default class Attendance extends Component {
             });            
         } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             self.setState({loading: true})
-            console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
+            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -462,7 +393,7 @@ export default class Attendance extends Component {
                                     day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
                                     logs: atten,
                                     month: self.state.selectedMonthYear
-                                });                               
+                                });                                
                             }
                             self.setState({data: temp_list,data_temp: temp_list ,loading: false});
                         } else {
@@ -470,11 +401,7 @@ export default class Attendance extends Component {
                         }
                         self.forceUpdate();
                     }
-                    if(self.state.selectedQr != "") {
-                        $("#printbtn").attr("href",`/admin/attendance/print/${self.state.queryType}/${self.state.selectedQr}/${self.state.selectedMonthYear}`);
-                    } else  if(self.state.selectedQr == ""){
-                        $("#printbtn").attr("href",`/admin/attendance/print/${self.state.queryType}/${self.state.selectedMonthYear}`);
-                    }
+                    $("#printbtn").attr("href",`/admin/attendance/print/${self.state.queryType}/${self.state.selectedQr}/${self.state.selectedMonthYear}`);
                 }
             });            
         } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
@@ -556,67 +483,23 @@ export default class Attendance extends Component {
     loadAttendanceClassroom() {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD");
-        // $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
-        if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
-            self.setState({loading: true})
-            let calendar = $('input:radio[name="calendar"]:checked').val();
-            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear},calendar);
-            axios.post('/attendance/filter/time/logs/classroom',{qrcode: this.state.selectedQr,type: this.state.queryType ,date: this.state.selectedMonthYear}).then(function (response) {
-                // console.log(response)
+        // $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`); 
+        if(this.state.selectedQr != "") {
+            self.setState({loading: true})  
+            axios.post('/attendance/filter/time/logs/events',{qrcode: this.state.selectedQr,type: "event"}).then(function (response) {
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                    // console.log("aw loadAttendanceClassroom",response.data.status,data);
+                    console.log("aw loadAttendanceClassroom",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                        if(calendar == "monthly") {
 
-                            let temp_list = [];
-                            for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
-                                let atten = [];
-                                let atten_data = {};
-                                let atten_data_temp = {};                                
-                                data.forEach((dval,di,darr) => {
-                                    atten_data = dval.logs.find(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`);   
-                                    if(typeof(atten_data)!="undefined" && typeof(atten_data)!="undefined" && Object.keys(atten_data).length > 0) {
-                                        try {
-                                            atten.push(dval)
-                                        } catch (error) {
-                                            console.log("error",error)
-                                        }
-                                    } 
-                                });                              
-                                temp_list.push({
-                                    id: `list2_` + index+1,
-                                    date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
-                                    day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
-                                    logs: atten,
-                                    month: self.state.selectedMonthYear
-                                });
-                            }
-                            // console.log("temp_list",temp_list);
-                            self.setState({data: temp_list,data_temp: data,loading: false});
-                        } else {
-                            // console.log("data",data);
-                            self.setState({data: data,data_temp: data,loading: false});
-                        }
-
-                        // self.setState({data: data,loading: false});
+                        self.setState({data: data,data_temp: data,loading: false});
                         self.forceUpdate();
                     }
-                    // $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
+                    $("#printbtn").attr("href",`/admin/events/attendance/print/${self.state.selectedQr}`);
                 }
             });            
-        } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
-            ReactNotificationManager.error('Sorry','Please fill required field first')   
-        } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Year and Month')   
-        } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
-            if(this.state.queryType == "student") {
-                ReactNotificationManager.error('Sorry','Please select Student')   
-            } else if(this.state.queryType == "employee") {
-                ReactNotificationManager.error('Sorry','Please select Employee')   
-            }
-        } else if(typeof(this.state.queryType) != "undefined" && this.state.queryType == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Type field')   
+        } else {
+            ReactNotificationManager.error('Sorry','Please select event field')   
         }
     }
 
@@ -630,12 +513,8 @@ export default class Attendance extends Component {
                 self.setState({queryType: val,calendar: "monthly"},() => {
                     if(val == "employee") {
                         self.setState({data_list: self.state.employee_list});
-                    } else if(val == "student") {                        
-                        self.setState({data_list: self.state.student_list,calendar: "daily"},() => {
-                            // $('input[name="calendar"][id="radioDaily"]').attr('checked', 'checked');
-                            $('input:radio[name="calendar"][id="radioDaily"]').prop('checked', true);
-                            self.forceUpdate();
-                        });
+                    } else if(val == "student") {
+                        self.setState({data_list: self.state.student_list});
                     } else if(val == "classroom") {
                         self.setState({data_list: self.state.advisory_list});
                     }
@@ -656,7 +535,7 @@ export default class Attendance extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Attendance</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Event Attendance</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/parents/dashboard">Dashboard</Link></li> 
@@ -672,21 +551,7 @@ export default class Attendance extends Component {
                         <div className="card-header">
                             <div className="row">
 
-                                <div className="col-lg-2">
-                                    <div className="form-group">
-                                        <label >Type</label>
-                                        <select id="type" className="form-control" defaultValue={this.state.queryType} onChange={e => this.loadFilter(e.target.value)}>
-                                            <option></option>
-                                            <option value={"employee"}>Employee</option> 
-                                            <option value={"student"}>Student</option> 
-                                            <option value={"classroom"}>Classroom</option> 
-                                        </select>
-                                    </div>
-                                </div>
-
-                                {/* {(this.state.queryType=="classroom")?:<></>} */}
                                 <div className="col-lg-1">
-
                                     <div className="form-group"> 
                                         <div className="form-check">
                                             <input type="radio" className="form-check-input" id="radioAll" name="attendancestatus" defaultChecked="checked" value="all" />
@@ -707,99 +572,44 @@ export default class Attendance extends Component {
                                             </label>
                                         </div> 
                                     </div>
-
                                 </div>
-
-                                <div className={`col-lg-7`}>
+                                
+                                <div className={`col-lg-9`}>
 
                                     <div className="form-group">
-                                        <label >Select {capitalizeWords(this.state.queryType)}</label>
-                                        <select id="data-list" className="form-control form-block">
-                                            <option></option> 
-                                            {(this.state.queryType=="employee"||this.state.queryType=="student")?<EachMethod of={this.state.data_list} render={(element,index) => {
-                                                return <option value={element.qr_code} >{`${element.last_name}, ${element.first_name}`}</option>
-                                            }} />:null}
-                                            {(this.state.queryType=="classroom")?<EachMethod of={this.state.data_list} render={(element,index) => {
-                                                return <option value={element.qrcode} >{`Section: ${element.section_name} (${element.teacher_fullname}, ${element.year_level}, ${element.school_year})`}</option>
-                                            }} />:null}
+                                        <label >Select Events</label>
+                                        <select id="data-list" className="form-control form-block"> 
+                                        <option value="" ></option>
+                                            <EachMethod of={this.state.events_list} render={(element,index) => {
+                                                return <option value={element.id} >{`Section: ${element.event_name} (${element.date} ${element.time_start} - ${element.time_end})`}</option>
+                                            }} />
                                         </select>
                                     </div>
 
                                 </div>
-{/* 
-                                <div className="col-lg-2">
-                                    <div className="form-group">
-                                        <label >Month</label>
-                                        <input type="month" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                    </div> 
-                                </div> */}
-
-                                {this.state.calendar=="monthly"?<div className="col-lg-2">
-                                    <div className="form-check">
-                                        <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }} />
-                                        <label htmlFor="radioMonthly" className="form-check-label">
-                                            Monthly
-                                        </label>
-                                    </div>  
-                                    <input type="month" id="smonthly" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                </div>:<div className="col-lg-2">
-                                    <div className="form-check">
-                                        <input type="radio" className="form-check-input" id="radioDaily" name="calendar" defaultChecked="" value="daily" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }}  />
-                                        <label htmlFor="radioDaily" className="form-check-label">
-                                            Daily
-                                        </label>
-                                    </div>  
-                                    <input type="date" id="sdaily" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                </div> }
-{/* 
-                                <div className="col-lg-2">
-                                    <div className="form-check">
-                                        <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }} />
-                                        <label htmlFor="radioMonthly" className="form-check-label">
-                                            Monthly
-                                        </label>
-                                    </div>  
-                                    <input type="month" id="smonthly" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                </div>
-                                <div className="col-lg-2">
-                                    <div className="form-check">
-                                        <input type="radio" className="form-check-input" id="radioDaily" name="calendar" defaultChecked="" value="daily" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }}  />
-                                        <label htmlFor="radioDaily" className="form-check-label">
-                                            Daily
-                                        </label>
-                                    </div>  
-                                    <input type="date" id="sdaily" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                </div> */}
-
-                                
-
-                            </div>
-                            <div className="row">
-                                <div className="col-lg-12 mt-2"> 
-                                    <button className="btn btn-primary btn-block mr-1" title="Load Search" onClick={() => {                                        
-                                        if(this.state.queryType=="classroom") {
-                                            this.loadAttendanceClassroom();
-                                        } else {
-                                            this.loadAttendanceList();
-                                        }
+                                <div className="col-lg-2 mt-3"> 
+                                    <button className="btn btn-primary btn-block mr-1" title="Load Search" onClick={() => {
+                                       this.loadAttendanceClassroom();
                                     }}>
                                         <i className="bi bi-search"></i>
                                     </button>
                                     <a target="_blank" id="printbtn" disable="disabled" href={"#!"} className="btn btn-primary btn-block  mr-1" title="Print" ><i className="bi bi-printer"></i></a>
 
                                     <button className="btn btn-primary btn-block" title="Clear Search" onClick={() => {
-                                        this.setState({selectedMonthYear:"",selectedQr:"",queryType:"",calendar: "daily",data: []});
+                                        this.setState({selectedMonthYear:"",selectedQr:"",queryType:"",calendar: "monthly",data: []});
                                         $("#type").val("");
                                         $('input:radio[name="attendancestatus"]:first').prop('checked', true);
-                                        // $('input:radio[name="calendar"]:first').prop('checked', true);
-
-                                        $('input:radio[name="calendar"][id="radioDaily"]').prop('checked', true);
-
+                                        $('input:radio[name="calendar"]:first').prop('checked', true);
 
                                     }}>
                                         <i className="bi bi-x-circle"></i>
                                     </button>
                                 </div>
+                                
+
+                            </div>
+                            <div className="row">
+
                             </div>
                         </div>
                         <div className="card-body p-0">
@@ -813,16 +623,7 @@ export default class Attendance extends Component {
                                             </div>
                                         </div>
                                     </div> */}
-                                    {(this.state.queryType=="classroom"&&this.state.calendar=="monthly")?<ReactTable
-                                        key={"react-tables1"}
-                                        className={"table table-bordered table-striped "}
-                                        data={this.state.data} 
-                                        columns={this.state.columns_classroom_status_monthly}
-                                        defaultPageSize={31}
-                                        showPagenation={false}
-                                        loading={this.state.loading}
-                                    />:null}
-                                    {(this.state.calendar=="daily")?<ReactTable
+                                    <ReactTable
                                         key={"react-tables2"}
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
@@ -830,25 +631,7 @@ export default class Attendance extends Component {
                                         defaultPageSize={31}
                                         showPagenation={false}
                                         loading={this.state.loading}
-                                    />:null}
-                                    {(this.state.queryType!="classroom"&&this.state.calendar=="monthly")?<ReactTable
-                                        key={"react-tables3"}
-                                        className={"table table-bordered table-striped "}
-                                        data={this.state.data} 
-                                        columns={this.state.columns}
-                                        defaultPageSize={31}
-                                        showPagenation={false}
-                                        loading={this.state.loading}
-                                    />:null}
-                                    {/* <ReactTable
-                                        key={"react-tables"}
-                                        className={"table table-bordered table-striped "}
-                                        data={this.state.data} 
-                                        columns={this.state.columns}
-                                        defaultPageSize={31}
-                                        showPagenation={false}
-                                        loading={this.state.loading}
-                                    /> */}
+                                    />
                                 </div>
                             </div>
                         </div>

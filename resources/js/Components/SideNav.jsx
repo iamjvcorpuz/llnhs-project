@@ -29,10 +29,27 @@ export default function SideNav({
                 </Link> 
               </li>
               <li className="nav-item">
-                <Link href="/admin/attendance" className="nav-link">
+
+                <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-calendar-week"></i>
                   <p>Attendance</p>
-                </Link>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/admin/attendance" className="nav-link">
+                      <i className="nav-icon bi bi-people-fill"></i>
+                      <p>Student/Employee</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item"> 
+                    <Link href="/admin/attendance/event" className="nav-link">
+                      <i className="nav-icon bi bi-calendar-week"></i>
+                      <p>Event</p>
+                    </Link> 
+                  </li> 
+                </ul>
               </li>
 
               <li className="nav-item">
@@ -53,22 +70,9 @@ export default function SideNav({
                       <i className="nav-icon bi bi-arrows-move"></i>
                       <p>Movement</p>
                     </Link>
-                  </li>
-                  {/* <li className="nav-item">
-                    <Link href="/admin/report/lesf" className="nav-link">
-                      <i className="nav-icon bi bi-file-pdf"></i>
-                      <p>LEARNER ENROLLMENT AND SURVEY FORM</p>
-                    </Link>
-                  </li> */}
+                  </li> 
                 </ul>
               </li>
-
-              {/* <li className="nav-item">
-                <Link href="/admin/dashboard/student" className="nav-link">
-                  <i className="nav-icon bi bi-person-lines-fill"></i>
-                  <p>Student</p>
-                </Link>
-              </li> */}
 
               <li className="nav-item">
                 <Link href="/admin/dashboard/parents" className="nav-link">

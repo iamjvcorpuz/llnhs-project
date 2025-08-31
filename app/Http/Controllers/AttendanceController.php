@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\Attendance;
 use App\Models\Notifications;
+use DateTime;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
@@ -292,49 +293,154 @@ class AttendanceController extends Controller
 
     }
     public function getFilterTimelogs(Request $request) {
-        $logs = (object)array();
+        $logs = [];
 
         $map_attendance = [];
+        $dateTime = new DateTime($request->date);
+
+        $year_ = $dateTime->format('Y');
+        $month_ = $dateTime->format('m');
+        $day_ = $dateTime->format('d');
+        // echo $year_ . ' ' . $month_ . ' ' . $day_;
+        $fulldays = false;
+        if(($year_ . '-' . $month_ . '-' . $day_) == $request->date) {
+            // echo "full days";
+            $fulldays = true;
+        } else {
+            // echo "year month";
+            $fulldays = false;
+        }
 
         if($request->type == "student") {
-            $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
-            if(count($logs) > 0) {
-                $start_date = current($logs)->date; 
-                $dates = $start_date; 
-                $month = date("Y-m", strtotime($dates));
-                $map_attendance_timelogs = [];
-                // echo "start date " . $start_date;
-                foreach ($logs as $key => $value) {
-                    // echo "<pre>";
-                    // print_r($value);
-                    // echo "<pre/>" . $dates;
-
-                    // echo "<pre>";
-                    // echo $value->date;
-                    // echo "<pre/>";
-
-                    if($dates == $value->date) { 
-                        array_push($map_attendance_timelogs, $value);
-                        if ($key === array_key_last($logs)) {
+            if($request->qrcode != "") {
+                $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+                if(count($logs) > 0) {
+                    $start_date = current($logs)->date; 
+                    $dates = $start_date; 
+                    $month = date("Y-m", strtotime($dates));
+                    $map_attendance_timelogs = [];
+                    // echo "start date " . $start_date;
+                    foreach ($logs as $key => $value) {
+                        // echo "<pre>";
+                        // print_r($value);
+                        // echo "<pre/>" . $dates;
+    
+                        // echo "<pre>";
+                        // echo $value->date;
+                        // echo "<pre/>";
+    
+                        if($dates == $value->date) { 
+                            array_push($map_attendance_timelogs, $value);
+                            if ($key === array_key_last($logs)) {
+                                array_push($map_attendance, (object)[
+                                    'date' => $dates,
+                                    'month' => $month,
+                                    'logs' => $map_attendance_timelogs
+                                ]);
+                            }
+                        } else if($dates != $value->date) { 
                             array_push($map_attendance, (object)[
                                 'date' => $dates,
                                 'month' => $month,
                                 'logs' => $map_attendance_timelogs
                             ]);
+                            $dates = $value->date;
+                            $map_attendance_timelogs = [];            
+                            array_push($map_attendance_timelogs, $value);
                         }
-                    } else if($dates != $value->date) { 
-                        array_push($map_attendance, (object)[
-                            'date' => $dates,
-                            'month' => $month,
-                            'logs' => $map_attendance_timelogs
-                        ]);
-                        $dates = $value->date;
-                        $map_attendance_timelogs = [];            
-                        array_push($map_attendance_timelogs, $value);
+                        
                     }
-                    
                 }
+            } else if($request->qrcode == "") {
+
+                $map_student_list = DB::select('
+                SELECT 
+                ROW_NUMBER() OVER () as no,
+                advisory_group.id,
+                student.qr_code,
+                CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+                student.first_name,
+                student.last_name,
+                student.middle_name,
+                student.extension_name,
+                student.flsh_strand,
+                student.flsh_track, 
+                student.id AS student_id,
+                student.lrn, 
+                student.sex,
+                student.status AS \'student_status\',
+                advisory.school_year AS sy,
+                advisory.year_level AS grade,
+                advisory.section_name AS section
+                FROM advisory_group 
+                LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+                LEFT JOIN student ON student.id = advisory_group.student_id
+                WHERE advisory_group.status = \'active\'');
+
+                // echo "<pre>";
+                // print_r($map_student_list);
+                // echo "</pre>";
+                $attendance = array();
+                
+                foreach ($map_student_list as $key => $svalue) {
+
+                    $logs_temp = [];
+
+                    if($fulldays==false) {
+                        $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);
+                    } else if($fulldays==true) {
+                        $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);                        
+                    } 
+
+                    if(count($logs_temp)>0) {
+
+                        $absent = 0;
+                        $tardy = 0;
+                        $present = 1;
+                        
+                        $object = new stdClass();
+                        $object->_id = $svalue->student_id;
+                        $object->lrn = $svalue->lrn;
+                        $object->profileImageBase64 = $svalue->student_id;
+                        $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                        $object->idnumber = $svalue->qr_code;
+                        $object->logger_type = "studnet";
+                        $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+                        
+                        array_push($map_attendance,$object);
+
+                        // array_push($logs, $logs_temp);
+                    } else {
+
+                        $absent = 1;
+                        $tardy = 0;
+                        
+                        $object = new stdClass();
+                        $object->_id = $svalue->student_id;
+                        $object->lrn = $svalue->lrn;
+                        $object->profileImageBase64 = $svalue->student_id;
+                        $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                        $object->idnumber = $svalue->qr_code;
+                        $object->logger_type = "studnet";
+                        $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        
+                        array_push($map_attendance,$object);
+                    }
+
+                }
+
             }
+            
+            // echo "<pre>";
+            // print_r($attendance);
+            // echo "</pre>";
+
+            
         } else if($request->type == "employee") {
             $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
             if(count($logs) > 0) {
@@ -368,6 +474,7 @@ class AttendanceController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'total' => count($map_attendance),
             'error' => null,
             'data' => $map_attendance
         ], 200);
@@ -435,6 +542,62 @@ class AttendanceController extends Controller
         //     echo json_encode(['message' => 'Crazy thing just happened!' ]);
         //     exit();
         // }
+    }
+    public function getFilterEventsTimelogs(Request $request) {
+        $id = AuthenticatedSessionController::getAuthId(); 
+        if($id!=null) { 
+
+            $logs = (object)array();
+            // print_r($request->all());
+            $student_attendance = [];
+            if($request->type == "event" ) { 
+                
+                $map_student_list = DB::select('
+                SELECT 
+                ROW_NUMBER() OVER () as no,
+                advisory_group.id,
+                student.qr_code,
+                CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+                student.first_name,
+                student.last_name,
+                student.middle_name,
+                student.extension_name,
+                student.flsh_strand,
+                student.flsh_track, 
+                student.id AS student_id,
+                student.lrn,
+                student.qr_code,
+                student.sex,
+                student.status AS \'student_status\',
+                advisory.section_name
+                FROM advisory_group 
+                LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+                LEFT JOIN student ON student.id = advisory_group.student_id
+                WHERE advisory_group.status = \'active\' AND advisory.status = \'active\' ');
+                foreach ($map_student_list as $key => $svalue) {
+
+                    $logs = DB::select("SELECT * FROM attendance WHERE terminal_id LIKE ? AND qr_code = ?; ",['%event_id_' . (string)$request->qrcode.'_teacher_%',$svalue->qr_code]);
+                    if(count($logs) > 0) {
+                        $obj1 = array_merge((array)$svalue,(array)['logs' => "present"]);
+                        array_push($student_attendance, $obj1);
+                    } else {
+                        $obj1 = array_merge((array)$svalue,(array)['logs' => "absent"]);
+                        array_push($student_attendance, $obj1);                    
+                    }                    
+                    
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $student_attendance
+            ], 200);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Crazy thing just happened!' ]);
+            exit();
+        }
     }
     public static function getFilterTimelogs_(Request $request) {
         $logs = (object)array();

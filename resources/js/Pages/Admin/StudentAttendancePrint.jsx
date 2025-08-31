@@ -15,7 +15,7 @@ import QRCode from 'qrcode';
 
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-export default class EmployeeAttendancePrint extends Component {
+export default class StudentAttendancePrint extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -33,7 +33,7 @@ export default class EmployeeAttendancePrint extends Component {
             guardiancontact: "",
             address: "",
             list: [],
-            selectedQr: this.props.id,
+            selectedQr: "",
             queryType: this.props.type,
             selectedMonthYear: this.props.month,
             loading: true
@@ -52,7 +52,7 @@ export default class EmployeeAttendancePrint extends Component {
     loadAttendanceList() {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD");
-        if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
+        if( typeof(this.state.selectedMonthYear) != "undefined"  && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             self.setState({loading: true})
             // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
@@ -68,19 +68,7 @@ export default class EmployeeAttendancePrint extends Component {
                     }
                 }
             });            
-        } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
-            ReactNotificationManager.error('Sorry','Please fill required field first')   
-        } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Year and Month')   
-        } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
-            if(this.state.queryType == "student") {
-                ReactNotificationManager.error('Sorry','Please select Student')   
-            } else if(this.state.queryType == "employee") {
-                ReactNotificationManager.error('Sorry','Please select Employee')   
-            }
-        } else if(typeof(this.state.queryType) != "undefined" && this.state.queryType == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Type field')   
-        }
+        } 
 
     }
 
@@ -93,25 +81,27 @@ export default class EmployeeAttendancePrint extends Component {
             let temp_data = [];
             
             self.state.data.forEach((e,i) => {
-                let timelogs = "wait";
-                let key = e.id;
-                timelogs = e.logs.map((element,i) => {
-                    if(element.mode != "absent") {
-                        return `   TIME ${element.mode}: ${element.time}`;
-                    }                            
-                }); 
+                let timelogs = "";
+                let key = e.id;                
+                if(e.absent == 0 && e.present == 0 && e.tardy == 0) {
+                    timelogs = "No Attendance";
+                } else if(e.absent > 0) {
+                    timelogs = "Absent";
+                } else if(e.present > 0) { 
+                    timelogs =  "Present";
+                }
                 temp_data.push([
                     {
                         content: (i+1),
                         styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 10,fontSize: 12}
                     },
                     {
-                        content: e.date,
-                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth:30,fontSize: 12}
+                        content: e.fullname  ,
+                        styles: {halign: 'left',minWidth: 0,minCellHeight: 0,cellWidth:130,fontSize: 12}
                     },
                     {
                         content: timelogs,
-                        styles: {halign: 'left',minWidth: 0,minCellHeight: 0,cellWidth: 150,fontSize: 12}
+                        styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 50,fontSize: 12}
                     }
                 ]);
             });
@@ -134,20 +124,20 @@ export default class EmployeeAttendancePrint extends Component {
             doc.setFontSize(8);
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(9);
-            doc.text('Name : ' + self.props.user[0].first_name + " " + self.props.user[0].middle_name + " " + self.props.user[0].last_name + " " + self.props.user[0].extension_name, 41, 26,{align:'left'});
-            if(this.props.type == "employee") {
-                doc.text('Position : ' + self.props.user[0].employee_type, 136, 26,{align:'left'});
-            } else {
-                doc.text('Position : Student', 136, 26,{align:'left'});
-            }
-            doc.text('Report for the Month of : ' + self.state.selectedMonthYear, 136, 31,{align:'left'});
+            // doc.text('Name : ' + self.props.user[0].first_name + " " + self.props.user[0].middle_name + " " + self.props.user[0].last_name + " " + self.props.user[0].extension_name, 41, 26,{align:'left'});
+            // if(this.props.type == "employee") {
+            //     doc.text('Position : ' + self.props.user[0].employee_type, 136, 26,{align:'left'});
+            // } else {
+            //     doc.text('Position : Student', 136, 26,{align:'left'});
+            // }
+            doc.text('Report for the day of : ' + self.state.selectedMonthYear, 136, 31,{align:'left'});
             doc.text('Name of School : ' + self.props.schoolRegistry.school_name, 28, 31,{align:'left'}); 
 
             doc.setFontSize(8);
             autoTable(doc,{ 
                 theme: 'striped',
                 startY: 39,
-                margin: 10,
+                margin: 15,
                 useCss: true,
                 head: [[
                         {
@@ -157,16 +147,16 @@ export default class EmployeeAttendancePrint extends Component {
                             styles: { halign: 'center', valign: 'middle',minCellHeight: 0, fontSize: 8,lineColor: 1,lineWidth: .01},
                         },
                         {
-                            content: "Date",
+                            content: "Fullname",
                             colSpan: 1,
                             rowSpan: 1,
-                            styles: { halign: 'center', fontSize: 8,lineColor: 1,lineWidth: .01,cellPadding:2},
+                            styles: { halign: 'left', fontSize: 8,lineColor: 1,lineWidth: .01,cellPadding:2,cellWidth: 130},
                         },
                         {
-                            content: "Time Logs",
+                            content: "Status",
                             colSpan: 1,
                             rowSpan: 1,
-                            styles: { halign: 'center', valign: 'middle',fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 160},
+                            styles: { halign: 'center', valign: 'middle',fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 50},
                         }
                 ]],
                 headStyles: {lineColor: 1,lineWidth: .01,minCellHeight: 0,cellPadding: 0},

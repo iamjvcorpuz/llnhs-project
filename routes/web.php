@@ -114,6 +114,21 @@ Route::get('/admin/attendance/print/{type}/{id}/{month}', function ($type,$id,$m
 })->middleware(['auth', 'verified']);
 
 
+Route::get('/admin/attendance/print/{type}/{month}', function ($type,$month) {
+    $user = "";
+    if($type=="employee") {
+        $user = TeacherController::getAll();
+    } else if($type=="student") {
+        $user = StudentController::getAllActiveStudent();
+    }
+    return Inertia::render('Admin/StudentAttendancePrint',[
+        'type' => $type, 
+        'month' => $month,
+        'user' => $user,
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+})->middleware(['auth', 'verified']);
+
 
 Route::get('/admin/attendance/{type}/{code}/{date}', function ($type,$code,$date,Request $request) {
     $request->merge(['type' => $type,'qrcode' => $code,'date' => $date]);
@@ -127,6 +142,33 @@ Route::get('/admin/attendance/{type}/{code}/{date}', function ($type,$code,$date
         "todayAttendance" => AttendanceController::_getTodaysTimelogs()
     ]);
 })->middleware(['auth', 'verified']);
+
+
+
+Route::get('/admin/attendance/event', function () {
+    return Inertia::render('Admin/AttendanceEvents',[
+        "employee" => EmployeeController::getAll(),
+        "advisory" => AdvisoryController::getAll(),
+        "subjects" => SubjectController::getAll(),
+        "sections" => SchoolSectionController::getAll(),
+        "student" => StudentController::getAll(),
+        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        "eventsAll" => EventsController::getAll()
+    ]);
+})->middleware(['auth', 'verified']);
+
+Route::get('/admin/events/attendance/print/{code}', function ($code) {
+    $user = "";
+    return Inertia::render('Admin/EventAttendancePrint',[
+        'type' => "",
+        'id' => $code,
+        'month' => "",
+        'user' => $user,
+        'event' => EventsController::getEvent($code),
+        'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
+    ]);
+})->middleware(['auth', 'verified']);
+
 
 Route::get('/admin/dashboard/student', function () {
     return Inertia::render('Admin/Student',['props' => null,]);
@@ -767,9 +809,11 @@ Route::get('/student/verifier/qr/scan', function () {
 
 Route::get('/student/verifier/{_id}', function ($_id) {
     // http://localhost:8000/student/verifier/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
+    // https://tinyurl.com/4v4uxjfj/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
     $id = "";
     try {
-        $id = Crypt::decryptString($_id);
+        // $id = Crypt::decryptString($_id);
+        $id = $_id;
     } catch (DecryptException $e) {
         // ...
     }
