@@ -477,6 +477,7 @@ return new class extends Migration
                 $table->string('semester_1st')->nullable();
                 $table->string('semester_2nd')->nullable();
                 $table->string('movement_status')->nullable(); 
+                $table->string('transferee')->nullable(); 
                 $table->string('transfer_grade_level')->nullable(); 
                 $table->string('transfer_sy_completed')->nullable(); 
                 $table->string('transfer_school_attended')->nullable(); 

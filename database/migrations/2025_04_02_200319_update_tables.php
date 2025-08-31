@@ -91,32 +91,32 @@ return new class extends Migration
         //     $table->timestampsTz(precision: 0);
         // });
         
-        Schema::dropIfExists('student_movement');
-        Schema::create('student_movement', function (Blueprint $table) {
-            $table->id();
-            $table->string('student_id')->nullable();
-            $table->string('student_lrn')->nullable();
-            $table->string('sy')->nullable();
-            $table->string('grade_level')->nullable();
-            $table->string('repeat_grade_level')->nullable();
-            $table->string('track')->nullable();
-            $table->string('track_id')->nullable();
-            $table->string('strand')->nullable();
-            $table->string('strand_id')->nullable();
-            $table->string('semester_1st')->nullable();
-            $table->string('semester_2nd')->nullable();
-            $table->string('movement_status')->nullable(); 
-            $table->string('transferee')->nullable(); 
-            $table->string('transfer_grade_level')->nullable(); 
-            $table->string('transfer_sy_completed')->nullable(); 
-            $table->string('transfer_school_attended')->nullable(); 
-            $table->string('transfer_school_id')->nullable(); 
-            $table->string('balik_aral')->nullable();
-            $table->string('balik_aral_date')->nullable();
-            $table->string('with_lrn')->nullable();
-            $table->string('status')->nullable();
-            $table->timestampsTz(precision: 0);
-        });
+        // Schema::dropIfExists('student_movement');
+        // Schema::create('student_movement', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('student_id')->nullable();
+        //     $table->string('student_lrn')->nullable();
+        //     $table->string('sy')->nullable();
+        //     $table->string('grade_level')->nullable();
+        //     $table->string('repeat_grade_level')->nullable();
+        //     $table->string('track')->nullable();
+        //     $table->string('track_id')->nullable();
+        //     $table->string('strand')->nullable();
+        //     $table->string('strand_id')->nullable();
+        //     $table->string('semester_1st')->nullable();
+        //     $table->string('semester_2nd')->nullable();
+        //     $table->string('movement_status')->nullable(); 
+        //     $table->string('transferee')->nullable(); 
+        //     $table->string('transfer_grade_level')->nullable(); 
+        //     $table->string('transfer_sy_completed')->nullable(); 
+        //     $table->string('transfer_school_attended')->nullable(); 
+        //     $table->string('transfer_school_id')->nullable(); 
+        //     $table->string('balik_aral')->nullable();
+        //     $table->string('balik_aral_date')->nullable();
+        //     $table->string('with_lrn')->nullable();
+        //     $table->string('status')->nullable();
+        //     $table->timestampsTz(precision: 0);
+        // });
     }
 
     /**
