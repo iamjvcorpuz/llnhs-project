@@ -59,7 +59,7 @@ export default class StudentAttendancePrint extends Component {
                 // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                    console.log("aw",response.data.status,data);
+                    // console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
                         self.setState({data: data,loading: false},() => {
                             self.loadPDF();

@@ -858,3 +858,14 @@ img {
     display: block;
     margin-left: 190px;
 }
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+[type='checkbox']:checked, [type='radio']:checked {
+    border-color: transparent;
+    background-color: currentColor;
+    background-size: 50% 100%!important;
+    background-position: center;
+    background-repeat: no-repeat;
+}

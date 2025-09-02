@@ -489,7 +489,7 @@ export default class AttendanceEvents extends Component {
             axios.post('/attendance/filter/time/logs/events',{qrcode: this.state.selectedQr,type: "event"}).then(function (response) {
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                    console.log("aw loadAttendanceClassroom",response.data.status,data);
+                    // console.log("aw loadAttendanceClassroom",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
 
                         self.setState({data: data,data_temp: data,loading: false});

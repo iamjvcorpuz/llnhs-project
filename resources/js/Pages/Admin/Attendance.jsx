@@ -437,9 +437,9 @@ export default class Attendance extends Component {
             });            
         } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             self.setState({loading: true})
-            console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
+            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -492,7 +492,6 @@ export default class Attendance extends Component {
         }
 
     }
-
 
     loadAttendanceAllList() {
         let self = this;

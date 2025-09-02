@@ -26,13 +26,25 @@ class MessengerController extends Controller
     }
 
     public static function sendMessage(Request $request) {
+        $validator = Validator::make($request->all(), [ 
+            'id' => 'required',
+            'message' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
         $id = $request->id;
         $message = $request->message; 
         return (new self)->send($id,$message); 
     }
 
     public function send($id,$message) {
-        $url = env('MESSENGER_API_URL','https://graph.facebook.com/v21.0').'/'.env('MESSENGER_PAGE_ID').'/messages';
+        $url = env('MESSENGER_API_URL','https://graph.facebook.com/v21.0').'/'.env('MESSENGER_PAGE_ID','692107827309803').'/messages';
         try {
             $params = [
                 'message' => '{"text":"'.addslashes($message).'"}',
@@ -40,7 +52,7 @@ class MessengerController extends Controller
             ];
             $headers = [
                 'Content-Type' => 'application/json', 
-                'Authorization' => 'Bearer '.env('MESSENGER_VERIFY_TOKEN') 
+                'Authorization' => 'Bearer '.env('MESSENGER_VERIFY_TOKEN','EAAJx5AfJ3v0BO1tZCrR7khWZBC2WyV0S1w153T2uZCkeWG3VfAAYx6QEVkzwiCpf9KdNhvFb4VC1Jr6WEo5F8rjKI8sv59ZCGPqIeTHb6A6MKllTZA2LZAf7szEZBTV5TmDIcoWPkBGp0ZCxV360xjCZAlaVDohk760KeIXmJQpJLdZBYRnE9lwNeSCwOsPazpEtMPgwZDZD') 
             ];
             $response = Http::withHeaders($headers)->withQueryParameters($params)->timeout(15)->post($url); 
             // print_r($response->object()->data);
@@ -61,14 +73,14 @@ class MessengerController extends Controller
             } else {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Validation error',
+                    'message' => 'Validation error1',
                     'errors' => 'Validation error'
                 ], 422);
             }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation error',
+                'message' => 'Validation error2',
                 'errors' => 'Validation error'
             ], 500);
         }
@@ -91,6 +103,19 @@ class MessengerController extends Controller
             if($contact->count()==0) {
                 array_push($list,$value);
             }
+        }
+        return response()->json([
+            'status' => 'success',
+            'error' => null,
+            'data' => $list
+        ], 200);
+    }
+    public static function getAllRecipients() {
+
+        $list = array();
+        $messenger = DB::select('SELECT ROW_NUMBER() OVER () as \'index\',fullname,email,fb_id  FROM messenger ');
+        foreach ($messenger as $key => $value) { 
+            array_push($list,$value);
         }
         return response()->json([
             'status' => 'success',

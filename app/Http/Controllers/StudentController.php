@@ -14,6 +14,8 @@ class StudentController extends Controller
     public function index() 
     {
         $student = Student::all();
+
+
         return response()->json([
             'status' => 'done',
             'error' => null,
@@ -109,6 +111,39 @@ class StudentController extends Controller
         student.id AS student_id,
         student.lrn, 
         student.sex,
+        student.psa_cert_no,
+        student.bdate,
+        student.is_ip,
+        student.ip_specify,
+        student.is_4ps_benficiary,
+        student.4ps_id,
+        student.is_disability,
+        student.type_disability,
+        student.type2_disability,
+        student.type_others_disability, 
+        student.cd_hno,
+        student.cd_sn,
+        student.cd_barangay,
+        student.cd_mc,
+        student.cd_province,
+        student.cd_country,
+        student.cd_zip,
+        student.is_pa_same_cd,
+        student.pa_hno,
+        student.pa_sn,
+        student.pa_barangay,
+        student.pa_mc,
+        student.pa_province,
+        student.pa_country,
+        student.pa_zip,
+        student.lglc,
+        student.lsyc,
+        student.lsa,
+        student.lsa_school_id,
+        student.flsh_semester,
+        student.flsh_track,
+        student.flsh_strand,
+        student.ldm_applied,
         student.status AS \'student_status\',
         advisory.school_year AS sy,
         advisory.year_level AS grade,
@@ -119,6 +154,200 @@ class StudentController extends Controller
         WHERE advisory_group.status = \'active\'');
         
     }
+
+    public static function getAllStudent() 
+    {
+        $student = DB::select('
+        SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        student.qr_code,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track, 
+        student.id AS student_id,
+        student.lrn, 
+        student.sex,
+        student.psa_cert_no,
+        student.bdate,
+        student.is_ip,
+        student.ip_specify,
+        student.is_4ps_benficiary,
+        student.4ps_id,
+        student.is_disability,
+        student.type_disability,
+        student.type2_disability,
+        student.type_others_disability, 
+        student.cd_hno,
+        student.cd_sn,
+        student.cd_barangay,
+        student.cd_mc,
+        student.cd_province,
+        student.cd_country,
+        student.cd_zip,
+        student.is_pa_same_cd,
+        student.pa_hno,
+        student.pa_sn,
+        student.pa_barangay,
+        student.pa_mc,
+        student.pa_province,
+        student.pa_country,
+        student.pa_zip,
+        student.lglc,
+        student.lsyc,
+        student.lsa,
+        student.lsa_school_id,
+        student.flsh_semester,
+        student.flsh_track,
+        student.flsh_strand,
+        student.ldm_applied,
+        student.status AS \'student_status\',
+        student.picture_base64,
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id');
+        return response()->json([
+            'status' => 'done',
+            'error' => null,
+            'data' => $student
+        ],200); 
+        
+    }
+
+
+    public static function getEnrolledStudent() 
+    {
+        $student = DB::select('
+        SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        student.qr_code,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track, 
+        student.id AS student_id,
+        student.lrn, 
+        student.sex,
+        student.psa_cert_no,
+        student.bdate,
+        student.is_ip,
+        student.ip_specify,
+        student.is_4ps_benficiary,
+        student.4ps_id,
+        student.is_disability,
+        student.type_disability,
+        student.type2_disability,
+        student.type_others_disability, 
+        student.cd_hno,
+        student.cd_sn,
+        student.cd_barangay,
+        student.cd_mc,
+        student.cd_province,
+        student.cd_country,
+        student.cd_zip,
+        student.is_pa_same_cd,
+        student.pa_hno,
+        student.pa_sn,
+        student.pa_barangay,
+        student.pa_mc,
+        student.pa_province,
+        student.pa_country,
+        student.pa_zip,
+        student.lglc,
+        student.lsyc,
+        student.lsa,
+        student.lsa_school_id,
+        student.flsh_semester,
+        student.flsh_track,
+        student.flsh_strand,
+        student.ldm_applied,
+        student.status AS \'student_status\', 
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id 
+        LEFT JOIN student_movement ON advisory_group.student_id = student_movement.student_id
+        WHERE student_movement.sy = (SELECT school_year FROM school_registry)');
+        return $student;
+        
+    }
+
+    public static function getUnenrolledStudent() 
+    {
+        $student = DB::select('
+        SELECT 
+        ROW_NUMBER() OVER () as no,
+        advisory_group.id,
+        student.qr_code,
+        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.first_name,
+        student.last_name,
+        student.middle_name,
+        student.extension_name,
+        student.flsh_strand,
+        student.flsh_track, 
+        student.id AS student_id,
+        student.lrn, 
+        student.sex,
+        student.psa_cert_no,
+        student.bdate,
+        student.is_ip,
+        student.ip_specify,
+        student.is_4ps_benficiary,
+        student.4ps_id,
+        student.is_disability,
+        student.type_disability,
+        student.type2_disability,
+        student.type_others_disability, 
+        student.cd_hno,
+        student.cd_sn,
+        student.cd_barangay,
+        student.cd_mc,
+        student.cd_province,
+        student.cd_country,
+        student.cd_zip,
+        student.is_pa_same_cd,
+        student.pa_hno,
+        student.pa_sn,
+        student.pa_barangay,
+        student.pa_mc,
+        student.pa_province,
+        student.pa_country,
+        student.pa_zip,
+        student.lglc,
+        student.lsyc,
+        student.lsa,
+        student.lsa_school_id,
+        student.flsh_semester,
+        student.flsh_track,
+        student.flsh_strand,
+        student.ldm_applied,
+        student.status AS \'student_status\', 
+        advisory.school_year AS sy,
+        advisory.year_level AS grade,
+        advisory.section_name AS section
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN student ON student.id = advisory_group.student_id 
+        LEFT JOIN student_movement ON advisory_group.student_id = student_movement.student_id
+        WHERE student_movement.sy <> (SELECT school_year FROM school_registry)');
+        return $student;
+        
+    }
+
     public static function show($id)
     {
         $student = Student::findOrFail($id);

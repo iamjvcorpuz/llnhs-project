@@ -27,6 +27,15 @@ class SystemSettingsController extends Controller
             return "";
         }
     }
+    public static function geSystemSettings()
+    {
+        $sy = DB::table("system_settings")->get();
+        if(count($sy)>0){
+            return $sy;
+        } else {
+            return [];
+        }
+    }
     public static function update(Request $request)
     {
         $validator = Validator::make($request->all(), [ 
@@ -79,4 +88,48 @@ class SystemSettingsController extends Controller
 
     }
 
+    public static function systemSettingsUpdate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [ 
+            'enable_sms' => 'required',
+            'enable_fb' => 'required', 
+            'sms_present' => 'required', 
+            'sms_absent' => 'required', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        // // echo $request;
+        $enable_sms_q = DB::table('system_settings')->where('setting','ENABLE_SMS')->get();
+        $enable_fb_q = DB::table('system_settings')->where('setting','ENABLE_FB_MESSENGER')->get();
+        $sms_present_q = DB::table('system_settings')->where('setting','ATTENDANCE_CLASS_STUDENT_PRESENT')->get();
+        $sms_absent_q = DB::table('system_settings')->where('setting','ATTENDANCE_CLASS_STUDENT_ABSENT')->get();
+
+        if($enable_sms_q->count()>0&&$enable_fb_q->count()>0&&$sms_present_q->count()>0&&$sms_absent_q->count()>0) {
+
+            DB::table('system_settings')->where('setting','ENABLE_SMS')->update(['value' => $request->enable_sms]);
+            DB::table('system_settings')->where('setting','ENABLE_FB_MESSENGER')->update(['value' => $request->enable_fb]);
+            DB::table('system_settings')->where('setting','ATTENDANCE_CLASS_STUDENT_PRESENT')->update(['value' => $request->sms_present]);
+            DB::table('system_settings')->where('setting','ATTENDANCE_CLASS_STUDENT_ABSENT')->update(['value' => $request->sms_absent]);
+
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $request->all()
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'data_not_exist',
+                'error' => "DATA NOT FOUND",
+                'data' => []
+            ], 200);
+        }
+
+
+    }
 }
