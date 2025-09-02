@@ -83,7 +83,7 @@ export default class SF2 extends Component {
         });
         $('#data-list').on('select2:select', function (e) { 
             var selectedData = e.params.data; 
-            console.log(selectedData,e.params);
+            // console.log(selectedData,e.params);
             let temp = self.state.class_list.find(e=>e.qrcode==selectedData.id);
             console.log(temp);
             self.setState({
@@ -953,7 +953,7 @@ export default class SF2 extends Component {
                 // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                    console.log("aw",response.data.status,data);
+                    // console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
                         self.setState({data: data,loading: false});
                     }
@@ -1000,8 +1000,6 @@ export default class SF2 extends Component {
         //         }); 
         //     }); 
         // });
-
-
     }
 
     generateData(data) {

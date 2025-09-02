@@ -212,15 +212,15 @@ export default class SchoolRegistry extends Component {
     }
 
     render() {
-        return <DashboardLayout title="Student" user={this.props.auth.user} ><div className="noselect">
+        return <DashboardLayout title="Registry" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Student</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-buildings-fill"></i> School Details</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Student</li>
+                            <li className="breadcrumb-item active" aria-current="page">School Details</li>
                         </ol>
                     </div>
                     </div> 
@@ -234,7 +234,7 @@ export default class SchoolRegistry extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title"> <i className="bi bi-person"></i> School Details</h3> 
+                                    <h3 className="card-title"> <i className="bi bi-info-square-fill"></i> Details</h3> 
                                     <button className="btn btn-info float-right mr-1" onClick={() => { this.saveData(); }}> <i className="bi bi-pen"></i> Update</button>  
                                 </div>
                                 <div className="card-body">

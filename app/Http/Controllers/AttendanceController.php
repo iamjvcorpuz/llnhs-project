@@ -385,11 +385,13 @@ class AttendanceController extends Controller
                 foreach ($map_student_list as $key => $svalue) {
 
                     $logs_temp = [];
-
+                    $check_timelogs = [];
                     if($fulldays==false) {
                         $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);
+                        $check_timelogs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ?",[$request->date,]);
                     } else if($fulldays==true) {
-                        $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);                        
+                        $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);   
+                        $check_timelogs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ?",[$request->date]);                        
                     } 
 
                     if(count($logs_temp)>0) {
@@ -413,10 +415,11 @@ class AttendanceController extends Controller
                         array_push($map_attendance,$object);
 
                         // array_push($logs, $logs_temp);
-                    } else {
+                    } else if(count($check_timelogs)>0) {
 
                         $absent = 1;
                         $tardy = 0;
+                        $present = 0;
                         
                         $object = new stdClass();
                         $object->_id = $svalue->student_id;
@@ -428,6 +431,25 @@ class AttendanceController extends Controller
                         $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
                         $object->absent = $absent;
                         $object->tardy = $tardy;
+                        
+                        array_push($map_attendance,$object);
+                    } else if(count($check_timelogs) == 0 && count($logs_temp) == 0) {
+
+                        $absent = 0;
+                        $tardy = 0;
+                        $present = 0;
+                        
+                        $object = new stdClass();
+                        $object->_id = $svalue->student_id;
+                        $object->lrn = $svalue->lrn;
+                        $object->profileImageBase64 = $svalue->student_id;
+                        $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                        $object->idnumber = $svalue->qr_code;
+                        $object->logger_type = "studnet";
+                        $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
                         
                         array_push($map_attendance,$object);
                     }

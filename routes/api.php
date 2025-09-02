@@ -35,7 +35,7 @@ use Illuminate\Http\Request;
 Route::get('/desktop',[StudentController::class,'index']);
 Route::get('/generate/code',[GeneralController::class,'generateCode']);
 
-Route::get('/student',[StudentController::class,'index']);
+Route::get('/student',[StudentController::class,'getAllStudent']);
 Route::post('/student',[StudentController::class,'store']); 
 Route::post('/student/update',[StudentController::class,'update']);
 Route::delete('/student',[StudentController::class,'remove']);
@@ -296,7 +296,29 @@ Route::post('/admin/school/details/update',function(Request $request) {
     }
 });
 
-Route::post('/messenger/recepient',[MessengerController::class,'getRecipients']);
+
+Route::post('/admin/system/settings',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return SystemSettingsController::systemSettingsUpdate($request);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
+
+Route::post('/messenger/recepient',[MessengerController::class,'getRecipients']); 
+Route::post('/messenger/all/recepient',function(Request $request) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+       return MessengerController::getAllRecipients();
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
 // Route::post('/messenger/recepient/sync',[MessengerController::class,'pullMessengerClientData']);
 Route::post('/messenger/recepient/sync',function() {
     $id = AuthenticatedSessionController::getAuthId();

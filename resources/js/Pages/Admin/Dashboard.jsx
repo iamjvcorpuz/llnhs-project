@@ -20,8 +20,8 @@ export default class Dashboard extends Component {
             todayAttendance: [],
             sections: this.props.sections,
             annualTimelogs: this.props.annualTimelogs,
-            enrolled: [],
-            unenrolled: [],
+            enrolled: this.props.enrolled,
+            unenrolled: this.props.unenrolled,
             transferout: this.props.StudentMovements.transferOut,
             transferin: this.props.StudentMovements.transferIn,
             dropout: this.props.StudentMovements.dropout
@@ -229,7 +229,7 @@ export default class Dashboard extends Component {
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.student.length}</h3>
-                                <p>Registered Student</p>
+                                <p> Student</p>
                             </div>
                             <svg
                                 className="small-box-icon"
@@ -247,7 +247,7 @@ export default class Dashboard extends Component {
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.teachers.length}</h3>
-                                <p>Registered Teacher</p>
+                                <p>Teacher</p>
                             </div>
                             <svg
                                 className="small-box-icon"
@@ -373,7 +373,7 @@ export default class Dashboard extends Component {
                             </div> 
                         </div>
 
-                        <div className="col-lg-3 col-6"> 
+                        <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.enrolled.length}</h3>
@@ -391,43 +391,43 @@ export default class Dashboard extends Component {
                             </div> 
                         </div>
 
-                        <div className="col-lg-3 col-6"> 
+                        <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.unenrolled.length}</h3>
                                 <p>Unenrolled</p>
                             </div>
                             <svg className="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clipRule="evenodd" fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
-                    <path clipRule="evenodd" fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
-                  </svg>
+                                <path clipRule="evenodd" fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
+                                <path clipRule="evenodd" fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
+                            </svg>
                             </div> 
                         </div>
 
                         
-                        <div className="col-lg-3 col-6"> 
+                        <div className="col-lg-3 col-6"  title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.transferout.length} / {this.state.transferin.length}</h3>
                                 <p>Transfer IN / OUT</p>
                             </div>
                             <svg className="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clipRule="evenodd" fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
-                    <path clipRule="evenodd" fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
-                  </svg>
+                                <path clipRule="evenodd" fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
+                                <path clipRule="evenodd" fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
+                            </svg>
                             </div> 
                         </div>
 
-                        <div className="col-lg-3 col-6"> 
+                        <div className="col-lg-3 col-6"  title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
                                 <h3>{this.state.dropout.length}</h3>
                                 <p>Dropout</p>
                             </div>
                             <svg className="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clipRule="evenodd" fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
-                    <path clipRule="evenodd" fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
-                  </svg>
+                                <path clipRule="evenodd" fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
+                                <path clipRule="evenodd" fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
+                            </svg>
                             </div> 
                         </div>
 
@@ -439,7 +439,7 @@ export default class Dashboard extends Component {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card mb-4">
-                                <div className="card-header"><h3 className="card-title">Attendance Chart</h3></div>
+                                <div className="card-header"><h3 className="card-title">Attendance Chart as of S.Y. {this.props.schoolStatus.school_year}</h3></div>
                                 <div className="card-body p-0"><div id="revenue-chart"></div></div>
                             </div>
                         </div>

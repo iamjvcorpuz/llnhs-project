@@ -72,7 +72,10 @@ Route::get('/admin/dashboard', function () {
         "student" => StudentController::getAll(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
         "annualTimelogs" => AttendanceController::getTimelogsAnnual(),
-        "StudentMovements" => StudentMovementController::getStudentMovements()
+        "enrolled" => StudentController::getEnrolledStudent(),
+        "unenrolled" => StudentController::getUnenrolledStudent(),
+        "StudentMovements" => StudentMovementController::getStudentMovements(),
+        "schoolStatus" => SystemSettingsController::getSchoolRegistration()
     ]);
 })->middleware(['auth', 'verified']);
 
@@ -81,6 +84,19 @@ Route::get('/admin/school/details', function () {
         'sy' => SystemSettingsController::getCurrentSY(),
         'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
     ]);
+})->middleware(['auth', 'verified']);
+
+Route::get('/admin/notifications', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        return Inertia::render('Admin/NotificationSettings',[
+            'sy' => SystemSettingsController::getCurrentSY(),
+            'schoolRegistry' => SystemSettingsController::getSchoolRegistration(),
+            "systemSettings" => SystemSettingsController::geSystemSettings()
+        ]);
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
 })->middleware(['auth', 'verified']);
 
 

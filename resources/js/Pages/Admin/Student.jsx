@@ -71,15 +71,25 @@ export default class Student extends Component {
                     Header: 'Level',  
                     width: 200,
                     accessor: 'level',
+                    className: "center",
                     filterable: true,
                 },  
                 {
                     id: "section",
                     Header: 'Section',  
-                    width: 200,
+                    width: 250,
                     accessor: 'section',
+                    className: "center",
                     filterable: true,
                 },
+                {
+                    id: "sy",
+                    Header: 'S.Y.',  
+                    width: 200,
+                    accessor: 'sy',
+                    className: "center",
+                    filterable: true,
+                },  
                 {
                     id: "Status",
                     Header: 'Status',  
@@ -143,21 +153,23 @@ export default class Student extends Component {
         let self = this;
         axios.get('/student').then(function (response) {
           // handle success
-        //   console.log(response)
+          console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 data.forEach((element,index,arr) => {
-                    if(element.status != "remove") {
+                    console.log("student_status",element.student_status)
+                    if(element.student_status != "remove") {
                         list.push({
                             no: index + 1,
                             id: element.id,
                             photo: element.picture_base64,
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
-                            level: "None",
-                            section: "None",
+                            level: element.grade,
+                            section: element.section,
+                            sy: element.sy,
                             sex: element.sex,
-                            status: element.status
+                            status: element.student_status
                         });
                     }
                     if((index + 1) == arr.length) {
