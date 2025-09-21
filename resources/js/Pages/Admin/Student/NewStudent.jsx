@@ -17,9 +17,11 @@ export default class NewStudent extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            yeargrade: this.props.schoolyeargrades,
             photoupload: "",
             photobase64: "",
             photobase64final: "",
+            uuid: "",
             lrn: "",
             psa_cert_no: "",
             qrcode: "",
@@ -126,7 +128,7 @@ export default class NewStudent extends Component {
         console.log(this);
         let so = []
         this.props.parents.forEach(element => {
-            so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
+            so.push({ value: element.uuid, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
         });
         this.setState({
             selectOptions: so
@@ -1025,7 +1027,7 @@ export default class NewStudent extends Component {
                                                     <div className="input-group-prepend">
                                                         <div htmlFor="lglv" className="input-group-text">Parent / Guardian : </div>
                                                     </div>
-                                                    <Select  placeholder="Select Parent" required="" className="col-6" id="guardians"  options={this.state.selectOptions} onChange={(e) => {this.setState({selected_quardians: e.value})}} />
+                                                    <Select  placeholder="Select" required="" className="col-6" id="guardians"  options={this.state.selectOptions} onChange={(e) => {this.setState({selected_quardians: e.value})}} />
                                                     {/* <input type="text" list="parentslist" className="form-control col-2" id="guardians" maxLength={12} defaultValue="" placeholder="Select Parent" required="" /> */}
                                                     <button className="btn btn-primary" onClick={() => {
                                                         let temp_numbers = this.state.added_guardians; 
@@ -1075,7 +1077,7 @@ export default class NewStudent extends Component {
                                         <div className="form-check float-right">
                                             <input className="form-check-input" type="checkbox" defaultValue="" id="invalidCheck" />
                                             <label className="form-check-label" htmlFor="invalidCheck">
-                                            Agree to all fields are correct
+                                            Confirm all fields are correct.
                                             </label>
                                             <div id="invalidCheck-alert" className="invalid-feedback">You must agree before submitting.</div>
                                         </div>
@@ -1096,6 +1098,16 @@ export default class NewStudent extends Component {
                 <EachMethod of={this.state.parent_data} render={(element,index) => {
                     return <option >{`${element.last_name}, ${element.first_name}`}</option>
                 }} />
+            </datalist>
+            
+            <datalist id="selectedYearLevel">
+                <EachMethod of={this.state.yeargrade} render={(element,index) => {
+                    return <option >{`${element.year_grade}`}</option>
+                }} />
+            </datalist>
+
+            <datalist id="selectedSY">
+                <option >2025 - 2026</option>
             </datalist>
 
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">

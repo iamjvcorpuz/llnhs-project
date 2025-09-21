@@ -37,6 +37,7 @@ export default class NotificationSettings extends Component {
         this.saveData = this.saveData.bind(this);
         this.sendFBMSG = this.sendFBMSG.bind(this);
         this.sendSMS = this.sendSMS.bind(this);
+        this.fetchFBList = this.fetchFBList.bind(this);
         // console.log(this.state);
     }
     componentDidMount() {
@@ -56,7 +57,7 @@ export default class NotificationSettings extends Component {
             });
         })
         
-        this.getFBList();
+        // this.getFBList();
     }
     saveData() {
         let self = this; 
@@ -324,6 +325,7 @@ export default class NotificationSettings extends Component {
           console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+
                 self.setState({data: data});
             }
         }).catch(function (error) {
@@ -453,7 +455,29 @@ export default class NotificationSettings extends Component {
             alert("Required Fields")
         }
     }
+    
+    fetchFBList() {
+        let list  = []; 
+        let self = this;
 
+        ReactNotificationManager.info('Please wait','Getting accounts in messenger')   
+        axios.post('/messenger/recepient/sync').then(function (response) {
+          // handle success
+        //   console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+
+                ReactNotificationManager.success('Success','Accounts in messenger is up to date')   
+                self.getFBList();
+            }
+        }).catch(function (error) {
+          // handle error
+        //   console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
+    
     render() {
         return <DashboardLayout title="Notifications" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
@@ -543,6 +567,9 @@ export default class NotificationSettings extends Component {
                                     <div className="card-footer">
                                         <i className="form-text">Note: This will work on kiosk only or where SMS device installed</i>
                                         <button type="submit" className="btn btn-primary float-right" onClick={() =>  this.sendFBMSG() }>Send</button>
+                                        <button type="button" className="btn btn-info float-right mr-1 text-white" onClick={() => {
+                                            this.fetchFBList();
+                                        }} >Update FB Messenger Account </button>
                                     </div> 
                                 </div>
                             </div>

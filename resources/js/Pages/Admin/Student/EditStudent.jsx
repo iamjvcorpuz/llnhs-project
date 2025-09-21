@@ -17,6 +17,7 @@ export default class EditStudent extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            yeargrade: this.props.schoolyeargrades,
             photoupload: "",
             photobase64: "",
             photobase64final: "",
@@ -834,22 +835,22 @@ export default class EditStudent extends Component {
                                         <div className="row g-3" >
                                             <div className="col-md-6">
                                                 <label htmlFor="lglv" className="form-label">Last Grade Level Completed</label>
-                                                <input type="text" className="form-control" id="lglv" defaultValue="" required="" onChange={(e) => { $("#lglv-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lglc: e.target.value})}}  />
+                                                <input type="text" className="form-control" list="selectedYearLevel" id="lglv" defaultValue={this.state.lglc} required="" onChange={(e) => { $("#lglv-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lglc: e.target.value})}}  />
                                                 <div id="lglv-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsyc" className="form-label">Last School Year Completed</label>
-                                                <input type="text" className="form-control" id="lsyc" defaultValue="" required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="lsyc" placeholder="**** - ****" defaultValue={this.state.lsyc} required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
                                                 <div id="lsyc-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsa" className="form-label">Last School Attended</label>
-                                                <input type="text" className="form-control" id="lsa" defaultValue="" required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="lsa" defaultValue={this.state.lsa} required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
                                                 <div id="lsa-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsa_school_id" className="form-label">School ID</label>
-                                                <input type="text" className="form-control" id="lsa_school_id" defaultValue="" required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="lsa_school_id" defaultValue={this.state.lsa_school_id} required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
                                                 <div id="lsa_school_id-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                         </div>
@@ -1032,7 +1033,7 @@ export default class EditStudent extends Component {
                                             <div className={`${(this.state.added_guardians=="")?'form-inline col-lg-6 pt-2':'hidden'}`}>
                                                 <div className="input-group">
                                                     <div className="input-group-prepend">
-                                                        <div htmlFor="lglv" className="input-group-text">Parent / Guardian : </div>
+                                                        <div className="input-group-text">Parent / Guardian : </div>
                                                     </div>
                                                     <Select  placeholder="Select Parent" required="" className="col-6" id="guardians"  options={this.state.selectOptions} onChange={(e) => {this.setState({selected_quardians: e.value})}} />
                                                     {/* <input type="text" list="parentslist" className="form-control col-2" id="guardians" maxLength={12} defaultValue="" placeholder="Select Parent" required="" /> */}
@@ -1084,7 +1085,7 @@ export default class EditStudent extends Component {
                                         <div className="form-check float-right">
                                             <input className="form-check-input" type="checkbox" defaultValue="" id="invalidCheck" />
                                             <label className="form-check-label" htmlFor="invalidCheck">
-                                            Agree to all fields are correct
+                                            Confirm all fields are correct.
                                             </label>
                                             <div id="invalidCheck-alert" className="invalid-feedback">You must agree before submitting.</div>
                                         </div>
@@ -1105,6 +1106,16 @@ export default class EditStudent extends Component {
                 <EachMethod of={this.state.parent_data} render={(element,index) => {
                     return <option >{`${element.last_name}, ${element.first_name}`}</option>
                 }} />
+            </datalist>
+
+            <datalist id="selectedYearLevel">
+                <EachMethod of={this.state.yeargrade} render={(element,index) => {
+                    return <option >{`${element.year_grade}`}</option>
+                }} />
+            </datalist>
+
+            <datalist id="selectedSY">
+                <option >2025 - 2026</option>
             </datalist>
 
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">

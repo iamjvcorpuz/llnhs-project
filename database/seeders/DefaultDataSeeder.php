@@ -58,6 +58,13 @@ class DefaultDataSeeder extends Seeder
             'name' => 'Employee',
             'description' => 'For Employee role only',
         ]);
+
+
+        Roles::create([
+            'id' => 6,
+            'name' => 'Encoder',
+            'description' => 'For Encoder role only',
+        ]);
         
 
         Subjects::factory()->create([
@@ -119,6 +126,7 @@ class DefaultDataSeeder extends Seeder
 
         UserAccounts::factory()->state([
             'user_id' => 0,
+            'uuid' => 0,
             'user_type' => 'Admin',
             'user_role_id' => 1,
             'fullname' => "Administrator",
@@ -255,6 +263,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('classrooms')->insert([
             'room_number' => '104', 
             'floor_number' => 'NA', 
@@ -263,6 +272,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('classrooms')->insert([
             'room_number' => '105', 
             'floor_number' => 'NA', 
@@ -271,6 +281,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('classrooms')->insert([
             'room_number' => '106', 
             'floor_number' => 'NA', 
@@ -279,6 +290,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('classrooms')->insert([
             'room_number' => '107', 
             'floor_number' => 'NA', 
@@ -287,6 +299,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('classrooms')->insert([
             'room_number' => '108', 
             'floor_number' => 'NA', 
@@ -295,6 +308,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('classrooms')->insert([
             'room_number' => '109', 
             'floor_number' => 'NA', 
@@ -310,6 +324,7 @@ class DefaultDataSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ]);
+
         DB::table('system_settings')->insert([
             'setting' => 'ENABLE_FB_MESSENGER', 
             'value' => 'false',

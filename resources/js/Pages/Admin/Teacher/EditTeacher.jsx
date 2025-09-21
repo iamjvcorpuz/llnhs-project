@@ -474,7 +474,7 @@ export default class EditTeacher extends Component {
                                             <br />
                                             <input className="form-check-input" type="checkbox" defaultValue="" id="invalidCheck" required="" />
                                             <label className="form-check-label" htmlFor="invalidCheck">
-                                            Agree to all fields are correct
+                                            Confirm all fields are correct.
                                             </label>
                                             <div id="invalidCheck-alert" className="invalid-feedback">You must agree before submitting.</div>
                                         </div>

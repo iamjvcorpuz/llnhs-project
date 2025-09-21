@@ -60,10 +60,11 @@ class DatabaseSeeder extends Seeder
         //     ])->create();
         // });
         
-
+        // create student
         $student = Student::factory(100)->create();
         $student->each(function($val) {
             $rand_pass = Str::random(10);
+            DB::table('student')->where('id', $val->id)->update(['uuid' => $val->id]);
             UserAccounts::factory()->state([
                 'user_id' => $val->id,
                 'user_type' => 'Student',
@@ -100,6 +101,7 @@ class DatabaseSeeder extends Seeder
         $teacher = Employee::factory(10)->create();
         
         $teacher->each(function($val) {
+            DB::table('employee')->where('id', $val->id)->update(['uuid' => $val->id]);
             Contacts::factory()->state([
                 'type' => 'teacher',
                 'teacher_id' => $val->id,
@@ -136,6 +138,7 @@ class DatabaseSeeder extends Seeder
         $Parents = Parents::factory(10)->create();
 
         $Parents->each(function($val) {
+            DB::table('parents')->where('id', $val->id)->update(['uuid' => $val->id]);
             Contacts::factory()->state([
                 'type' => 'guardian',
                 'guardian_id' => $val->id,

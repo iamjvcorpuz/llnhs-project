@@ -128,7 +128,7 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
       })} 
       </thead>:null} 
       <tbody {...getTableBodyProps()} className="table-group-divider">
-      {rows.map((row, i) => {
+      {page.map((row, i) => {
         prepareRow(row);
         const { key, ...getRowProps } = row.getRowProps(getTrProps && getTrProps(row.original));
         return (

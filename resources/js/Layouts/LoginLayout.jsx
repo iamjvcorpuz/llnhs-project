@@ -13,8 +13,8 @@ export default function LoginLayout({ children }) {
             </div>
 
             
-            <div className="h-20 w-20 fill-current text-gray-500 pt-5">
-                <img src="/images/bagongtae.png" alt="AdminLTE Logo" className="img-circle" /> 
+            <div className="h-20 w-20 text-gray-500 pt-5">
+                <img src="/images/bagongtae.png" alt="AdminLTE Logo" className="" /> 
             </div> 
         </div>
     );

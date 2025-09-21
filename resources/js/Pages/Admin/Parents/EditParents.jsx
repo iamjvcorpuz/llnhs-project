@@ -205,10 +205,9 @@ export default class EditParents extends Component {
                     // console.log(datas);
                     axios.post('/parents/update',datas).then( async function (response) {
                         // handle success
-                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{}; 
+                                if(data.status == "success") {
                                     let phone_list = [];
                                     self.state.contact_list.forEach( async element => {
                                         // phone_list.push();

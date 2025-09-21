@@ -77,6 +77,23 @@ class SystemSettingsController extends Controller
                 'error' => null,
                 'data' => $request->all()
             ], 201);
+        } else if($school_registry->count()==0) {
+            $school_registry = DB::table('school_registry')->insert([
+                'school_name' => $request->school_name,
+                'school_id' => $request->school_id,
+                'school_address' => $request->school_address,
+                'district' => $request->school_district,
+                'division' => $request->school_division,
+                'region' => $request->school_region,
+                'head_name' => $request->school_head_teacher,
+                'head_position' => $request->school_head_teacher_position,
+                'school_year' => $request->school_sy,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $request->all()
+            ], 201);
         } else {
             return response()->json([
                 'status' => 'data_not_exist',

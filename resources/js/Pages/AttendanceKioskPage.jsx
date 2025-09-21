@@ -625,6 +625,7 @@ export default class AttendancePage extends Component {
                         </div>
                     </div> */}
                 </div>
+                <div className="status-float-attendance-page"></div>
             </div>
         </div>
     }
