@@ -32,7 +32,7 @@ export default function SideNav({
 
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-calendar-week"></i>
-                  <p>Attendance</p>
+                  <p>ATTENDANCE</p>
                   <i className="nav-arrow bi bi-chevron-right"></i>
                 </a>
 
@@ -55,7 +55,7 @@ export default function SideNav({
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-person-lines-fill"></i>
-                  <p>Student</p>
+                  <p>STUDENT</p>
                   <i className="nav-arrow bi bi-chevron-right"></i>
                 </a>
                 <ul className="nav nav-treeview">
@@ -139,7 +139,7 @@ export default function SideNav({
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-printer"></i>
-                  <p>Report</p>
+                  <p>REPORT</p>
                   <i className="nav-arrow bi bi-chevron-right"></i>
                 </a>
                 <ul className="nav nav-treeview">
@@ -221,7 +221,7 @@ export default function SideNav({
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon bi bi-gear"></i>
-                  <p>System</p>
+                  <p>SYSTEM</p>
                   <i className="nav-arrow bi bi-chevron-right"></i>
                 </a>
                 <ul className="nav nav-treeview">
@@ -235,6 +235,12 @@ export default function SideNav({
                     <Link href="/admin/notifications" className="nav-link">
                       <i className="nav-icon bi bi-gear"></i>
                       <p>Notification Settings</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/notifications" className="nav-link">
+                      <i className="nav-icon bi bi-file-earmark-spreadsheet-fill"></i>
+                      <p>Import Data</p>
                     </Link>
                   </li>
                 </ul>

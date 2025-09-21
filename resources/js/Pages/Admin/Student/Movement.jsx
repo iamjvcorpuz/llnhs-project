@@ -726,7 +726,7 @@ export default class Movement extends Component {
                         loading: false,
                         student_movement: (data.student_movement.length>0&&data.student_movement!=null)?data.student_movement:[]
                     },() => {
- 
+                        console.log(data.student);
                     });
                 }
             }
@@ -875,17 +875,17 @@ export default class Movement extends Component {
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsyc" className="form-label">Last School Year Completed</label>
-                                                <input type="text" className="form-control" id="elsyc" defaultValue="" required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="elsyc" placeholder="**** - ****" defaultValue={this.state.lsyc} required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
                                                 <div id="lsyc-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsa" className="form-label">Last School Attended</label>
-                                                <input type="text" className="form-control" id="elsa" defaultValue="" required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="elsa" defaultValue={this.state.lsa} required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
                                                 <div id="lsa-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-6">
                                                 <label htmlFor="lsa_school_id" className="form-label">School ID</label>
-                                                <input type="text" className="form-control" id="lesa_school_id" defaultValue="" required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="lesa_school_id" defaultValue={this.state.lsa_school_id} required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
                                                 <div id="lsa_school_id-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                         </div>
@@ -899,7 +899,7 @@ export default class Movement extends Component {
                                             <div className="form-check float-right">
                                                 <input className="form-check-input" type="checkbox" defaultValue="" id="invalidCheck" />
                                                 <label className="form-check-label" htmlFor="invalidCheck">
-                                                Agree to all fields are correct
+                                                Confirm all fields are correct.
                                                 </label>
                                                 <div id="invalidCheck-alert" className="invalid-feedback">You must agree before submitting.</div>
                                             </div>
@@ -1313,22 +1313,22 @@ export default class Movement extends Component {
                                                 <div className="row g-3" >
                                                     <div className="col-md-6">
                                                         <label htmlFor="lglv" className="form-label">Last Grade Level Completed</label>
-                                                        <input type="text" className="form-control" id="lglv" defaultValue="" required="" onChange={(e) => { $("#lglv-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lglc: e.target.value})}}  />
+                                                        <input type="text" className="form-control" id="lglv" defaultValue={this.state.lglc} required="" onChange={(e) => { $("#lglv-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lglc: e.target.value})}}  />
                                                         <div id="lglv-alert" className="valid-feedback">Looks good!</div>
                                                     </div> 
                                                     <div className="col-md-6">
                                                         <label htmlFor="lsyc" className="form-label">Last School Year Completed</label>
-                                                        <input type="text" className="form-control" id="lsyc" defaultValue="" required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
+                                                        <input type="text" className="form-control" id="lsyc" placeholder="**** - ****" defaultValue={this.state.lsyc} required="" onChange={(e) => { $("#lsyc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsyc: e.target.value})}}  />
                                                         <div id="lsyc-alert" className="valid-feedback">Looks good!</div>
                                                     </div> 
                                                     <div className="col-md-6">
                                                         <label htmlFor="lsa" className="form-label">Last School Attended</label>
-                                                        <input type="text" className="form-control" id="lsa" defaultValue="" required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
+                                                        <input type="text" className="form-control" id="lsa" defaultValue={this.state.lsa} required="" onChange={(e) => { $("#lsa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa: e.target.value})}}  />
                                                         <div id="lsa-alert" className="valid-feedback">Looks good!</div>
                                                     </div> 
                                                     <div className="col-md-6">
                                                         <label htmlFor="lsa_school_id" className="form-label">School ID</label>
-                                                        <input type="text" className="form-control" id="lsa_school_id" defaultValue="" required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
+                                                        <input type="text" className="form-control" id="lsa_school_id" defaultValue={this.state.lsa_school_id} required="" onChange={(e) => { $("#lsa_school_id-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({lsa_school_id: e.target.value})}}  />
                                                         <div id="lsa_school_id-alert" className="valid-feedback">Looks good!</div>
                                                     </div> 
                                                 </div>

@@ -29,6 +29,7 @@ class StudentController extends Controller
     public static function getAll_() 
     {
         return Student::all([
+            'uuid',
             'id',
             'qr_code',
             'lrn',
@@ -86,10 +87,10 @@ class StudentController extends Controller
         sex,
         status
         FROM student WHERE id NOT IN (SELECT 
-        student.id
+        student.uuid
         FROM advisory_group 
         LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
-        LEFT JOIN student ON student.id = advisory_group.student_id
+        LEFT JOIN student ON student.uuid = advisory_group.student_id
         WHERE advisory_group.status = "active" AND advisory.status = "active" )
         ');
         
@@ -101,6 +102,7 @@ class StudentController extends Controller
         ROW_NUMBER() OVER () as no,
         advisory_group.id,
         student.qr_code,
+        student.uuid,
         CONCAT(student.last_name , \', \' , student.first_name) as fullname,
         student.first_name,
         student.last_name,
@@ -108,7 +110,7 @@ class StudentController extends Controller
         student.extension_name,
         student.flsh_strand,
         student.flsh_track, 
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn, 
         student.sex,
         student.psa_cert_no,
@@ -150,26 +152,27 @@ class StudentController extends Controller
         advisory.section_name AS section
         FROM advisory_group 
         LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
-        LEFT JOIN student ON student.id = advisory_group.student_id
+        LEFT JOIN student ON student.uuid = advisory_group.student_id
         WHERE advisory_group.status = \'active\'');
         
     }
 
     public static function getAllStudent() 
     {
-        $student = DB::select('
+        $student = DB::select("
         SELECT 
         ROW_NUMBER() OVER () as no,
         advisory_group.id,
         student.qr_code,
-        CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.uuid,
+        CONCAT(student.last_name , ', ' , student.first_name) as fullname,
         student.first_name,
         student.last_name,
         student.middle_name,
         student.extension_name,
         student.flsh_strand,
         student.flsh_track, 
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn, 
         student.sex,
         student.psa_cert_no,
@@ -177,7 +180,7 @@ class StudentController extends Controller
         student.is_ip,
         student.ip_specify,
         student.is_4ps_benficiary,
-        student.4ps_id,
+        student.`4ps_id`,
         student.is_disability,
         student.type_disability,
         student.type2_disability,
@@ -205,14 +208,15 @@ class StudentController extends Controller
         student.flsh_track,
         student.flsh_strand,
         student.ldm_applied,
-        student.status AS \'student_status\',
+        student.status AS 'student_status',
         student.picture_base64,
         advisory.school_year AS sy,
         advisory.year_level AS grade,
         advisory.section_name AS section
-        FROM advisory_group 
-        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
-        LEFT JOIN student ON student.id = advisory_group.student_id');
+        FROM
+        student
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id");
         return response()->json([
             'status' => 'done',
             'error' => null,
@@ -221,7 +225,6 @@ class StudentController extends Controller
         
     }
 
-
     public static function getEnrolledStudent() 
     {
         $student = DB::select('
@@ -229,6 +232,7 @@ class StudentController extends Controller
         ROW_NUMBER() OVER () as no,
         advisory_group.id,
         student.qr_code,
+        student.uuid,
         CONCAT(student.last_name , \', \' , student.first_name) as fullname,
         student.first_name,
         student.last_name,
@@ -236,7 +240,7 @@ class StudentController extends Controller
         student.extension_name,
         student.flsh_strand,
         student.flsh_track, 
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn, 
         student.sex,
         student.psa_cert_no,
@@ -278,9 +282,33 @@ class StudentController extends Controller
         advisory.section_name AS section
         FROM advisory_group 
         LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
-        LEFT JOIN student ON student.id = advisory_group.student_id 
+        LEFT JOIN student ON student.uuid = advisory_group.student_id 
         LEFT JOIN student_movement ON advisory_group.student_id = student_movement.student_id
         WHERE student_movement.sy = (SELECT school_year FROM school_registry)');
+        return $student;
+        
+    }
+
+    public static function getTotalEnrolledStudent() 
+    {
+        $student = DB::select('
+        SELECT 
+        COUNT(*)  AS TOTAL
+        FROM 
+        student_movement
+        WHERE sy = (SELECT school_year FROM school_registry)');
+        return $student;
+        
+    }
+
+    public static function getTotalUnEnrolledStudent() 
+    {
+        $student = DB::select('
+        SELECT 
+        COUNT(*) AS TOTAL
+        FROM 
+        student_movement
+        WHERE sy <> (SELECT school_year FROM school_registry)');
         return $student;
         
     }
@@ -292,6 +320,7 @@ class StudentController extends Controller
         ROW_NUMBER() OVER () as no,
         advisory_group.id,
         student.qr_code,
+        student.uuid,
         CONCAT(student.last_name , \', \' , student.first_name) as fullname,
         student.first_name,
         student.last_name,
@@ -299,7 +328,7 @@ class StudentController extends Controller
         student.extension_name,
         student.flsh_strand,
         student.flsh_track, 
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn, 
         student.sex,
         student.psa_cert_no,
@@ -341,7 +370,7 @@ class StudentController extends Controller
         advisory.section_name AS section
         FROM advisory_group 
         LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
-        LEFT JOIN student ON student.id = advisory_group.student_id 
+        LEFT JOIN student ON student.uuid = advisory_group.student_id 
         LEFT JOIN student_movement ON advisory_group.student_id = student_movement.student_id
         WHERE student_movement.sy <> (SELECT school_year FROM school_registry)');
         return $student;
@@ -357,14 +386,17 @@ class StudentController extends Controller
             'data' => $student
         ], 200);
     }
+
     public static function getData($id)
     {
         $student = Student::findOrFail($id);
         return $student;
     }
+
     public static function getData2($id)
     {
         $student = Student::findOrFail($id,[
+            'uuid',
             'id',
             'qr_code',
             'lrn',
@@ -380,10 +412,12 @@ class StudentController extends Controller
         ]);
         return $student;
     }
+
     public static function getDataQR()
     {
         $student = DB::select("
             SELECT 
+            uuid,
             id,
             qr_code,
             lrn,
@@ -401,10 +435,12 @@ class StudentController extends Controller
         ");
         return $student;
     }
+
     public static function getDataQRfilter($qr)
     {
         $student = DB::select("
             SELECT 
+            uuid,
             id,
             qr_code,
             lrn,
@@ -424,6 +460,7 @@ class StudentController extends Controller
         ",[$qr]);
         return $student;
     }
+
     public static function getDataID($id)
     {
         $student = Student::findOrFail($id);
@@ -438,7 +475,7 @@ class StudentController extends Controller
         student.flsh_strand,
         student.flsh_track,
         student.picture_base64 AS photo,
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn,
         student.qr_code,
         student.sex,
@@ -452,12 +489,12 @@ class StudentController extends Controller
         advisory.teacher_id,
         CONCAT(employee.first_name , \' \' , employee.extension_name , \' \' , employee.last_name , \' \' , employee.extension_name  ) AS \'teacher_name\'
         FROM student 
-        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid AND advisory_group.status = \'active\'
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
         LEFT JOIN employee ON employee.id = advisory.teacher_id
         WHERE
-        student.id = ?;',[$id]);
+        student.uuid = ?;',[$id]);
         //'secret' => env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj") . '/' . Crypt::encryptString($id)
         return  [
             'secret' => env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj") . '/' . $id,
@@ -472,6 +509,7 @@ class StudentController extends Controller
             'school' => SystemSettingsController::getSchoolRegistration()
         ];
     }
+
     public static function getStudentDataID()
     {
         // $student = Student::all();
@@ -498,6 +536,7 @@ class StudentController extends Controller
         $student = DB::select("SELECT 
         ROW_NUMBER() OVER () as no, 
         CONCAT(student.last_name , ', ' , student.first_name) as fullname,
+        student.uuid,
         student.first_name,
         student.last_name,
         student.middle_name,
@@ -505,7 +544,7 @@ class StudentController extends Controller
         student.flsh_strand,
         student.flsh_track,
         student.picture_base64 AS photo,
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn,
         student.qr_code,
         student.sex,
@@ -517,7 +556,7 @@ class StudentController extends Controller
         school_class.strands AS strand,
         school_class.level AS grade_level
         FROM student 
-        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = 'active'
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid AND advisory_group.status = 'active'
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
         WHERE
@@ -534,11 +573,13 @@ class StudentController extends Controller
             'strand' => ProgramsCurricularController::getStrand()
         ];
     }
+
     public static function getSchoolStats($id)
     {
         $getSchoolStats = DB::select('SELECT 
         ROW_NUMBER() OVER () as no, 
         CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.uuid,
         student.first_name,
         student.last_name,
         student.middle_name,
@@ -546,7 +587,7 @@ class StudentController extends Controller
         student.flsh_strand,
         student.flsh_track,
         student.picture_base64 AS photo,
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn,
         student.qr_code,
         student.sex,
@@ -558,18 +599,20 @@ class StudentController extends Controller
         school_class.strands AS strand,
         school_class.level AS grade_level
         FROM student 
-        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid AND advisory_group.status = \'active\'
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
         WHERE
-        student.id = ?;',[$id]);
+        student.uuid = ?;',[$id]);
         return  $getSchoolStats;
     }
+
     public static function getSchoolStatsQR($id)
     {
         $getSchoolStats = DB::select('SELECT 
         ROW_NUMBER() OVER () as no, 
         CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+        student.uuid,
         student.first_name,
         student.last_name,
         student.middle_name,
@@ -577,7 +620,7 @@ class StudentController extends Controller
         student.flsh_strand,
         student.flsh_track,
         student.picture_base64 AS photo,
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn,
         student.qr_code,
         student.sex,
@@ -589,19 +632,21 @@ class StudentController extends Controller
         school_class.strands AS strand,
         school_class.level AS grade_level
         FROM student 
-        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid AND advisory_group.status = \'active\'
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
         WHERE
         student.qr_code = ?;',[$id]);
         return  $getSchoolStats;
     }
+
     public static function getStudentGuardian($id)
     {
-        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,uuid, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?) ',[$id]);
         // $student = Student::findOrFail($id);
         return $student;
     }
+
     public static function getStudentGrade(Request $request)
     {
         // var_dump($request->id);
@@ -680,6 +725,7 @@ class StudentController extends Controller
         }
 
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -715,6 +761,7 @@ class StudentController extends Controller
 
                 $customer = Student::create($request->except(['parents','relationship'])); 
 
+                DB::table('student')->where('id', $customer->id)->update(['uuid' => $customer->id]);
 
                 $parents = $request->input('parents');
                 $relationship = $request->input('relationship');
@@ -767,6 +814,7 @@ class StudentController extends Controller
 
 
     }
+
     public function update(Request $request) 
     {
 
@@ -793,7 +841,8 @@ class StudentController extends Controller
             ], 422);
         }
 
-        $Student = DB::table('student')->where('id', $request->id)->get();
+        // $Student = DB::table('student')->where('id', $request->id)->get();
+        $Student = DB::table('student')->where('uuid', $request->id)->get();
 
         $StudentLRN = DB::table('student')->where('lrn', $request->lrn) ->get();
 
@@ -815,7 +864,7 @@ class StudentController extends Controller
                     DB::table('student_guardians')->where('student_id', $request->id)->delete();
                     
                     StudentGuardian::create([
-                        'student_id' => $request->id,
+                        'student_id' => $request->id,//--> consider uuid is used
                         'parents_id' => $request->parents,
                         'relationship' => $request->relationship
                     ]);
@@ -856,6 +905,7 @@ class StudentController extends Controller
             ], 200);
         }
     }
+
     public function remove(Request $request) 
     {
         $Student = DB::table('student')->where('id', $request->id)->get();

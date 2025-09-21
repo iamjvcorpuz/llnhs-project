@@ -23,6 +23,7 @@ export default class Student extends Component {
 		super(props);
         this.state = {
             data: [],
+            sectionsFilter: `<option value="">All</option>`,
             columns: [
                 {
                     id: "no",
@@ -73,6 +74,18 @@ export default class Student extends Component {
                     accessor: 'level',
                     className: "center",
                     filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            <option value="">All</option> 
+                            <option value="null">None</option> 
+                            <option >Grade 7</option>
+                            <option >Grade 8</option> 
+                            <option >Grade 9</option> 
+                            <option >Grade 10</option> 
+                            <option >Grade 11</option> 
+                            <option >Grade 12</option> 
+                        </select>   
+                    }
                 },  
                 {
                     id: "section",
@@ -81,6 +94,11 @@ export default class Student extends Component {
                     accessor: 'section',
                     className: "center",
                     filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} id="sectionfilter" className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            {this.state.sectionsFilter}
+                        </select>   
+                    }
                 },
                 {
                     id: "sy",
@@ -89,6 +107,10 @@ export default class Student extends Component {
                     accessor: 'sy',
                     className: "center",
                     filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} id="syfilter" className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} > 
+                        </select>   
+                    }
                 },  
                 {
                     id: "Status",
@@ -97,12 +119,13 @@ export default class Student extends Component {
                     accessor: 'status',
                     className: "center",
                     filterable: true,
-                    filterInput: ({ filter, onChange }) =>
-                        <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
                             <option value="">All</option> 
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option> 
                         </select>   
+                    }
                 },
                 {
                     id: "Action",
@@ -125,12 +148,13 @@ export default class Student extends Component {
         this._isMounted = false;
         this.loadStudentList = this.loadStudentList.bind(this);
         this.deleteStudent = this.deleteStudent.bind(this);
+        // console.log(this);
     }
     
     componentDidMount() {
         this._isMounted = true;
         this.loadStudentList();
-        // console.log(this)
+        console.log(this)
         // let list  = [];
         // for (let index = 0; index < 10; index++) {
 
@@ -153,15 +177,37 @@ export default class Student extends Component {
         let self = this;
         axios.get('/student').then(function (response) {
           // handle success
-          console.log(response)
+        //   console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                let sectionfilter = [];
+                let syfilter = [];
+                var newOption = new Option("All", "");
+                $('#sectionfilter').append(newOption);
+                var newOption = new Option("All", "");
+                $('#syfilter').append(newOption);
+                var newOption = new Option("None", null);
+                $('#sectionfilter').append(newOption);
                 data.forEach((element,index,arr) => {
-                    console.log("student_status",element.student_status)
+                    // console.log("student_status",element.student_status)
+                    if(sectionfilter.includes(element.section) == false) {
+                        sectionfilter.push(element.section);
+                        if(element.section != null) {
+                            var newOption = new Option(element.section, element.section);
+                            $('#sectionfilter').append(newOption);
+                        }
+                    }
+                    if(syfilter.includes(element.sy) == false) {
+                        syfilter.push(element.sy);
+                        if(element.sy != null) {
+                            var newOption = new Option(element.sy, element.sy);
+                            $('#syfilter').append(newOption);
+                        }
+                    }
                     if(element.student_status != "remove") {
                         list.push({
                             no: index + 1,
-                            id: element.id,
+                            id: element.uuid,
                             photo: element.picture_base64,
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
@@ -338,7 +384,7 @@ export default class Student extends Component {
                                 <div className="card-body p-0">
                                 <ReactTable
                                     key={"react-tables"}
-                                    className={"table table-bordered table-striped "}
+                                    className={"table table-bordered table-striped table-hover"}
                                     data={this.state.data} 
                                     columns={this.state.columns}
                                     showHeader={true}

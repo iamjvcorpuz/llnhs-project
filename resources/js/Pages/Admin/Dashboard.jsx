@@ -20,8 +20,8 @@ export default class Dashboard extends Component {
             todayAttendance: [],
             sections: this.props.sections,
             annualTimelogs: this.props.annualTimelogs,
-            enrolled: this.props.enrolled,
-            unenrolled: this.props.unenrolled,
+            enrolled: (typeof(this.props.enrolled)!="undefined"&&this.props.enrolled!=null&&this.props.enrolled.length>0)?this.props.enrolled[0].TOTAL:0,
+            unenrolled: (typeof(this.props.unenrolled)!="undefined"&&this.props.unenrolled!=null&&this.props.unenrolled.length>0)?this.props.unenrolled[0].TOTAL:0,
             transferout: this.props.StudentMovements.transferOut,
             transferin: this.props.StudentMovements.transferIn,
             dropout: this.props.StudentMovements.dropout
@@ -376,7 +376,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.enrolled.length}</h3>
+                                <h3>{this.state.enrolled}</h3>
                                 <p>Enrolled</p>
                             </div>
                             <svg
@@ -394,7 +394,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.unenrolled.length}</h3>
+                                <h3>{this.state.unenrolled}</h3>
                                 <p>Unenrolled</p>
                             </div>
                             <svg className="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

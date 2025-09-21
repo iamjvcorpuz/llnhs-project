@@ -104,9 +104,10 @@ export default class Parents extends Component {
         this.loadStudentList = this.loadStudentList.bind(this);
         this.deleteParent = this.deleteParent.bind(this);
     }
+
     componentDidMount() {
         this._isMounted = true;
-        this.loadStudentList();
+        // this.loadStudentList();
         // let list  = [];
         // for (let index = 0; index < 10; index++) {
 
@@ -133,7 +134,7 @@ export default class Parents extends Component {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 data.forEach((element,index,arr) => {
                         list.push({
-                            id: element.id,
+                            id: element.uuid,
                             no: index + 1,
                             photo: element.picture_base64,
                             lrn: element.lrn,

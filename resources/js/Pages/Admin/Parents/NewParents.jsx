@@ -20,7 +20,7 @@ export default class NewTeacher extends Component {
             photoupload: "",
             photobase64: "",
             photobase64final: "",
-            lrn: "",
+            lrn: String(this.props.id).padStart(10, '0'),
             psa_cert_no: "",
             qrcode: "",
             first_name: "",
@@ -121,8 +121,7 @@ export default class NewTeacher extends Component {
                 showCancelButton: true,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                confirmButtonText: "Continue",
-                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Continue", 
                 icon: "warning",
                 showLoaderOnConfirm: true, 
                 closeOnClickOutside: false,  
@@ -154,24 +153,24 @@ export default class NewTeacher extends Component {
                         current_address: self.state.address,
                         contact_list: self.state.contact_list
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/parents',datas).then( async function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="sucess") {
+                                if(data.status == "success") {
                                     let phone_list = [];
                                     self.state.contact_list.forEach( async element => {
                                         // phone_list.push();
-                                        console.log({
-                                            type: null,
-                                            student_id: null,
-                                            teacher_id: response.data.data.id,
-                                            guardian_id: null,
-                                            phone_number: element.phone_number,
-                                            telephone_number: element.phone_number
-                                        })
+                                        // console.log({
+                                        //     type: null,
+                                        //     student_id: null,
+                                        //     teacher_id: response.data.data.id,
+                                        //     guardian_id: null,
+                                        //     phone_number: element.phone_number,
+                                        //     telephone_number: element.phone_number
+                                        // })
                                         axios.post('/contacts',{
                                             type: null,
                                             student_id: null,
@@ -191,8 +190,7 @@ export default class NewTeacher extends Component {
                                         showCancelButton: true,
                                         allowOutsideClick: false,
                                         allowEscapeKey: false,
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Continue", 
                                         icon: "success",
                                         showLoaderOnConfirm: true, 
                                         closeOnClickOutside: false,  
@@ -222,7 +220,7 @@ export default class NewTeacher extends Component {
                                 }
                             } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status ="data_exist") { 
+                                if(data.status == "data_exist") { 
                                     Swal.fire({  
                                         title: "Data Exist", 
                                         cancelButtonText: "Ok",

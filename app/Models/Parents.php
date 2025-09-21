@@ -12,6 +12,7 @@ class Parents extends Model
     public $table = "parents";
 
     protected $fillable = [
+        'uuid', 
         'qr_code', 
         'first_name',
         'last_name',
@@ -21,6 +22,7 @@ class Parents extends Model
         'status',
         'picture_base64',
         'email',
+        'bdate',
         'current_address'
     ];
 }

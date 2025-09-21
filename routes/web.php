@@ -64,19 +64,24 @@ Route::get('/admin/qrcodes/view', function () {
 });
 
 Route::get('/admin/dashboard', function () {
-    return Inertia::render('Admin/Dashboard',[
-        "teacher" => EmployeeController::getAll(),
-        "advisory" => AdvisoryController::getAll(),
-        "subjects" => SubjectController::getAll(),
-        "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
-        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
-        "annualTimelogs" => AttendanceController::getTimelogsAnnual(),
-        "enrolled" => StudentController::getEnrolledStudent(),
-        "unenrolled" => StudentController::getUnenrolledStudent(),
-        "StudentMovements" => StudentMovementController::getStudentMovements(),
-        "schoolStatus" => SystemSettingsController::getSchoolRegistration()
-    ]);
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        return Inertia::render('Admin/Dashboard',[
+            "teacher" => EmployeeController::getAll(),
+            "advisory" => AdvisoryController::getAll(),
+            "subjects" => SubjectController::getAll(),
+            "sections" => SchoolSectionController::getAll(),
+            "student" => StudentController::getAll(),
+            "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+            "annualTimelogs" => AttendanceController::getTimelogsAnnual(),
+            "enrolled" => StudentController::getTotalEnrolledStudent(),
+            "unenrolled" => StudentController::getTotalUnEnrolledStudent(),
+            "StudentMovements" => StudentMovementController::getStudentMovements(),
+            "schoolStatus" => SystemSettingsController::getSchoolRegistration()
+        ]);
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
 })->middleware(['auth', 'verified']);
 
 Route::get('/admin/school/details', function () {
@@ -194,7 +199,8 @@ Route::get('/admin/dashboard/student/new', function () {
     return Inertia::render('Admin/Student/NewStudent',[
         'parents' => ParentsController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),
-        'strand' => ProgramsCurricularController::getStrand()
+        'strand' => ProgramsCurricularController::getStrand(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll()
     ]);
 })->middleware(['auth', 'verified']);
 
@@ -204,7 +210,8 @@ Route::get('/admin/dashboard/student/print/{id}', function ($id) {
         'student' => StudentController::getData($id),
         'guardians' => StudentController::getStudentGuardian($id),
         'track' => ProgramsCurricularController::getTrack(),
-        'strand' => ProgramsCurricularController::getStrand()
+        'strand' => ProgramsCurricularController::getStrand(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll()
     ]);
 })->middleware(['auth', 'verified']);
 
@@ -214,7 +221,8 @@ Route::get('/admin/dashboard/student/update/{id}', function (String $id) {
         'student' => StudentController::getData($id),
         'guardians' => StudentController::getStudentGuardian($id),
         'track' => ProgramsCurricularController::getTrack(),
-        'strand' => ProgramsCurricularController::getStrand()
+        'strand' => ProgramsCurricularController::getStrand(),
+        "schoolyeargrades" => SchoolYearGradesController::getAll()
     ]);
 })->middleware(['auth', 'verified']);
 

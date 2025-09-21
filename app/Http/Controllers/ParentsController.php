@@ -21,7 +21,7 @@ class ParentsController extends Controller
         // })->get();
         // $student = DB::select(`SELECT id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email FROM parents ORDER BY ? ASC`,['id']);
 
-        $student = DB::select('SELECT id, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student FROM parents WHERE status = \'active\' ');
+        $student = DB::select('SELECT id,uuid, qr_code, first_name, last_name, middle_name, extension_name, sex, status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.uuid) AS total_student FROM parents WHERE status = \'active\' ');
 
         return response()->json([
             'status' => 'done',
@@ -45,7 +45,7 @@ class ParentsController extends Controller
         student.flsh_strand,
         student.flsh_track,
         student.picture_base64 AS photo,
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn,
         student.qr_code,
         student.sex,
@@ -57,8 +57,8 @@ class ParentsController extends Controller
         school_class.strands AS strand,
         school_class.level AS grade_level
         FROM student_guardians
-        LEFT JOIN student ON student.id = student_guardians.student_id
-        LEFT JOIN advisory_group ON advisory_group.student_id = student.id AND advisory_group.status = \'active\'
+        LEFT JOIN student ON student.uuid = student_guardians.student_id
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid AND advisory_group.status = \'active\'
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
         WHERE  student_guardians.parents_id = ?',[$id]);
@@ -114,6 +114,7 @@ class ParentsController extends Controller
 
         if($Student->count()==0) {
             $customer = Parents::create($request->except(['contact_list']));
+            DB::table('parents')->where('id', $customer->id)->update(['uuid' => $customer->id]);
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 

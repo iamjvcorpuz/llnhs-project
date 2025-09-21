@@ -118,6 +118,8 @@ color: black;
 }
 .attendance-nav {
     background-color: #9ccdfa;
+    /* background-color: #1b5675;
+    color: white; */
 
     border-color: #028eb4;
     border-style: solid; 
@@ -282,6 +284,7 @@ color: black;
 .attendance-login-profile {
     margin-top: 50px;
     width: 90%!important; 
+    min-height: 36vh!important; 
     max-height: 45.5vh!important; 
 }
 .header_time {
@@ -868,4 +871,58 @@ img {
     background-size: 50% 100%!important;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+.table-hover tbody tr {
+    transition: background-color 0.3s ease;
+}
+.table-hover tbody tr:hover {
+    background-color: #f0f8ff!important; /* Light blue */
+}
+
+.table-hover tbody tr:hover td {
+    color: #007bff; /* Bootstrap primary blue */
+}
+
+.status-float-attendance-page {
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+    
+    background-color: gray;
+    min-height: 20px;
+    min-width: 20px;
+
+    border-radius: .575rem;
+
+    border-color: #028eb4;
+    border-style: solid; 
+    border-bottom-width: 1px;
+
+    box-shadow:0 0 20px rgb(74 152 224 / 93%);
+}
+.status-float-attendance-page-server-connecting {
+    animation: blink-yellow 1s linear infinite;
+}
+.status-float-attendance-page-server-connected {
+    background-color: green!important;
+}
+.status-float-attendance-page-server-disconnected {
+    animation: blink-red 1s linear infinite;
+}
+@keyframes blink-red {
+    0%, 100% {
+      background-color: #ff0000; /* First color - red */
+    }
+    50% {
+      background-color: gray; /* Second color - blue */
+    }
+}
+@keyframes blink-yellow {
+    0%, 100% {
+      background-color: #fbff00; /* First color - red */
+    }
+    50% {
+      background-color: gray; /* Second color - blue */
+    }
 }
