@@ -321,14 +321,14 @@ Route::post('/messenger/all/recepient',function(Request $request) {
 });
 // Route::post('/messenger/recepient/sync',[MessengerController::class,'pullMessengerClientData']);
 Route::post('/messenger/recepient/sync',function() {
-    $id = AuthenticatedSessionController::getAuthId();
-    if($id!=null) {
+    // $id = AuthenticatedSessionController::getAuthId();
+    // if($id!=null) {
        return [MessengerController::pullMessengerClientData()];
-    } else {
-        http_response_code(500);
-        echo json_encode(['message' => 'Crazy thing just happened!' ]);
-        exit();
-    }
+    // } else {
+    //     http_response_code(500);
+    //     echo json_encode(['message' => 'Crazy thing just happened!' ]);
+    //     exit();
+    // }
 });
 // Route::post('/messenger/send/message',[MessengerController::class,'sendMessage'])->middleware('auth');
 Route::post('/messenger/send/message',[MessengerController::class,'sendMessage']);
