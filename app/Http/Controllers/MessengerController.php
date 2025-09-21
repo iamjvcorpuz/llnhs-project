@@ -141,33 +141,38 @@ class MessengerController extends Controller
             // echo $url;
             // echo "<pre>";
             
-            $index = 0;
-            foreach ($response->object()->data as $key => $value) {
-                // print_r($value->participants->data[0]);
-                $index++;
-                $object = new stdClass();
-                $object2 = new stdClass();
-                $object->index = $index;
-                $object->fullname = $value->participants->data[0]->name;
-                $object->fb_id = $value->participants->data[0]->id;
-                $object2->index = $index;
-                $object2->fullname = $value->participants->data[0]->name; 
-                $messenger = DB::table('messenger')
-                    ->where('fullname', '=', $value->participants->data[0]->name)
-                    ->orWhere('fb_id', '=', $value->participants->data[0]->id)
-                    ->get();
-                if($messenger->count()==0) {
-                    MessengerFB::create([
-                        'fullname' => $value->participants->data[0]->name,
-                        'fb_id' => $value->participants->data[0]->id,
-                        'email' => $value->participants->data[0]->email
-                    ]);
-                }
-                array_push($list,$object2);
-            }
-            // print_r($response->object()->data);
-            // echo "</pre>";
+
             if($response->status()==200) {
+
+                $index = 0;
+                foreach ($response->object()->data as $key => $value) {
+                    // print_r($value->participants->data[0]);
+                    $index++;
+                    $object = new stdClass();
+                    $object2 = new stdClass();
+                    $object->index = $index;
+                    $object->fullname = $value->participants->data[0]->name;
+                    $object->fb_id = $value->participants->data[0]->id;
+                    $object2->index = $index;
+                    $object2->fullname = $value->participants->data[0]->name; 
+                    $messenger = DB::table('messenger')
+                        ->where('fullname', '=', $value->participants->data[0]->name)
+                        ->orWhere('fb_id', '=', $value->participants->data[0]->id)
+                        ->get();
+                    if($messenger->count()==0) {
+                        MessengerFB::create([
+                            'fullname' => $value->participants->data[0]->name,
+                            'fb_id' => $value->participants->data[0]->id,
+                            'email' => $value->participants->data[0]->email
+                        ]);
+                    }
+                    array_push($list,$object2);
+                }
+                // print_r($response->object()->data);
+                // echo "</pre>";
+
+
+
                 return response()->json([
                     'status' => 'success',
                     'error' => null,

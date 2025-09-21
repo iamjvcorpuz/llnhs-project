@@ -57,7 +57,7 @@ export default class NotificationSettings extends Component {
             });
         })
         
-        // this.getFBList();
+        this.getFBList();
     }
     saveData() {
         let self = this; 
@@ -73,7 +73,7 @@ export default class NotificationSettings extends Component {
             sms_absent,
             sms_present
         };
-        console.log(datas);
+        // console.log(datas);
         if(enable_sms != null && enable_fb != null && sms_present != "" && sms_absent != "" ) {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
@@ -463,7 +463,7 @@ export default class NotificationSettings extends Component {
         ReactNotificationManager.info('Please wait','Getting accounts in messenger')   
         axios.post('/messenger/recepient/sync').then(function (response) {
           // handle success
-        //   console.log(response)
+          console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
 

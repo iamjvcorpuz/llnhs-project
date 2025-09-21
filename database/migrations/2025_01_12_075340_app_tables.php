@@ -548,6 +548,17 @@ return new class extends Migration
                 $table->timestampTz('updated_at')->useCurrent()->useCurrentOnUpdate();
             });
         }
+
+        if (Schema::hasTable('messenger') == false) { 
+            Schema::create('messenger', function (Blueprint $table) {
+                $table->id();
+                $table->string('fullname')->nullable();
+                $table->string('email')->nullable();
+                $table->string('fb_id')->nullable();
+                $table->timestampTz('created_at')->useCurrent();
+                $table->timestampTz('updated_at')->useCurrent()->useCurrentOnUpdate();
+            });
+        }
     }
 
     /**
@@ -588,5 +599,6 @@ return new class extends Migration
         Schema::dropIfExists('classrooms_seats');
         Schema::dropIfExists('classrooms_seats_assign');
         Schema::dropIfExists('education_background');
+        Schema::dropIfExists('messenger');
     }
 };
