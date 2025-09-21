@@ -231,92 +231,92 @@ class DefaultDataSeeder extends Seeder
             "updated_at" => \Carbon\Carbon::now()
         ]);
         
-        DB::table('classrooms')->insert([
-            'room_number' => '100', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
-        DB::table('classrooms')->insert([
-            'room_number' => '101', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
-        DB::table('classrooms')->insert([
-            'room_number' => '102', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
-        DB::table('classrooms')->insert([
-            'room_number' => '103', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '100', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '101', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '102', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '103', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
-        DB::table('classrooms')->insert([
-            'room_number' => '104', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '104', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
-        DB::table('classrooms')->insert([
-            'room_number' => '105', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '105', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
-        DB::table('classrooms')->insert([
-            'room_number' => '106', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '106', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
-        DB::table('classrooms')->insert([
-            'room_number' => '107', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '107', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
-        DB::table('classrooms')->insert([
-            'room_number' => '108', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '108', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
-        DB::table('classrooms')->insert([
-            'room_number' => '109', 
-            'floor_number' => 'NA', 
-            'building_no' => '111', 
-            'description' => 'NA',
-            "created_at" =>  \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ]);
+        // DB::table('classrooms')->insert([
+        //     'room_number' => '109', 
+        //     'floor_number' => 'NA', 
+        //     'building_no' => '111', 
+        //     'description' => 'NA',
+        //     "created_at" =>  \Carbon\Carbon::now(),
+        //     "updated_at" => \Carbon\Carbon::now()
+        // ]);
 
         DB::table('system_settings')->insert([
             'setting' => 'ENABLE_SMS', 
