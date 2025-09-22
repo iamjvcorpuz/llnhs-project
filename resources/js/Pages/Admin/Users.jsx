@@ -37,14 +37,16 @@ export default class Users extends Component {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
-                    accessor: 'fullname'
+                    accessor: 'fullname',
+                    filterable: true,
                 }, 
                 {
                     id: "type",
                     Header: 'User Type',  
                     width: 100,
                     accessor: 'user_role',
-                    className: "center"
+                    className: "center",
+                    filterable: true
                 },   
                 {
                     id: "action",

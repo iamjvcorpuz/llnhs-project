@@ -734,10 +734,9 @@ class StudentController extends Controller
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
             'bdate' => 'required|string',
-            'sex' => 'required|string',
-            'parents' => 'required',
-            'relationship' => 'required'
+            'sex' => 'required|string'            
         ]);
+        // 'parents' => 'required','relationship' => 'required'
 
         if ($validator->fails()) {
             return response()->json([

@@ -45,7 +45,7 @@ export default class NewStudent extends Component {
             cd_barangay: "",
             cd_mc: "",
             cd_province: "",
-            cd_country: "",
+            cd_country: "Philippines",
             cd_zip: "",
             is_pa_same_cd: "",
             pa_hno: "",
@@ -53,7 +53,7 @@ export default class NewStudent extends Component {
             pa_barangay: "",
             pa_mc: "",
             pa_province: "",
-            pa_country: "",
+            pa_country: "Philippines",
             pa_zip: "",
             lglc: "",
             lsyc: "",
@@ -777,7 +777,28 @@ export default class NewStudent extends Component {
                                             <div className="form-inline clearfix">
                                             <label htmlFor="is4ps" className="form-label pr-5">Same with your Current Address?</label>
                                                 <div className="icheck-primary d-inline pr-2">
-                                                    <input type="radio" id="issamecd1" name="issamecd" onChange={() => { $('#fspa').attr('disabled',"disabled"); this.setState({is_pa_same_cd: true}); }}/>
+                                                    <input type="radio" id="issamecd1" name="issamecd" onChange={() => { 
+                                                        $('#fspa').attr('disabled',"disabled"); 
+                                                        this.setState({is_pa_same_cd: true});
+                                                        console.log({
+                                                            pa_hno: this.state.cd_hno,
+                                                            pa_sn: this.state.cd_sn,
+                                                            pa_barangay: this.state.cd_barangay,
+                                                            pa_mc: this.state.cd_mc,
+                                                            pa_province: this.state.cd_province,
+                                                            pa_zip: this.state.cd_zip,
+                                                            pa_country: this.state.cd_country,
+                                                        });
+                                                        this.setState({
+                                                            pa_hno: this.state.cd_hno,
+                                                            pa_sn: this.state.cd_sn,
+                                                            pa_barangay: this.state.cd_barangay,
+                                                            pa_mc: this.state.cd_mc,
+                                                            pa_province: this.state.cd_province,
+                                                            pa_zip: this.state.cd_zip,
+                                                            pa_country: this.state.cd_country,
+                                                        });
+                                                    }}/>
                                                     <label htmlFor="issamecd1">
                                                         Yes
                                                     </label>
@@ -796,37 +817,37 @@ export default class NewStudent extends Component {
                                             <div className="row g-3" >
                                                 <div className="col-md-4">
                                                     <label htmlFor="ca_hn" className="form-label">House No.</label>
-                                                    <input type="text" className="form-control" id="pa_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_hno: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="pa_hn" defaultValue={this.state.pa_hno} required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_hno: e.target.value})}}  />
                                                     <div id="pa_hn-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                                 <div className="col-md-4">
                                                     <label htmlFor="ca_hn" className="form-label">Sitio/Street Name</label>
-                                                    <input type="text" className="form-control" id="pa_sn" defaultValue="" required="" onChange={(e) => { $("#pa_sn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_sn: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="pa_sn" defaultValue={this.state.pa_sn} required="" onChange={(e) => { $("#pa_sn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_sn: e.target.value})}}  />
                                                     <div id="pa_sn-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                                 <div className="col-md-4">
                                                     <label htmlFor="pa_barangay" className="form-label">Barangay</label>
-                                                    <input type="text" className="form-control" id="pa_barangay" defaultValue="" required="" onChange={(e) => { $("#pa_barangy-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_barangay: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="pa_barangay" defaultValue={this.state.pa_barangay} required="" onChange={(e) => { $("#pa_barangy-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_barangay: e.target.value})}}  />
                                                     <div id="pa_barangay-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                                 <div className="col-md-4">
                                                     <label htmlFor="pa_mc" className="form-label">Municipality/City</label>
-                                                    <input type="text" className="form-control" id="pa_mc" defaultValue="" required="" onChange={(e) => { $("#pa_mc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_mc: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="pa_mc" defaultValue={this.state.pa_mc} required="" onChange={(e) => { $("#pa_mc-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_mc: e.target.value})}}  />
                                                     <div id="pa_mc-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                                 <div className="col-md-4">
                                                     <label htmlFor="ca_hn" className="form-label">Province</label>
-                                                    <input type="text" className="form-control" id="pa_province" defaultValue="" required="" onChange={(e) => { $("#pa_province-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_province: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="pa_province" defaultValue={this.state.pa_province} required="" onChange={(e) => { $("#pa_province-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_province: e.target.value})}}  />
                                                     <div id="pa_province-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                                 <div className="col-md-4">
                                                     <label htmlFor="ca_hn" className="form-label">Country</label>
-                                                    <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#pa_country-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_country: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="ca_hn" defaultValue={this.state.pa_country} required="" onChange={(e) => { $("#pa_country-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_country: e.target.value})}}  />
                                                     <div id="pa_country-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                                 <div className="col-md-4">
                                                     <label htmlFor="ca_hn" className="form-label">Zip Code</label>
-                                                    <input type="text" className="form-control" id="pa_zip" defaultValue="" required="" onChange={(e) => { $("#pa_zip-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_zip: e.target.value})}}  />
+                                                    <input type="text" className="form-control" id="pa_zip" defaultValue={this.state.pa_zip} required="" onChange={(e) => { $("#pa_zip-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({pa_zip: e.target.value})}}  />
                                                     <div id="pa_zip-alert" className="valid-feedback">Looks good!</div>
                                                 </div> 
                                             </div>
