@@ -233,6 +233,7 @@ export default class Student extends Component {
     }
 
     deleteStudent(id) {
+        let self = this;
         Swal.fire({
             title: "Are you sure to remove this data?", 
             showCancelButton: true,
@@ -273,6 +274,7 @@ export default class Student extends Component {
                                     dangerMode: true,
                                 }).then(function (result2) {
                                     if(result2.isConfirmed) { 
+                                        self.loadStudentList();
                                         Swal.close();
                                     }
                                 });

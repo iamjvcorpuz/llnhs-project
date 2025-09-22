@@ -129,26 +129,30 @@ export default class Parents extends Component {
         let self = this;
         axios.get('/parents').then(function (response) {
           // handle success
-          console.log(response)
+        //   console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
-                data.forEach((element,index,arr) => {
-                        list.push({
-                            id: element.uuid,
-                            no: index + 1,
-                            photo: element.picture_base64,
-                            lrn: element.lrn,
-                            fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
-                            level: "None",
-                            section: "None",
-                            sex: element.sex,
-                            status: element.status,
-                            total_student: element.total_student
-                        })
-                    if((index + 1) == arr.length) {
-                        self.setState({data: list});
-                    }                    
-                });
+                if(data.length>0) {
+                    data.forEach((element,index,arr) => {
+                            list.push({
+                                id: element.uuid,
+                                no: index + 1,
+                                photo: element.picture_base64,
+                                lrn: element.lrn,
+                                fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
+                                level: "None",
+                                section: "None",
+                                sex: element.sex,
+                                status: element.status,
+                                total_student: element.total_student
+                            })
+                        if((index + 1) == arr.length) {
+                            self.setState({data: list});
+                        }                    
+                    });
+                } else {
+                    self.setState({data: []});
+                }
                 // console.log(data);
             }
         }).catch(function (error) {
@@ -160,6 +164,7 @@ export default class Parents extends Component {
     }
 
     deleteParent(id) {
+        let self = this;
         Swal.fire({
             title: "Are you sure to remove this data?", 
             showCancelButton: true,
@@ -200,6 +205,7 @@ export default class Parents extends Component {
                                     dangerMode: true,
                                 }).then(function (result2) {
                                     if(result2.isConfirmed) { 
+                                        self.loadStudentList();
                                         Swal.close();
                                     }
                                 });
