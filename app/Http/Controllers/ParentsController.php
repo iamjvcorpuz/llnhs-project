@@ -66,7 +66,11 @@ class ParentsController extends Controller
     public static function newId() {
         // $id = DB::select('SELECT LAST_INSERT_ID() INTO parents;');
         $d = $trans = Parents::orderBy('id', 'desc')->take(1)->first();
-        return $d->id+1;
+        $id_ = 1;
+        if($d != null) {
+            $id_ =  $d->id+1;
+        }
+        return $id_;
     }
     public static function getData($id)
     {
