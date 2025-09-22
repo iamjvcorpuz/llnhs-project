@@ -237,12 +237,12 @@ export default function SideNav({
                       <p>Notification Settings</p>
                     </Link>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <Link href="/admin/notifications" className="nav-link">
                       <i className="nav-icon bi bi-file-earmark-spreadsheet-fill"></i>
                       <p>Import Data</p>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </li>
               
