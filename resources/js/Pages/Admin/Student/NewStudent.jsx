@@ -780,15 +780,15 @@ export default class NewStudent extends Component {
                                                     <input type="radio" id="issamecd1" name="issamecd" onChange={() => { 
                                                         $('#fspa').attr('disabled',"disabled"); 
                                                         this.setState({is_pa_same_cd: true});
-                                                        console.log({
-                                                            pa_hno: this.state.cd_hno,
-                                                            pa_sn: this.state.cd_sn,
-                                                            pa_barangay: this.state.cd_barangay,
-                                                            pa_mc: this.state.cd_mc,
-                                                            pa_province: this.state.cd_province,
-                                                            pa_zip: this.state.cd_zip,
-                                                            pa_country: this.state.cd_country,
-                                                        });
+                                                        // console.log({
+                                                        //     pa_hno: this.state.cd_hno,
+                                                        //     pa_sn: this.state.cd_sn,
+                                                        //     pa_barangay: this.state.cd_barangay,
+                                                        //     pa_mc: this.state.cd_mc,
+                                                        //     pa_province: this.state.cd_province,
+                                                        //     pa_zip: this.state.cd_zip,
+                                                        //     pa_country: this.state.cd_country,
+                                                        // });
                                                         this.setState({
                                                             pa_hno: this.state.cd_hno,
                                                             pa_sn: this.state.cd_sn,
@@ -804,7 +804,19 @@ export default class NewStudent extends Component {
                                                     </label>
                                                 </div>
                                                 <div className="icheck-primary d-inline">
-                                                    <input type="radio" id="issamecd2" name="issamecd" onChange={() => { $('#fspa').removeAttr('disabled'); this.setState({is_pa_same_cd: true}); }}/>
+                                                    <input type="radio" id="issamecd2" name="issamecd" onChange={() => { 
+                                                        $('#fspa').removeAttr('disabled'); 
+                                                        this.setState({is_pa_same_cd: true}); 
+                                                        this.setState({
+                                                            pa_hno: "",
+                                                            pa_sn: "",
+                                                            pa_barangay: "",
+                                                            pa_mc: "",
+                                                            pa_province: "",
+                                                            pa_zip: "",
+                                                            pa_country: "",
+                                                        });
+                                                    }}/>
                                                     <label htmlFor="issamecd2">
                                                         No
                                                     </label>
