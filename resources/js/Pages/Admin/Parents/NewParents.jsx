@@ -109,7 +109,7 @@ export default class NewTeacher extends Component {
     
     saveData() {
         let self = this;
-        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "") {
+        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "" && self.state.address != "" && self.state.contact_list.length > 0 ) { //
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
                 $("#invalidCheck-alert").addClass('d-block invalid-feedback');
@@ -240,21 +240,50 @@ export default class NewTeacher extends Component {
                             }
                       }).catch(function (error) {
                         // handle error
-                        console.log(error);
-                        Swal.fire({  
-                            title: "Server Error", 
-                            showCancelButton: true,
-                            showConfirmButton: false,
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            cancelButtonText: "Ok",
-                            confirmButtonText: "Continue",
-                            confirmButtonColor: "#DD6B55",
-                            icon: "error",
-                            showLoaderOnConfirm: true, 
-                            closeOnClickOutside: false,  
-                            dangerMode: true,
-                        });
+                        // console.log(error);
+                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                            let listmessage = "";
+
+                            if(Object.keys(data.errors).length> 0) {
+                                Object.keys(data.errors).forEach(element => {
+                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                });
+                            }
+
+                            Swal.fire({  
+                                title: data.message ,
+                                html:`<ul class="list-group" >${listmessage}</ul>`, 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+
+                        } else {
+                            Swal.fire({  
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
+
                       })
                 } else if(result.isDismissed) {
 
@@ -292,6 +321,16 @@ export default class NewTeacher extends Component {
                 $("#lrn-alert").removeAttr('class');
                 $("#lrn-alert").html('Required Field');
                 $("#lrn-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.address == "") {
+                $("#address-alert").removeAttr('class');
+                $("#address-alert").html('Required Field');
+                $("#address-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.contact_list.length == 0) {
+                $("#contact-alert").removeAttr('class');
+                $("#contact-alert").html('Required Field');
+                $("#contact-alert").addClass('d-block invalid-feedback');
             }
         }
     }
@@ -459,6 +498,8 @@ export default class NewTeacher extends Component {
 
                                                     }}>Add</button>
                                                 </div>
+
+                                                <div id="contact-alert" className="valid-feedback">Looks good!</div>
                                             </div>  
                                         </div>
                                     </div>
