@@ -39,6 +39,7 @@
         "@yudiel/react-qr-scanner": "^2.2.1",
         "apexcharts": "^4.4.0",
         "bootstrap": "^5.3.3",
+        "caniuse-lite": "^1.0.30001743",
         "datatables.net-bs5": "^2.2.2",
         "install": "^0.13.0",
         "jquery": "^3.7.1",
