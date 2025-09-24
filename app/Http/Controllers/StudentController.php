@@ -743,7 +743,7 @@ class StudentController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation error',
+                'message' => 'Required Fields',
                 'errors' => $validator->errors()
             ], 422);
         }
