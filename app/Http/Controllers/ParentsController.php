@@ -138,16 +138,29 @@ class ParentsController extends Controller
 
             $usernames = $usernames . ucfirst(strtolower($lastname));
 
-            UserAccounts::factory()->state([
+
+            $UserAccounts = UserAccounts::create([
                 'user_id' => $customer->id,
                 'user_type' => 'Guardian',
                 'user_role_id' => 4,
                 'fullname' => $firstname . " " . $lastname,
                 'username' => $usernames,
-                'password' => Hash::make($password),
-                'plainpassword' => $password,
+                'password' => Hash::make($usernames),
+                'plainpassword' => $usernames,
                 'verified' => null
-            ])->create();
+            ]); 
+            DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);
+
+            // UserAccounts::factory()->state([
+            //     'user_id' => $customer->id,
+            //     'user_type' => 'Guardian',
+            //     'user_role_id' => 4,
+            //     'fullname' => $firstname . " " . $lastname,
+            //     'username' => $usernames,
+            //     'password' => Hash::make($password),
+            //     'plainpassword' => $password,
+            //     'verified' => null
+            // ])->create();
 
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
