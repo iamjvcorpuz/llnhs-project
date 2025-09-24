@@ -217,7 +217,7 @@ Route::get('/admin/dashboard/student/print/{id}', function ($id) {
 
 Route::get('/admin/dashboard/student/update/{id}', function (String $id) {
     return Inertia::render('Admin/Student/EditStudent',[
-        'parents' => ParentsController::getAll(),
+        'parents' => ParentsController::getAllActive(),
         'student' => StudentController::getData($id),
         'guardians' => StudentController::getStudentGuardian($id),
         'track' => ProgramsCurricularController::getTrack(),

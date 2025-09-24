@@ -1050,7 +1050,7 @@ export default class NewStudent extends Component {
                                             }} />
                                             <div className="col-lg-5">
                                                 <label htmlFor="relationship" className="form-label">Relationship</label>
-                                                <input type="text" className="form-control" id="relationship" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="relationship" list="parentsOptions" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
                                                 <div id="relationship-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                         </div>
@@ -1141,6 +1141,30 @@ export default class NewStudent extends Component {
 
             <datalist id="selectedSY">
                 <option >2025 - 2026</option>
+            </datalist>
+
+            <datalist id="parentsOptions">
+                <option >Father</option>
+                <option >Mother</option>
+                <option >Son</option>
+                <option >Daughter</option>
+                <option >Husband</option>
+                <option >Wife</option>
+                <option >Brother</option>
+                <option >Sister</option>
+                <option >Grandparents</option>
+                <option >Aunt</option>
+                <option >Uncle</option>
+                <option >Nephew</option>
+                <option >Cousin</option>
+                <option >Father-in-law</option>
+                <option >Mother-in-law</option>
+                <option >Brother-in-law</option>
+                <option >Sister-in-law</option>
+                <option >Stepparent</option>
+                <option >Stepchild</option>
+                <option >Stepsibling</option>
+                <option >Half-sibling</option> 
             </datalist>
 
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">

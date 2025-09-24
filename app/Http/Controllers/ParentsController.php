@@ -33,6 +33,10 @@ class ParentsController extends Controller
     {
         return Parents::all();
     }
+    public static function getAllActive() 
+    {
+        return DB::select('SELECT * FROM parents WHERE status = "active"');
+    }
     public static function getAllMyChildren($id) 
     {
         return  DB::select('SELECT 
