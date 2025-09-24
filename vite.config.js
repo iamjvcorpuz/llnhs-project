@@ -23,7 +23,7 @@ export default defineConfig({
         outDir: 'public/build',
     },
     define: {
-        'process.env.APP_URL': JSON.stringify(process.env.APP_URL || 'https://correct-snapper-remarkably.ngrok-free.app'),
+        'process.env.APP_URL': JSON.stringify(process.env.APP_URL || 'https://llnhs-ams.ngrok.io'),
     }
 });
 
