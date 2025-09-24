@@ -758,6 +758,9 @@ class StudentController extends Controller
         if($Student->count()==0) {
             if($StudentLRN->count()==0) {
 
+                $student_username = "";
+                $student_passwird = "";
+
                 $customer = Student::create($request->except(['parents','relationship'])); 
 
                 DB::table('student')->where('id', $customer->id)->update(['uuid' => $customer->id]);
@@ -835,7 +838,7 @@ class StudentController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation error',
+                'message' => 'Required Fields',
                 'errors' => $validator->errors()
             ], 422);
         }

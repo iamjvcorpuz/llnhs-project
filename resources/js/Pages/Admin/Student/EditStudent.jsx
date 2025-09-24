@@ -278,101 +278,143 @@ export default class EditStudent extends Component {
                     console.log(datas);
                     axios.post('/student/update',datas).then(function (response) {
                         // handle success
-                        console.log(response);
-                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status == "success") {
-                                    Swal.fire({  
-                                        title: "Successfuly save!", 
-                                        showCancelButton: true,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        confirmButtonText: "Continue", 
-                                        icon: "success",
-                                        showLoaderOnConfirm: true, 
-                                        closeOnClickOutside: false,  
-                                        dangerMode: true,
-                                    }).then(function (result2) {
-                                        if(result2.isConfirmed) { 
-                                            Swal.close();
-                                            document.getElementById("cancel").click();
+                        // console.log(response);
+                        if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(data.status == "success") {
+                                Swal.fire({  
+                                    title: "Successfuly save!", 
+                                    showCancelButton: true,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    confirmButtonText: "Continue", 
+                                    icon: "success",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                }).then(function (result2) {
+                                    if(result2.isConfirmed) { 
+                                        Swal.close();
+                                        document.getElementById("cancel").click();
+                                    }
+                                });
+
+                            } else {
+                                Swal.fire({  
+                                    title: "Fail to save", 
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    cancelButtonText: "Ok",
+                                    confirmButtonText: "Continue",
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: false, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                            }
+                        } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(data.status == "data_exist") { 
+                                Swal.fire({  
+                                    title: "Data Exist", 
+                                    cancelButtonText: "Ok",
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false, 
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                                // console.log(typeof(data.data)!="undefined",data.data.length>0)
+                                if(typeof(data.data)!="undefined"&&data.data.length>0) {
+                                    data.data.forEach((val,i,arr) => {
+                                        console.log(val)
+                                        if(val.field=='lrn') {
+                                            $("#lrn-alert").removeAttr('class');
+                                            $("#lrn-alert").html('LRN is already exist');
+                                            $("#lrn-alert").addClass('d-block invalid-feedback');
+                                        } else if(val.field=='first_name') {
+                                            $("#first-name-alert").removeAttr('class');
+                                            $("#first-name-alert").html('First is already exist');
+                                            $("#first-name-alert").addClass('d-block invalid-feedback');
+                                        } else if(val.field=='last_name') {
+                                            $("#last-name-alert").removeAttr('class');
+                                            $("#last-name-alert").html('Last is already exist');
+                                            $("#last-name-alert").addClass('d-block invalid-feedback');
+                                        } else if(val.field=='middle_name') {
+                                            $("#middle-name-alert").removeAttr('class');
+                                            $("#middle-name-alert").html('Middle is already exist');
+                                            $("#middle-name-alert").addClass('d-block invalid-feedback');
                                         }
                                     });
-
-                                } else {
-                                    Swal.fire({  
-                                        title: "Fail to save", 
-                                        showCancelButton: true,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        cancelButtonText: "Ok",
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
-                                        icon: "error",
-                                        showLoaderOnConfirm: false, 
-                                        closeOnClickOutside: false,  
-                                        dangerMode: true,
-                                    });
-                                }
-                            } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status == "data_exist") { 
-                                    Swal.fire({  
-                                        title: "Data Exist", 
-                                        cancelButtonText: "Ok",
-                                        showCancelButton: true,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false, 
-                                        confirmButtonColor: "#DD6B55",
-                                        icon: "error",
-                                        showLoaderOnConfirm: true, 
-                                        closeOnClickOutside: false,  
-                                        dangerMode: true,
-                                    });
-                                    // console.log(typeof(data.data)!="undefined",data.data.length>0)
-                                    if(typeof(data.data)!="undefined"&&data.data.length>0) {
-                                        data.data.forEach((val,i,arr) => {
-                                            console.log(val)
-                                            if(val.field=='lrn') {
-                                                $("#lrn-alert").removeAttr('class');
-                                                $("#lrn-alert").html('LRN is already exist');
-                                                $("#lrn-alert").addClass('d-block invalid-feedback');
-                                            } else if(val.field=='first_name') {
-                                                $("#first-name-alert").removeAttr('class');
-                                                $("#first-name-alert").html('First is already exist');
-                                                $("#first-name-alert").addClass('d-block invalid-feedback');
-                                            } else if(val.field=='last_name') {
-                                                $("#last-name-alert").removeAttr('class');
-                                                $("#last-name-alert").html('Last is already exist');
-                                                $("#last-name-alert").addClass('d-block invalid-feedback');
-                                            } else if(val.field=='middle_name') {
-                                                $("#middle-name-alert").removeAttr('class');
-                                                $("#middle-name-alert").html('Middle is already exist');
-                                                $("#middle-name-alert").addClass('d-block invalid-feedback');
-                                            }
-                                        });
-                                    }
                                 }
                             }
+                        }
                     }).catch(function (error) {
                     // handle error
-                    console.log(error);
-                    Swal.fire({  
-                        title: "Server Error", 
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        cancelButtonText: "Ok",
-                        confirmButtonText: "Continue",
-                        confirmButtonColor: "#DD6B55",
-                        icon: "error",
-                        showLoaderOnConfirm: true, 
-                        closeOnClickOutside: false,  
-                        dangerMode: true,
-                    });
+                    // console.log(error);
+                    // Swal.fire({  
+                    //     title: "Server Error", 
+                    //     showCancelButton: true,
+                    //     showConfirmButton: false,
+                    //     allowOutsideClick: false,
+                    //     allowEscapeKey: false,
+                    //     cancelButtonText: "Ok",
+                    //     confirmButtonText: "Continue",
+                    //     confirmButtonColor: "#DD6B55",
+                    //     icon: "error",
+                    //     showLoaderOnConfirm: true, 
+                    //     closeOnClickOutside: false,  
+                    //     dangerMode: true,
+                    // });
+                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                            let listmessage = "";
+
+                            if(Object.keys(data.errors).length> 0) {
+                                Object.keys(data.errors).forEach(element => {
+                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                });
+                            }
+
+                            Swal.fire({  
+                                title: data.message ,
+                                html:`<ul class="list-group" >${listmessage}</ul>`, 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+
+                        } else {
+                            Swal.fire({  
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
                     })
                 } else if(result.isDismissed) {
 
@@ -1025,7 +1067,7 @@ export default class EditStudent extends Component {
                                             }} />
                                             <div className="col-lg-5">
                                                 <label htmlFor="relationship" className="form-label">Relationship</label>
-                                                <input type="text" className="form-control" id="relationship" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
+                                                <input type="text" className="form-control" id="relationship" list="parentsOptions" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
                                                 <div id="relationship-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                         </div>
@@ -1116,6 +1158,30 @@ export default class EditStudent extends Component {
 
             <datalist id="selectedSY">
                 <option >2025 - 2026</option>
+            </datalist>
+
+            <datalist id="parentsOptions">
+                <option >Father</option>
+                <option >Mother</option>
+                <option >Son</option>
+                <option >Daughter</option>
+                <option >Husband</option>
+                <option >Wife</option>
+                <option >Brother</option>
+                <option >Sister</option>
+                <option >Grandparents</option>
+                <option >Aunt</option>
+                <option >Uncle</option>
+                <option >Nephew</option>
+                <option >Cousin</option>
+                <option >Father-in-law</option>
+                <option >Mother-in-law</option>
+                <option >Brother-in-law</option>
+                <option >Sister-in-law</option>
+                <option >Stepparent</option>
+                <option >Stepchild</option>
+                <option >Stepsibling</option>
+                <option >Half-sibling</option> 
             </datalist>
 
             <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">
