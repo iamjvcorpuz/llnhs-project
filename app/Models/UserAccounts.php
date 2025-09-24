@@ -16,6 +16,7 @@ class UserAccounts extends Authenticatable
     protected $fillable = [
         'uuid',
         'user_id', 
+        'user_role_id',
         'user_type', 
         'fullname',
         'username',

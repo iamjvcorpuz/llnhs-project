@@ -769,6 +769,7 @@ class StudentController extends Controller
                 foreach($parts as $value) {
                     $usernames= $usernames . $value[0];
                 }
+
                 $usernames = $usernames . ucfirst(strtolower($lastname));
 
                 $customer = Student::create($request->except(['parents','relationship'])); 
@@ -778,7 +779,7 @@ class StudentController extends Controller
                 $parents = $request->input('parents');
                 $relationship = $request->input('relationship');
 
-                UserAccounts::factory()->state([
+                $UserAccounts = UserAccounts::create([
                     'user_id' => $customer->id,
                     'user_type' => 'Student',
                     'user_role_id' => 3,
@@ -787,7 +788,19 @@ class StudentController extends Controller
                     'password' => Hash::make($password),
                     'plainpassword' => $password,
                     'verified' => null
-                ])->create();
+                ]); 
+                DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);
+
+                // UserAccounts::factory()->state([
+                //     'user_id' => $customer->id,
+                //     'user_type' => 'Student',
+                //     'user_role_id' => 3,
+                //     'fullname' => $firstname . " " . $lastname,
+                //     'username' => $usernames,
+                //     'password' => Hash::make($password),
+                //     'plainpassword' => $password,
+                //     'verified' => null
+                // ])->create();
 
                 if($parents != NULL) {
                     StudentGuardian::create([
