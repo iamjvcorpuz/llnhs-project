@@ -383,6 +383,7 @@ export default class NewStudent extends Component {
                 return false
             });            
         } else {
+            $("html, body").animate({ scrollTop: 0 });
             if(self.state.lrn == "") {
                 $("#lrn-alert").removeAttr('class');
                 $("#lrn-alert").html('Required Field');

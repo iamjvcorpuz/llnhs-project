@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Contacts;
 use App\Models\Parents;
 use App\Models\StudentGuardian;
+use App\Models\UserAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class ParentsController extends Controller
 {
@@ -123,6 +125,30 @@ class ParentsController extends Controller
         if($Student->count()==0) {
             $customer = Parents::create($request->except(['contact_list']));
             DB::table('parents')->where('id', $customer->id)->update(['uuid' => $customer->id]);
+
+            $firstname = $request->first_name;
+            $lastname = $request->last_name;
+            $parts = explode(" ", $firstname);
+            $usernames = "";
+            $password = $request->lrn;
+            
+            foreach($parts as $value) {
+                $usernames= $usernames . $value[0];
+            }
+
+            $usernames = $usernames . ucfirst(strtolower($lastname));
+
+            UserAccounts::factory()->state([
+                'user_id' => $customer->id,
+                'user_type' => 'Guardian',
+                'user_role_id' => 4,
+                'fullname' => $firstname . " " . $lastname,
+                'username' => $usernames,
+                'password' => Hash::make($password),
+                'plainpassword' => $password,
+                'verified' => null
+            ])->create();
+
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 

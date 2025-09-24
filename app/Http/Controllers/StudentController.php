@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Models\StudentGuardian;
+use App\Models\UserAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
@@ -758,8 +760,16 @@ class StudentController extends Controller
         if($Student->count()==0) {
             if($StudentLRN->count()==0) {
 
-                $student_username = "";
-                $student_passwird = "";
+                $firstname = $request->first_name;
+                $lastname = $request->last_name;
+                $parts = explode(" ", $firstname);
+                $usernames = "";
+                $password = $request->lrn;
+                
+                foreach($parts as $value) {
+                    $usernames= $usernames . $value[0];
+                }
+                $usernames = $usernames . ucfirst(strtolower($lastname));
 
                 $customer = Student::create($request->except(['parents','relationship'])); 
 
@@ -767,6 +777,17 @@ class StudentController extends Controller
 
                 $parents = $request->input('parents');
                 $relationship = $request->input('relationship');
+
+                UserAccounts::factory()->state([
+                    'user_id' => $customer->id,
+                    'user_type' => 'Student',
+                    'user_role_id' => 3,
+                    'fullname' => $firstname . " " . $lastname,
+                    'username' => $usernames,
+                    'password' => Hash::make($password),
+                    'plainpassword' => $password,
+                    'verified' => null
+                ])->create();
 
                 if($parents != NULL) {
                     StudentGuardian::create([
