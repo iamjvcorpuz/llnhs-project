@@ -228,7 +228,7 @@ export default class Student extends Component {
             }
         }).catch(function (error) {
           // handle error
-        //   console.log(error);
+          console.log(error);
         }).finally(function () {
           // always executed
         });

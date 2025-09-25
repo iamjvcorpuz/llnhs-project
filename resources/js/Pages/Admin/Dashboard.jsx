@@ -14,9 +14,9 @@ export default class Dashboard extends Component {
 		super(props);
         this.state = {
             subjects: this.props.subjects,
-            teachers: this.props.teacher,
+            teachers: (typeof(this.props.teacher)!="undefined"&&this.props.teacher!=null&&this.props.teacher.length>0)?this.props.teacher[0].TOTAL:0,
             advisoryList: this.props.advisory,    
-            student: this.props.student,
+            student: (typeof(this.props.student)!="undefined"&&this.props.student!=null&&this.props.student.length>0)?this.props.student[0].TOTAL:0,
             todayAttendance: [],
             sections: this.props.sections,
             annualTimelogs: this.props.annualTimelogs,
@@ -228,7 +228,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.student.length}</h3>
+                                <h3>{this.state.student}</h3>
                                 <p> Student</p>
                             </div>
                             <svg
@@ -246,7 +246,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"> 
                             <div className="small-box text-bg-primary">
                             <div className="inner">
-                                <h3>{this.state.teachers.length}</h3>
+                                <h3>{this.state.teachers}</h3>
                                 <p>Teacher</p>
                             </div>
                             <svg

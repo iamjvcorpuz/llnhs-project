@@ -87,13 +87,13 @@ export default class EditParents extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        console.log(this.props);
+        // console.log(this.props);
         this.setState({
             photobase64final: (this.props.parents.picture_base64!=null)?this.props.parents.picture_base64:'/adminlte/dist/assets/img/avatar.png',
             ...this.props.parents,
             lrn: this.props.parents.qr_code,
             contact_list: this.props.contacts,
-            parents_id: this.props.parents.id,
+            parents_id: this.props.parents.uuid,
             address: this.props.parents.current_address
         });
         this.getFBList();
@@ -219,18 +219,20 @@ export default class EditParents extends Component {
                                         //     phone_number: element.phone_number,
                                         //     telephone_number: element.phone_number
                                         // })
-                                        axios.post('/contacts',{
-                                            type: null,
-                                            student_id: null,
-                                            teacher_id: response.data.data.id,
-                                            guardian_id: null,
-                                            phone_number: element.phone_number,
-                                            telephone_number: element.phone_number
-                                        }).then(function (response2) {
-                                            if( typeof(response2.status) != "undefined" && response2.status == "201" ) {
-
-                                            }
-                                        })
+                                        if(typeof(element.phone_number) != "undefined") {
+                                            axios.post('/contacts',{
+                                                type: null,
+                                                student_id: null,
+                                                teacher_id: null,
+                                                guardian_id: response.data.data.id,
+                                                phone_number: element.phone_number,
+                                                telephone_number: element.phone_number
+                                            }).then(function (response2) {
+                                                if( typeof(response2.status) != "undefined" && response2.status == "201" ) {
+    
+                                                }
+                                            })
+                                        }
                                     });
 
                                     Swal.fire({  
@@ -288,7 +290,7 @@ export default class EditParents extends Component {
                             }
                       }).catch(function (error) {
                         // handle error
-                        // console.log(error);
+                        console.log(error);
                         if(error) {
                             // if(error.status == "422") {
                             //     Swal.fire({  
@@ -471,147 +473,171 @@ export default class EditParents extends Component {
     }
 
     updateMessenger(val) {
-        console.log(val);
+        let self = this;
+        // console.log(val,self.state.contact_list);
         try {
-            let self = this;
-            let datas =  {
-                dmode: typeof(val.dmode)!="undefined"?val.dmode:"update",
-                id: self.state.id,
-                messenger_name: val.fullname, 
-                messenger_id: val.fb_id,
-                messenger_email: val.email,
-                contact_id: self.state.contact_list[0].id, 
-                contact_list: self.state.contact_list
-            };
-            // console.log(datas);
-            Swal.fire({
-                title: "To pair this messenger account to parent account click to continue to connect or pair", 
-                showCancelButton: true,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonText: "Continue", 
-                icon: "warning",
-                showLoaderOnConfirm: true, 
-                closeOnClickOutside: false,  
-                dangerMode: true,
-            }).then((result) => {
-                // console.log("result",result)
-                if(result.isConfirmed) {
-                    // Swal.close();
-                    Swal.fire({  
-                        title: 'Please wait.', 
-                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                          Swal.showLoading();
-                        }
-                    });
-                    axios.post('/parents/update/messenger',datas).then( async function (response) {
-                        // handle success
-                        // console.log(response);
-                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status == "success") {
-    
-                                    Swal.fire({  
-                                        title: "Successfuly save!", 
-                                        showCancelButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        confirmButtonText: "Continue", 
-                                        icon: "success",
-                                        showLoaderOnConfirm: true, 
-                                        closeOnClickOutside: false,  
-                                        dangerMode: true,
-                                    }).then(function (result2) {
-                                        if(result2.isConfirmed) { 
-                                            Swal.close();
-                                            $('#fbmessenger').modal('hide');
-                                            window.location.reload();
-                                        }
-                                    });
-    
-                                } else {
-                                    Swal.fire({  
-                                        title: "Fail to save", 
-                                        showCancelButton: true,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        cancelButtonText: "Ok",
-                                        confirmButtonText: "Continue",
-                                        confirmButtonColor: "#DD6B55",
-                                        icon: "error",
-                                        showLoaderOnConfirm: false, 
-                                        closeOnClickOutside: false,  
-                                        dangerMode: true,
-                                    });
-                                }
-                            } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                                if(data.status == "data_exist") { 
-                                    Swal.fire({  
-                                        title: "Data Exist", 
-                                        cancelButtonText: "Ok",
-                                        showCancelButton: true,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false, 
-                                        confirmButtonColor: "#DD6B55",
-                                        icon: "error",
-                                        showLoaderOnConfirm: true, 
-                                        closeOnClickOutside: false,  
-                                        dangerMode: true,
-                                    });
-                                }
-                            } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
-    
+            if(self.state.contact_list.length>0) {
+                let self = this;
+                let datas =  {
+                    dmode: typeof(val.dmode)!="undefined"?val.dmode:"update",
+                    id: self.state.id,
+                    messenger_name: val.fullname, 
+                    messenger_id: val.fb_id,
+                    messenger_email: val.email,
+                    contact_id: self.state.contact_list[0].id, 
+                    contact_list: self.state.contact_list
+                };
+                // console.log(datas);
+                Swal.fire({
+                    title: "To pair this messenger account to parent account click to continue to connect or pair", 
+                    showCancelButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonText: "Continue", 
+                    icon: "warning",
+                    showLoaderOnConfirm: true, 
+                    closeOnClickOutside: false,  
+                    dangerMode: true,
+                }).then((result) => {
+                    // console.log("result",result)
+                    if(result.isConfirmed) {
+                        // Swal.close();
+                        Swal.fire({  
+                            title: 'Please wait.', 
+                            html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                              Swal.showLoading();
                             }
-                    }).catch(function (error) {
-                    // handle error
-                    // console.log(error);
-                    if(error) {
-                        if(error.status == "422") {
+                        });
+                        axios.post('/parents/update/messenger',datas).then( async function (response) {
+                            // handle success
+                            // console.log(response);
+                                if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                    let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                    if(data.status == "success") {
+        
+                                        Swal.fire({  
+                                            title: "Successfuly save!", 
+                                            showCancelButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            confirmButtonText: "Continue", 
+                                            icon: "success",
+                                            showLoaderOnConfirm: true, 
+                                            closeOnClickOutside: false,  
+                                            dangerMode: true,
+                                        }).then(function (result2) {
+                                            if(result2.isConfirmed) { 
+                                                Swal.close();
+                                                $('#fbmessenger').modal('hide');
+                                                window.location.reload();
+                                            }
+                                        });
+        
+                                    } else {
+                                        Swal.fire({  
+                                            title: "Fail to save", 
+                                            showCancelButton: true,
+                                            showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            cancelButtonText: "Ok",
+                                            confirmButtonText: "Continue",
+                                            confirmButtonColor: "#DD6B55",
+                                            icon: "error",
+                                            showLoaderOnConfirm: false, 
+                                            closeOnClickOutside: false,  
+                                            dangerMode: true,
+                                        });
+                                    }
+                                } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                                    let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                    if(data.status == "data_exist") { 
+                                        Swal.fire({  
+                                            title: "Data Exist", 
+                                            cancelButtonText: "Ok",
+                                            showCancelButton: true,
+                                            showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false, 
+                                            confirmButtonColor: "#DD6B55",
+                                            icon: "error",
+                                            showLoaderOnConfirm: true, 
+                                            closeOnClickOutside: false,  
+                                            dangerMode: true,
+                                        });
+                                    }
+                                } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
+        
+                                }
+                        }).catch(function (error) {
+                        // handle error
+                        console.log(error);
+                        if(error) {
+                            if(error.status == "422") {
+                                Swal.fire({  
+                                    title: "Required Field Error", 
+                                    showCancelButton: false,
+                                    showConfirmButton: true,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false, 
+                                    confirmButtonText: "Ok", 
+                                    icon: "error",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                            }
+        
+                        } else {
+        
                             Swal.fire({  
-                                title: "Required Field Error", 
-                                showCancelButton: false,
-                                showConfirmButton: true,
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
                                 allowOutsideClick: false,
-                                allowEscapeKey: false, 
-                                confirmButtonText: "Ok", 
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
                                 icon: "error",
                                 showLoaderOnConfirm: true, 
                                 closeOnClickOutside: false,  
                                 dangerMode: true,
                             });
                         }
-    
-                    } else {
-    
-                        Swal.fire({  
-                            title: "Server Error", 
-                            showCancelButton: true,
-                            showConfirmButton: false,
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            cancelButtonText: "Ok",
-                            confirmButtonText: "Continue",
-                            confirmButtonColor: "#DD6B55",
-                            icon: "error",
-                            showLoaderOnConfirm: true, 
-                            closeOnClickOutside: false,  
-                            dangerMode: true,
-                        });
+                        })
+                    } else if(result.isDismissed) {
+        
                     }
-                    })
-                } else if(result.isDismissed) {
+                    return false
+                }); 
+
+            } else {
+                let contact_list = self.state.contact_list;
     
+                if(contact_list.length==0) {
+                    contact_list.push({
+                        guardian_id: self.state.parents_id,
+                        messenger_id: val.fb_id,
+                        messenger_name: val.fullname,
+                    })
                 }
-                return false
-            }); 
+    
+                self.setState({ 
+                    messenger_name: val.fullname, 
+                    messenger_id: val.fb_id,
+                    messenger_email: val.email,
+                    contact_list: contact_list
+                });
+                // console.log(contact_list)
+                $('#fbmessenger').modal('hide');
+            }
         } catch (error) {
+            // console.log(error)
             Swal.fire({  
                 title: "Server Error", 
                 showCancelButton: true,
@@ -740,13 +766,13 @@ export default class EditParents extends Component {
                                         <h5 className="badge fs-5 bg-primary text-start d-block">Contacts</h5>
                                         <div className="row">
                                             <EachMethod of={this.state.contact_list} render={(element,index) => {
-                                                return  <div className="input-group ">
+                                                return  (element.phone_number!=null&&element.phone_number!="")?<div className="input-group ">
                                                     <div className="input-group-prepend col-lg-5">
                                                         <div htmlFor="lglv" className="input-group-text">{element.phone_number}</div>
                                                     </div> 
                                                     <button className="btn btn-danger" onClick={() => {
                                                     }} >Remove</button>
-                                                </div>                 
+                                                </div>:null
                                             }} />
                                             <EachMethod of={this.state.contact_list} render={(element,index) => {
                                                 return  (element.messenger_name!=""&&element.messenger_name!=null)?<div className="input-group ">
@@ -765,7 +791,7 @@ export default class EditParents extends Component {
                                             }} />
                                         </div>
                                         <div className="row" >
-                                            <div className={`${(this.state.contact_list.length>0)?'form-inline col-lg-6 pt-2':'form-inline col-lg-2'}`}>
+                                            <div className={`${(this.state.contact_list.length>0)?'form-inline col-lg-6 pt-2':'form-inline col-lg-6'}`}>
                                                 <div className="input-group">
                                                     <div className="input-group-prepend">
                                                         <div htmlFor="lglv" className="input-group-text">Phone Number : </div>

@@ -69,8 +69,8 @@ Route::get('/admin/dashboard', function () {
         // "teacher" => EmployeeController::getAll(),
         // "student" => StudentController::getAll(),
         return Inertia::render('Admin/Dashboard',[
-            "teacher" => [],
-            "student" => [],
+            "teacher" => EmployeeController::getCount(),
+            "student" => StudentController::getCount(),
             "advisory" => AdvisoryController::getAll(),
             "subjects" => SubjectController::getAll(),
             "sections" => SchoolSectionController::getAll(),

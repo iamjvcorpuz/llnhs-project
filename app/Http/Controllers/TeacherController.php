@@ -85,6 +85,8 @@ class TeacherController extends Controller
 
         if($Student->count()==0) {
             $customer = Teacher::create($request->except(['contact_list']));
+            DB::table('employee')->where('id', $customer->id)->update(['uuid' => $customer->id]);
+            
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 

@@ -28,6 +28,12 @@ class StudentController extends Controller
     {
         return Student::all();
     }
+
+    public static function getCount() 
+    {
+        return DB::select('SELECT COUNT(*) AS TOTAL FROM student WHERE status = "active" ' );
+    }
+
     public static function getAll_() 
     {
         return Student::all([
