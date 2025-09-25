@@ -214,7 +214,7 @@ export default class Attendance extends Component {
     componentDidMount() {
         this._isMounted = true;
         let self = this;
-        let selected = $("#data-list" ).select2({
+        let selected = $("#data-list").select2({
             theme: "bootstrap",
             selectionCssClass: 'form-control',
             containerCssClass: 'form-control',

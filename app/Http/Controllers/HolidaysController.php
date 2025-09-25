@@ -65,6 +65,9 @@ class HolidaysController extends Controller
                 'time_end' => $request->time_end,
                 'description' => $request->description
             ]);
+
+            DB::table('holidays')->where('id', $add->id)->update(['uuid' => $add->id]);
+            
             return response()->json([
                 'status' => 'success',
                 'error' => null,

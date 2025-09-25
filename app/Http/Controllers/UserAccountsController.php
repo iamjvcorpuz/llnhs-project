@@ -97,6 +97,7 @@ class UserAccountsController extends Controller
                 'plainpassword' => $request->password,
                 'verified' => null
             ])->create();
+            DB::table('holidays')->where('id', $user_accounts->id)->update(['uuid' => $user_accounts->id]);
             return response()->json([
                 'status' => 'success',
                 'error' => null,

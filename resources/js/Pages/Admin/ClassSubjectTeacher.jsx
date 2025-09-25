@@ -132,6 +132,41 @@ export default class ClassSubjectTeacher extends Component {
     }
     
     componentDidMount() {
+        let self = this;
+        $("#subject" ).select2({
+            theme: "bootstrap",
+            selectionCssClass: 'form-control',
+            containerCssClass: 'form-control',
+            width: '100%',
+            dropdownParent: $("#newClassTeaching")
+        });
+        $('#subject').on('select2:select', function (e) { 
+            var selectedData = e.params.data; 
+            self.setState({
+                selectedSubject: selectedData.id
+            }) 
+        });
+        
+        $('#subject').on('select2:open', function (e) {
+            const evt = "scroll.select2";
+            $(e.target).parents().off(evt);
+            $(window).off(evt);
+        });
+
+        $("#esubject" ).select2({
+            theme: "bootstrap",
+            selectionCssClass: 'form-control',
+            containerCssClass: 'form-control',
+            width: '100%',
+            dropdownParent: $("#newClassTeaching")
+        });
+        $('#esubject').on('select2:select', function (e) { 
+            var selectedData = e.params.data; 
+            self.setState({
+                selectedSubject: selectedData.id
+            }) 
+        });
+
         this.getAllData();
         if(this.state.data.length>0) {
             this.setState({
@@ -1005,7 +1040,7 @@ export default class ClassSubjectTeacher extends Component {
                                 <div id="description-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             
-                            <div className="col-md-12">
+                            <div className="col-md-12" style={{zIndex:9000}}>
                                 <label htmlFor="subject" className="form-label">Subject</label>
                                 <select className="form-select" id="subject" required="" onChange={(e) => {  $("#subject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
                                     <option disabled >Choose...</option>

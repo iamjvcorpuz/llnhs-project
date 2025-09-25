@@ -14,12 +14,12 @@ class ClassTSController extends Controller
      */
     public function index()
     {
-        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
+        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
         return  $school_class;
     }
     public static function getAll()
     {
-        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",qr_code,id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
+        $school_class = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,qr_code,id,level,grade as grade_id,section_name,(SELECT year_grade FROM school_year_grades WHERE id = school_class.grade) AS \'grade\',track,strands,classroom as classroom_id,(SELECT room_number FROM classrooms WHERE classrooms.id = school_class.classroom ) AS \'classroom\',school_year FROM school_class ORDER By school_class.created_at DESC;');
         return  $school_class;
     }
 
@@ -117,6 +117,7 @@ class ClassTSController extends Controller
                 'school_year' => $request->schoolyear,
                 'section_name' => $request->section_name
             ]);
+            DB::table('school_class')->where('id', $add->id)->update(['uuid' => $add->id]);
             return response()->json([
                 'status' => 'success',
                 'error' => null,

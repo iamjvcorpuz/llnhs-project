@@ -40,7 +40,7 @@ class FinalGradeController extends Controller
         
         if(count($sfg) == 0) {
 
-            FinalGrade::create([
+            $add = FinalGrade::create([
                 'grade_level' => $request->grade,
                 'sy' => $request->sy,
                 'student_id' => $request->student_id,
@@ -51,6 +51,7 @@ class FinalGradeController extends Controller
                 $request->q => $request->final_grade,
                 'status' => 'default'
             ]);
+            DB::table('events')->where('student_final_grades', $add->id)->update(['uuid' => $add->id]);
         } else if(count($sfg) > 0) {
 
             $q1 = $sfg[0]->q1;
@@ -72,7 +73,7 @@ class FinalGradeController extends Controller
                 $q4 = $request->final_grade;
             }
 
-            FinalGrade::create([
+            $add = FinalGrade::create([
                 'grade_level' => $request->grade,
                 'sy' => $request->sy,
                 'student_id' => $request->student_id,
@@ -86,6 +87,8 @@ class FinalGradeController extends Controller
                 'q4' => $q4,
                 'status' => 'default'
             ]);
+
+            DB::table('events')->where('student_final_grades', $add->id)->update(['uuid' => $add->id]);
         }
 
 

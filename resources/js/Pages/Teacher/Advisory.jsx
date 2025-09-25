@@ -235,11 +235,11 @@ export default class Advisory extends Component {
 
     saveData() {
         let self = this;
-        console.log($("#teacher").val());
-        console.log($("#yearlevel").val());
-        console.log($("#yearlevel").val());
-        console.log($("#section").val());
-        console.log($("#subject").val());
+        // console.log($("#teacher").val());
+        // console.log($("#yearlevel").val());
+        // console.log($("#yearlevel").val());
+        // console.log($("#section").val());
+        // console.log($("#subject").val());
         let teacher_name = $("#teacher").val();
         let teacher = self.state.teachers.find(e=>(e.last_name + ', ' + e.first_name)==teacher_name).id;
         let yearlevel = $("#yearlevel").val();

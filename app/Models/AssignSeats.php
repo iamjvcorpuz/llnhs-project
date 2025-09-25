@@ -12,6 +12,7 @@ class AssignSeats extends Model
     public $table = "classrooms_seats";
 
     protected $fillable = [
+        'uuid',
         'class_teaching_id',
         'class_id',
         'subject_id',
