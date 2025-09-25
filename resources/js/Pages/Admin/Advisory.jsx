@@ -74,25 +74,28 @@ export default class Advisory extends Component {
                     width: 150,
                     accessor: 'status',
                     className: "center",
-                    Cell: ({row}) => { 
+                    Cell:  ({row}) => { 
                        return <>                       
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteAdvisory(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
                         <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={() => { this.viewData(row.original); }}> <i className="bi bi-pen"></i> Edit</button> 
                         {(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null)?<button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
                             if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
-                                await this.generateQR(row.original.qrcode); 
-                                let room_no  = "";
-                                try {
-                                    room_no  = row.original.classroom;
-                                } catch (error) {
-                                    
-                                }
-                                this.setState({
-                                    room_name: row.original.section_name,
-                                    room_number: room_no,
-                                    teacher_fullname: row.original.teacher_fullname
-                                })
-                                $('#qrcode').modal('show');
+                                await this.generateQR(row.original.qrcode,() => {
+
+                                    let room_no  = "";
+                                    try {
+                                        room_no  = row.original.classroom;
+                                    } catch (error) {
+                                        
+                                    }
+                                    this.setState({
+                                        room_name: row.original.section_name,
+                                        room_number: room_no,
+                                        teacher_fullname: row.original.teacher_fullname
+                                    })
+                                    $('#qrcode').modal('show');
+
+                                }); 
                             }
                         }}> <i className="bi bi-qr-code"></i> QR</button>:null}
                        </>            
@@ -548,11 +551,13 @@ export default class Advisory extends Component {
         $("#updateAdvisory").modal('show');
     }
 
-    async generateQR (text) {
+    async generateQR (text,callback) {
         let self = this;
         try {
             let sgv = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' ,width: 500 });
-            self.setState({qr_code: text, qr_code_data: sgv});
+            self.setState({qr_code: text, qr_code_data: sgv},() => {
+                callback();
+            });
         } catch (err) {
         console.error(err)
         }
