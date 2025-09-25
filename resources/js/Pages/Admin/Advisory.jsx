@@ -69,8 +69,8 @@ export default class Advisory extends Component {
                     accessor: 'year_level'
                 },  
                 {
-                    id: "Action",
-                    Header: 'Status',  
+                    id: "action",
+                    Header: 'Action',  
                     width: 150,
                     accessor: 'status',
                     className: "center",
@@ -870,7 +870,7 @@ export default class Advisory extends Component {
 
             <datalist id="selectedTeacher">
                 <EachMethod of={this.state.teachers} render={(element,index) => {
-                    if(this.state.data.some(e=>Number(e.teacher_id)==element.id)===false) {
+                    if(this.state.data.some(e=>Number(e.teacher_id)==element.uuid)===false) {
                         return <option >{`${element.last_name}, ${element.first_name}`}</option>
                     }
                 }} />
@@ -933,12 +933,15 @@ export default class Advisory extends Component {
                                             $("#sectionname").val(data.section_name); 
                                             // this.setState({selectedYearLevel: e.target.value,sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==e.target.value)})  
                                          }
+                                         
                                          }}>
 
                                         <option disabled >--Select Classroom--</option>
                                         <option value="" ></option>
                                         <EachMethod of={this.state.class} render={(element,index) => {
-                                            return <option value={`${element.id}`} >{`${element.section_name} (Room:${element.classroom})`}   </option>
+                                            if(this.state.advisoryList.length>0&&this.state.advisoryList.some(e=>e.school_sections_id==element.uuid)==false) {
+                                                return <option value={`${element.uuid}`} >{`${element.section_name} (Room:${element.classroom},Grade: ${element.grade})`}   </option>    
+                                            }                                            
                                         }} />
                                     </select>
                                     <div id="classts-alert" className="invalid-feedback">Please select a valid state.</div>
@@ -947,7 +950,7 @@ export default class Advisory extends Component {
                                     <label htmlFor="yearlevel" className="form-label">Grade</label>                                            
                                     {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
 
-                                    <select name="yearlevel" id="yearlevel" className="form-control"  aria-readonly onChange={(e) => { 
+                                    <select name="yearlevel" id="yearlevel" className="form-control" disabled="disabled" aria-readonly onChange={(e) => { 
                                          $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); 
                                          $('#section').val("");
                                          console.log(e.target.value)
@@ -1065,7 +1068,7 @@ export default class Advisory extends Component {
                                         <option disabled >--Select Classroom--</option>
                                         <option value="" ></option>
                                         <EachMethod of={this.state.class} render={(element,index) => {
-                                            return <option value={`${element.id}`} >{`${element.section_name} (Room:${element.classroom})`}   </option>
+                                            return <option value={`${element.uuid}`} >{`${element.section_name} (Room:${element.classroom},Grade: ${element.grade})`}   </option>
                                         }} />
                                     </select>
                                     <div id="classts-alert" className="invalid-feedback">Please select a valid state.</div>

@@ -337,6 +337,7 @@ class AdvisoryController extends Controller
                 'description' => '',
                 'status' => 'active'
             ]);
+            DB::table('advisory')->where('id', $add->id)->update(['uuid' => $add->id]);
             return response()->json([
                 'status' => 'success',
                 'error' => null,

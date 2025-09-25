@@ -67,7 +67,8 @@ class EventsController extends Controller
                 ->get();
 
         $qr_code = md5($request->holidayType . $request->event_name . $request->date . $request->time_start . $request->time_end);
-        if($advisory->count()==0) {  
+        if($advisory->count()==0) { 
+            
             $add = Events::create([
                 'qrcode' => $qr_code,
                 'facilitator' => $request->facilitator,
@@ -78,6 +79,9 @@ class EventsController extends Controller
                 'time_end' => $request->time_end,
                 'description' => $request->description
             ]);
+
+            DB::table('events')->where('id', $add->id)->update(['uuid' => $add->id]);
+
             return response()->json([
                 'status' => 'success',
                 'error' => null,

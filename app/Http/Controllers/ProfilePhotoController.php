@@ -17,14 +17,14 @@ class ProfilePhotoController extends Controller
                 return  "";
             }
         } else if($type == "parent") {
-            $result = DB::table('parents')->where('uid',$id)->get();
+            $result = DB::table('parents')->where('uuid',$id)->get();
             if($result->count() > 0) {
                 return $result[0]->picture_base64;
             } else {
                 return  "";
             }
         } else if($type == "employee") {
-            $result = DB::table('employee')->where('uid',$id)->get();
+            $result = DB::table('employee')->where('uuid',$id)->get();
             if($result->count() > 0) {
                 return $result[0]->picture_base64;
             } else {

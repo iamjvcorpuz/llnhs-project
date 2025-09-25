@@ -1126,10 +1126,10 @@ export default class NewStudent extends Component {
                                         </div>
                                         <hr />
                                         <div className="col-lg-5">
-                                            <label htmlFor="relationship" className="form-label">Mothers' Name</label> 
+                                            <label htmlFor="relationship" className="form-label">Mother's Maiden Name</label> 
                                         </div> 
                                         <div className="row" >
-                                            <div className="col-md-3">
+                                            <div className="col-md-4">
                                                 <label htmlFor="first_name" className="form-label">First name</label>
                                                 <input type="text" className="form-control" id="mfirst_name" defaultValue="" required="" onChange={(e) => { $("#mfirst-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({mfirst_name: e.target.value})}}  />
                                                 <div id="fmirst-name-alert" className="valid-feedback">Looks good!</div>
@@ -1139,7 +1139,7 @@ export default class NewStudent extends Component {
                                                 <input type="text" className="form-control" id="mmiddle_name" defaultValue="" required="" onChange={(e) => {  $("#mmiddle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mmiddle_name: e.target.value})}}  />
                                                 <div id="mmiddle-name-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
-                                            <div className="col-md-3">
+                                            <div className="col-md-3 d-none">
                                                 <label htmlFor="middle_name" className="form-label">Maiden name</label>
                                                 <input type="text" className="form-control" id="mmaiden_name" defaultValue="" required="" onChange={(e) => {  $("#mmaiden-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mmaiden_name: e.target.value})}}  />
                                                 <div id="mmaiden-name-alert" className="valid-feedback">Looks good!</div>

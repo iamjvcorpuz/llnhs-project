@@ -161,7 +161,7 @@ class AssignSeatsController extends Controller
   
 
         if($classrooms_seats->count() == 0) {
-            AssignSeats::create([ 
+            $add = AssignSeats::create([ 
                 'class_teaching_id' => (int)$request->id,
                 'class_id' => (int)$request->class_id,
                 'subject_id' => (int)$request->subject_id,
@@ -170,15 +170,18 @@ class AssignSeatsController extends Controller
                 'total_students' => (int)$request->total_students, 
                 'description' => ""
             ]);
- 
+
+            DB::table('classrooms_seats')->where('id', $add->id)->update(['uuid' => $add->id]);
+
             if($student_list > 0) { 
                 foreach($student_list as $key => $val) {
-                    DB::table('classrooms_seats_assign')->insert([
+                    $addcsa = DB::table('classrooms_seats_assign')->insertGetId([
                         'classrooms_seats_id' => (int)$request->id,
                         'class_id' => (int)$request->class_id,
                         'student_id' => $val['student_id'],
                         'seat_number' => $val['seat_number']
                     ]);
+                    DB::table('classrooms_seats_assign')->where('id', $addcsa)->update(['uuid' => $addcsa]);
                 }
                 
             }
@@ -197,12 +200,13 @@ class AssignSeatsController extends Controller
 
             if($student_list > 0) { 
                 foreach($student_list as $key => $val) {
-                    DB::table('classrooms_seats_assign')->insert([
+                    $addcsa = DB::table('classrooms_seats_assign')->insertGetId([
                         'classrooms_seats_id' => (int)$request->id,
                         'class_id' => (int)$request->class_id,
                         'student_id' => $val['student_id'],
                         'seat_number' => $val['seat_number']
                     ]);
+                    DB::table('classrooms_seats_assign')->where('id', $addcsa)->update(['uuid' => $addcsa]);
                 }                
             }
 
