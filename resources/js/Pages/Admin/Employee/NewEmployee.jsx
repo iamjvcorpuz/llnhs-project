@@ -247,20 +247,62 @@ export default class NewEmployee extends Component {
                             }
                       }).catch(function (error) {
                         // handle error
-                        console.log(error);
-                        Swal.fire({  
-                            title: "Server Error", 
-                            showCancelButton: true,
-                            showConfirmButton: false,
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            cancelButtonText: "Ok",
-                            confirmButtonText: "Continue", 
-                            icon: "error",
-                            showLoaderOnConfirm: true, 
-                            closeOnClickOutside: false,  
-                            dangerMode: true,
-                        });
+                        // console.log(error);
+                        // Swal.fire({  
+                        //     title: "Server Error", 
+                        //     showCancelButton: true,
+                        //     showConfirmButton: false,
+                        //     allowOutsideClick: false,
+                        //     allowEscapeKey: false,
+                        //     cancelButtonText: "Ok",
+                        //     confirmButtonText: "Continue", 
+                        //     icon: "error",
+                        //     showLoaderOnConfirm: true, 
+                        //     closeOnClickOutside: false,  
+                        //     dangerMode: true,
+                        // });
+                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                            let listmessage = "";
+
+                            if(Object.keys(data.errors).length> 0) {
+                                Object.keys(data.errors).forEach(element => {
+                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                });
+                            }
+
+                            Swal.fire({  
+                                title: data.message ,
+                                html:`<ul class="list-group" >${listmessage}</ul>`, 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+
+                        } else {
+                            Swal.fire({  
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
                       })
                 } else if(result.isDismissed) {
 
@@ -269,6 +311,7 @@ export default class NewEmployee extends Component {
             });            
         } else {
             
+            $("html, body").animate({ scrollTop: 0 });
             if(self.state.first_name == "") {
                 $("#first-name-alert").removeAttr('class');
                 $("#first-name-alert").html('Required Field');
@@ -311,7 +354,7 @@ export default class NewEmployee extends Component {
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item"><Link href="/admin/dashboard/teacher">Employee</Link></li>
+                            <li className="breadcrumb-item"><Link href="/admin/dashboard/employee">Employee</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">New Account</li>
                         </ol>
                     </div>
@@ -327,7 +370,7 @@ export default class NewEmployee extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title mt-2"> <i className="bi bi-person"></i> New Account</h3>
-                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <Link href="/admin/dashboard/employee" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
                                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
                                 </div>
                                 <div className="card-body"> 
@@ -570,7 +613,7 @@ export default class NewEmployee extends Component {
                                 </div>
                                 <div className="card-footer">
                                     <h3 className="card-title mt-2"> <i className="bi bi-person"></i> New Account</h3>
-                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <Link href="/admin/dashboard/employee" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
                                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
                                 </div>
                             </div>

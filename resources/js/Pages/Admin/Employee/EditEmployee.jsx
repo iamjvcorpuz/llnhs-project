@@ -496,7 +496,7 @@ export default class EditEmployee extends Component {
                                     </div>
                                 </div>
                                 <div className="card-footer">
-                                    <Link href="/admin/dashboard/teacher" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <Link href="/admin/dashboard/employee" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
                                     <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>   
                                 </div>
                             </div>

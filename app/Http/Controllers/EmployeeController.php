@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Contacts;
 use App\Models\Teacher;
+use App\Models\UserAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -88,6 +90,33 @@ class EmployeeController extends Controller
 
         if($Student->count()==0) {
             $customer = Employee::create($request->except(['contact_list']));
+            DB::table('employee')->where('id', $customer->id)->update(['uuid' => $customer->id]);
+
+            $firstname = $request->first_name;
+            $lastname = $request->last_name;
+            $parts = explode(" ", $firstname);
+            $usernames = "";
+            $password = $request->lrn;
+            
+            foreach($parts as $value) {
+                $usernames= $usernames . $value[0];
+            }
+
+            $usernames = $usernames . ucfirst(strtolower($lastname));
+
+
+            $UserAccounts = UserAccounts::create([
+                'user_id' => $customer->id,
+                'user_type' => $request->employee_type,
+                'user_role_id' => ($request->employee_type=="Teacher")?2:5,
+                'fullname' => $firstname . " " . $lastname,
+                'username' => $usernames,
+                'password' => Hash::make($usernames),
+                'plainpassword' => $usernames,
+                'verified' => null
+            ]);
+            DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);
+
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 
