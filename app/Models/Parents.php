@@ -17,6 +17,7 @@ class Parents extends Model
         'first_name',
         'last_name',
         'middle_name',
+        'maiden_name',
         'extension_name', 
         'sex',
         'status',

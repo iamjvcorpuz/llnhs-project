@@ -57,7 +57,16 @@ return new class extends Migration
                 $table->string('flsh_semester')->nullable();
                 $table->string('flsh_track')->nullable();
                 $table->string('flsh_strand')->nullable();
-                $table->string('ldm_applied')->nullable(); 
+                $table->string('mfirst_name')->nullable(); 
+                $table->string('mmiddle_name')->nullable(); 
+                $table->string('mmaiden_name')->nullable(); 
+                $table->string('mlast_name')->nullable(); 
+                $table->string('mextension_name')->nullable(); 
+                $table->string('ffirst_name')->nullable(); 
+                $table->string('fmiddle_name')->nullable(); 
+                $table->string('fmaiden_name')->nullable(); 
+                $table->string('flast_name')->nullable(); 
+                $table->string('fextension_name')->nullable(); 
                 $table->string('status');
                 $table->timestampTz('created_at')->useCurrent();
                 $table->timestampTz('updated_at')->useCurrent()->useCurrentOnUpdate();
@@ -142,6 +151,7 @@ return new class extends Migration
                 $table->string('first_name');
                 $table->string('last_name');
                 $table->string('middle_name')->nullable();
+                $table->string('maiden_name')->nullable();
                 $table->string('extension_name')->nullable();
                 $table->string('sex');
                 $table->string('bdate')->nullable();
