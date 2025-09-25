@@ -69,6 +69,14 @@ export default class Student extends Component {
                     filterable: true,
                 },  
                 {
+                    id: "bdate",
+                    Header: 'Age',  
+                    width: 200,
+                    accessor: 'bdate',
+                    className: "center",
+                    filterable: true, 
+                },  
+                {
                     id: "level",
                     Header: 'Level',  
                     width: 200,
@@ -213,6 +221,7 @@ export default class Student extends Component {
                             photo: element.picture_base64,
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
+                            bdate:  typeof(element.bdate)!="undefined"?moment().diff(element.bdate, 'years',false):"None",
                             level: element.grade,
                             section: element.section,
                             sy: element.sy,
