@@ -77,6 +77,21 @@ export default class Student extends Component {
                     filterable: true, 
                 },  
                 {
+                    id: "gender",
+                    Header: 'Gender',  
+                    width: 200,
+                    accessor: 'gender',
+                    className: "center",
+                    filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            <option value="">All</option>  
+                            <option >Male</option> 
+                            <option >Female</option>
+                        </select>   
+                    }
+                },  
+                {
                     id: "level",
                     Header: 'Level',  
                     width: 200,
@@ -222,6 +237,7 @@ export default class Student extends Component {
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
                             bdate:  typeof(element.bdate)!="undefined"?moment().diff(element.bdate, 'years',false):"None",
+                            gender: element.sex,
                             level: element.grade,
                             section: element.section,
                             sy: element.sy,
@@ -327,20 +343,20 @@ export default class Student extends Component {
                   }).catch(function (error) {
                     // handle error
                     console.log(error);
-                    Swal.fire({  
-                        title: "Server Error", 
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        cancelButtonText: "Ok",
-                        confirmButtonText: "Continue",
-                        confirmButtonColor: "#DD6B55",
-                        icon: "error",
-                        showLoaderOnConfirm: true, 
-                        closeOnClickOutside: false,  
-                        dangerMode: true,
-                    });
+                    // Swal.fire({  
+                    //     title: "Server Error", 
+                    //     showCancelButton: true,
+                    //     showConfirmButton: false,
+                    //     allowOutsideClick: false,
+                    //     allowEscapeKey: false,
+                    //     cancelButtonText: "Ok",
+                    //     confirmButtonText: "Continue",
+                    //     confirmButtonColor: "#DD6B55",
+                    //     icon: "error",
+                    //     showLoaderOnConfirm: true, 
+                    //     closeOnClickOutside: false,  
+                    //     dangerMode: true,
+                    // });
                   })
             } else {
                 Swal.close();
