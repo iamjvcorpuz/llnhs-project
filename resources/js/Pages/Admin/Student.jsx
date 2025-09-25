@@ -22,6 +22,7 @@ export default class Student extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            loading:true,
             data: [],
             sectionsFilter: `<option value="">All</option>`,
             columns: [
@@ -154,7 +155,7 @@ export default class Student extends Component {
     componentDidMount() {
         this._isMounted = true;
         this.loadStudentList();
-        console.log(this)
+        // console.log(this)
         // let list  = [];
         // for (let index = 0; index < 10; index++) {
 
@@ -175,6 +176,7 @@ export default class Student extends Component {
     loadStudentList() {
         let list  = []; 
         let self = this;
+        self.setState({loading: true});
         axios.get('/student').then(function (response) {
           // handle success
         //   console.log(response)
@@ -219,7 +221,7 @@ export default class Student extends Component {
                         });
                     }
                     if((index + 1) == arr.length) {
-                        self.setState({data: list});
+                        self.setState({data: list,loading:false});
                     }                    
                 });
                 // console.log(data);
@@ -391,6 +393,7 @@ export default class Student extends Component {
                                     columns={this.state.columns}
                                     showHeader={true}
                                     showPagenation={true}
+                                    loading={this.state.loading}
                                     defaultPageSize={5}
                                 />
                                 </div>
