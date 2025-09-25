@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Contacts;
 use App\Models\Employee;
 use App\Models\Teacher;
+use App\Models\UserAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class TeacherController extends Controller
@@ -86,6 +88,30 @@ class TeacherController extends Controller
         if($Student->count()==0) {
             $customer = Teacher::create($request->except(['contact_list']));
             DB::table('employee')->where('id', $customer->id)->update(['uuid' => $customer->id]);
+
+            $firstname = $request->first_name;
+            $lastname = $request->last_name;
+            $parts = explode(" ", $firstname);
+            $usernames = "";
+            $password = $request->lrn;
+            
+            foreach($parts as $value) {
+                $usernames= $usernames . $value[0];
+            }
+
+            $usernames = $usernames . ucfirst(strtolower($lastname));
+
+
+            $UserAccounts = UserAccounts::create([
+                'user_id' => $customer->id,
+                'user_type' => 'Guardian',
+                'user_role_id' => 4,
+                'fullname' => $firstname . " " . $lastname,
+                'username' => $usernames,
+                'password' => Hash::make($usernames),
+                'plainpassword' => $usernames,
+                'verified' => null
+            ]);
             
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
