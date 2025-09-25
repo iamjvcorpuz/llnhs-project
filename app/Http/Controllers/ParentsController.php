@@ -101,12 +101,11 @@ class ParentsController extends Controller
         $validator = Validator::make($request->all(), [ 
             'first_name' => 'required|string',
             'middle_name' => 'required|string',
-            'last_name' => 'required|string',
-            'bdate' => 'required|string',
+            'last_name' => 'required|string',            
             'sex' => 'required|string',
             'current_address'=> 'required'
         ]);
-
+// 'bdate' => 'required|string',
         $contact_list = $request->contact_list;
         if ($validator->fails()) {
             return response()->json([
@@ -164,14 +163,29 @@ class ParentsController extends Controller
 
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
-                    $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$val['phone_number'])->get(); 
-                    if($temp->count() == 0) {
-                        Contacts::create([
-                            'type' => 'guardian',
-                            'guardian_id' => $customer->id,
-                            'phone_number' => $val['phone_number'],
-                            'status' => 'active'
-                        ]);
+                    $guardian_id = isset($val['guardian_id']) ? $val['guardian_id'] : "";
+                    $phone_number = isset($val['phone_number']) ? $val['phone_number'] : "";
+                    $messenger_id = isset($val['messenger_id']) ? $val['messenger_id'] : "";
+                    $messenger_name = isset($val['messenger_name']) ? $val['messenger_name'] : "";
+                    if($phone_number != "" || $messenger_id != "") {
+                        $temp = DB::table('contacts')->where('teacher_id',$customer->id)->where('phone_number',$phone_number)->get(); 
+                        if($temp->count() == 0) {
+                            // Contacts::create([
+                            //     'type' => 'guardian',
+                            //     'guardian_id' => $customer->id,
+                            //     'phone_number' => $val['phone_number'],
+                            //     'status' => 'active'
+                            // ]);
+                            Contacts::create([
+                                'type' => 'guardian',
+                                'guardian_id' => $customer->id,
+                                'phone_number' => $phone_number,
+                                'messenger_id' => $messenger_id,
+                                'messenger_name' => $messenger_name,
+                                'status' => 'active'
+                            ]);
+                        }
+
                     }
                 }
             } 
@@ -197,11 +211,10 @@ class ParentsController extends Controller
             'first_name' => 'required|string',
             'middle_name' => 'required|string',
             'last_name' => 'required|string',
-            'bdate' => 'required|string',
             'sex' => 'required|string',
             'current_address' => 'required|string'
         ]);
-
+        // 'bdate' => 'required|string',
         $contact_list = $request->contact_list;
         if ($validator->fails()) {
             return response()->json([
@@ -227,12 +240,29 @@ class ParentsController extends Controller
 
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
-                    $temp = DB::table('contacts')->where('guardian_id',$val['guardian_id'])->where('phone_number',$val['phone_number'])->get(); 
+                    // print_r($val);                    
+                    $guardian_id = isset($val['guardian_id']) ? $val['guardian_id'] : "";
+                    $phone_number = isset($val['phone_number']) ? $val['phone_number'] : "";
+                    $messenger_id = isset($val['messenger_id']) ? $val['messenger_id'] : "";
+                    $messenger_name = isset($val['messenger_name']) ? $val['messenger_name'] : "";
+                    $temp = DB::table('contacts')->where('guardian_id',$guardian_id)->get(); //->orWhere('phone_number',$phone_number) 
+                    
                     if($temp->count() == 0) {
                         Contacts::create([
                             'type' => 'guardian',
-                            'guardian_id' => $val['guardian_id'],
-                            'phone_number' => $val['phone_number'],
+                            'guardian_id' => $guardian_id,
+                            'phone_number' => $phone_number,
+                            'messenger_id' => $messenger_id,
+                            'messenger_name' => $messenger_name,
+                            'status' => 'active'
+                        ]);
+                    } else if($temp->count() > 0){
+                        DB::table('contacts')->where('guardian_id',$guardian_id)->update([
+                            'type' => 'guardian',
+                            'guardian_id' => $guardian_id,
+                            'phone_number' => $phone_number,
+                            'messenger_id' => $messenger_id,
+                            'messenger_name' => $messenger_name,
                             'status' => 'active'
                         ]);
                     }

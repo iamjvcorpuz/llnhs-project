@@ -85,12 +85,13 @@ export default class NewTeacher extends Component {
         this.fetchFBList = this.fetchFBList.bind(this);
         this.updateMessenger = this.updateMessenger.bind(this);
         this.selectedAccountMessenger = this.selectedAccountMessenger.bind(this);
+        this.selectedRemoveAccountMessenger = this.selectedRemoveAccountMessenger.bind(this);
         this._isMounted = false;
     }
 
     componentDidMount() {
         this._isMounted = true;
-        console.log(this);
+        // console.log(this);
         this.getFBList();
         // this.webCam.current.getScreenshot({width: 600, height: 300});
         // $("#fileuploadpanel").modal('show');
@@ -153,7 +154,7 @@ export default class NewTeacher extends Component {
     
     saveData() {
         let self = this;
-        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "" && self.state.address != "" && self.state.contact_list.length > 0 ) { //
+        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" &&  self.state.lrn != "" && self.state.address != "" && self.state.contact_list.length > 0 ) { //self.state.bdate != ""&&
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
                 $("#invalidCheck-alert").addClass('d-block invalid-feedback');
@@ -431,11 +432,70 @@ export default class NewTeacher extends Component {
         }).then((result) => {
             // console.log("result",result)
             if(result.isConfirmed) { 
+                let contact_list = self.state.contact_list;
+    
+                if(contact_list.length==0) {
+                    contact_list.push({
+                        messenger_id: val.fb_id,
+                        messenger_name: val.fullname,
+                    })
+                }
+    
                 self.setState({
                     dmode: typeof(val.dmode)!="undefined"?val.dmode:"update", 
                     messenger_name: val.fullname, 
                     messenger_id: val.fb_id,
                     messenger_email: val.email
+                });
+                $('#fbmessenger').modal('hide');
+            } else if(result.isDismissed) {
+
+            }
+            return false
+        }); 
+    }
+
+    selectedRemoveAccountMessenger(val) {
+        let self = this;
+        Swal.fire({
+            title: "To pair this messenger account to parent account click to continue to connect or pair", 
+            showCancelButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "Continue", 
+            icon: "warning",
+            showLoaderOnConfirm: true, 
+            closeOnClickOutside: false,  
+            dangerMode: true,
+        }).then((result) => {
+            // console.log("result",result)
+            if(result.isConfirmed) { 
+                let contact_list = [];
+                console.log(self.state.contact_list);
+                if(self.state.contact_list.length==0) {
+                    contact_list.push({
+                        ...self.state.contact_list,
+                        messenger_id: "",
+                        messenger_name: "",
+                    })
+                } else if(self.state.contact_list.length>0) {    
+                    self.state.contact_list.forEach(element => {
+                        delete element.messenger_id;
+                        delete element.messenger_name;
+                        contact_list.push({
+                            ...element,
+                            messenger_id: "",
+                            messenger_name: "",
+                        })
+                    });
+                    
+                }
+    
+                self.setState({
+                    dmode: "", 
+                    messenger_name: "", 
+                    messenger_id: "",
+                    messenger_email: ""
                 });
                 $('#fbmessenger').modal('hide');
             } else if(result.isDismissed) {
@@ -729,14 +789,14 @@ export default class NewTeacher extends Component {
                                         <h5 className="badge fs-5 bg-primary text-start d-block">Contacts</h5>
                                         <div className="row">
                                             <EachMethod of={this.state.contact_list} render={(element,index) => {
-                                                return  <div className="input-group ">
+                                                return  (element.phone_number!=null&&element.phone_number!="")?<div className="input-group ">
                                                     <div className="input-group-prepend col-lg-4">
                                                         <div htmlFor="lglv" className="input-group-text">{element.phone_number}</div>
                                                     </div> 
                                                     <button className="btn btn-danger" onClick={() => {
                                                         
                                                     }} >Remove</button>
-                                                </div>                 
+                                                </div>:null
                                             }} />
                                         </div>
                                         <div className="row" >
@@ -784,6 +844,22 @@ export default class NewTeacher extends Component {
                                                 <div id="contact-alert" className="valid-feedback">Looks good!</div>
 
                                                 <br />
+
+                                                <EachMethod of={this.state.contact_list} render={(element,index) => {
+                                                    return  (element.messenger_name!=""&&element.messenger_name!=null)?<div className="input-group mb-2">
+                                                        <div className="input-group-prepend col-lg-5">
+                                                            <div htmlFor="lglv" className="input-group-text"><i className="bi bi-facebook"></i>&nbsp;{element.messenger_name}</div>
+                                                        </div> 
+                                                        <button className="btn btn-danger" onClick={() => {                                                        
+                                                            this.selectedRemoveAccountMessenger({
+                                                                fullname: "", 
+                                                                fb_id: "",
+                                                                email: "",
+                                                                dmode: "remove"
+                                                            });
+                                                        }} >Remove</button>
+                                                    </div>:null
+                                                }} />
                                                 <button className="btn btn-primary" onClick={() => {
                                                     $('#fbmessenger').modal('show');
                                                 }}>Add Messenger</button>
@@ -800,6 +876,10 @@ export default class NewTeacher extends Component {
                                             <div id="invalidCheck-alert" className="invalid-feedback">You must agree before submitting.</div>
                                         </div>
                                     </div>
+                                </div>
+                                <div className="card-footer"> 
+                                    <Link href="/admin/dashboard/parents" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
+                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Save</button>   
                                 </div>
                             </div>
                         </div>

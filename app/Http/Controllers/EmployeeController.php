@@ -24,6 +24,10 @@ class EmployeeController extends Controller
     {
         return Employee::all();
     }
+    public static function getCount() 
+    {
+        return DB::select('SELECT COUNT(*) AS TOTAL FROM employee WHERE employee_type = "Teacher" AND status = "active" ' );
+    }
     public static function getAllTeacher() 
     {
         $teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' ;');
