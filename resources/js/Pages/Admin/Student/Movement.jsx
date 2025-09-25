@@ -648,20 +648,79 @@ export default class Movement extends Component {
                     }).catch(function (error) {
                     // handle error
                     console.log(error);
-                    Swal.fire({  
-                        title: "Server Error", 
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        cancelButtonText: "Ok",
-                        confirmButtonText: "Continue",
-                        confirmButtonColor: "#DD6B55",
-                        icon: "error",
-                        showLoaderOnConfirm: true, 
-                        closeOnClickOutside: false,  
-                        dangerMode: true,
-                    });
+                    // Swal.fire({  
+                    //     title: "Server Error", 
+                    //     showCancelButton: true,
+                    //     showConfirmButton: false,
+                    //     allowOutsideClick: false,
+                    //     allowEscapeKey: false,
+                    //     cancelButtonText: "Ok",
+                    //     confirmButtonText: "Continue",
+                    //     confirmButtonColor: "#DD6B55",
+                    //     icon: "error",
+                    //     showLoaderOnConfirm: true, 
+                    //     closeOnClickOutside: false,  
+                    //     dangerMode: true,
+                    // });
+                    try {
+                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                            let listmessage = "";
+
+                            if(Object.keys(data.errors).length> 0) {
+                                Object.keys(data.errors).forEach(element => {
+                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                });
+                            }
+
+                            Swal.fire({  
+                                title: data.message ,
+                                html:`<ul class="list-group" >${listmessage}</ul>`, 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+
+                        } else {
+                            Swal.fire({  
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
+                    } catch (error) {
+                        Swal.fire({  
+                            title: "Server Error", 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+                    }
                     })
                 } else if(result.isDismissed) {
 
