@@ -159,11 +159,11 @@ class ClassTSController extends Controller
             'yearlevel' => 'required',
             'classroom' => 'required',
             'schoolyear' => 'required', 
-            'flsh_track' => 'required', 
-            'flsh_strand' => 'required',
             'section_name' => 'required'
         ]);
 
+        // 'flsh_track' => 'string', 
+        // 'flsh_strand' => 'string',
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',

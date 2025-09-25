@@ -401,8 +401,9 @@ export default class ClassTS extends Component {
         let flsh_strand = $("#uflsh_strand").val();  
         let section_name = $("#usectionname").val();  
 
-
-        if(yearlevel != "" && grade != "" && classroom != "" && schoolyear != ""&& flsh_track != ""&& flsh_strand != "" ) { 
+        // console.log(yearlevel != "" , grade != "" , classroom != "" , schoolyear != "", flsh_track != "" , flsh_strand != ""    )
+        //&& flsh_track != ""&& flsh_strand != ""
+        if(yearlevel != "" && grade != "" && classroom != "" && schoolyear != ""  ) { 
             Swal.fire({
                 title: "If all fields are correct and please click to continue to save", 
                 showCancelButton: true,
@@ -521,16 +522,16 @@ export default class ClassTS extends Component {
                 return false
             });            
         } else {
-            if(subject_name == "") {
-                $("#usubject_name-alert").removeAttr('class');
-                $("#usubject_name-alert").html('Required Field');
-                $("#usubject_name-alert").addClass('d-block invalid-feedback');
-            }
-            if(description == "") {
-                $("#udescription-alert").removeAttr('class');
-                $("#udescription-alert").html('Required Field');
-                $("#udescription-alert").addClass('d-block invalid-feedback');
-            }
+            // if(subject_name == "") {
+            //     $("#usubject_name-alert").removeAttr('class');
+            //     $("#usubject_name-alert").html('Required Field');
+            //     $("#usubject_name-alert").addClass('d-block invalid-feedback');
+            // }
+            // if(description == "") {
+            //     $("#udescription-alert").removeAttr('class');
+            //     $("#udescription-alert").html('Required Field');
+            //     $("#udescription-alert").addClass('d-block invalid-feedback');
+            // }
         }
     }
     
