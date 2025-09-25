@@ -54,5 +54,14 @@ class Student extends Model
         'flsh_track',
         'flsh_strand',
         'ldm_applied',
+        'mfirst_name',
+        'mmiddle_name',
+        'mmaiden_name',
+        'mlast_name',
+        'mextension_name',
+        'ffirst_name',
+        'fmiddle_name ',
+        'flast_name',
+        'fextension_name',
     ];
 }

@@ -66,12 +66,14 @@ Route::get('/admin/qrcodes/view', function () {
 Route::get('/admin/dashboard', function () {
     $id = AuthenticatedSessionController::getAuthId();
     if($id!=null) {
+        // "teacher" => EmployeeController::getAll(),
+        // "student" => StudentController::getAll(),
         return Inertia::render('Admin/Dashboard',[
-            "teacher" => EmployeeController::getAll(),
+            "teacher" => [],
+            "student" => [],
             "advisory" => AdvisoryController::getAll(),
             "subjects" => SubjectController::getAll(),
             "sections" => SchoolSectionController::getAll(),
-            "student" => StudentController::getAll(),
             "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
             "annualTimelogs" => AttendanceController::getTimelogsAnnual(),
             "enrolled" => StudentController::getTotalEnrolledStudent(),

@@ -69,6 +69,15 @@ export default class EditStudent extends Component {
             filetype_: "",
             cameraOn: false,
             parent_data: this.props.parents,
+            mfirst_name: "",
+            mmiddle_name: "",
+            mmaiden_name: "",
+            mlast_name: "",
+            mextension_name: "",
+            ffirst_name: "",
+            fmiddle_name: "", 
+            flast_name: "",
+            fextension_name: "",
             parent_columns: [
                 {
                     id: "no",
@@ -273,7 +282,16 @@ export default class EditStudent extends Component {
                         flsh_strand: self.state.flsh_strand,            
                         ldm_applied: self.state.ldm_applied,
                         parents: self.state.selected_quardians,
-                        relationship: self.state.relationship
+                        relationship: self.state.relationship,
+                        mfirst_name: self.state.mfirst_name,
+                        mmiddle_name: self.state.mmiddle_name,
+                        mmaiden_name: self.state.mmaiden_name,
+                        mlast_name: self.state.mlast_name,
+                        mextension_name: self.state.mlast_name,
+                        ffirst_name: self.state.ffirst_name,
+                        fmiddle_name: self.state.fmiddle_name, 
+                        flast_name: self.state.flast_name,
+                        fextension_name: self.state.fextension_name,
                     };
                     console.log(datas);
                     axios.post('/student/update',datas).then(function (response) {
@@ -534,7 +552,7 @@ export default class EditStudent extends Component {
                                         </div> 
                                         <div className="col-md-2">
                                             <label htmlFor="extension_name" className="form-label">Extension name</label>
-                                            <select className="form-select" id="extension_name" required="" defaultValue={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
+                                            <select className="form-select" id="extension_name" required="" value={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <option>Jr.</option>
@@ -1042,9 +1060,89 @@ export default class EditStudent extends Component {
                                             </div>
                                         </div>
                                     </div>
+
                                     <div className="col-lg-12">
                                         <hr />
-                                        <h5 className="badge fs-5 bg-primary text-start d-block">Parents / Guardians</h5>
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Parents</h5>
+                                        <div className="col-lg-5">
+                                            <label htmlFor="relationship" className="form-label">Father's Name</label> 
+                                        </div> 
+                                        <div className="row" >
+                                            <div className="col-md-4">
+                                                <label htmlFor="ffirst_name" className="form-label">First name</label>
+                                                <input type="text" className="form-control" id="ffirst_name" defaultValue={this.state.ffirst_name} required="" onChange={(e) => { $("#ffirst-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({ffirst_name: e.target.value})}}  />
+                                                <div id="first-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="middle_name" className="form-label">Middle name</label>
+                                                <input type="text" className="form-control" id="fmiddle_name" defaultValue={this.state.fmiddle_name} required="" onChange={(e) => {  $("#fmiddle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({fmiddle_name: e.target.value})}}  />
+                                                <div id="fmiddle-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="flast_name" className="form-label">Last name</label>
+                                                <input type="text" className="form-control" id="flast_name" defaultValue={this.state.flast_name} required="" onChange={(e) => { $("#flast-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flast_name: e.target.value})}}  />
+                                                <div id="flast-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-2">
+                                                <label htmlFor="extension_name" className="form-label">Extension name</label>
+                                                <select className="form-select" id="extension_name" required="" value={this.state.fextension_name} onChange={(e) => {  $("#fextension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({fextension_name: e.target.value})}}  >
+                                                    <option disabled>Choose...</option>
+                                                    <option></option>
+                                                    <option>Jr.</option>
+                                                    <option>Sr.</option>
+                                                    <option>II</option>
+                                                    <option>III</option>
+                                                    <option>VI</option>
+                                                    <option>V</option>
+                                                </select>
+                                                <div id="fextension-name-alert" className="invalid-feedback">Please select a valid state.</div>
+                                            </div> 
+                                        </div>
+                                        <hr />
+                                        <div className="col-lg-5">
+                                            <label htmlFor="relationship" className="form-label">Mothers' Name</label> 
+                                        </div> 
+                                        <div className="row" >
+                                            <div className="col-md-3">
+                                                <label htmlFor="first_name" className="form-label">First name</label>
+                                                <input type="text" className="form-control" id="mfirst_name" defaultValue={this.state.mfirst_name} required="" onChange={(e) => { $("#mfirst-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({mfirst_name: e.target.value})}}  />
+                                                <div id="fmirst-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="middle_name" className="form-label">Middle name</label>
+                                                <input type="text" className="form-control" id="mmiddle_name" defaultValue={this.state.mmiddle_name} required="" onChange={(e) => {  $("#mmiddle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mmiddle_name: e.target.value})}}  />
+                                                <div id="mmiddle-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="middle_name" className="form-label">Maiden name</label>
+                                                <input type="text" className="form-control" id="mmaiden_name" defaultValue={this.state.mmaiden_name} required="" onChange={(e) => {  $("#mmaiden-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mmaiden_name: e.target.value})}}  />
+                                                <div id="mmaiden-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="last_name" className="form-label">Last name</label>
+                                                <input type="text" className="form-control" id="mlast_name" defaultValue={this.state.mlast_name} required="" onChange={(e) => { $("#mlast-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({mlast_name: e.target.value})}}  />
+                                                <div id="mlast-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-2">
+                                                <label htmlFor="extension_name" className="form-label">Extension name</label>
+                                                <select className="form-select" id="mextension_name" required="" value={this.state.mextension_name} onChange={(e) => {  $("#mextension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mextension_name: e.target.value})}}  >
+                                                    <option disabled>Choose...</option>
+                                                    <option></option>
+                                                    <option>Jr.</option>
+                                                    <option>Sr.</option>
+                                                    <option>II</option>
+                                                    <option>III</option>
+                                                    <option>VI</option>
+                                                    <option>V</option>
+                                                </select>
+                                                <div id="mextension-name-alert" className="invalid-feedback">Please select a valid state.</div>
+                                            </div> 
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-12">
+                                        <hr />
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Guardians</h5>
                                         <div className="row">
                                             <EachMethod of={this.state.added_guardians} render={(element,index) => {
                                                 return  <div className="input-group ">

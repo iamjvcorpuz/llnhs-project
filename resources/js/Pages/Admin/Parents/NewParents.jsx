@@ -17,6 +17,43 @@ export default class NewTeacher extends Component {
     constructor(props) {
 		super(props);
         this.state = {
+            data: [],
+            columns: [
+                {
+                    id: "no",
+                    accessor: 'index',
+                    Header: 'No.', 
+                    width: 50,
+                    className: "center"
+                },  
+                {
+                    id: "fullname",
+                    Header: 'Fullname', 
+                    width: 800,
+                    accessor: 'fullname'
+                }, 
+                {
+                    id: "Status",
+                    Header: 'Status',  
+                    width: 150,
+                    accessor: 'status',
+                    className: "center"
+                },
+                {
+                    id: "action",
+                    Header: 'Action',  
+                    width: 200,
+                    accessor: 'index',
+                    className: "center",
+                    Cell: ({row}) => { 
+                       return <>                       
+                        <button className="btn btn-primary btn-block btn-sm col-12 mb-1" onClick={()=>{ 
+                            this.selectedAccountMessenger(row.original);
+                        }}> <i className="bi bi-plus"></i> Add</button>
+                       </>            
+                    }
+                }
+            ],
             photoupload: "",
             photobase64: "",
             photobase64final: "",
@@ -26,6 +63,7 @@ export default class NewTeacher extends Component {
             first_name: "",
             last_name: "",
             middle_name: "",
+            maiden_name: "",
             extension_name: "",
             sex: "",
             bdate: "",
@@ -42,12 +80,18 @@ export default class NewTeacher extends Component {
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
+        this.updateCrop = this.updateCrop.bind(this);
+        this.getFBList = this.getFBList.bind(this);
+        this.fetchFBList = this.fetchFBList.bind(this);
+        this.updateMessenger = this.updateMessenger.bind(this);
+        this.selectedAccountMessenger = this.selectedAccountMessenger.bind(this);
         this._isMounted = false;
     }
 
     componentDidMount() {
         this._isMounted = true;
-        console.log(this)
+        console.log(this);
+        this.getFBList();
         // this.webCam.current.getScreenshot({width: 600, height: 300});
         // $("#fileuploadpanel").modal('show');
         // jQuery.noConflict();
@@ -144,6 +188,7 @@ export default class NewTeacher extends Component {
                         first_name:self.state.first_name,
                         last_name:self.state.last_name,
                         middle_name:self.state.middle_name,
+                        maiden_name:self.state.maiden_name,
                         extension_name:self.state.extension_name,
                         bdate:self.state.bdate,
                         status: "active",
@@ -335,6 +380,229 @@ export default class NewTeacher extends Component {
         }
     }
 
+    getFBList() {
+        let list  = []; 
+        let self = this;
+        axios.post('/messenger/recepient').then(function (response) {
+          // handle success
+        //   console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                self.setState({data: data});
+            }
+        }).catch(function (error) {
+          // handle error
+        //   console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
+    
+    fetchFBList() {
+        let list  = []; 
+        let self = this;
+        axios.post('/messenger/recepient/sync').then(function (response) {
+          // handle success
+        //   console.log(response)
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
+                self.getFBList();
+            }
+        }).catch(function (error) {
+          // handle error
+        //   console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
+    
+    selectedAccountMessenger(val) {
+        let self = this;
+        Swal.fire({
+            title: "To pair this messenger account to parent account click to continue to connect or pair", 
+            showCancelButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "Continue", 
+            icon: "warning",
+            showLoaderOnConfirm: true, 
+            closeOnClickOutside: false,  
+            dangerMode: true,
+        }).then((result) => {
+            // console.log("result",result)
+            if(result.isConfirmed) { 
+                self.setState({
+                    dmode: typeof(val.dmode)!="undefined"?val.dmode:"update", 
+                    messenger_name: val.fullname, 
+                    messenger_id: val.fb_id,
+                    messenger_email: val.email
+                });
+                $('#fbmessenger').modal('hide');
+            } else if(result.isDismissed) {
+
+            }
+            return false
+        }); 
+    }
+    
+    updateMessenger(val) {
+        // console.log(val);
+        try {
+            let self = this;
+            let datas =  {
+                dmode: typeof(val.dmode)!="undefined"?val.dmode:"update",
+                id: self.state.id,
+                messenger_name: val.fullname, 
+                messenger_id: val.fb_id,
+                messenger_email: val.email,
+                contact_id: self.state.contact_list[0].id, 
+                contact_list: self.state.contact_list
+            };
+            // console.log(datas);
+            Swal.fire({
+                title: "To pair this messenger account to parent account click to continue to connect or pair", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    // Swal.close();
+                    Swal.fire({  
+                        title: 'Please wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    axios.post('/parents/update/messenger',datas).then( async function (response) {
+                        // handle success
+                        // console.log(response);
+                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "success") {
+    
+                                    Swal.fire({  
+                                        title: "Successfuly save!", 
+                                        showCancelButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        confirmButtonText: "Continue", 
+                                        icon: "success",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    }).then(function (result2) {
+                                        if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            $('#fbmessenger').modal('hide');
+                                            window.location.reload();
+                                        }
+                                    });
+    
+                                } else {
+                                    Swal.fire({  
+                                        title: "Fail to save", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "data_exist") { 
+                                    Swal.fire({  
+                                        title: "Data Exist", 
+                                        cancelButtonText: "Ok",
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false, 
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
+    
+                            }
+                    }).catch(function (error) {
+                    // handle error
+                    // console.log(error);
+                    if(error) {
+                        if(error.status == "422") {
+                            Swal.fire({  
+                                title: "Required Field Error", 
+                                showCancelButton: false,
+                                showConfirmButton: true,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false, 
+                                confirmButtonText: "Ok", 
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
+    
+                    } else {
+    
+                        Swal.fire({  
+                            title: "Server Error", 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+                    }
+                    })
+                } else if(result.isDismissed) {
+    
+                }
+                return false
+            }); 
+        } catch (error) {
+            Swal.fire({  
+                title: "Server Error", 
+                showCancelButton: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                cancelButtonText: "Ok",
+                confirmButtonText: "Continue",
+                confirmButtonColor: "#DD6B55",
+                icon: "error",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            });
+        }
+    }
     render() {
         return <DashboardLayout title="New Teacher" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
@@ -397,6 +665,11 @@ export default class NewTeacher extends Component {
                                             <input type="text" className="form-control" id="middle_name" defaultValue="" required="" onChange={(e) => {  $("#middle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({middle_name: e.target.value})}}  />
                                             <div id="middle-name-alert" className="valid-feedback">Looks good!</div>
                                         </div> 
+                                        <div className="col-md-3 d-none hide" id="maiden_name_" >
+                                            <label htmlFor="last_name" className="form-label">Maiden name</label>
+                                            <input type="text" className="form-control" id="maiden_name" defaultValue="" required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({maiden_name: e.target.value})}}  />
+                                            <div id="last-name-alert" className="valid-feedback">Looks good!</div>
+                                        </div>
                                         <div className="col-md-3">
                                             <label htmlFor="last_name" className="form-label">Last name</label>
                                             <input type="text" className="form-control" id="last_name" defaultValue="" required="" onChange={(e) => { $("#last-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({last_name: e.target.value})}}  />
@@ -418,7 +691,16 @@ export default class NewTeacher extends Component {
                                         </div>
                                         <div className="col-md-3">
                                             <label htmlFor="gender" className="form-label">Gender</label>
-                                            <select className="form-select" id="gender" required="" defaultValue="" onChange={(e) => { $("#sex-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({sex: e.target.value})}} >
+                                            <select className="form-select" id="gender" required="" defaultValue="" onChange={(e) => { 
+                                                $("#sex-alert").removeAttr('class').addClass('invalid-feedback');
+                                                console.log(e.target.value == "Male");
+                                                if(e.target.value == "Male") {
+                                                    $("#maiden_name_").addClass('d-none');
+                                                } else if(e.target.value == "Female") {                                                    
+                                                    $("#maiden_name_").removeClass('d-none');
+                                                }
+                                                this.setState({sex: e.target.value})
+                                                }} >
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <option>Male</option>
@@ -500,6 +782,11 @@ export default class NewTeacher extends Component {
                                                 </div>
 
                                                 <div id="contact-alert" className="valid-feedback">Looks good!</div>
+
+                                                <br />
+                                                <button className="btn btn-primary" onClick={() => {
+                                                    $('#fbmessenger').modal('show');
+                                                }}>Add Messenger</button>
                                             </div>  
                                         </div>
                                     </div>
@@ -586,6 +873,41 @@ export default class NewTeacher extends Component {
                                 alert("Pleasse try again")
                             }
                          }}>Capture</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="fbmessenger" data-bs-backdrop="static">
+                <div className="modal-dialog modal-lg" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5"><i className="bi bi-facebook"></i> Messenger</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={() => {
+                            this.setState({ 
+                                cameraOn: false
+                            });
+                        }} aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body"> 
+
+                    <ReactTable
+                        key={"react-tables"}
+                        className={"table table-bordered table-striped "}
+                        data={this.state.data} 
+                        columns={this.state.columns}
+                    />
+                    </div>
+                    <div className="modal-footer"> 
+                        <button type="button" className="btn btn-info" onClick={() => {
+                            this.fetchFBList();
+                        }} >Fetch </button>
+                        <button type="button" className="btn btn-secondary" onClick={() => {
+                            this.setState({ 
+                                cameraOn: false
+                            });
+                        }} data-bs-dismiss="modal">Close</button>
                     </div>
                     </div>
                 </div>
