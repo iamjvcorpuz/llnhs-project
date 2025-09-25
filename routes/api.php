@@ -35,7 +35,7 @@ use Illuminate\Http\Request;
 Route::get('/desktop',[StudentController::class,'index']);
 Route::get('/generate/code',[GeneralController::class,'generateCode']);
 
-Route::get('/student',[StudentController::class,'getAllStudent']);
+Route::get('/student',[StudentController::class,'getAllStudent_']);
 Route::post('/student',[StudentController::class,'store']); 
 Route::post('/student/update',[StudentController::class,'update']);
 Route::delete('/student',[StudentController::class,'remove']);
