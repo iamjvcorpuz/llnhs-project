@@ -31,7 +31,7 @@ export default class Parents extends Component {
                     Cell: ({row}) => {
                        return <img className="" height={100} width={100}  onError={(e)=>{ 
                         e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                   }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?`/profile/photo/student/${row.original.id}`:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />          
+                   }} alt="Picture Error" src={`/profile/photo/parent/${row.original.lrn}`} />
                     },
                 }, 
                 {
