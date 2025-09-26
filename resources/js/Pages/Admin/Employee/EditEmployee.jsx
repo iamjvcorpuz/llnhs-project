@@ -172,6 +172,10 @@ export default class EditEmployee extends Component {
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
+        this.saveEB = this.saveEB.bind(this);
+        this.removeEB = this.removeEB.bind(this);
+        this.saveTraining = this.saveTraining.bind(this);
+        this.removeTraining = this.removeTraining.bind(this);
         this._isMounted = false;
     }
 
@@ -285,7 +289,7 @@ export default class EditEmployee extends Component {
                         }
                     });
                     let datas =  {
-                        id: self.props.employee.id,
+                        id: self.props.employee.uuid,
                         qr_code: self.state.lrn, 
                         first_name:self.state.first_name,
                         last_name:self.state.last_name,
@@ -297,12 +301,14 @@ export default class EditEmployee extends Component {
                         email:self.state.email,
                         sex:self.state.sex,
                         contact_list: self.state.contact_list,
-                        employee_type: self.state.employee_type
+                        employee_type: self.state.employee_type,
+                        EB_list: self.state.EB_list,
+                        training_list: self.state.training_list
                     };
                     // console.log(datas);
                     axios.post('/employee/update',datas).then( async function (response) {
                         // handle success
-                        // console.log(response);
+                        console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 if(data.status == "success") {
@@ -381,66 +387,66 @@ export default class EditEmployee extends Component {
                                     });
                                 }
                             }
-                      }).catch(function (error) {
-                        // handle error
-                        console.log(error);
-                        // Swal.fire({  
-                        //     title: "Server Error", 
-                        //     showCancelButton: true,
-                        //     showConfirmButton: false,
-                        //     allowOutsideClick: false,
-                        //     allowEscapeKey: false,
-                        //     cancelButtonText: "Ok",
-                        //     confirmButtonText: "Continue",
-                        //     confirmButtonColor: "#DD6B55",
-                        //     icon: "error",
-                        //     showLoaderOnConfirm: true, 
-                        //     closeOnClickOutside: false,  
-                        //     dangerMode: true,
-                        // });
-                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
-                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
-                            let listmessage = "";
+                    }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    // Swal.fire({  
+                    //     title: "Server Error", 
+                    //     showCancelButton: true,
+                    //     showConfirmButton: false,
+                    //     allowOutsideClick: false,
+                    //     allowEscapeKey: false,
+                    //     cancelButtonText: "Ok",
+                    //     confirmButtonText: "Continue",
+                    //     confirmButtonColor: "#DD6B55",
+                    //     icon: "error",
+                    //     showLoaderOnConfirm: true, 
+                    //     closeOnClickOutside: false,  
+                    //     dangerMode: true,
+                    // });
+                    if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                        let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                        let listmessage = "";
 
-                            if(Object.keys(data.errors).length> 0) {
-                                Object.keys(data.errors).forEach(element => {
-                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
-                                });
-                            }
-
-                            Swal.fire({  
-                                title: data.message ,
-                                html:`<ul class="list-group" >${listmessage}</ul>`, 
-                                showCancelButton: true,
-                                showConfirmButton: false,
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                cancelButtonText: "Ok",
-                                confirmButtonText: "Continue",
-                                confirmButtonColor: "#DD6B55",
-                                icon: "error",
-                                showLoaderOnConfirm: true, 
-                                closeOnClickOutside: false,  
-                                dangerMode: true,
-                            });
-
-                        } else {
-                            Swal.fire({  
-                                title: "Server Error", 
-                                showCancelButton: true,
-                                showConfirmButton: false,
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                cancelButtonText: "Ok",
-                                confirmButtonText: "Continue",
-                                confirmButtonColor: "#DD6B55",
-                                icon: "error",
-                                showLoaderOnConfirm: true, 
-                                closeOnClickOutside: false,  
-                                dangerMode: true,
+                        if(Object.keys(data.errors).length> 0) {
+                            Object.keys(data.errors).forEach(element => {
+                                listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
                             });
                         }
-                      })
+
+                        Swal.fire({  
+                            title: data.message ,
+                            html:`<ul class="list-group" >${listmessage}</ul>`, 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+
+                    } else {
+                        Swal.fire({  
+                            title: "Server Error", 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+                    }
+                    })
                 } else if(result.isDismissed) {
 
                 }
@@ -481,6 +487,174 @@ export default class EditEmployee extends Component {
         }
     }
 
+    saveEB() {
+        let self = this;
+        let list = [];
+        if(self.state.eb_level != "" && self.state.eb_school != "" && self.state.eb_ea != "" && self.state.eb_df != "" && self.state.eb_dt != "") {
+            list.push({ 
+                id: self.state.EB_list.length +1,
+                level: self.state.eb_level,
+                name_of_school: self.state.eb_school,
+                basic_edu_degree_course: self.state.eb_ea,
+                period_from: self.state.eb_df,
+                period_to: self.state.eb_dt,
+                units: self.state.eb_units,
+                yr_graduated: self.state.eb_yrg,
+                ac_ah_recieve: self.state.eb_achiev
+            });
+            self.setState({
+                EB_list: [...self.state.EB_list,...list],
+                eb_achiev: "",
+                eb_df: "",
+                eb_dt: "",
+                eb_ea: "",
+                eb_level: "",
+                eb_school: "",
+                eb_yrg: "",
+                eb_units: "",
+            });
+            $('#eb_level').val('');
+            $('#eb_achiev').val('');
+            $('#eb_ea').val('');
+            $('#eb_school').val('');
+            $('#eb_units').val('');
+            $('#eb_yrg').val('');
+            $('#eb_df').val('');
+            $('#eb_dt').val('');
+        } else {
+            if(self.state.eb_level == "") {
+                $("#eb_level-alert").removeAttr('class');
+                $("#eb_level-alert").html('Required Field');
+                $("#eb_level-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_school == "") {
+                $("#eb_school-alert").removeAttr('class');
+                $("#eb_school-alert").html('Required Field');
+                $("#eb_school-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_ea == "") {
+                $("#eb_ea-alert").removeAttr('class');
+                $("#eb_ea-alert").html('Required Field');
+                $("#eb_ea-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_df == "") {
+                $("#eb_df-alert").removeAttr('class');
+                $("#eb_df-alert").html('Required Field');
+                $("#eb_df-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_dt == "") {
+                $("#eb_dt-alert").removeAttr('class');
+                $("#eb_dt-alert").html('Required Field');
+                $("#eb_dt-alert").addClass('d-block invalid-feedback');
+            }
+        }
+
+
+    }
+
+    removeEB(id) {
+        let self = this;
+        let lists = [];
+        let i = 1;
+        self.state.EB_list.forEach((val) => {
+            if(val.id != id) {
+                lists.push({ 
+                    id: i,
+                    level: val.level,
+                    name_of_school: val.name_of_school,
+                    basic_edu_degree_course: val.basic_edu_degree_course,
+                    period_from: val.period_from,
+                    period_to: val.period_to,
+                    units: val.units,
+                    yr_graduated: val.yr_graduated,
+                    ac_ah_recieve: val.ac_ah_recieve
+                });
+                i++;                
+            }
+        });
+        
+        self.setState({
+            EB_list: lists
+        });   
+    }
+    
+    saveTraining() {
+        let self = this;
+        let list = [];
+        if(self.state.t_title != "" && self.state.t_expe != "" && self.state.t_render != "" && self.state.t_df != "" && self.state.t_dt != "") {
+            list.push({ 
+                id: self.state.training_list.length +1,
+                title: self.state.t_title,
+                experience: self.state.t_expe,
+                total_render: self.state.t_render,
+                date_from: self.state.t_df,
+                date_to: self.state.t_dt
+            });
+            self.setState({
+                training_list: [...self.state.training_list,...list],
+                t_df: "",
+                t_dt: "",
+                t_expe: "",
+                t_render: "",
+                t_title: "",
+            });
+            $('#t_title').val('');
+            $('#t_render').val('');
+            $('#t_expe').val('');
+            $('#t_df').val('');
+            $('#t_dt').val('');
+        } else {
+            if(self.state.t_title == "") {
+                $("#t_title-alert").removeAttr('class');
+                $("#t_title-alert").html('Required Field');
+                $("#t_title-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.t_expe == "") {
+                $("#t_expe-alert").removeAttr('class');
+                $("#t_expe-alert").html('Required Field');
+                $("#t_expe-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.t_render == "") {
+                $("#t_render-alert").removeAttr('class');
+                $("#t_render-alert").html('Required Field');
+                $("#t_render-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.t_df == "") {
+                $("#t_df-alert").removeAttr('class');
+                $("#t_df-alert").html('Required Field');
+                $("#t_df-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_dt == "") {
+                $("#t_dt-alert").removeAttr('class');
+                $("#t_dt-alert").html('Required Field');
+                $("#t_dt-alert").addClass('d-block invalid-feedback');
+            }
+        }
+    }
+
+
+    removeTraining(id) {
+        let self = this;
+        let lists = [];
+        let i = 1;
+        self.state.training_list.forEach((val) => {
+            if(val.id != id) {
+                lists.push({ 
+                    id: i,
+                    title: val.title,
+                    experience: val.experience,
+                    total_render: val.total_render,
+                    date_from: val.date_from,
+                    date_to: val.date_to
+                });
+                i++;                
+            }
+        });
+        
+        self.setState({
+            training_list: lists
+        });   
+    }
     render() {
         return <DashboardLayout title="New Teacher" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 

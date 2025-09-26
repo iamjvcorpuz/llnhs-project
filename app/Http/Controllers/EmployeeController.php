@@ -101,7 +101,7 @@ class EmployeeController extends Controller
                 ->get();
 
         if($Student->count()==0) {
-            $customer = Employee::create($request->except(['contact_list']));
+            $customer = Employee::create($request->except(['contact_list','EB_list','training_list']));
             DB::table('employee')->where('id', $customer->id)->update(['uuid' => $customer->id]);
 
             $firstname = $request->first_name;
@@ -239,7 +239,7 @@ class EmployeeController extends Controller
 
         if($teacher->count()==1) {
             
-            $teacher = DB::table('employee')->where('id', $request->id)->update($request->except(['id','contact_list']));
+            $teacher = DB::table('employee')->where('id', $request->id)->update($request->except(['id','contact_list','EB_list','training_list']));
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     $temp = DB::table('contacts')->where('teacher_id',$val['teacher_id'])->where('phone_number',$val['phone_number'])->get(); 
@@ -253,6 +253,75 @@ class EmployeeController extends Controller
                     }
                 }
             } 
+
+             // EB_list
+             $eb = $request->EB_list;
+             $eb_query = DB::table('education_background')->where('employee_id', $request->id)->get();
+             if($eb != NULL) {
+                
+
+                if(count($eb)>0) {
+                    DB::table('education_background')->where('employee_id', $request->id)->delete();
+
+                    foreach($eb as $key => $val) {
+                        $level = isset($val['level']) ? $val['level'] : "";
+                        $name_of_school = isset($val['name_of_school']) ? $val['name_of_school'] : "";
+                        $basic_edu_degree_course = isset($val['basic_edu_degree_course']) ? $val['basic_edu_degree_course'] : "";
+                        $period_from = isset($val['period_from']) ? $val['period_from'] : "";
+                        $period_to = isset($val['period_to']) ? $val['period_to'] : "";
+                        $units = isset($val['units']) ? $val['units'] : "";
+                        $yr_graduated = isset($val['yr_graduated']) ? $val['yr_graduated'] : "";
+                        $ac_ah_recieve = isset($val['ac_ah_recieve']) ? $val['ac_ah_recieve'] : "";
+                        EmployeeEB::create([
+                            'employee_id' => $request->id,
+                            'level' => $level, 
+                            'name_of_school' => $name_of_school,
+                            'basic_edu_degree_course' => $basic_edu_degree_course,
+                            'period_from' => $period_from,
+                            'period_to' => $period_to,
+                            'units' => $units,
+                            'yr_graduated' => $yr_graduated,
+                            'ac_ah_recieve' => $ac_ah_recieve
+                        ]);
+                    }
+                }
+              
+             } else if($eb_query->count() > 0 && count($eb) == 0) {
+                DB::table('education_background')->where('employee_id', $request->id)->delete();
+            }
+ 
+             // training_list
+            $trainings = $request->training_list;
+            $trainings_query = DB::table('tranings')->where('employee_id', $request->id)->get();
+            if($trainings != NULL) {
+                $trainings_query = DB::table('tranings')->where('employee_id', $request->id)->get();
+                if(count($trainings) > 0) {
+                    DB::table('tranings')->where('employee_id', $request->id)->delete();
+                    foreach($trainings as $key => $val) {
+                        $title = isset($val['title']) ? $val['title'] : "";
+                        $experience = isset($val['experience']) ? $val['experience'] : "";
+                        $total_render = isset($val['total_render']) ? $val['total_render'] : "";
+                        $date_from = isset($val['date_from']) ? $val['date_from'] : "";
+                        $date_to = isset($val['date_to']) ? $val['date_to'] : "";
+                        EmployeeTrainings::create([
+                            'employee_id' => $request->id,
+                            'title' => $title, 
+                            'experience' => $experience,
+                            'total_render' => $total_render,
+                            'date_from' => $date_from, 
+                            'date_to' => $date_to
+                        ]);
+                    }
+                } else if($trainings_query->count() > 0 && count($trainings) == 0) {
+                    DB::table('tranings')->where('employee_id', $request->id)->delete();
+                }
+            } else if($trainings_query->count() > 0 && count($trainings) == 0) {
+                DB::table('tranings')->where('employee_id', $request->id)->delete();
+            }
+
+
+
+
             return response()->json([
                 'status' => 'success',
                 'error' => null,
