@@ -30,8 +30,9 @@ class ClassTSController extends Controller
         * 
         FROM 
         school_class 
-        LEFT JOIN class_teaching ON class_teaching.class_id = school_class.id
+        LEFT JOIN class_teaching ON class_teaching.class_id = school_class.uuid
         LEFT JOIN school_subjects ON school_subjects.id = class_teaching.subject_id
+        LEFT JOIN employee ON employee.uuid = class_teaching.teacher_id
         WHERE
         school_class.qr_code = ?
         ;",[$id]);
