@@ -42,10 +42,141 @@ export default class NewEmployee extends Component {
             educations: [],
             employee_type: "",
             track: this.props.track,
-            strand: this.props.strand
+            strand: this.props.strand,
+            EB_list: [],
+            EB_column:[ 
+                {
+                    id: "level",
+                    Header: 'Level',  
+                    width: 200,
+                    accessor: 'level', 
+                    className: ""
+                },
+                {
+                    id: "nameofschool",
+                    Header: 'School',  
+                    accessor: 'name_of_school',  
+                    width: 200,
+                },
+                {
+                    id: "education",
+                    Header: 'Educational Attainment',   
+                    width: 200,
+                    accessor: 'basic_edu_degree_course'
+                },
+                {
+                    id: "datefrom",
+                    Header: 'Date From',   
+                    width: 200,
+                    accessor: 'period_from'
+                },
+                {
+                    id: "dateto",
+                    Header: 'Date To',   
+                    width: 200,
+                    accessor: 'period_to'
+                },
+                {
+                    id: "units",
+                    Header: 'Total Units',   
+                    width: 200,
+                    accessor: 'units'
+                },
+                {
+                    id: "yrgraduated",
+                    Header: 'Year Graduated',   
+                    width: 200,
+                    accessor: 'yr_graduated'
+                },
+                {
+                    id: "ac_ah_recieve",
+                    Header: 'Achievements',   
+                    width: 200,
+                    accessor: 'ac_ah_recieve'
+                },
+                {
+                    id: "action",
+                    Header: 'Action',  
+                    width: 150,
+                    accessor: 'id',
+                    className: "center",
+                    Cell:  ({row}) => { 
+                       return <>                       
+                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.removeEB(row.original.id);}} > <i className="bi bi-x"></i> Remove</button>
+                       </>            
+                    }
+                }
+            ],
+            eb_achiev: "",
+            eb_df: "",
+            eb_dt: "",
+            eb_ea: "",
+            eb_level: "",
+            eb_school: "",
+            eb_yrg: "",
+            eb_units: "",
+            training_list: [],
+            training_column: [
+                {
+                    id: "title",
+                    Header: 'Title',  
+                    accessor: 'title', 
+                    filterable: false,
+                    width: 200,
+                },
+                {
+                    id: "experience",
+                    Header: 'Experience',  
+                    filterable: false,
+                    width: 200,
+                    accessor: 'experience'
+                },
+                {
+                    id: "total_render",
+                    Header: 'Total Render Hours',  
+                    filterable: false,
+                    width: 200,
+                    accessor: 'total_render'
+                },
+                {
+                    id: "date_from",
+                    Header: 'Date From',  
+                    filterable: false,
+                    width: 200,
+                    accessor: 'date_from'
+                },
+                {
+                    id: "date_to",
+                    Header: 'Date To',  
+                    filterable: false,
+                    width: 200,
+                    accessor: 'date_to'
+                },
+                {
+                    id: "action",
+                    Header: 'Action',  
+                    width: 110,
+                    accessor: 'id',
+                    className: "center",
+                    Cell:  ({row}) => { 
+                       return <>                       
+                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.removeTraining(row.original.id);}} > <i className="bi bi-x"></i> Remove</button>
+                       </>            
+                    }
+                }
+            ],
+            t_df: "",
+            t_dt: "",
+            t_expe: "",
+            t_render: "",
+            t_title: "",
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
+        this.saveEB = this.saveEB.bind(this);
+        this.removeEB = this.removeEB.bind(this);
+        this.saveTraining = this.saveTraining.bind(this);
+        this.removeTraining = this.removeTraining.bind(this);
         this._isMounted = false;
     }
 
@@ -159,7 +290,9 @@ export default class NewEmployee extends Component {
                         email:self.state.email,
                         sex:self.state.sex,
                         contact_list: self.state.contact_list,
-                        employee_type: self.state.employee_type
+                        employee_type: self.state.employee_type,
+                        EB_list: self.state.EB_list,
+                        training_list: self.state.training_list
                     };
                     // console.log(datas);
                     axios.post('/employee',datas).then( async function (response) {
@@ -345,7 +478,177 @@ export default class NewEmployee extends Component {
         }
     }
 
+    saveEB() {
+        let self = this;
+        let list = [];
+        if(self.state.eb_level != "" && self.state.eb_school != "" && self.state.eb_ea != "" && self.state.eb_df != "" && self.state.eb_dt != "") {
+            list.push({ 
+                id: self.state.EB_list.length +1,
+                level: self.state.eb_level,
+                name_of_school: self.state.eb_school,
+                basic_edu_degree_course: self.state.eb_ea,
+                period_from: self.state.eb_df,
+                period_to: self.state.eb_dt,
+                units: self.state.eb_units,
+                yr_graduated: self.state.eb_yrg,
+                ac_ah_recieve: self.state.eb_achiev
+            });
+            self.setState({
+                EB_list: [...self.state.EB_list,...list],
+                eb_achiev: "",
+                eb_df: "",
+                eb_dt: "",
+                eb_ea: "",
+                eb_level: "",
+                eb_school: "",
+                eb_yrg: "",
+                eb_units: "",
+            });
+            $('#eb_level').val('');
+            $('#eb_achiev').val('');
+            $('#eb_ea').val('');
+            $('#eb_school').val('');
+            $('#eb_units').val('');
+            $('#eb_yrg').val('');
+            $('#eb_df').val('');
+            $('#eb_dt').val('');
+        } else {
+            if(self.state.eb_level == "") {
+                $("#eb_level-alert").removeAttr('class');
+                $("#eb_level-alert").html('Required Field');
+                $("#eb_level-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_school == "") {
+                $("#eb_school-alert").removeAttr('class');
+                $("#eb_school-alert").html('Required Field');
+                $("#eb_school-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_ea == "") {
+                $("#eb_ea-alert").removeAttr('class');
+                $("#eb_ea-alert").html('Required Field');
+                $("#eb_ea-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_df == "") {
+                $("#eb_df-alert").removeAttr('class');
+                $("#eb_df-alert").html('Required Field');
+                $("#eb_df-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_dt == "") {
+                $("#eb_dt-alert").removeAttr('class');
+                $("#eb_dt-alert").html('Required Field');
+                $("#eb_dt-alert").addClass('d-block invalid-feedback');
+            }
+        }
+
+
+    }
+
+    removeEB(id) {
+        let self = this;
+        let lists = [];
+        let i = 1;
+        self.state.EB_list.forEach((val) => {
+            if(val.id != id) {
+                lists.push({ 
+                    id: i,
+                    level: val.level,
+                    name_of_school: val.name_of_school,
+                    basic_edu_degree_course: val.basic_edu_degree_course,
+                    period_from: val.period_from,
+                    period_to: val.period_to,
+                    units: val.units,
+                    yr_graduated: val.yr_graduated,
+                    ac_ah_recieve: val.ac_ah_recieve
+                });
+                i++;                
+            }
+        });
+        
+        self.setState({
+            EB_list: lists
+        });   
+    }
+    
+    saveTraining() {
+        let self = this;
+        let list = [];
+        if(self.state.t_title != "" && self.state.t_expe != "" && self.state.t_render != "" && self.state.t_df != "" && self.state.t_dt != "") {
+            list.push({ 
+                id: self.state.training_list.length +1,
+                title: self.state.t_title,
+                experience: self.state.t_expe,
+                total_render: self.state.t_render,
+                date_from: self.state.t_df,
+                date_to: self.state.t_dt
+            });
+            self.setState({
+                training_list: [...self.state.training_list,...list],
+                t_df: "",
+                t_dt: "",
+                t_expe: "",
+                t_render: "",
+                t_title: "",
+            });
+            $('#t_title').val('');
+            $('#t_render').val('');
+            $('#t_expe').val('');
+            $('#t_df').val('');
+            $('#t_dt').val('');
+        } else {
+            if(self.state.t_title == "") {
+                $("#t_title-alert").removeAttr('class');
+                $("#t_title-alert").html('Required Field');
+                $("#t_title-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.t_expe == "") {
+                $("#t_expe-alert").removeAttr('class');
+                $("#t_expe-alert").html('Required Field');
+                $("#t_expe-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.t_render == "") {
+                $("#t_render-alert").removeAttr('class');
+                $("#t_render-alert").html('Required Field');
+                $("#t_render-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.t_df == "") {
+                $("#t_df-alert").removeAttr('class');
+                $("#t_df-alert").html('Required Field');
+                $("#t_df-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.eb_dt == "") {
+                $("#t_dt-alert").removeAttr('class');
+                $("#t_dt-alert").html('Required Field');
+                $("#t_dt-alert").addClass('d-block invalid-feedback');
+            }
+        }
+    }
+
+
+    removeTraining(id) {
+        let self = this;
+        let lists = [];
+        let i = 1;
+        self.state.training_list.forEach((val) => {
+            if(val.id != id) {
+                lists.push({ 
+                    id: i,
+                    title: val.title,
+                    experience: val.experience,
+                    total_render: val.total_render,
+                    date_from: val.date_from,
+                    date_to: val.date_to
+                });
+                i++;                
+            }
+        });
+        
+        self.setState({
+            training_list: lists
+        });   
+    }
+
     render() {
+        const EB_list = this.state.EB_list; 
         return <DashboardLayout title="New Teacher" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
@@ -521,6 +824,14 @@ export default class NewEmployee extends Component {
                                         <hr />
                                         <h5 className="badge fs-5 bg-primary text-start d-block">Education Background</h5> 
                                         <div className="row g-3">
+                                            <div className="col-lg-12">
+                                            <ReactTable
+                                                key={"react-tables1"}
+                                                className={"table table-bordered table-striped "}
+                                                data={this.state.EB_list} 
+                                                columns={this.state.EB_column} 
+                                            />
+                                            </div>
                                             <div className="col-md-4">
                                                 <label htmlFor="eb_level" className="form-label">Level</label>
                                                 <input type="text" className="form-control" id="eb_level" defaultValue="" required="" onChange={(e) => { $("#eb_level-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_level: e.target.value})}}  />
@@ -533,72 +844,88 @@ export default class NewEmployee extends Component {
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_barangay" className="form-label">Educational Attainment</label>
-                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
-                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="eb_ea" defaultValue="" required="" onChange={(e) => { $("#eb_ea-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_ea: e.target.value})}}  />
+                                                <div id="eb_ea-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_barangay" className="form-label">Date From</label>
-                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
-                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="eb_df" defaultValue="" required="" onChange={(e) => { $("#eb_df-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_df: e.target.value})}}  />
+                                                <div id="eb_df-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_barangay" className="form-label">Date To</label>
-                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
-                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="eb_dt" defaultValue="" required="" onChange={(e) => { $("#eb_dt-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_dt: e.target.value})}}  />
+                                                <div id="eb_dt-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_barangay" className="form-label">No. Units</label>
-                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
-                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="eb_units" defaultValue="" required="" onChange={(e) => { $("#eb_units-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_units: e.target.value})}}  />
+                                                <div id="eb_units-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_barangay" className="form-label">Year Graduated</label>
-                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
-                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="eb_yrg" defaultValue="" required="" onChange={(e) => { $("#eb_yrg-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_yrg: e.target.value})}}  />
+                                                <div id="eb_yrg-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_barangay" className="form-label">Scholarship/Academic Honors/Received</label>
-                                                <input type="text" className="form-control" id="ca_barangay" defaultValue="" required="" onChange={(e) => { $("#ca_barangay-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_barangay: e.target.value})}}  />
-                                                <div id="ca_barangay-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="eb_achiev" defaultValue="" required="" onChange={(e) => { $("#eb_achiev-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({eb_achiev: e.target.value})}}  />
+                                                <div id="eb_achiev-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                         </div>
                                         <br />
-                                        <button className="btn btn-success" onClick={() => { 
-                                        }}>Save</button>
+                                        <div className="col-lg-12 clearfix">
+                                            <button className="btn btn-success float-right" onClick={() => { 
+                                                this.saveEB();
+                                            }}> <i className="bi bi-plus"></i> Add</button>
+                                        </div>
                                     </div>
                                     <div className="col-lg-12">
                                         <hr />
                                         <h5 className="badge fs-5 bg-primary text-start d-block">Trainings</h5>
                                         <div className="row g-3">
+                                            <div className="col-lg-12">
+                                                <ReactTable
+                                                    key={"react-tables2"}                                                
+                                                    showHeader={true}
+                                                    showPagenation={true}
+                                                    className={"table table-bordered table-striped "}
+                                                    data={this.state.training_list} 
+                                                    columns={this.state.training_column}
+                                                />
+                                            </div>
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_hn" className="form-label">Title</label>
-                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
-                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="t_title" defaultValue="" required="" onChange={(e) => { $("#t_title-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({t_title: e.target.value})}}  />
+                                                <div id="t_title-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_hn" className="form-label">Experience</label>
-                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
-                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="t_expe" defaultValue="" required="" onChange={(e) => { $("#t_expe-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({t_expe: e.target.value})}}  />
+                                                <div id="t_expe-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_hn" className="form-label">Total Render</label>
-                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
-                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="t_render" defaultValue="" required="" onChange={(e) => { $("#t_render-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({t_render: e.target.value})}}  />
+                                                <div id="t_render-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_hn" className="form-label">Date From</label>
-                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
-                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="t_df" defaultValue="" required="" onChange={(e) => { $("#t_df-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({t_df: e.target.value})}}  />
+                                                <div id="t_df-alert" className="valid-feedback">Looks good!</div>
                                             </div> 
                                             <div className="col-md-4">
                                                 <label htmlFor="ca_hn" className="form-label">Date To</label>
-                                                <input type="text" className="form-control" id="ca_hn" defaultValue="" required="" onChange={(e) => { $("#ca_hn-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({cd_hno: e.target.value})}}  />
-                                                <div id="ca_hn-alert" className="valid-feedback">Looks good!</div>
+                                                <input type="text" className="form-control" id="t_dt" defaultValue="" required="" onChange={(e) => { $("#t_dt-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({t_dt: e.target.value})}}  />
+                                                <div id="t_dt-alert" className="valid-feedback">Looks good!</div>
                                             </div>
                                         </div>
                                         <br />
-                                        <button className="btn btn-success" onClick={() => { 
-                                        }}>Save</button>
+                                        <div className="col-lg-12 clearfix">
+                                            <button className="btn btn-success float-right" onClick={() => { 
+                                                this.saveTraining();
+                                            }}><i className="bi bi-plus"></i>  Add</button>
+                                        </div>
                                     </div>
                                     <div className="col-12 pt-3">
                                         <div className="form-check float-right">

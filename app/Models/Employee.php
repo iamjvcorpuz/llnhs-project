@@ -26,4 +26,5 @@ class Employee extends Model
         'religion',
         'ethic_group',
         'status',
-    ];}
+    ];
+}
