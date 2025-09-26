@@ -7,7 +7,7 @@ export default function Footer({
     ...props
 }) {
     return (<footer className="app-footer"> 
-        <div className="float-end d-none d-sm-inline">Version 0.9.9</div> 
+        <div className="float-end d-none d-sm-inline">Version 1.0.0</div> 
         <strong>
           Copyright &copy; 2025&nbsp;
           <a href="#" className="text-decoration-none">Lebak Legislated National High School</a>.
