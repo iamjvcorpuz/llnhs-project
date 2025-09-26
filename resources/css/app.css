@@ -263,6 +263,9 @@ color: black;
     border-radius: 50%;
     background-color: #ffffff;
 }
+.shadow-panel {
+    box-shadow:5px 5px 5px rgba(102, 101, 101, .7)!important;
+}
 .shadow {
     box-shadow:0 0 20px rgba(102, 101, 101, 0.384);
 }
@@ -925,4 +928,11 @@ img {
     50% {
       background-color: gray; /* Second color - blue */
     }
+}
+
+.sidebar-menu .nav-treeview {
+    display: none;
+    padding: 0;
+    list-style: none;
+    margin-left: 1rem
 }

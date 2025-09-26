@@ -209,7 +209,7 @@ export default class Dashboard extends Component {
 
 
                         <div className="col-lg-3 col-6"> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                                 <div className="inner">
                                     <h3>{this.state.todayAttendance.length}</h3>
                                     <p>Today Attendance</p>
@@ -219,14 +219,15 @@ export default class Dashboard extends Component {
                                     fill="currentColor"
                                     viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true">
+                                    aria-hidden="true"
+                                    opacity={0.2}>
                                     <g id="SVGRepo_iconCarrier"> <path d="M3 9H21M7 3V5M17 3V5M6 12H8M11 12H13M16 12H18M6 15H8M11 15H13M16 15H18M6 18H8M11 18H13M16 18H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="#000000" strokeWidth="2" strokeLinecap="round"/> </g>
                                 </svg>
                             </div> 
                         </div>
 
                         <div className="col-lg-3 col-6"> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.student}</h3>
                                 <p> Student</p>
@@ -244,7 +245,7 @@ export default class Dashboard extends Component {
                         </div>
 
                         <div className="col-lg-3 col-6"> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.teachers}</h3>
                                 <p>Teacher</p>
@@ -263,7 +264,7 @@ export default class Dashboard extends Component {
 
 
                         <div className="col-lg-3 col-6"> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.sections.length}</h3>
                                 <p>School Sections</p>
@@ -374,7 +375,7 @@ export default class Dashboard extends Component {
                         </div>
 
                         <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.enrolled}</h3>
                                 <p>Enrolled</p>
@@ -392,7 +393,7 @@ export default class Dashboard extends Component {
                         </div>
 
                         <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.unenrolled}</h3>
                                 <p>Unenrolled</p>
@@ -406,7 +407,7 @@ export default class Dashboard extends Component {
 
                         
                         <div className="col-lg-3 col-6"  title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.transferout.length} / {this.state.transferin.length}</h3>
                                 <p>Transfer IN / OUT</p>
@@ -419,7 +420,7 @@ export default class Dashboard extends Component {
                         </div>
 
                         <div className="col-lg-3 col-6"  title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
-                            <div className="small-box text-bg-primary">
+                            <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
                                 <h3>{this.state.dropout.length}</h3>
                                 <p>Dropout</p>
