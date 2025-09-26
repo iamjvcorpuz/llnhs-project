@@ -1009,7 +1009,7 @@ export default class Advisory extends Component {
                                 </select>
                                 <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
                             </div>
-                                <div className="col-md-12">
+                                <div className="col-md-12 d-none">
                                     <label htmlFor="subject" className="form-label">Subject</label>
                                     <select className="form-select" id="subject" required="" onChange={(e) => {  $("#subject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
                                         <option disabled >Choose...</option>

@@ -21,7 +21,8 @@ export default class ClassSubjectTeacher extends Component {
     constructor(props) {
 		super(props);
         this.state = {            
-            data: [],
+            data: [],      
+            data_temp: [],
             subjects: this.props.subjects, 
             teachers: this.props.teacher,
             advisoryList: this.props.advisory,
@@ -89,6 +90,7 @@ export default class ClassSubjectTeacher extends Component {
                     Header: 'Time',  
                     width: 180,
                     className: "center",
+                    filterable: true,
                     accessor: 'index',
                     Cell: ({row}) => { 
                        return <> 
@@ -101,7 +103,7 @@ export default class ClassSubjectTeacher extends Component {
                         {(row.original.saturday==1)?"Sat-":""}
                         {(row.original.sunday==1)?"Sun-":""}
                        </>            
-                    }
+                    },
                 },
                 {
                     id: "Action",
@@ -128,6 +130,7 @@ export default class ClassSubjectTeacher extends Component {
         this.updateData = this.updateData.bind(this);
         this.selectSubject = this.selectData.bind(this);
         this.getAllData = this.getAllData.bind(this); 
+        this.loadSched = this.loadSched.bind(this); 
         // console.log(this.props);
     }
     
@@ -227,6 +230,7 @@ export default class ClassSubjectTeacher extends Component {
                         yeargrade_temp: data.schoolyeargrades,
                         yeargrade: data.schoolyeargrades,
                         data: data.class_teaching,
+                        data_temp: data.class_teaching,
                     },() => {
                         if(self.state.data.length>0) {
                             self.setState({
@@ -892,6 +896,56 @@ export default class ClassSubjectTeacher extends Component {
         });
     }
 
+    loadSched(day) { 
+        let temp_data = [];
+        this.setState({loading: true,overAllSchedule:false});
+        if(day == "monday") { 
+            this.state.data_temp.forEach(val => { 
+                if(val.monday == "1") {
+                    temp_data.push(val);
+                }
+            });
+        } else if(day == "tueday") { 
+            this.state.data_temp.forEach(val => { 
+                if(val.tueday == "1") {
+                    temp_data.push(val);
+                }
+            });
+        } else if(day == "wednesday") { 
+            this.state.data_temp.forEach(val => { 
+                if(val.wednesday == "1") {
+                    temp_data.push(val);
+                }
+            });
+        } else if(day == "thursday") { 
+            this.state.data_temp.forEach(val => { 
+                if(val.thursday == "1") {
+                    temp_data.push(val);
+                }
+            });
+        } else if(day == "friday") { 
+            this.state.data_temp.forEach(val => { 
+                if(val.friday == "1") {
+                    temp_data.push(val);
+                }
+            });
+            
+        } else  if(day == "all") { 
+            this.state.data_temp.forEach(val => {  
+                temp_data.push(val); 
+            });
+            this.setState({overAllSchedule: true});
+        }
+
+        setTimeout(() => {
+            this.setState({
+                data: temp_data,
+                loading: false
+            })
+        }, 1000);
+
+
+    }
     render() {
         return <DashboardLayout title="Class Subject" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
@@ -922,10 +976,31 @@ export default class ClassSubjectTeacher extends Component {
                                     }}> <i className="bi bi-person-plus-fill"></i> Add</button>    
                                 </div>
                                 <div className="card-body"> 
+                                    <div className="col-lg-12 clearfix">
+                                        <button className="btn btn-primary mr-1" onClick={() => {
+                                            this.loadSched("monday");
+                                        }}>Monday</button>
+                                        <button className="btn btn-primary mr-1" onClick={() => {
+                                            this.loadSched("tuesday");
+                                        }}>Tuesday</button>
+                                        <button className="btn btn-primary mr-1" onClick={() => {
+                                            this.loadSched("wednesday");
+                                        }}>Wednesday</button>
+                                        <button className="btn btn-primary mr-1" onClick={() => {
+                                            this.loadSched("thursday");
+                                        }}>Thursday</button>
+                                        <button className="btn btn-primary mr-1" onClick={() => {
+                                            this.loadSched("friday");
+                                        }}>Friday</button>
+                                        <button className="btn btn-info mr-1" onClick={() => {
+                                            this.loadSched("all");
+                                        }}>View All</button>
+                                    </div>
                                     <ReactTable
                                         key={"react-tables"}
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
+                                        loading={this.state.loading}
                                         columns={this.state.columns}
                                     />
                                 </div>
@@ -969,7 +1044,7 @@ export default class ClassSubjectTeacher extends Component {
             <div className="modal-dialog modal-lg" role="document">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title fs-5">New Teaching Class</h5>
+                    <h5 className="modal-title fs-5">New Class Schedule</h5>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
                     </button>
                 </div>
@@ -1159,7 +1234,7 @@ export default class ClassSubjectTeacher extends Component {
             <div className="modal-dialog modal-lg" role="document">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title fs-5">Teaching Class</h5>
+                    <h5 className="modal-title fs-5">Class Schedule</h5>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
                     </button>
                 </div>

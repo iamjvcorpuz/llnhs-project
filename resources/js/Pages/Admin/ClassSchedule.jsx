@@ -25,13 +25,13 @@ export default class ClassSchedule extends Component {
             classDetails: typeof(this.props.classDetails)!="undefined"?this.props.classDetails:[],
             data: [],
             columns: [
-                {
-                    id: "no",
-                    accessor: 'id',
-                    Header: 'No.', 
-                    width: 50,
-                    className: "center"
-                }, 
+                // {
+                //     id: "no",
+                //     accessor: 'id',
+                //     Header: 'No.', 
+                //     width: 50,
+                //     className: "center"
+                // }, 
                 {
                     id: "level",
                     Header: 'Subject Name',  
@@ -41,32 +41,15 @@ export default class ClassSchedule extends Component {
                     width: 226,
                 }, 
                 {
-                    id: "time",
-                    Header: 'Time',  
-                    accessor: 'grade',
-                    filterable: false,
-                    Cell: ({row}) => { 
-                       return <> 
-                        {row.original.time_start} - {row.original.time_end} <br /> 
-                       </>            
+                    id: "teacher",
+                    Header: 'Teacher',  
+                    accessor: 'last_name',
+                    className: "center",
+                    filterable: true,
+                    width: 226,
+                    Cell: ({row}) => {
+                        return <label>{`${row.original.last_name}, ${row.original.first_name} `}</label>
                     }
-                }
-            ],
-            columns_all: [
-                {
-                    id: "no",
-                    accessor: 'id',
-                    Header: 'No.', 
-                    width: 50,
-                    className: "center"
-                }, 
-                {
-                    id: "level",
-                    Header: 'Subject Name',  
-                    accessor: 'subject_name',
-                    className: "center",
-                    filterable: true,
-                    width: 226,
                 }, 
                 {
                     id: "time",
@@ -94,7 +77,71 @@ export default class ClassSchedule extends Component {
                             schedule_day.push("Sat");
                         } 
                        return <> 
-                        {row.original.time_start} - {row.original.time_end} <br />
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')} <br />
+                        {(schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):""}
+                       </>     
+                    }
+                    // Cell: ({row}) => { 
+                    //    return <> 
+                    //     {row.original.time_start} - {row.original.time_end} <br /> 
+                    //    </>            
+                    // }
+                }
+            ],
+            columns_all: [
+                // {
+                //     id: "no",
+                //     accessor: 'id',
+                //     Header: 'No.', 
+                //     width: 50,
+                //     className: "center"
+                // }, 
+                {
+                    id: "level",
+                    Header: 'Subject Name',  
+                    accessor: 'subject_name',
+                    className: "center",
+                    filterable: true,
+                    width: 226,
+                }, 
+                {
+                    id: "teacher",
+                    Header: 'Teacher',  
+                    accessor: 'last_name',
+                    className: "center",
+                    filterable: true,
+                    width: 226,
+                    Cell: ({row}) => {
+                        return <label>{`${row.original.last_name}, ${row.original.first_name} `}</label>
+                    }
+                }, 
+                {
+                    id: "time",
+                    Header: 'Time',  
+                    accessor: 'grade',
+                    filterable: false,
+                    Cell: ({row}) => { 
+                        let schedule_day = [];                      
+                        if(row.original.monday=="1"){
+                            schedule_day.push("Mon");
+                        } 
+                        if(row.original.tuesday=="1"){
+                            schedule_day.push("Tue");
+                        } 
+                        if(row.original.wednesday=="1"){
+                            schedule_day.push("Wed");
+                        } 
+                        if(row.original.thursday=="1"){
+                            schedule_day.push("Thu");
+                        } 
+                        if(row.original.friday=="1"){
+                            schedule_day.push("Fri");
+                        } 
+                        if(row.original.saturday=="1"){
+                            schedule_day.push("Sat");
+                        } 
+                       return <> 
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')} <br />
                         {(schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):""}
                        </>     
                     }
@@ -104,7 +151,7 @@ export default class ClassSchedule extends Component {
             overAllSchedule: false
         }
         this.loadSched = this.loadSched.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
     componentDidMount() {
         this.loadSched("all");
@@ -185,7 +232,15 @@ export default class ClassSchedule extends Component {
                                 <div className="card-header">
 
                                     <div className="row mb-2">
-                                        <div className="col-lg-10"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3></div>
+                                        <div className="col-lg-10">
+                                            <h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3>
+                                            <div className="col-lg-12"> 
+                                                STRAND: {(this.state.classDetails.length>0)?this.state.classDetails[0].strands:""} 
+                                            </div>
+                                            <div className="col-lg-12"> 
+                                                TRACK: {(this.state.classDetails.length>0)?this.state.classDetails[0].track:""} 
+                                            </div>
+                                        </div>
                                         <div className="col-lg-2">
                                             <div className="col-lg-12"> 
                                                     SY: {(this.state.classDetails.length>0)?this.state.classDetails[0].school_year:""} 

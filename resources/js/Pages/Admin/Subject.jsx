@@ -26,13 +26,15 @@ export default class NewStudent extends Component {
                     id: "subject_name",
                     accessor: 'subject_name',
                     Header: 'Subject Name', 
+                    filterable:true,
                     maxWidth: 800,
                 },
                 {
                     id: "description",
                     Header: 'Decription', 
                     width: 200,
-                    accessor: 'description'
+                    accessor: 'description',
+                    filterable:true
                 },
                 {
                     id: "action",

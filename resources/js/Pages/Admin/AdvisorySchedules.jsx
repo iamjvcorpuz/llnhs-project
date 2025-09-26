@@ -25,13 +25,13 @@ export default class AdvisorySchedules extends Component {
             classDetails: typeof(this.props.classDetails)!="undefined"?this.props.classDetails:[],
             data: [],
             columns: [
-                {
-                    id: "no",
-                    accessor: 'id',
-                    Header: 'No.', 
-                    width: 50,
-                    className: "center"
-                }, 
+                // {
+                //     id: "no",
+                //     accessor: 'id',
+                //     Header: 'No.', 
+                //     width: 50,
+                //     className: "center"
+                // }, 
                 {
                     id: "level",
                     Header: 'Subject Name',  
@@ -53,13 +53,13 @@ export default class AdvisorySchedules extends Component {
                 }
             ],
             columns_all: [
-                {
-                    id: "no",
-                    accessor: 'id',
-                    Header: 'No.', 
-                    width: 50,
-                    className: "center"
-                }, 
+                // {
+                //     id: "no",
+                //     accessor: 'id',
+                //     Header: 'No.', 
+                //     width: 50,
+                //     className: "center"
+                // }, 
                 {
                     id: "level",
                     Header: 'Subject Name',  
@@ -229,8 +229,8 @@ export default class AdvisorySchedules extends Component {
                                 <div className="card-header">
 
                                     <div className="row mb-2">
-                                        <div className="col-lg-10"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3></div>
-                                        <div className="col-lg-2">
+                                        <div className="col-lg-9"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3></div>
+                                        <div className="col-lg-3">
 
                                             <div className="col-lg-12"> 
                                                     Level: {(this.state.classDetails.length>0)?this.state.classDetails[0].level:""} 
