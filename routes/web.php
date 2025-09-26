@@ -257,7 +257,9 @@ Route::get('/admin/dashboard/employee/new', function () {
 Route::get('/admin/dashboard/employee/update/{id}', function (String $id) {
     return Inertia::render('Admin/Employee/EditEmployee',[
         'employee' => EmployeeController::getData($id),
-        'contacts' => EmployeeController::getContacts($id)
+        'contacts' => EmployeeController::getContacts($id),
+        'EB_list' => EmployeeController::getEB($id),
+        'trainings' => EmployeeController::getTrainings($id)
     ]);
 })->middleware(['auth', 'verified']);
 // ----------------------------------------------------------------------------------

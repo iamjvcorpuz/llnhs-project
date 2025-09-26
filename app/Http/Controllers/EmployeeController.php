@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Contacts;
+use App\Models\EmployeeEB;
+use App\Models\EmployeeTrainings;
 use App\Models\Teacher;
 use App\Models\UserAccounts;
 use Illuminate\Http\Request;
@@ -51,6 +53,16 @@ class EmployeeController extends Controller
     { 
         return  DB::select('SELECT * FROM contacts WHERE teacher_id = ?',[$id]);
     }
+    
+    public static function getEB($id)
+    { 
+        return  DB::select('SELECT * FROM education_background WHERE employee_id = ?',[$id]);
+    }
+    public static function getTrainings($id)
+    { 
+        return  DB::select('SELECT * FROM tranings WHERE employee_id = ?',[$id]);
+    }
+    
     public function show($id)
     {
         $student = Employee::findOrFail($id);
@@ -116,6 +128,61 @@ class EmployeeController extends Controller
                 'verified' => null
             ]);
             DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);
+
+            // EB_list
+            $eb = $request->EB_list;
+            if($eb != NULL) {
+                $eb_query = DB::table('education_background')->where('id', $customer->id)->get();
+                if($eb_query->count()==0) {
+                    foreach($eb as $key => $val) {
+                        $level = isset($val['level']) ? $val['level'] : "";
+                        $name_of_school = isset($val['name_of_school']) ? $val['name_of_school'] : "";
+                        $basic_edu_degree_course = isset($val['basic_edu_degree_course']) ? $val['basic_edu_degree_course'] : "";
+                        $period_from = isset($val['period_from']) ? $val['period_from'] : "";
+                        $period_to = isset($val['period_to']) ? $val['period_to'] : "";
+                        $units = isset($val['units']) ? $val['units'] : "";
+                        $yr_graduated = isset($val['yr_graduated']) ? $val['yr_graduated'] : "";
+                        $ac_ah_recieve = isset($val['ac_ah_recieve']) ? $val['ac_ah_recieve'] : "";
+                        EmployeeEB::create([
+                            'employee_id' => $customer->id,
+                            'level' => $level, 
+                            'name_of_school' => $name_of_school,
+                            'basic_edu_degree_course' => $basic_edu_degree_course,
+                            'period_from' => $period_from,
+                            'period_to' => $period_to,
+                            'units' => $units,
+                            'yr_graduated' => $yr_graduated,
+                            'ac_ah_recieve' => $ac_ah_recieve
+                        ]);
+                    }
+                }                
+            }
+
+            // training_list
+            $trainings = $request->training_list;
+            if($trainings != NULL) {
+                $trainings_query = DB::table('tranings')->where('id', $customer->id)->get();
+                if($trainings_query->count()==0) {
+                    foreach($trainings as $key => $val) {
+                        $title = isset($val['title']) ? $val['title'] : "";
+                        $experience = isset($val['experience']) ? $val['experience'] : "";
+                        $total_render = isset($val['total_render']) ? $val['total_render'] : "";
+                        $date_from = isset($val['date_from']) ? $val['date_from'] : "";
+                        $date_to = isset($val['date_to']) ? $val['date_to'] : "";
+                        EmployeeTrainings::create([
+                            'employee_id' => $customer->id,
+                            'title' => $title, 
+                            'experience' => $experience,
+                            'total_render' => $total_render,
+                            'date_from' => $date_from, 
+                            'date_to' => $date_to
+                        ]);
+                    }
+                }                
+            }
+
+
+
 
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
