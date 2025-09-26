@@ -373,6 +373,22 @@ class StudentController extends Controller
         student_movement
         WHERE sy = (SELECT school_year FROM school_registry)');
         return $student;
+        // $total = 0;
+        // $student = DB::select("
+        // SELECT 
+        // advisory.year_level
+        // FROM
+        // student
+        // LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid
+        // LEFT JOIN advisory ON  advisory.uuid = advisory_group.advisory_id ");
+
+        // foreach($student as $value) {
+        //     if(is_null($value->year_level)){
+        //         $total++;
+        //     }
+        // }
+
+        // return ['TOTAL' => $total];
         
     }
 

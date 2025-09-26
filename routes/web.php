@@ -340,7 +340,8 @@ Route::get('/admin/class/advisory/details/{id}/{code}', function ($id,$code) {
         "sections" => SchoolSectionController::getAll(),
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),
-        'strand' => ProgramsCurricularController::getStrand()
+        'strand' => ProgramsCurricularController::getStrand(),
+        "studentsList" =>  StudentController::getAllNonAdvisory($id), 
     ]);
 })->middleware(['auth', 'verified']);
 

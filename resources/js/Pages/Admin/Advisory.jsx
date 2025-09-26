@@ -75,9 +75,11 @@ export default class Advisory extends Component {
                     accessor: 'status',
                     className: "center",
                     Cell:  ({row}) => { 
+                        let temp = this.state.class.find(e=>e.id==String(row.original.school_sections_id)); 
                        return <>                       
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteAdvisory(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
                         <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={() => { this.viewData(row.original); }}> <i className="bi bi-pen"></i> Edit</button> 
+                        <Link href={`/admin/class/advisory/details/${temp.qr_code}/${row.original.qrcode}`} className="btn btn-primary btn-block btn-sm col-12 mb-1" > <i className="bi bi-pen"></i> Details</Link> 
                         {(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null)?<button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
                             if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
                                 await this.generateQR(row.original.qrcode,() => {

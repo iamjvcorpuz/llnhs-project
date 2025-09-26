@@ -134,13 +134,16 @@ export default class AdvisoryDetails extends Component {
                 },
             ],
             adviser: "",
+            adviserData: {},
             advisory_list: this.props.advisory,
             student_list: this.props.students,
+            studentsList: this.props.studentsList,
             loading: false,
             overAllSchedule: false
         }
         this.loadSched = this.loadSched.bind(this);
-        // console.log(this.props)
+        this.saveStudent = this.saveStudent.bind(this);
+        console.log(this.props)
     }
     componentDidMount() {
         this.loadSched("all");
@@ -150,9 +153,11 @@ export default class AdvisoryDetails extends Component {
         });
         let temps = this.state.advisory_list.find(e=>e.id==this.state.classDetails[0].id);
         if(typeof(temps)!="undefined") {
-            this.setState({adviser: temps.teacher_fullname});
+            console.log(temps);
+            this.setState({adviser: temps.teacher_fullname,adviserData: temps});
         }
     }
+
     loadSched(day) { 
         let temp_data = [];
         this.setState({loading: true,overAllSchedule:false});
@@ -203,6 +208,139 @@ export default class AdvisoryDetails extends Component {
 
 
     }
+    saveStudent() {
+        let self = this;
+
+        let selected_student = $("#studentselection").val(); 
+
+        let select_student_id = self.state.studentsList.find( e => `${e.last_name}, ${e.first_name}`==selected_student).id;
+        let advisory_id = self.state.advisory.id;
+
+
+        // console.log(selected_student,select_student_id);
+        // return;
+        if(selected_student != "" && typeof(select_student_id) != "undefined" && typeof(advisory_id) != "undefined") { 
+            Swal.fire({
+                title: "You select " + selected_student.toLocaleUpperCase() + " and please click to continue to save", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    Swal.fire({  
+                        title: 'Saving Records.\nPlease wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    let datas =  { 
+                        advisory_id,
+                        select_student_id
+                    };
+                    // console.log(datas);
+                    // axios.post('/teacher/advisory/student/add',datas).then( async function (response) {
+                    //     // handle success
+                    //     // console.log(response);
+                    //         if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                    //             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                    //             if(data.status == "success") {
+                    //                 Swal.fire({  
+                    //                     title: "Successfuly save!", 
+                    //                     showCancelButton: true,
+                    //                     allowOutsideClick: false,
+                    //                     allowEscapeKey: false,
+                    //                     confirmButtonText: "Continue", 
+                    //                     icon: "success",
+                    //                     showLoaderOnConfirm: true, 
+                    //                     closeOnClickOutside: false,  
+                    //                     dangerMode: true,
+                    //                 }).then(function (result2) {
+                    //                     if(result2.isConfirmed) { 
+                    //                         Swal.close();
+                    //                         // window.location.reload();
+                    //                         $("#studentModel").modal('hide');
+                    //                         self.getAllData();
+                    //                     }
+                    //                 });
+                    //             } else {
+                    //                 Swal.fire({  
+                    //                     title: "Fail to save", 
+                    //                     showCancelButton: true,
+                    //                     showConfirmButton: false,
+                    //                     allowOutsideClick: false,
+                    //                     allowEscapeKey: false,
+                    //                     cancelButtonText: "Ok",
+                    //                     confirmButtonText: "Continue",
+                    //                     confirmButtonColor: "#DD6B55",
+                    //                     icon: "error",
+                    //                     showLoaderOnConfirm: false, 
+                    //                     closeOnClickOutside: false,  
+                    //                     dangerMode: true,
+                    //                 });
+                    //             }
+                    //         } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                    //             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                    //             if(data.status == "data_exist") { 
+                    //                 Swal.fire({  
+                    //                     title: selected_student.toLocaleUpperCase() + " is ready added", 
+                    //                     cancelButtonText: "Ok",
+                    //                     showCancelButton: true,
+                    //                     showConfirmButton: false,
+                    //                     allowOutsideClick: false,
+                    //                     allowEscapeKey: false, 
+                    //                     confirmButtonColor: "#DD6B55",
+                    //                     icon: "error",
+                    //                     showLoaderOnConfirm: true, 
+                    //                     closeOnClickOutside: false,  
+                    //                     dangerMode: true,
+                    //                 });
+                    //             }
+                    //         } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
+
+                    //         }
+                    // }).catch(function (error) {
+                    // // handle error
+                    //     console.log(error);
+                    //     Swal.fire({  
+                    //         title: "Server Error", 
+                    //         showCancelButton: true,
+                    //         showConfirmButton: false,
+                    //         allowOutsideClick: false,
+                    //         allowEscapeKey: false,
+                    //         cancelButtonText: "Ok",
+                    //         confirmButtonText: "Continue",
+                    //         confirmButtonColor: "#DD6B55",
+                    //         icon: "error",
+                    //         showLoaderOnConfirm: true, 
+                    //         closeOnClickOutside: false,  
+                    //         dangerMode: true,
+                    //     });
+                    // });
+                } else if(result.isDismissed) {
+
+                }
+                return false
+            });            
+        } else {
+            
+            if(selected_student == "") {
+                $("#studentselection-alert").removeAttr('class');
+                $("#studentselection-alert").html('Required Field');
+                $("#studentselection-alert").addClass('d-block invalid-feedback');
+            }
+        }
+    }
+    
     render() {
         return <DashboardLayout title="Student" user={this.props.auth.user} ><div className="noselect">
             <div className="app-content-header"> 
@@ -212,8 +350,8 @@ export default class AdvisoryDetails extends Component {
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            {/* <li className="breadcrumb-item"><Link href="/admin/dashboard/class">Class</Link></li> */}
-                            <li className="breadcrumb-item active" aria-current="page">Schedule</li>
+                            <li className="breadcrumb-item"><Link href="/admin/dashboard/advisory">Advisory</Link></li>
+                            <li className="breadcrumb-item active" aria-current="page">Details</li>
                         </ol>
                     </div>
                     </div> 
@@ -229,7 +367,18 @@ export default class AdvisoryDetails extends Component {
                                 <div className="card-header">
 
                                     <div className="row mb-2">
-                                        <div className="col-lg-10"><h3 className="mb-0"><i className="nav-icon bi bi-bookmark"></i> Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong></h3></div>
+                                        <div className="col-lg-10">
+                                            <h3 className="mb-0">
+                                                <i className="nav-icon bi bi-bookmark"></i> 
+                                                Class Name: <strong className="badge bg bg-primary">{(this.state.classDetails.length>0)?this.state.classDetails[0].section_name:""}</strong>
+                                            </h3>
+                                            <div className="col-lg-12"> 
+                                                STRAND: {(this.state.classDetails.length>0)?this.state.classDetails[0].strands:""} 
+                                            </div>
+                                            <div className="col-lg-12"> 
+                                                TRACK: {(this.state.classDetails.length>0)?this.state.classDetails[0].track:""} 
+                                            </div>
+                                        </div>
                                         <div className="col-lg-2">
 
                                             <div className="col-lg-12"> 
@@ -262,7 +411,11 @@ export default class AdvisoryDetails extends Component {
 
                                     <div className="tab-content" id="custom-tabs-three-tabContent">
                                         <div className="tab-pane fade active show" id="page_student_list" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
-                                            
+                                            <div className="clearfix col-lg-12">
+                                                <button className="btn btn-primary col-lg-1 mr-1 float-right m-2" title="Add Student" onClick={() => {
+                                                    $("#studentModel").modal('show')
+                                                }} > <i className="bi bi-person-plus-fill"></i> Add</button>   
+                                            </div>
                                             <ReactTable
                                                 key={"react-tables"}
                                                 className={"table table-bordered table-striped "}
@@ -317,6 +470,43 @@ export default class AdvisoryDetails extends Component {
                 </div>
             </div>
             
+            <datalist id="selectStudent"> 
+                <EachMethod of={this.state.studentsList} render={(element,index) => {
+                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                }} />
+            </datalist>
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="studentModel" aria-hidden="true" data-bs-backdrop="static">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5">Add Student</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        
+                        <div className="card-body"> 
+                            <div className="row g-3"> 
+                                
+                                <div className="col-md-12">
+                                    <label htmlFor="studentselection" className="form-label">Student</label>
+                                    <input type="text" className="form-control" list="selectStudent"  id="studentselection" defaultValue="" required="" onChange={(e) => {  $("#studentselection-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({studentselection: e.target.value})}}  />
+                                    <div id="studentselection-alert" className="invalid-feedback">Please select a valid state.</div>
+                                </div> 
+
+                            </div> 
+                        </div>
+
+                    </div>
+                    <div className="modal-footer"> 
+                        <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveStudent() }}> <i className="bi bi-save"></i> Add</button>   
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </DashboardLayout>}
 }
