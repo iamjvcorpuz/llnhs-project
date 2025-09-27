@@ -522,6 +522,7 @@ Route::get('/admin/student/movement', function () {
         "code" => $code,
         'parents' => ParentsController::getAll(),
         "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "studentsEnrolled" =>  StudentController::getEnrolledStudent(), 
         "studentsList" =>  StudentController::getAllNonAdvisory($id),   
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),

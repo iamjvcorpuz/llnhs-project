@@ -189,7 +189,105 @@ export default class Movement extends Component {
             flsh_strand_: "",
             selectedQr: "",
             repeatGrade: false,
-            transferee: false
+            transferee: false,
+            data: typeof(this.props.studentsEnrolled)!="undefined"?this.props.studentsEnrolled:[],
+            columns: [
+                {
+                    id: "qr",
+                    accessor: 'lrn',
+                    Header: 'QR Code',
+                    filterable: true,
+                    Cell: ({row}) => { 
+                        return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
+                            window.open(`/qrcode?code=${row.original.lrn}`)
+                        }} />             
+                    }
+                }, 
+                {
+                    id: "picture",
+                    Header: 'Picture',  
+                    accessor: 'photo',
+                    Cell: ({row}) => { 
+                       return <img className="" height={150} width={150}  onError={(e)=>{ 
+                            e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
+                       }} alt="Picture Error" src={`/profile/photo/student/${row.original.lrn}`} />
+                    }
+                }, 
+                {
+                    id: "lrn",
+                    accessor: 'lrn',
+                    Header: 'LRN NO.', 
+                    maxWidth: 100,
+                    filterable: true,
+                },
+                {
+                    id: "fullname",
+                    Header: 'Fullname', 
+                    width: 800,
+                    accessor: 'fullname',
+                    filterable: true,
+                },  
+                {
+                    id: "bdate",
+                    Header: 'Age',  
+                    width: 200,
+                    accessor: 'bdate',
+                    className: "center",
+                    Cell: ({row}) => { 
+                       return <>{typeof(row.original.bdate)!="undefined"?moment().diff(row.original.bdate, 'years',false):"None"}</>
+                    },
+                    filterable: true
+                },  
+                {
+                    id: "gender",
+                    Header: 'Gender',  
+                    width: 200,
+                    accessor: 'sex',
+                    className: "center",
+                    filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            <option value="">All</option>  
+                            <option >Male</option> 
+                            <option >Female</option>
+                        </select>   
+                    }
+                },  
+                {
+                    id: "level",
+                    Header: 'Level',  
+                    width: 200,
+                    accessor: 'grade',
+                    className: "center",
+                    filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            <option value="">All</option> 
+                            <option value="null">None</option> 
+                            <option >Grade 7</option>
+                            <option >Grade 8</option> 
+                            <option >Grade 9</option> 
+                            <option >Grade 10</option> 
+                            <option >Grade 11</option> 
+                            <option >Grade 12</option> 
+                        </select>   
+                    }
+                },  
+                {
+                    id: "section",
+                    Header: 'Section',  
+                    width: 250,
+                    accessor: 'section',
+                    className: "center",
+                    filterable: true,
+                    filterInput: ({ filter, onChange }) => {
+                        return  <select  onChange={event => onChange(event.target.value)} id="sectionfilter" className="form-control" style={{ width: "100%" }}   value={filter ? filter.value : "all"} >
+                            {this.state.sectionsFilter}
+                        </select>   
+                    }
+                }
+            ],
+            loading: false
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
@@ -826,7 +924,8 @@ export default class Movement extends Component {
                                 <div className="card-header">
                                     <h3 className="card-title mt-2"> <i className="bi bi-person"></i></h3>
                                     <Link href="/admin/student/movement" id="cancel" className="btn btn-danger float-right"> <i className="bi bi-person-fill-x"></i> Cancel</Link>
-                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>    
+                                    <button className="btn btn-success float-right mr-1" onClick={() =>{ this.saveData() }}> <i className="bi bi-person-plus-fill"></i> Update</button>   
+                                    <button className="btn btn-primary float-right mr-1" onClick={() =>{ $('#studentEnrolled').modal('show') }}> <i className="bi bi-person"></i> Show Enrolled</button>    
                                 </div>
                                 <div className="card-body"> 
                                     <div className="row g-3 mb-2">
@@ -1636,6 +1735,34 @@ export default class Movement extends Component {
                     </div>
                 </div>
             </div>
+
+            <div className="modal fade" tabIndex="-1" role="dialog" id="studentEnrolled" data-bs-backdrop="static">
+                <div className="modal-dialog modal-fullscreen" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title fs-5">Enrolled Students</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                        </button>
+                    </div>
+                    <div className="modal-body p-0">                        
+                        <ReactTable
+                            key={"react-tables"}
+                            className={"table table-bordered table-striped table-hover"}
+                            data={this.state.data} 
+                            columns={this.state.columns}
+                            showHeader={true}
+                            showPagenation={true}
+                            loading={this.state.loading}
+                            defaultPageSize={15}
+                        />
+                    </div>
+                    <div className="modal-footer"> 
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         </DashboardLayout>
     }
