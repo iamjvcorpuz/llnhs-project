@@ -132,9 +132,21 @@ export default class AdvisoryDetails extends Component {
                     accessor: 'fullname',
                     filterable: true,
                 },
+                {
+                    id: "action",
+                    Header: 'Action',  
+                    width: 150,
+                    accessor: 'fullname',
+                    className: "center",
+                    Cell: ({row}) => { 
+                       return <>                       
+                        <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.student_id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>
+                       </>            
+                    }
+                }
             ],
             adviser: "",
-            adviserData: {},
+            adviserData: typeof(this.props.advisoryDetails)!="undefined"&&this.props.advisoryDetails.length>0?this.props.advisoryDetails[0]:{},
             advisory_list: this.props.advisory,
             student_list: this.props.students,
             studentsList: this.props.studentsList,
@@ -143,7 +155,7 @@ export default class AdvisoryDetails extends Component {
         }
         this.loadSched = this.loadSched.bind(this);
         this.saveStudent = this.saveStudent.bind(this);
-        console.log(this.props)
+        // console.log(this.props)
     }
     componentDidMount() {
         this.loadSched("all");
@@ -153,8 +165,7 @@ export default class AdvisoryDetails extends Component {
         });
         let temps = this.state.advisory_list.find(e=>e.id==this.state.classDetails[0].id);
         if(typeof(temps)!="undefined") {
-            console.log(temps);
-            this.setState({adviser: temps.teacher_fullname,adviserData: temps});
+            this.setState({adviser: temps.teacher_fullname});
         }
     }
 
@@ -208,31 +219,154 @@ export default class AdvisoryDetails extends Component {
 
 
     }
+
+    getAllData() {
+        let self = this;
+        axios.get(`/advisory/get/student/list/${this.props._id}/${this.props.cupon}`).then(function (response) {
+            // console.log(response);
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                if(Object.keys(data).length>0) {
+                    self.setState({ 
+                        student_list: data.students,  
+                        studentsList: data.studentsList,
+                    });                    
+                }
+            }
+        });
+    }
+
+    deleteStudent(id) {
+        let self = this;
+        Swal.fire({
+            title: "Are you sure to remove this data?", 
+            showCancelButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "Yes",
+            confirmButtonColor: 'red', 
+            icon: "question",
+            showLoaderOnConfirm: true, 
+            closeOnClickOutside: false,  
+            dangerMode: true,
+        }).then((result) => {
+            if(result.isConfirmed){
+                Swal.fire({  
+                    title: 'Removing Records.\nPlease wait.', 
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                      Swal.showLoading();
+                    }
+                });
+                // console.log({student_id:id,advisory_id: self.state.adviserData.uuid})
+                axios.delete('/advisory/student',{data: {student_id:id,advisory_id: self.state.adviserData.uuid}}).then(function (response) {
+                    // handle success
+                    // console.log(response);
+                        if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(data.status == "success") {
+                                Swal.fire({  
+                                    title: "Successfuly remove!", 
+                                    showCancelButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    confirmButtonText: "Ok", 
+                                    icon: "success",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                }).then(function (result2) {
+                                    if(result2.isConfirmed) { 
+                                        Swal.close();
+                                        self.getAllData();
+                                    }
+                                });
+
+                            } else {
+                                Swal.fire({  
+                                    title: "Fail to remove", 
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    cancelButtonText: "Ok",
+                                    confirmButtonText: "Continue",
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: false, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                            }
+                        } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(data.status == "data_not_exist") { 
+                                Swal.fire({  
+                                    title: "Data Not Exist", 
+                                    cancelButtonText: "Ok",
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false, 
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                            }
+                        }
+                  }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    Swal.fire({  
+                        title: "Server Error", 
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        cancelButtonText: "Ok",
+                        confirmButtonText: "Continue",
+                        confirmButtonColor: "#DD6B55",
+                        icon: "error",
+                        showLoaderOnConfirm: true, 
+                        closeOnClickOutside: false,  
+                        dangerMode: true,
+                    });
+                  })
+            } else {
+                Swal.close();
+            }
+        });
+    }
+
     saveStudent() {
         let self = this;
 
         let selected_student = $("#studentselection").val(); 
 
         let select_student_id = self.state.studentsList.find( e => `${e.last_name}, ${e.first_name}`==selected_student).id;
-        let advisory_id = self.state.advisory.id;
+        let advisory_id = self.state.adviserData.uuid;
 
 
         // console.log(selected_student,select_student_id);
         // return;
         if(selected_student != "" && typeof(select_student_id) != "undefined" && typeof(advisory_id) != "undefined") { 
-            Swal.fire({
-                title: "You select " + selected_student.toLocaleUpperCase() + " and please click to continue to save", 
-                showCancelButton: true,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonText: "Continue", 
-                icon: "warning",
-                showLoaderOnConfirm: true, 
-                closeOnClickOutside: false,  
-                dangerMode: true,
-            }).then((result) => {
-                // console.log("result",result)
-                if(result.isConfirmed) {
+            // Swal.fire({
+            //     title: "You select " + selected_student.toLocaleUpperCase() + " and please click to continue to save", 
+            //     showCancelButton: true,
+            //     allowOutsideClick: false,
+            //     allowEscapeKey: false,
+            //     confirmButtonText: "Continue", 
+            //     icon: "warning",
+            //     showLoaderOnConfirm: true, 
+            //     closeOnClickOutside: false,  
+            //     dangerMode: true,
+            // }).then((result) => {
+            //     // console.log("result",result)
+            //     if(result.isConfirmed) {
                     Swal.fire({  
                         title: 'Saving Records.\nPlease wait.', 
                         html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
@@ -248,89 +382,89 @@ export default class AdvisoryDetails extends Component {
                         select_student_id
                     };
                     // console.log(datas);
-                    // axios.post('/teacher/advisory/student/add',datas).then( async function (response) {
-                    //     // handle success
-                    //     // console.log(response);
-                    //         if( typeof(response.status) != "undefined" && response.status == "201" ) {
-                    //             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                    //             if(data.status == "success") {
-                    //                 Swal.fire({  
-                    //                     title: "Successfuly save!", 
-                    //                     showCancelButton: true,
-                    //                     allowOutsideClick: false,
-                    //                     allowEscapeKey: false,
-                    //                     confirmButtonText: "Continue", 
-                    //                     icon: "success",
-                    //                     showLoaderOnConfirm: true, 
-                    //                     closeOnClickOutside: false,  
-                    //                     dangerMode: true,
-                    //                 }).then(function (result2) {
-                    //                     if(result2.isConfirmed) { 
-                    //                         Swal.close();
-                    //                         // window.location.reload();
-                    //                         $("#studentModel").modal('hide');
-                    //                         self.getAllData();
-                    //                     }
-                    //                 });
-                    //             } else {
-                    //                 Swal.fire({  
-                    //                     title: "Fail to save", 
-                    //                     showCancelButton: true,
-                    //                     showConfirmButton: false,
-                    //                     allowOutsideClick: false,
-                    //                     allowEscapeKey: false,
-                    //                     cancelButtonText: "Ok",
-                    //                     confirmButtonText: "Continue",
-                    //                     confirmButtonColor: "#DD6B55",
-                    //                     icon: "error",
-                    //                     showLoaderOnConfirm: false, 
-                    //                     closeOnClickOutside: false,  
-                    //                     dangerMode: true,
-                    //                 });
-                    //             }
-                    //         } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                    //             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                    //             if(data.status == "data_exist") { 
-                    //                 Swal.fire({  
-                    //                     title: selected_student.toLocaleUpperCase() + " is ready added", 
-                    //                     cancelButtonText: "Ok",
-                    //                     showCancelButton: true,
-                    //                     showConfirmButton: false,
-                    //                     allowOutsideClick: false,
-                    //                     allowEscapeKey: false, 
-                    //                     confirmButtonColor: "#DD6B55",
-                    //                     icon: "error",
-                    //                     showLoaderOnConfirm: true, 
-                    //                     closeOnClickOutside: false,  
-                    //                     dangerMode: true,
-                    //                 });
-                    //             }
-                    //         } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
+                    axios.post('/teacher/advisory/student/add',datas).then( async function (response) {
+                        // handle success
+                        // console.log(response);
+                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "success") {
+                                    Swal.fire({  
+                                        title: "Successfuly save!", 
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        confirmButtonText: "Continue", 
+                                        icon: "success",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    }).then(function (result2) {
+                                        if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            // window.location.reload();
+                                            $("#studentModel").modal('hide');
+                                            self.getAllData();
+                                        }
+                                    });
+                                } else {
+                                    Swal.fire({  
+                                        title: "Fail to save", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "data_exist") { 
+                                    Swal.fire({  
+                                        title: selected_student.toLocaleUpperCase() + " is ready added", 
+                                        cancelButtonText: "Ok",
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false, 
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            } else if( typeof(response.status) != "undefined" && response.status == "422" ) {
 
-                    //         }
-                    // }).catch(function (error) {
-                    // // handle error
-                    //     console.log(error);
-                    //     Swal.fire({  
-                    //         title: "Server Error", 
-                    //         showCancelButton: true,
-                    //         showConfirmButton: false,
-                    //         allowOutsideClick: false,
-                    //         allowEscapeKey: false,
-                    //         cancelButtonText: "Ok",
-                    //         confirmButtonText: "Continue",
-                    //         confirmButtonColor: "#DD6B55",
-                    //         icon: "error",
-                    //         showLoaderOnConfirm: true, 
-                    //         closeOnClickOutside: false,  
-                    //         dangerMode: true,
-                    //     });
-                    // });
-                } else if(result.isDismissed) {
+                            }
+                    }).catch(function (error) {
+                    // handle error
+                        console.log(error);
+                        Swal.fire({  
+                            title: "Server Error", 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+                    });
+            //     } else if(result.isDismissed) {
 
-                }
-                return false
-            });            
+            //     }
+            //     return false
+            // });
         } else {
             
             if(selected_student == "") {
