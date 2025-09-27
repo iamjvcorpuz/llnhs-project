@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom"; 
 import 'bootstrap';
 import '../css/app.css';
+import '../css/flash.css';
 
 import AttendancePage from './Pages/AttendanceKioskPage';
 import Dashboard from './Pages/Admin/Dashboard';
