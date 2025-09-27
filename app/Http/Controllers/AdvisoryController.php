@@ -67,6 +67,16 @@ class AdvisoryController extends Controller
             school_class.classroom,
             classrooms.room_number FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id LEFT JOIN school_class ON school_class.id = advisory.school_sections_id LEFT JOIN classrooms ON classrooms.id = school_class.classroom WHERE advisory.status = \'active\' AND advisory.teacher_id = ? AND advisory.qrcode = ?',[$id,$code]);
     }
+    public static function Advisories($code)
+    {
+        return  DB::select('SELECT advisory.id,advisory.uuid,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname,
+            school_class.section_name,
+            school_class.strands,
+            school_class.track,
+            school_class.grade,
+            school_class.classroom,
+            classrooms.room_number FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id LEFT JOIN school_class ON school_class.id = advisory.school_sections_id LEFT JOIN classrooms ON classrooms.id = school_class.classroom WHERE advisory.status = \'active\' AND advisory.qrcode = ?',[$code]);
+    }
     
     public static function TeachersAdvisoriesStudentsList($id)
     {
@@ -132,7 +142,7 @@ class AdvisoryController extends Controller
         student.flsh_strand,
         student.flsh_track,
         student.picture_base64 AS photo,
-        student.id AS student_id,
+        student.uuid AS student_id,
         student.lrn,
         student.qr_code,
         student.sex,
@@ -257,6 +267,24 @@ class AdvisoryController extends Controller
         $Student = DB::table('advisory_group')->where('id', $request->id)->get();
         if($Student->count()==1) {
             $updateStudent = DB::table('advisory_group')->where('id', $request->id)->update(['status'=>'remove']);            
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => $updateStudent
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'data_not_exist',
+                'error' => "DATA NOT FOUND",
+                'data' => []
+            ], 200);
+        }
+    }
+
+    public function removeStudentAdvisory_(Request $request) {
+        $Student = DB::table('advisory_group')->where('advisory_id', $request->advisory_id)->where('student_id', $request->student_id)->get();
+        if($Student->count()==1) {
+            $updateStudent = DB::table('advisory_group')->where('advisory_id', $request->advisory_id)->where('student_id', $request->student_id)->update(['status'=>'remove']);            
             return response()->json([
                 'status' => 'success',
                 'error' => null,

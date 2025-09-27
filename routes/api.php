@@ -62,9 +62,23 @@ Route::post('/parents/update/messenger',[ParentsController::class,'updateMesseng
 Route::delete('/parents',[ParentsController::class,'remove']);
 
 Route::get('/advisory',[AdvisoryController::class,'getRequiredAllData']);
+Route::get('/advisory/get/student/list/{id}/{code}',function($id,$code) {
+    $_id = AuthenticatedSessionController::getAuthId();
+    if($_id!=null) {
+        return [
+        "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "studentsList" =>  StudentController::getAllNonAdvisory($id),
+        ];
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
+});
 Route::post('/advisory',[AdvisoryController::class,'store']);
 Route::post('/advisory/update',[AdvisoryController::class,'update']);
 Route::delete('/advisory',[AdvisoryController::class,'remove']);
+Route::delete('/advisory/student',[AdvisoryController::class,'removeStudentAdvisory_']); 
 
 Route::post('/user/update/auth',[UserAccountsController::class,'update']);
 Route::post('/user/accounts/auth',[UserAccountsController::class,'store']);

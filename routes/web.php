@@ -331,11 +331,14 @@ Route::get('/admin/class/advisory/schedules/details/{id}/{code}', function ($id,
 
 Route::get('/admin/class/advisory/details/{id}/{code}', function ($id,$code) {
     return Inertia::render('Admin/AdvisoryDetails',[
+        "_id" => $id,
+        "cupon" => $code,
         "schedules" => ClassTSController::getAllSchedules($id),
         "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
         "classDetails" => ClassTSController::getClassDetails($id),
         "classroom" => ClassroomController::getAll(),
         "advisory" => AdvisoryController::getAll(),
+        "advisoryDetails" => AdvisoryController::Advisories($code),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
