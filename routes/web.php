@@ -841,6 +841,9 @@ Route::get('/student/verifier/qr/scan', function () {
 })->middleware(['auth', 'verified']);
 
 Route::get('/student/verifier/{_id}', function ($_id) {
+    // PhdLDZ4QtP9pXb4heEpXgGSn8ytm70ZoFYYr7nomDRXElL3Dn3n35EuHL0QL
+    // https://llnhs-ams.ngrok.io/student/verifier/
+    // http://localhost:8000/student/verifier/
     // http://localhost:8000/student/verifier/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
     // https://tinyurl.com/4v4uxjfj/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
     $id = "";

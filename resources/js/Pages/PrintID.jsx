@@ -252,8 +252,11 @@ export default class PrintID extends Component {
             doc.setFontSize(8);
             doc.text(this.state.guardianname.toLocaleUpperCase(), 63, 43.5,{align:'left',maxWidth: 80});
             doc.text(this.state.relationship.toLocaleUpperCase(), 63, 46,{align:'left',maxWidth: 50});
-            doc.text(this.state.guardiancontact.toLocaleUpperCase(), 63, 49,{align:'left',maxWidth: 70});
-            doc.text(this.state.address.toLocaleUpperCase(), 63, 52,{align:'left',maxWidth: 79});
+            doc.text(this.state.guardiancontact.toLocaleUpperCase(), 63, 49,{align:'left',maxWidth: 70}); 
+            if(this.state.address.length > 13) {
+                doc.setFontSize(6); 
+            }
+            doc.text(this.state.address.toLocaleUpperCase(), 63, 52,{align:'left',maxWidth: 55});
 
             // $("#obj1").height(window.innerHeight - 8);
             $("#frame1").height(window.innerHeight - 8);
