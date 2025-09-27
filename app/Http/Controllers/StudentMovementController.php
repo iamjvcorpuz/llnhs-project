@@ -9,18 +9,68 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isNull;
 
 class StudentMovementController extends Controller
 {
     public static function getStudentMovement($qrcode) 
     {
-        // $datas = [];
+
+        // echo ($qrcode);
+        // $datas = []; 
         $datas = DB::select("SELECT * FROM student_movement WHERE student_lrn = ?;",[$qrcode]);
         if(count($datas) == 0) {
-            $datas = DB::select("SELECT * FROM student_movement WHERE student_id = ?;",[$qrcode]);
+            $datas = DB::select("SELECT * FROM student_movement WHERE student_id = ?;",[$qrcode]); 
+        } 
+        if(count($datas) > 0) {
+            //
+            foreach($datas as $key => $val) {
+                $datas_ = DB::select("SELECT 
+                student.uuid,
+                student.qr_code,
+                student.lrn,
+                school_class.track,
+                school_class.strands,
+                advisory.year_level,
+                specific_programs.name as 'track_name',
+                specific_programs.id as 'track_id',
+                specialize_program.name as 'strand_name',
+                specialize_program.id as 'strand_id'
+                FROM
+                student
+                LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid
+                LEFT JOIN advisory ON  advisory.uuid = advisory_group.advisory_id 
+                LEFT JOIN school_class ON school_class.uuid = advisory.school_sections_id
+                LEFT JOIN specific_programs ON  school_class.track LIKE CONCAT('%', specific_programs.name, '%')
+                LEFT JOIN specialize_program ON  school_class.strands LIKE CONCAT('%', specialize_program.name, '%')
+                WHERE advisory_group.status = 'active' AND student.uuid = ? AND advisory.year_level = ? ;",[  $val->student_id  , $val->grade_level]);
+                // print_r($datas_);
+                if($val->track == "N/A") {
+                    if(count($datas_) > 0 ){
+                        if(isNull($datas_[0]->track_name)) {
+                            DB::table('student_movement')->where('id', $val->id)->update(['track' => $datas_[0]->track_name,'track_id' => $datas_[0]->track_id]);
+                        }
+                    }                    
+                } else if(isNull($datas_[0]->track_name) && $val->track != $datas_[0]->track_name) {
+                    DB::table('student_movement')->where('id', $val->id)->update(['track' => $datas_[0]->track_name,'track_id' => $datas_[0]->track_id]);
+                }
+                if($val->strand == "N/A") {
+                    if(count($datas_) > 0 ){
+                        if(isNull($datas_[0]->strand_name)) {
+                            DB::table('student_movement')->where('id', $val->id)->update(['strand' => $datas_[0]->strand_name,'strand_id' => $datas_[0]->strand_id]);
+                        }
+                    }                    
+                } else if(isNull($datas_[0]->strand_name) && $val->strand != $datas_[0]->strand_name) {
+                    DB::table('student_movement')->where('id', $val->id)->update(['track' => $datas_[0]->strand_name,'track_id' => $datas_[0]->strand_id]);
+                }
+            }
+
+
         }
-
-
+        $datas = DB::select("SELECT * FROM student_movement WHERE student_lrn = ?;",[$qrcode]); 
+        if(count($datas) == 0) {
+            $datas = DB::select("SELECT * FROM student_movement WHERE student_id = ?;",[$qrcode]); 
+        } 
         return $datas;
         
     }
@@ -161,7 +211,7 @@ class StudentMovementController extends Controller
             if($StudentMovementSY->count()==0) {
                 if($StudentMovementGL->count() == 1 && $request->repeater == true) {
                     DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'']);
-                    StudentMovement::create([
+                    $created = StudentMovement::create([
                         'student_id' => $request->id,
                         'student_lrn' => $request->lrn,
                         'sy' => $request->school_year,
@@ -184,7 +234,7 @@ class StudentMovementController extends Controller
                         'with_lrn' => $with_lrn,
                         'status' => "active"
                     ]);
-
+                    DB::table('student_movement')->where('id', $created->id)->update(['uuid' => $created->id]);
                     return response()->json([
                         'status' => 'success',
                         'error' => null,
@@ -203,7 +253,7 @@ class StudentMovementController extends Controller
                 } else {
 
                     DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'']);
-                    StudentMovement::create([
+                    $created = StudentMovement::create([
                         'student_id' => $request->id,
                         'student_lrn' => $request->lrn,
                         'sy' => $request->school_year,
@@ -226,7 +276,7 @@ class StudentMovementController extends Controller
                         'with_lrn' => $with_lrn,
                         'status' => "active"
                     ]);
-
+                    DB::table('student_movement')->where('id', $created->id)->update(['uuid' => $created->id]);
                     return response()->json([
                         'status' => 'success',
                         'error' => null,

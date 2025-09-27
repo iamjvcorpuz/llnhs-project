@@ -150,6 +150,8 @@ export default class AdvisoryDetails extends Component {
             advisory_list: this.props.advisory,
             student_list: this.props.students,
             studentsList: this.props.studentsList,
+            studentsEnrolled: this.props.studentsEnrolled,
+            schoolyeargrades: this.props.schoolyeargrades,
             loading: false,
             overAllSchedule: false
         }
@@ -519,7 +521,7 @@ export default class AdvisoryDetails extends Component {
                                                     Level: {(this.state.classDetails.length>0)?this.state.classDetails[0].level:""} 
                                             </div>
                                             <div className="col-lg-12"> 
-                                                    Grade: {(this.state.classDetails.length>0)?this.state.classDetails[0].grade:""} 
+                                                    Grade: {(this.state.classDetails.length>0&&this.state.schoolyeargrades.length>0)?this.state.schoolyeargrades.find(e => e.id==Number(this.state.classDetails[0].grade)).year_grade:""} 
                                             </div>
                                             <div className="col-lg-12"> 
                                                     SY: {(this.state.classDetails.length>0)?this.state.classDetails[0].school_year:""} 
@@ -608,7 +610,9 @@ export default class AdvisoryDetails extends Component {
             
             <datalist id="selectStudent"> 
                 <EachMethod of={this.state.studentsList} render={(element,index) => {
-                    return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                    if(this.state.studentsEnrolled.length>0 && this.state.studentsEnrolled.some(e=>e.uuid==element.uuid)) {
+                        return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                    }
                 }} />
             </datalist>
 

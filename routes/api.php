@@ -364,10 +364,13 @@ Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
             header('Content-length: ' . strlen($image->getImageAsString())); 
             echo $image->output(); 
         } else {
-            abort(404, 'Opps Sorry!');
+            echo '/adminlte/dist/assets/img/avatar.png';
+            // abort(404, 'Opps Sorry!');
         }
-
     } else {
-        abort(404, 'Opps Sorry!');
+        // abort(404, 'Opps Sorry!');
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
     }
 });

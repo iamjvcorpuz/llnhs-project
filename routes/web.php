@@ -335,6 +335,7 @@ Route::get('/admin/class/advisory/details/{id}/{code}', function ($id,$code) {
         "cupon" => $code,
         "schedules" => ClassTSController::getAllSchedules($id),
         "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
+        "studentsEnrolled" =>  StudentController::getEnrolledStudent(), 
         "classDetails" => ClassTSController::getClassDetails($id),
         "classroom" => ClassroomController::getAll(),
         "advisory" => AdvisoryController::getAll(),

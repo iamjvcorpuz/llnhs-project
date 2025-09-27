@@ -784,6 +784,7 @@ class AttendanceController extends Controller
             'mode' => $logsdata['mode'],
             'status' => ""
         ]);
+        DB::table('attendance')->where('id', $insertAttendance->id)->update(['uuid' => $insertAttendance->id]);
         if($userdata['type'] == "student") {
             // $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
             // --------------------------------------------------------------------------------------------------------------------------------------
@@ -929,7 +930,7 @@ class AttendanceController extends Controller
             $teacher_id = $userdata['id'];
         } 
 
-        Attendance::create([
+        $insertAttendance = Attendance::create([
             'terminal' => "mobile",
             'terminal_id' => "class_id_" .  $logsdata['class_id'] . "_teacher_id_" . $logsdata['teacher_id'],
             'type' => $type,// student or employee(teacher,staff)
@@ -941,7 +942,7 @@ class AttendanceController extends Controller
             'mode' => $logsdata['mode'],
             'status' => "class_present"
         ]);
-
+        DB::table('attendance')->where('id', $insertAttendance->id)->update(['uuid' => $insertAttendance->id]);
         if($userdata['type'] == "student") {
             if($notification == true) { 
                 if($phone_number != "" && $enable_sms == true) {
@@ -1072,7 +1073,7 @@ class AttendanceController extends Controller
             ->where('type', $type)->get();
 
             if($attendances->count() == 0) {
-                Attendance::create([
+                $insertAttendance = Attendance::create([
                     'terminal' => "web",
                     'terminal_id' => "class_id_" .  $request->class_id . "_teacher_id_" . $request->teacher_id,
                     'type' => $type,// student or employee(teacher,staff)
@@ -1084,6 +1085,7 @@ class AttendanceController extends Controller
                     'mode' => $mode,
                     'status' => "class_present"
                 ]);
+                DB::table('attendance')->where('id', $insertAttendance->id)->update(['uuid' => $insertAttendance->id]);
                 $notification = true;
             } else if($attendances->count() > 0){
                 if($attendances[0]->mode === "absent" && $mode === "present") {
@@ -1278,7 +1280,7 @@ class AttendanceController extends Controller
             $teacher_id = $userdata['id'];
         } 
 
-        Attendance::create([
+        $insertAttendance = Attendance::create([
             'terminal' => "web",
             'terminal_id' => "event_id_" .  $logsdata['class_id'] . "_teacher_id_" . $logsdata['teacher_id'],
             'type' => $type,// student or employee(teacher,staff)
@@ -1290,7 +1292,7 @@ class AttendanceController extends Controller
             'mode' => $logsdata['mode'],
             'status' => "event_present"
         ]);
-
+        DB::table('attendance')->where('id', $insertAttendance->id)->update(['uuid' => $insertAttendance->id]);
         if($userdata['type'] == "student") {
             if($notification == true) { 
                 if($phone_number != "" && $enable_sms == true) {
@@ -1559,7 +1561,7 @@ class AttendanceController extends Controller
             }
         }
 
-        Attendance::create([
+        $insertAttendance = Attendance::create([
             'terminal' => "web_mobile",
             'terminal_id' => "classroom_scan",
             'type' => $type,// student or employee(teacher,staff)
@@ -1571,7 +1573,7 @@ class AttendanceController extends Controller
             'mode' => $logsdata['mode'],
             'status' => ""
         ]);
-
+        DB::table('attendance')->where('id', $insertAttendance->id)->update(['uuid' => $insertAttendance->id]);
         if($notification == true && $userdata['type'] == "student") {
             
             // --------------------------------------------------------------------------------------------------------------------------------------
