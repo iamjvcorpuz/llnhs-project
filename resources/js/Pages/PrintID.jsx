@@ -226,11 +226,11 @@ export default class PrintID extends Component {
                 fname_y = 70;
             }
             // max 14 for the size of 15
-            if(this.state.lastname.length > 10) {
+            if(this.state.lastname.length >= 9) {
                 doc.setFontSize(10);
                 fname_y = 64;
             }
-            if(this.state.lastname.length > 13) {
+            if(this.state.lastname.length >= 13) {
                 doc.setFontSize(7); 
             }
             doc.text(this.state.lastname.toLocaleUpperCase() , 28, fname_y,{align:'left',maxWidth: 50});

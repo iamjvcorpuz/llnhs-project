@@ -1,6 +1,7 @@
 import React,{ Component } from "react";  
 import { Link } from '@inertiajs/react'; 
 import { EachMethod } from '@/Components/EachMethod'
+import { nextInLineYearGrade } from '@/Components/commonFunctions'
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import moment from 'moment';
@@ -12,6 +13,7 @@ import QRCode from "react-qr-code";
 import Webcam from "react-webcam";
 import { ImageCrop } from '@/Components/ImageCrop';
 import axios from 'axios';
+
 
 export default class Movement extends Component {
     constructor(props) {
@@ -300,7 +302,7 @@ export default class Movement extends Component {
     componentDidMount() {
         let self = this;
         this._isMounted = true;
-        console.log(this.props);
+        // console.log(this.props);
         let so = []
         let selected_quardians = "";
         this.props.parents.forEach(element => {
@@ -960,7 +962,16 @@ export default class Movement extends Component {
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <EachMethod of={this.state.yeargrade} render={(element,index) => {
-                                                    return <option >{`${element.year_grade}`}</option>
+                                                    console.log(nextInLineYearGrade(element.year_grade))
+                                                    if(this.state.student_movement.length>0&&this.state.student_movement.some(e => nextInLineYearGrade(e.grade_level)==element.year_grade)) {
+                                                        return <option >{`${element.year_grade}`}</option>
+                                                    } else if(this.state.student_movement.length==0&&element.year_grade=="Grade 7") {
+                                                        return <option >{`${element.year_grade}`}</option>
+                                                    } else if(this.state.student_movement.length==0&&this.state.transferee==true) {
+                                                        return <option >{`${element.year_grade}`}</option>
+                                                    } else {
+                                                        // return <option disabled >{`${element.year_grade}`}</option>
+                                                    }
                                                 }} />
                                             </select>
                                             <div id="gle-alert" className="valid-feedback">Looks good!</div>

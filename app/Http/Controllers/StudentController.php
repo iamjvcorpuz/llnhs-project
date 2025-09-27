@@ -82,6 +82,61 @@ class StudentController extends Controller
             'ldm_applied',
         ]);
     }
+
+    public static function getAllActive_() 
+    {
+        return DB::select("SELECT ROW_NUMBER() OVER () as 'index', 
+        'uuid',
+        'id',
+        'qr_code',
+        'lrn',
+        'psa_cert_no',
+        'first_name',
+        'last_name',
+        'middle_name',
+        'extension_name',
+        'bdate',
+        'sex',
+        'status',
+        'is_ip',
+        'ip_specify',
+        'is_4ps_benficiary',
+        '4ps_id',
+        'is_disability',
+        'type_disability',
+        'type2_disability',
+        'type_others_disability', 
+        'cd_hno',
+        'cd_sn',
+        'cd_barangay',
+        'cd_mc',
+        'cd_province',
+        'cd_country',
+        'cd_zip', 
+        'is_pa_same_cd',
+        'pa_hno',
+        'pa_sn',
+        'pa_barangay',
+        'pa_mc',
+        'pa_province',
+        'pa_country',
+        'pa_zip',
+        'lglc',
+        'lsyc',
+        'lsa',
+        'lsa_school_id',
+        'flsh_semester',
+        'flsh_track',
+        'flsh_strand',
+        'ldm_applied'
+        FROM student WHERE uuid NOT IN (SELECT 
+        student.uuid
+        FROM advisory_group 
+        LEFT JOIN advisory ON  advisory.uuid = advisory_group.advisory_id
+        LEFT JOIN student ON student.uuid = advisory_group.student_id
+        WHERE advisory_group.status = 'active' AND advisory.status = 'active' )
+        ");
+    }
     public static function getAllNonAdvisory($id) 
     {
         return DB::select('SELECT ROW_NUMBER() OVER () as "index", 
@@ -94,10 +149,10 @@ class StudentController extends Controller
         extension_name, 
         sex,
         status
-        FROM student WHERE id NOT IN (SELECT 
+        FROM student WHERE uuid NOT IN (SELECT 
         student.uuid
         FROM advisory_group 
-        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        LEFT JOIN advisory ON  advisory.uuid = advisory_group.advisory_id
         LEFT JOIN student ON student.uuid = advisory_group.student_id
         WHERE advisory_group.status = "active" AND advisory.status = "active" )
         ');

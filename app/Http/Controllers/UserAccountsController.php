@@ -15,7 +15,7 @@ class UserAccountsController extends Controller
      */
     public function index()
     {
-        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
+        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
         return response()->json([
             'status' => 'done',
             'error' => null,
@@ -25,21 +25,26 @@ class UserAccountsController extends Controller
 
     public static function getAll()
     {
-        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
+        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
         return  $useraccounts;
     }
 
     public static function getAllStudents()
     {
-        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
+        $useraccounts = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,id,user_id,user_type,fullname,username,password,plainpassword,(SELECT name FROM roles WHERE roles.id = user_accounts.user_role_id) AS "user_role" FROM user_accounts;');
         return  $useraccounts;
     }
 
     public static function getAllUsers()
     {
+        // return  [
+        //     'student' => DB::select('SELECT * FROM student'),
+        //     'teacher' => DB::select('SELECT * FROM employee '),// WHERE employee_type = "Teacher"
+        //     'guardians' => DB::select('SELECT * FROM parents')
+        // ];
         return  [
-            'student' => DB::select('SELECT * FROM student'),
-            'teacher' => DB::select('SELECT * FROM employee WHERE employee_type = "Teacher"'),
+            'student' => StudentController::getAllActive_(),
+            'teacher' => EmployeeController::index_(),
             'guardians' => DB::select('SELECT * FROM parents')
         ];
     }

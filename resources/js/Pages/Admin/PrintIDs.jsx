@@ -169,7 +169,7 @@ export default class PrintIDs extends Component {
                         fname_y = 68;
                     }
                     // max 14 for the size of 15
-                    if(lastname.length > 10) {
+                    if(lastname.length >= 9) {
                         doc.setFontSize(10);
                         fname_y = 64;
                     }
