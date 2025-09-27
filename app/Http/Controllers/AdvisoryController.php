@@ -283,7 +283,7 @@ class AdvisoryController extends Controller
 
     public function removeStudentAdvisory_(Request $request) {
         $Student = DB::table('advisory_group')->where('advisory_id', $request->advisory_id)->where('student_id', $request->student_id)->get();
-        if($Student->count()==1) {
+        if($Student->count()>0) {
             $updateStudent = DB::table('advisory_group')->where('advisory_id', $request->advisory_id)->where('student_id', $request->student_id)->update(['status'=>'remove']);            
             return response()->json([
                 'status' => 'success',

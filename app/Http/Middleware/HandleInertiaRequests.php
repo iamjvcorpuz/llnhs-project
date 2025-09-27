@@ -47,7 +47,8 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $userd,
-                'profile' => $profile
+                'profile' => $profile,
+                'varsion' => env('VERSION',"v0.8.7")
             ],
         ];
     }

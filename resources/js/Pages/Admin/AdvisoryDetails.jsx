@@ -25,13 +25,13 @@ export default class AdvisoryDetails extends Component {
             classDetails: typeof(this.props.classDetails)!="undefined"?this.props.classDetails:[],
             data: [],
             columns: [
-                {
-                    id: "no",
-                    accessor: 'id',
-                    Header: 'No.', 
-                    width: 50,
-                    className: "center"
-                }, 
+                // {
+                //     id: "no",
+                //     accessor: 'id',
+                //     Header: 'No.', 
+                //     width: 50,
+                //     className: "center"
+                // }, 
                 {
                     id: "level",
                     Header: 'Subject Name',  
@@ -47,19 +47,19 @@ export default class AdvisoryDetails extends Component {
                     filterable: false,
                     Cell: ({row}) => { 
                        return <> 
-                        {row.original.time_start} - {row.original.time_end} <br /> 
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')}
                        </>            
                     }
                 }
             ],
             columns_all: [
-                {
-                    id: "no",
-                    accessor: 'id',
-                    Header: 'No.', 
-                    width: 50,
-                    className: "center"
-                }, 
+                // {
+                //     id: "no",
+                //     accessor: 'id',
+                //     Header: 'No.', 
+                //     width: 50,
+                //     className: "center"
+                // }, 
                 {
                     id: "level",
                     Header: 'Subject Name',  
@@ -94,7 +94,7 @@ export default class AdvisoryDetails extends Component {
                             schedule_day.push("Sat");
                         } 
                        return <> 
-                        {row.original.time_start} - {row.original.time_end} <br />
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')} <br />
                         {(schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):""}
                        </>     
                     }
@@ -559,25 +559,27 @@ export default class AdvisoryDetails extends Component {
 
                                         </div>
                                         <div className="tab-pane fade" id="page_schedule_list" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
-                                            <div className="col-lg-12 ml-5 mr-5 mt-2 mb-2">
-                                                <button className="btn btn-primary mr-1" onClick={() => {
-                                                    this.loadSched("monday");
-                                                }}>Monday</button>
-                                                <button className="btn btn-primary mr-1" onClick={() => {
-                                                    this.loadSched("tuesday");
-                                                }}>Tuesday</button>
-                                                <button className="btn btn-primary mr-1" onClick={() => {
-                                                    this.loadSched("wednesday");
-                                                }}>Wednesday</button>
-                                                <button className="btn btn-primary mr-1" onClick={() => {
-                                                    this.loadSched("thursday");
-                                                }}>Thursday</button>
-                                                <button className="btn btn-primary mr-1" onClick={() => {
-                                                    this.loadSched("friday");
-                                                }}>Friday</button>
-                                                <button className="btn btn-info mr-1" onClick={() => {
-                                                    this.loadSched("all");
-                                                }}>View All</button>
+                                            <div className="col-lg-12 clearfix ml-5 mr-5 mt-2 mb-2">
+                                                <div className="float-right mr-5">
+                                                    <button className="btn btn-primary mr-1" onClick={() => {
+                                                        this.loadSched("monday");
+                                                    }}>Monday</button>
+                                                    <button className="btn btn-primary mr-1" onClick={() => {
+                                                        this.loadSched("tuesday");
+                                                    }}>Tuesday</button>
+                                                    <button className="btn btn-primary mr-1" onClick={() => {
+                                                        this.loadSched("wednesday");
+                                                    }}>Wednesday</button>
+                                                    <button className="btn btn-primary mr-1" onClick={() => {
+                                                        this.loadSched("thursday");
+                                                    }}>Thursday</button>
+                                                    <button className="btn btn-primary mr-1" onClick={() => {
+                                                        this.loadSched("friday");
+                                                    }}>Friday</button>
+                                                    <button className="btn btn-info mr-1" onClick={() => {
+                                                        this.loadSched("all");
+                                                    }}>View All</button>
+                                                </div>
                                             </div>
                                             {this.state.overAllSchedule==false?<ReactTable
                                                 key={"react-tables"}
