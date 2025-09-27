@@ -37,6 +37,27 @@ class EmployeeController extends Controller
     {
         return Employee::all();
     }
+    public static function getAll_() 
+    {
+        return DB::select('SELECT `employee`.`id`,
+                            `employee`.`uuid`,
+                            `employee`.`employee_type`,
+                            `employee`.`qr_code`,
+                            `employee`.`first_name`,
+                            `employee`.`last_name`,
+                            `employee`.`middle_name`,
+                            `employee`.`extension_name`,
+                            "" AS `picture_base64`,
+                            `employee`.`email`,
+                            `employee`.`status`,
+                            `employee`.`bdate`,
+                            `employee`.`sex`,
+                            `employee`.`civil_status`,
+                            `employee`.`religion`,
+                            `employee`.`ethic_group`,
+                            `employee`.`created_at`,
+                            `employee`.`updated_at` FROM employee WHERE status = "active" ' );
+    }
     public static function getCount() 
     {
         return DB::select('SELECT COUNT(*) AS TOTAL FROM employee WHERE employee_type = "Teacher" AND status = "active" ' );
