@@ -62,7 +62,7 @@ export default function SideNav({
                   <li className="nav-item">
                     <Link href="/admin/dashboard/student" className="nav-link">
                       <i className="nav-icon bi bi-person-gear"></i>
-                      <p>Info</p>
+                      <p>Information</p>
                     </Link>
                   </li>
                   <li className="nav-item">

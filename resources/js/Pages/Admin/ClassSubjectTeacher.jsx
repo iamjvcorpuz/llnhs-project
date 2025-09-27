@@ -41,13 +41,20 @@ export default class ClassSubjectTeacher extends Component {
             selected_subejct_id: "",
             selected_school_year: "",
             columns: [
+                // {
+                //     id: "no",
+                //     accessor: 'index',
+                //     Header: 'No.', 
+                //     width: 70,
+                //     className: "center"
+                // }, 
                 {
-                    id: "no",
-                    accessor: 'index',
-                    Header: 'No.', 
-                    width: 70,
-                    className: "center"
-                }, 
+                    id: "subject_name",
+                    Header: 'Subject',  
+                    accessor: 'subject_name', 
+                    filterable: true,
+                    width: 200,
+                },
                 {
                     id: "teacher",
                     Header: 'Teacher',  
@@ -57,16 +64,29 @@ export default class ClassSubjectTeacher extends Component {
                     filterable: true,
                 },
                 {
+                    id: "time",
+                    Header: 'Time',  
+                    width: 180,
+                    className: "center",
+                    filterable: true,
+                    accessor: 'index',
+                    Cell: ({row}) => { 
+                       return <> 
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')} <br />
+                        {(row.original.monday==1)?"Mon-":""}
+                        {(row.original.tuesday==1)?"Tue-":""}
+                        {(row.original.wednesday==1)?"Wed-":""}
+                        {(row.original.thursday==1)?"Thu-":""}
+                        {(row.original.friday==1)?"Fri-":""}
+                        {(row.original.saturday==1)?"Sat-":""}
+                        {(row.original.sunday==1)?"Sun-":""}
+                       </>            
+                    },
+                },
+                {
                     id: "section",
                     Header: 'Section',  
                     accessor: 'section_name', 
-                    filterable: true,
-                    width: 200,
-                },
-                {
-                    id: "subject_name",
-                    Header: 'Subject',  
-                    accessor: 'subject_name', 
                     filterable: true,
                     width: 200,
                 },
@@ -84,26 +104,6 @@ export default class ClassSubjectTeacher extends Component {
                     className: "center",
                     accessor: 'classroom_number',
                     filterable: true,
-                },
-                {
-                    id: "time",
-                    Header: 'Time',  
-                    width: 180,
-                    className: "center",
-                    filterable: true,
-                    accessor: 'index',
-                    Cell: ({row}) => { 
-                       return <> 
-                        {row.original.time_start} - {row.original.time_end} <br />
-                        {(row.original.monday==1)?"Mon-":""}
-                        {(row.original.tuesday==1)?"Tue-":""}
-                        {(row.original.wednesday==1)?"Wed-":""}
-                        {(row.original.thursday==1)?"Thu-":""}
-                        {(row.original.friday==1)?"Fri-":""}
-                        {(row.original.saturday==1)?"Sat-":""}
-                        {(row.original.sunday==1)?"Sun-":""}
-                       </>            
-                    },
                 },
                 {
                     id: "Action",
@@ -951,7 +951,7 @@ export default class ClassSubjectTeacher extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-microsoft-teams"></i> Class Teacher</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-microsoft-teams"></i> Class Schedule</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
