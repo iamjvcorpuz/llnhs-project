@@ -955,7 +955,7 @@ export default class ClassSubjectTeacher extends Component {
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Class Subject</li>
+                            <li className="breadcrumb-item active" aria-current="page">Class Schedule</li>
                         </ol>
                     </div>
                     </div> 
@@ -969,14 +969,14 @@ export default class ClassSubjectTeacher extends Component {
                         <div className="col-lg-12">
                             <div className="card mb-4">
                                 <div className="card-header">
-                                    <h3 className="card-title"> <i className="bi bi-microsoft-teams"></i> Class Subject List</h3> 
+                                    <h3 className="card-title"> <i className="bi bi-microsoft-teams"></i> Class Schedule List</h3> 
                                     <button className="btn btn-primary float-right mr-1" onClick={() => {
                                         // this.setState({sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==1)})  
                                         $("#newClassTeaching").modal('show');
                                     }}> <i className="bi bi-person-plus-fill"></i> Add</button>    
                                 </div>
                                 <div className="card-body"> 
-                                    <div className="col-lg-12 clearfix">
+                                    <div className="col-lg-12 clearfix mb-2">
                                         <button className="btn btn-primary mr-1" onClick={() => {
                                             this.loadSched("monday");
                                         }}>Monday</button>
@@ -1109,7 +1109,8 @@ export default class ClassSubjectTeacher extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-12">
+
+                            <div className="col-md-12 d-none">
                                 <label htmlFor="description" className="form-label">Description</label>
                                 <input type="text" className="form-control"  id="description" defaultValue="" required="" onChange={(e) => {  $("#description-alert").removeAttr('class').addClass('invalid-feedback');}}  />
                                 <div id="description-alert" className="invalid-feedback">Please select a valid state.</div>
@@ -1163,10 +1164,10 @@ export default class ClassSubjectTeacher extends Component {
                                 <label htmlFor="yearlevel" className="form-label">Grade</label>                                            
                                 {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
 
-                                <select name="yearlevel" id="yearlevel" className="form-control"  aria-readonly onChange={(e) => { 
+                                <select name="yearlevel" id="yearlevel" disabled readOnly className="form-control"  aria-readonly onChange={(e) => { 
                                         $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); 
                                         $('#section').val("");
-                                        console.log(e.target.value)
+                                        // console.log(e.target.value)
                                         if(e.target.value != "") {
                                         // this.setState({selectedYearLevel: e.target.value,sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==e.target.value)})  
                                         }
@@ -1187,18 +1188,18 @@ export default class ClassSubjectTeacher extends Component {
 
                             <div className="col-md-12">
                                 <label htmlFor="sectionname" className="form-label">Section Name</label>
-                                <input type="text" className="form-control" id="sectionname" defaultValue="" required="" onChange={(e) => {  $("#sectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
+                                <input type="text" className="form-control" disabled id="sectionname" defaultValue="" required="" onChange={(e) => {  $("#sectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
                                 <div id="sectionname-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="schoolyear" className="form-label">School Year</label>
-                                <input type="text" className="form-control" list="selectedSY" id="schoolyear" defaultValue="" required="" onChange={(e) => {  $("#schoolyear-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
+                                <input type="text" className="form-control" readOnly list="selectedSY" id="schoolyear" defaultValue="" required="" onChange={(e) => {  $("#schoolyear-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
                                 <div id="schoolyear-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="flsh_track" className="form-label">Track</label>
                                 {/* <input type="text" className="form-control" id="flsh_track" defaultValue="" required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  /> */}
-                                <select name="flsh_track" id="flsh_track" className="form-control"  onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
+                                <select name="flsh_track" id="flsh_track" disabled className="form-control"  onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
                                     <option value=""></option>
                                         <EachMethod of={this.state.track} render={(element,index) => {
                                             return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
@@ -1209,7 +1210,7 @@ export default class ClassSubjectTeacher extends Component {
                             <div className="col-md-12">
                                 <label htmlFor="flsh_strand" className="form-label">Strand</label>
                                 {/* <input type="text" className="form-control" id="flsh_strand" defaultValue="" required="" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}  /> */}
-                                <select name="flsh_strand" id="flsh_strand" className="form-control" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
+                                <select name="flsh_strand" id="flsh_strand" disabled className="form-control" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
                                     <option value=""></option>
                                         <EachMethod of={this.state.strand} render={(element,index) => {
                                             return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
@@ -1299,7 +1300,7 @@ export default class ClassSubjectTeacher extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-12">
+                            <div className="col-md-12 d-none">
                                 <label htmlFor="description" className="form-label">Description</label>
                                 <input type="text" className="form-control"  id="edescription" defaultValue="" required="" onChange={(e) => {  $("#description-alert").removeAttr('class').addClass('invalid-feedback');}}  />
                                 <div id="description-alert" className="invalid-feedback">Please select a valid state.</div>

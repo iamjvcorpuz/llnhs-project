@@ -71,6 +71,15 @@ export default class Movement extends Component {
             filetype_: "",
             cameraOn: false,
             parent_data: this.props.parents,
+            mfirst_name: "",
+            mmiddle_name: "",
+            mmaiden_name: "",
+            mlast_name: "",
+            mextension_name: "",
+            ffirst_name: "",
+            fmiddle_name: "", 
+            flast_name: "",
+            fextension_name: "",
             parent_columns: [
                 {
                     id: "no",
@@ -194,27 +203,27 @@ export default class Movement extends Component {
             transferee: false,
             data: typeof(this.props.studentsEnrolled)!="undefined"?this.props.studentsEnrolled:[],
             columns: [
-                {
-                    id: "qr",
-                    accessor: 'lrn',
-                    Header: 'QR Code',
-                    filterable: true,
-                    Cell: ({row}) => { 
-                        return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
-                            window.open(`/qrcode?code=${row.original.lrn}`)
-                        }} />             
-                    }
-                }, 
-                {
-                    id: "picture",
-                    Header: 'Picture',  
-                    accessor: 'photo',
-                    Cell: ({row}) => { 
-                       return <img className="" height={150} width={150}  onError={(e)=>{ 
-                            e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                       }} alt="Picture Error" src={`/profile/photo/student/${row.original.lrn}`} />
-                    }
-                }, 
+                // {
+                //     id: "qr",
+                //     accessor: 'lrn',
+                //     Header: 'QR Code',
+                //     filterable: true,
+                //     Cell: ({row}) => { 
+                //         return <QRCode value={row.original.lrn} size={256} style={{ height: "auto", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} onDoubleClick={() => {
+                //             window.open(`/qrcode?code=${row.original.lrn}`)
+                //         }} />             
+                //     }
+                // }, 
+                // {
+                //     id: "picture",
+                //     Header: 'Picture',  
+                //     accessor: 'photo',
+                //     Cell: ({row}) => { 
+                //        return <img className="" height={150} width={150}  onError={(e)=>{ 
+                //             e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
+                //        }} alt="Picture Error" src={`/profile/photo/student/${row.original.lrn}`} />
+                //     }
+                // }, 
                 {
                     id: "lrn",
                     accessor: 'lrn',
@@ -313,7 +322,7 @@ export default class Movement extends Component {
             selectOptions: so,
             photobase64final: (this.props.student.picture_base64!=null)?this.props.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
             ...this.props.student,
-            added_guardians:this.props.guardians,
+            added_guardians:typeof(this.props.guardians)!="undefined"?this.props.guardians:[],
             selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
             relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:"",
             data_list: this.props.student
@@ -328,6 +337,7 @@ export default class Movement extends Component {
         
         $('#data-list').on('select2:select', function (e) { 
             var selectedData = e.params.data; 
+            // console.log(selectedData)
             self.setState({
                 selectedQr: selectedData.id,
                 readOnly_: false,
@@ -871,7 +881,7 @@ export default class Movement extends Component {
         let self = this;  
         self.setState({loading: true});
         axios.post(`/admin/dashboard/student/${self.state.selectedQr}`,{id:self.state.selectedQr}).then(function (response) {
-            console.log(response);
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                 if(Object.keys(data).length>0) {
@@ -880,7 +890,7 @@ export default class Movement extends Component {
                         added_guardians: data.guardians,
                         selected_quardians: (data.guardians!=null&&data.guardians.length>0)?data.guardians[0].id:"",
                         relationship: (data.guardians!=null&&data.guardians.length>0)?data.guardians[0].relationship:"",
-                        photobase64final: (data.student.picture_base64!=null)?data.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
+                        photobase64final: ( typeof(data.student.picture_base64)!="undefined"&&data.student.picture_base64!=null)?data.student.picture_base64:'/adminlte/dist/assets/img/avatar.png',
                         photobase64finalParent: (data.guardians.length>0&&data.guardians[0].picture_base64!=null)?data.guardians[0].picture_base64:'/adminlte/dist/assets/img/avatar.png',
                         loading: false,
                         student_movement: (data.student_movement.length>0&&data.student_movement!=null)?data.student_movement:[]
@@ -962,16 +972,17 @@ export default class Movement extends Component {
                                                 <option disabled>Choose...</option>
                                                 <option></option>
                                                 <EachMethod of={this.state.yeargrade} render={(element,index) => {
-                                                    console.log(nextInLineYearGrade(element.year_grade))
-                                                    if(this.state.student_movement.length>0&&this.state.student_movement.some(e => nextInLineYearGrade(e.grade_level)==element.year_grade)) {
-                                                        return <option >{`${element.year_grade}`}</option>
-                                                    } else if(this.state.student_movement.length==0&&element.year_grade=="Grade 7") {
-                                                        return <option >{`${element.year_grade}`}</option>
-                                                    } else if(this.state.student_movement.length==0&&this.state.transferee==true) {
-                                                        return <option >{`${element.year_grade}`}</option>
-                                                    } else {
-                                                        // return <option disabled >{`${element.year_grade}`}</option>
-                                                    }
+                                                    // console.log(nextInLineYearGrade(element.year_grade))
+                                                    // if(this.state.student_movement.length>0&&this.state.student_movement.some(e => nextInLineYearGrade(e.grade_level)==element.year_grade)) {
+                                                    //     return <option >{`${element.year_grade}`}</option>
+                                                    // } else if(this.state.student_movement.length==0&&element.year_grade=="Grade 7") {
+                                                    //     return <option >{`${element.year_grade}`}</option>
+                                                    // } else if(this.state.student_movement.length==0&&this.state.transferee==true) {
+                                                    //     return <option >{`${element.year_grade}`}</option>
+                                                    // } else {
+                                                    //     // return <option disabled >{`${element.year_grade}`}</option>
+                                                    // }
+                                                    return <option >{`${element.year_grade}`}</option>
                                                 }} />
                                             </select>
                                             <div id="gle-alert" className="valid-feedback">Looks good!</div>
@@ -1100,7 +1111,7 @@ export default class Movement extends Component {
                                         <div className="tab-pane mt-2" id="profiles">
 
                                             <div className="row g-3"> 
-                                                <div className="col-md-4">
+                                                {/* <div className="col-md-4">
                                                     <div className="col-md-12">
                                                         <img className="photo-upload border_shadow" src={this.state.photobase64final!=""?this.state.photobase64final:"/adminlte/dist/assets/img/avatar.png"}
                                                         ref={t=> this.upload_view_image = t}
@@ -1108,7 +1119,7 @@ export default class Movement extends Component {
                                                             this.upload_view_image.src='/adminlte/dist/assets/img/avatar.png'; 
                                                         }} alt="Picture Error" />
                                                     </div> 
-                                                </div> 
+                                                </div>  */}
                                                 <div className="col-md-4 d-flex flex-column justify-content-end">
                                                     <label htmlFor="lrn" className="form-label ">Learner Reference No.</label>
                                                     <input type="text" className="form-control" id="lrn" defaultValue={this.state.lrn} required="" onChange={(e) => {
@@ -1116,12 +1127,12 @@ export default class Movement extends Component {
                                                         this.setState({lrn: e.target.value})}} />
                                                     <span id="lrn-alert" className="valid-feedback">Looks good!</span>
                                                 </div> 
-                                                <div className="col-md-4 d-flex flex-column justify-content-end">
+                                                {/* <div className="col-md-4 d-flex flex-column justify-content-end">
                                                     <QRCode value={this.state.lrn} size={256} style={{ height: "170px", maxWidth: "100%", width: "100%" }}  viewBox={`0 0 256 256`} />   
                                                     <label htmlFor="first_name" className="form-label">PSA Cert. No.</label>
                                                     <input type="text" className="form-control" id="first_name" defaultValue={this.state.psa_cert_no} required="" onChange={(e) => { $("#psa-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({psa_cert_no: e.target.value})}}  />
                                                     <div id="psa-alert" className="valid-feedback">Looks good!</div>
-                                                </div> 
+                                                </div>  */}
                                                 <div className="col-md-4">
                                                     <label htmlFor="first_name" className="form-label">First name</label>
                                                     <input type="text" className="form-control" id="first_name" defaultValue={this.state.first_name} required="" onChange={(e) => { $("#first-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({first_name: e.target.value})}}  />
@@ -1139,7 +1150,7 @@ export default class Movement extends Component {
                                                 </div> 
                                                 <div className="col-md-2">
                                                     <label htmlFor="extension_name" className="form-label">Extension name</label>
-                                                    <select className="form-select" id="extension_name" required="" defaultValue={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
+                                                    <select className="form-select" id="extension_name" required="" value={this.state.extension_name} onChange={(e) => {  $("#extension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({extension_name: e.target.value})}}  >
                                                         <option disabled>Choose...</option>
                                                         <option></option>
                                                         <option>Jr.</option>
@@ -1648,27 +1659,106 @@ export default class Movement extends Component {
                                                 </div>
                                             </div>
                                             <div className="col-lg-12">
-                                                <hr />
-                                                <h5 className="badge fs-5 bg-primary text-start d-block">Parents / Guardians</h5>
-                                                <div className="row">
-                                                    <div className={`${(this.state.added_guardians!=null&&this.state.added_guardians.length>0)?'col-md-4':'hidden'}`}>
-                                                        <div className="col-md-12">
-                                                            <img className="photo-upload border_shadow" src={this.state.photobase64finalParent!=""?this.state.photobase64finalParent:"/adminlte/dist/assets/img/avatar.png"}
-                                                            ref={t=> this.upload_view_image = t}
-                                                            onError={(e)=>{ 
-                                                                this.upload_view_image.src='/adminlte/dist/assets/img/avatar.png'; 
-                                                            }} alt="Picture Error" />
-                                                        </div> 
-                                                    </div> 
-                                                    <EachMethod of={this.state.added_guardians} render={(element,index) => {
-                                                        return  <div className="input-group ">
-                                                            <div className="input-group-prepend col-lg-4">
-                                                                <div htmlFor="lglv" className="input-group-text">{`${element.last_name}, ${element.first_name}`}  (<i> {this.state.relationship}</i> ) </div>
-                                                            </div>  
-                                                        </div>
-                                                    }} /> 
+                                        <hr />
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Parents</h5>
+                                        <div className="col-lg-5">
+                                            <label htmlFor="relationship" className="form-label">Father's Name</label> 
+                                        </div> 
+                                        <div className="row" >
+                                            <div className="col-md-4">
+                                                <label htmlFor="ffirst_name" className="form-label">First name</label>
+                                                <input type="text" className="form-control" id="ffirst_name" defaultValue={this.state.ffirst_name} required="" onChange={(e) => { $("#ffirst-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({ffirst_name: e.target.value})}}  />
+                                                <div id="first-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="middle_name" className="form-label">Middle name</label>
+                                                <input type="text" className="form-control" id="fmiddle_name" defaultValue={this.state.fmiddle_name} required="" onChange={(e) => {  $("#fmiddle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({fmiddle_name: e.target.value})}}  />
+                                                <div id="fmiddle-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="flast_name" className="form-label">Last name</label>
+                                                <input type="text" className="form-control" id="flast_name" defaultValue={this.state.flast_name} required="" onChange={(e) => { $("#flast-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flast_name: e.target.value})}}  />
+                                                <div id="flast-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-2">
+                                                <label htmlFor="extension_name" className="form-label">Extension name</label>
+                                                <select className="form-select" id="extension_name" required="" value={this.state.fextension_name} onChange={(e) => {  $("#fextension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({fextension_name: e.target.value})}}  >
+                                                    <option disabled>Choose...</option>
+                                                    <option></option>
+                                                    <option>Jr.</option>
+                                                    <option>Sr.</option>
+                                                    <option>II</option>
+                                                    <option>III</option>
+                                                    <option>VI</option>
+                                                    <option>V</option>
+                                                </select>
+                                                <div id="fextension-name-alert" className="invalid-feedback">Please select a valid state.</div>
+                                            </div> 
+                                        </div>
+                                        <hr />
+                                        <div className="col-lg-5">
+                                            <label htmlFor="relationship" className="form-label">Mother's Maiden Name</label> 
+                                        </div> 
+                                        <div className="row" >
+                                            <div className="col-md-4">
+                                                <label htmlFor="first_name" className="form-label">First name</label>
+                                                <input type="text" className="form-control" id="mfirst_name" defaultValue={this.state.mfirst_name} required="" onChange={(e) => { $("#mfirst-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({mfirst_name: e.target.value})}}  />
+                                                <div id="fmirst-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="middle_name" className="form-label">Middle name</label>
+                                                <input type="text" className="form-control" id="mmiddle_name" defaultValue={this.state.mmiddle_name} required="" onChange={(e) => {  $("#mmiddle-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mmiddle_name: e.target.value})}}  />
+                                                <div id="mmiddle-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3 d-none">
+                                                <label htmlFor="middle_name" className="form-label">Maiden name</label>
+                                                <input type="text" className="form-control" id="mmaiden_name" defaultValue={this.state.mmaiden_name} required="" onChange={(e) => {  $("#mmaiden-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mmaiden_name: e.target.value})}}  />
+                                                <div id="mmaiden-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="last_name" className="form-label">Last name</label>
+                                                <input type="text" className="form-control" id="mlast_name" defaultValue={this.state.mlast_name} required="" onChange={(e) => { $("#mlast-name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({mlast_name: e.target.value})}}  />
+                                                <div id="mlast-name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-2">
+                                                <label htmlFor="extension_name" className="form-label">Extension name</label>
+                                                <select className="form-select" id="mextension_name" required="" value={this.state.mextension_name} onChange={(e) => {  $("#mextension-name-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({mextension_name: e.target.value})}}  >
+                                                    <option disabled>Choose...</option>
+                                                    <option></option>
+                                                    <option>Jr.</option>
+                                                    <option>Sr.</option>
+                                                    <option>II</option>
+                                                    <option>III</option>
+                                                    <option>VI</option>
+                                                    <option>V</option>
+                                                </select>
+                                                <div id="mextension-name-alert" className="invalid-feedback">Please select a valid state.</div>
+                                            </div> 
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-12">
+                                        
+                                        <hr />
+
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Guardians</h5>
+                                        <div className="row">
+                                            <EachMethod of={this.state.added_guardians} render={(element,index) => {
+                                                return  <div className="input-group ">
+                                                    <div className="input-group-prepend col-lg-5">
+                                                        <div htmlFor="lglv" className="input-group-text">{`${element.last_name}, ${element.first_name}`}</div>
+                                                    </div>
                                                 </div>
-                                            </div>                                             
+                                            }} />
+                                            <div className="col-lg-5">
+                                                <label htmlFor="relationship" className="form-label">Relationship</label>
+                                                <input type="text" className="form-control" id="relationship" list="parentsOptions" defaultValue={this.state.relationship} required="" onChange={(e) => { $("#relationship-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({relationship: e.target.value})}}  />
+                                                <div id="relationship-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                        </div>
+                                        
+                                    </div>
+                                         
                                         </div>
                                     </div>
                                 </div> 

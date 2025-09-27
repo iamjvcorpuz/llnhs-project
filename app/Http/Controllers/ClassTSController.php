@@ -34,7 +34,7 @@ class ClassTSController extends Controller
         LEFT JOIN school_subjects ON school_subjects.id = class_teaching.subject_id
         LEFT JOIN employee ON employee.uuid = class_teaching.teacher_id
         WHERE
-        school_class.qr_code = ?
+        school_class.qr_code = ? AND class_teaching.class_id IS NOT NULL
         ;",[$id]);
         return  $school_class;
     }
