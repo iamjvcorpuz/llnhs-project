@@ -47,7 +47,7 @@ export default class AdvisorySchedules extends Component {
                     filterable: false,
                     Cell: ({row}) => { 
                        return <> 
-                        {row.original.time_start} - {row.original.time_end} <br /> 
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')} <br /> 
                        </>            
                     }
                 }
@@ -94,7 +94,7 @@ export default class AdvisorySchedules extends Component {
                             schedule_day.push("Sat");
                         } 
                        return <> 
-                        {row.original.time_start} - {row.original.time_end} <br />
+                        {moment(row.original.time_start, 'hh:mm A').format('hh:mm A')} - {moment(row.original.time_end, 'hh:mm A').format('hh:mm A')} <br />
                         {(schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):""}
                        </>     
                     }
