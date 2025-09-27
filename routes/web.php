@@ -531,7 +531,7 @@ Route::get('/admin/student/movement', function () {
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
+        "student" => StudentController::getAll_(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
         'sy' => SystemSettingsController::getCurrentSY(),
         'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
