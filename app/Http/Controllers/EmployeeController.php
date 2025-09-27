@@ -24,6 +24,15 @@ class EmployeeController extends Controller
             'data' => $student
         ],200);
     }
+    public static function index_() 
+    {
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,\'\' AS \'picture_base64\',employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t;');
+        return response()->json([
+            'status' => 'done',
+            'error' => null,
+            'data' => $student
+        ],200);
+    }
     public static function getAll() 
     {
         return Employee::all();

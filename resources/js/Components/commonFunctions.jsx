@@ -579,7 +579,7 @@ export const getWeeksInMonth = (year_month,callback) => {
     // });
     // return temp;
     callback(temp)
-  }
+}
 //  ------------- prototypes ----------------
 Date.prototype.getWeekOfMonth = function () {
     var firstDay = new Date(this.setDate(1)).getDay();
@@ -587,4 +587,19 @@ Date.prototype.getWeekOfMonth = function () {
     return Math.ceil((firstDay + totalDays) / 7);
 }
 
+export const nextInLineYearGrade = (yrg) => {
+    if(yrg == "Grade 7") {
+        return "Grade 8";
+    } else if(yrg == "Grade 8") {
+        return "Grade 9";
+    } else if(yrg == "Grade 9") {
+        return "Grade 10";
+    } else if(yrg == "Grade 10") {
+        return "Grade 11";
+    } else if(yrg == "Grade 11") {
+        return "Grade 12";
+    } else if(yrg == "Grade 12") {
+        return "Grade 12";
+    }
+}
 //#endregion
