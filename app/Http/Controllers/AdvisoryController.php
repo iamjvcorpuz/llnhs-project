@@ -141,7 +141,7 @@ class AdvisoryController extends Controller
         student.extension_name,
         student.flsh_strand,
         student.flsh_track,
-        student.picture_base64 AS photo,
+        "" AS photo,
         student.uuid AS student_id,
         student.lrn,
         student.qr_code,

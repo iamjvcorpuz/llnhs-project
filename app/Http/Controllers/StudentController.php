@@ -324,6 +324,7 @@ class StudentController extends Controller
         student.ip_specify,
         student.is_4ps_benficiary,
         student.4ps_id,
+        student.bdate,
         student.is_disability,
         student.type_disability,
         student.type2_disability,
