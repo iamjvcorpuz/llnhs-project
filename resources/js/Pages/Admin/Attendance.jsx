@@ -208,7 +208,7 @@ export default class Attendance extends Component {
         this.loadFilter = this.loadFilter.bind(this);
         this.selectedMonthYear = this.selectedMonthYear.bind(this);
         this.loadAttendanceClassroom = this.loadAttendanceClassroom.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
     
     componentDidMount() {

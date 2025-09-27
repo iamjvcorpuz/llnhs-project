@@ -355,14 +355,18 @@ Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
     if($id!=null) {
         $base64_data = ProfilePhotoController::getPhoto($usrtype,$usrid); 
         if($base64_data != "") {
-            header ('Content-Type: image/png');
-            $base64_data = str_replace("data:image/png;base64,", "",$base64_data);
-            $base64_decode = base64_decode($base64_data);
-            $base64_size = strlen($base64_decode); 
-            $image = ImageResize::createFromString($base64_decode);
-            $image->scale(30); 
-            header('Content-length: ' . strlen($image->getImageAsString())); 
-            echo $image->output(); 
+            try {
+                header ('Content-Type: image/png');
+                $base64_data = str_replace("data:image/png;base64,", "",$base64_data);
+                $base64_decode = base64_decode($base64_data);
+                $base64_size = strlen($base64_decode); 
+                $image = ImageResize::createFromString($base64_decode);
+                $image->scale(30); 
+                header('Content-length: ' . strlen($image->getImageAsString())); 
+                echo $image->output(); 
+            } catch (Throwable $e) {
+                echo '/adminlte/dist/assets/img/avatar.png';
+            }
         } else {
             echo '/adminlte/dist/assets/img/avatar.png';
             // abort(404, 'Opps Sorry!');

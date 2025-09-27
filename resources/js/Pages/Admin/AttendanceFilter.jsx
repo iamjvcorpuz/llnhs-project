@@ -24,7 +24,7 @@ import moment from 'moment';
 const localizer = momentLocalizer(moment);
 
 
-export default class Student extends Component {
+export default class AttendanceFilter extends Component {
     constructor(props) {
 		super(props);
         this.state = {
@@ -113,7 +113,7 @@ export default class Student extends Component {
         this.loadAttendanceList = this.loadAttendanceList.bind(this);
         this.loadFilter = this.loadFilter.bind(this);
         this.selectedMonthYear = this.selectedMonthYear.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
     
     componentDidMount() {

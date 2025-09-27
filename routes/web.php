@@ -157,11 +157,11 @@ Route::get('/admin/attendance/{type}/{code}/{date}', function ($type,$code,$date
     $request->merge(['type' => $type,'qrcode' => $code,'date' => $date]);
     return Inertia::render('Admin/Attendance',[
         'result' => AttendanceController::getFilterTimelogs_($request),
-        "employee" => EmployeeController::getAll(),
+        "employee" => EmployeeController::getAll_(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
+        "student" => StudentController::getAllActive__(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs()
     ]);
 })->middleware(['auth', 'verified']);
@@ -170,11 +170,11 @@ Route::get('/admin/attendance/{type}/{code}/{date}', function ($type,$code,$date
 
 Route::get('/admin/attendance/event', function () {
     return Inertia::render('Admin/AttendanceEvents',[
-        "employee" => EmployeeController::getAll(),
+        "employee" => EmployeeController::getAll_(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
+        "student" => StudentController::getAllActive__(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
         "eventsAll" => EventsController::getAll()
     ]);
