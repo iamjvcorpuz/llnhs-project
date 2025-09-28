@@ -202,7 +202,9 @@ export default class PrintIDs extends Component {
             this.state.student_list.forEach(async(val,i,arr) => {
                 loop_count++;
                 if(loop_count==4) {
-                    doc.addPage();
+                    if((i + 1) != arr.length) {
+                        doc.addPage();
+                    }
                     loop_count=1;
                 }
             });
@@ -517,7 +519,7 @@ export default class PrintIDs extends Component {
                         doc.setPage(countPage);
                         loop_count=1;
                     }
-                    
+
                 }
             });
 
