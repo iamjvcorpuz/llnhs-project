@@ -210,7 +210,7 @@ Route::get('/admin/dashboard/student/print/{id}', function ($id) {
     return Inertia::render('Admin/Student/PrintStudent',[
         'parents' => ParentsController::getAll(),
         'student' => StudentController::getData($id),
-        'guardians' => StudentController::getStudentGuardian($id),
+        // 'guardians' => StudentController::getStudentGuardian($id),
         'track' => ProgramsCurricularController::getTrack(),
         'strand' => ProgramsCurricularController::getStrand(),
         "schoolyeargrades" => SchoolYearGradesController::getAll()

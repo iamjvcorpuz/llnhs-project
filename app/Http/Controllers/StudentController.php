@@ -767,7 +767,8 @@ class StudentController extends Controller
     {
         // $student = Student::all();
         $guardian = DB::select("SELECT ROW_NUMBER() OVER () as 'index',
-        parents.id, 
+        parents.id,
+        parents.uuid, 
         student_guardians.student_id,
         qr_code, 
         first_name, 
@@ -778,14 +779,15 @@ class StudentController extends Controller
         current_address,
         (SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS 'relationship', 
         status, 
-        picture_base64, 
+        '' AS 'picture_base64', 
         email, 
         (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,
         (SELECT phone_number FROM contacts WHERE guardian_id = parents.id LIMIT 1) as 'phone_number',
         (SELECT messenger_id FROM contacts WHERE guardian_id = parents.id LIMIT 1) as 'facebook_messenger' 
-        FROM parents LEFT JOIN student_guardians ON student_guardians.parents_id = parents.id
+        FROM parents LEFT JOIN student_guardians ON student_guardians.parents_id = parents.uuid
         WHERE 
-        student_guardians.student_id IS NOT NULL");
+        student_guardians.student_id IS NOT NULL ");
+
         $student = DB::select("SELECT 
         ROW_NUMBER() OVER () as no, 
         CONCAT(student.last_name , ', ' , student.first_name) as fullname,
@@ -896,7 +898,7 @@ class StudentController extends Controller
 
     public static function getStudentGuardian($id)
     {
-        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,uuid, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.id LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.uuid) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.uuid LIMIT 1) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?)',[$id]);
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,uuid, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.uuid LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.uuid) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.uuid LIMIT 1) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ? AND student_guardians.status = "active")',[$id]);
         // $student = Student::findOrFail($id);
         return $student;
     }
