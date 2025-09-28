@@ -86,10 +86,10 @@ class StudentController extends Controller
     public static function getAllActive_() 
     {
         return DB::select("SELECT ROW_NUMBER() OVER () as 'index', 
-        'uuid',
-        'id',
-        'qr_code',
-        'lrn',
+        student.uuid,
+        student.id,
+        student.qr_code,
+        student.lrn,
         'psa_cert_no',
         'first_name',
         'last_name',
@@ -141,10 +141,10 @@ class StudentController extends Controller
     public static function getAllActive__() 
     {
         return DB::select("SELECT ROW_NUMBER() OVER () as 'index', 
-        'uuid',
-        'id',
-        'qr_code',
-        'lrn',
+        student.uuid,
+        student.id,
+        student.qr_code,
+        student.lrn,
         'psa_cert_no',
         'first_name',
         'last_name',

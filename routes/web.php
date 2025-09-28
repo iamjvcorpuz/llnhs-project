@@ -109,11 +109,11 @@ Route::get('/admin/notifications', function () {
 
 Route::get('/admin/attendance', function () {
     return Inertia::render('Admin/Attendance',[
-        "employee" => EmployeeController::getAll(),
+        "employee" => EmployeeController::getAll_(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
+        "student" => StudentController::getAllActive_(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs()
     ]);
 })->middleware(['auth', 'verified']);

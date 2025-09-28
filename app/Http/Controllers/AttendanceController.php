@@ -720,10 +720,10 @@ class AttendanceController extends Controller
         $logsdata = gettype($request->logsdata)=="string"? json_decode( $request->logsdata ,true) : $request->logsdata;
         $userdata = gettype($request->userdata)=="string"? json_decode( $request->userdata ,true) : $request->userdata;
 
-        // echo "<pre>";
-        // print_r($logsdata);
-        // print_r($userdata);
-        // echo "</pre>";
+        echo "<pre>";
+        print_r($logsdata);
+        print_r($userdata);
+        echo "</pre>";
         $type = $userdata['type'];
         $student_id = null;
         $teacher_id = null;
@@ -741,7 +741,10 @@ class AttendanceController extends Controller
             //Where('student_id',  $student_id)->
             // student_guardians
             $contacts = DB::table('contacts')->leftJoin('student_guardians', 'contacts.guardian_id',  'student_guardians.parents_id')->where('student_guardians.student_id', '=', $student_id)->get();
-            $profile = DB::table('student')->where('id', $student_id)->get();
+            $profile = DB::table('student')->where('uuid', $student_id)->get();
+            if($profile->count() == 0) {
+                $profile = DB::table('student')->where('id', $student_id)->get();
+            }
             $fullname = $profile[0]->first_name . ' ' . $profile[0]->last_name . ($profile[0]->extension_name != null ? " " .$profile[0]->extension_name:'');
             if($contacts->count()>0) {
                 $phone_number = $contacts[0]->phone_number;
