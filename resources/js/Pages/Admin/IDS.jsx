@@ -28,7 +28,19 @@ export default class IDS extends Component {
                     accessor: 'no',
                     Header: 'No.', 
                     width: 100,
-                    className: "center"
+                    className: "center",
+                    Cell: ({ row }) => {
+                        return (
+                            <div className="transform translate-y-[5px]">
+                                <input
+                                    type="checkbox"
+                                    // checked={row.getIsSelected()}
+                                    name={`item-${row.original.lrn}`} // update here 
+                                    onChange={(e) => this.selectedID(e.target.checked,row.original.lrn)}
+                                />
+                            </div>
+                        )
+                    }
                 },
                 {
                     id: "qr",
@@ -98,7 +110,8 @@ export default class IDS extends Component {
                        </>            
                     }
                 }
-            ]
+            ],
+            selectedIDs:[]
         }
         this._isMounted = false;
         this.loadStudentList = this.loadStudentList.bind(this);
@@ -131,7 +144,7 @@ export default class IDS extends Component {
         let self = this;
         axios.get('/student').then(function (response) {
           // handle success
-        //   console.log(response)
+          console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 data.forEach((element,index,arr) => {
@@ -142,10 +155,10 @@ export default class IDS extends Component {
                             photo: element.picture_base64,
                             lrn: element.lrn,
                             fullname: `${element.last_name}, ${element.first_name} ${(element.extension_name!=null)?element.extension_name:''} ${element.middle_name}`.toLocaleUpperCase(),
-                            level: "None",
-                            section: "None",
+                            level: element.grade,
+                            section: element.section,
                             sex: element.sex,
-                            status: element.status
+                            status: element.student_status
                         });
                     }
                     if((index + 1) == arr.length) {
@@ -265,6 +278,19 @@ export default class IDS extends Component {
         });
     }
 
+    selectedID(val,lrn) {
+        console.log(val,lrn);
+        let selectedIDs = [...this.state.selectedIDs];
+        if(val == true) {
+            selectedIDs.push(lrn);
+        } else if(val == false) {
+            selectedIDs.splice(selectedIDs.findIndex(e=>e==lrn), 1);
+        }
+        this.setState({selectedIDs:selectedIDs},()=>{
+            console.log(this.state.selectedIDs);
+        })
+    }
+
     render() { 
         return <DashboardLayout title="Student" user={this.props.auth.user}>
             <div className="app-content-header"> 
@@ -292,9 +318,9 @@ export default class IDS extends Component {
                                         <div className="col-lg-2 me-auto">
                                             <h3 className="card-title mt-2 "> <i className="bi bi-person"></i> Student List</h3>
                                         </div>
-                                          
+                                        
                                         <a href="/admin/student/print/ids" target="_blank" className="btn btn-primary col-lg-2 mr-1"> <i className="bi bi-printer"></i> Print All </a>
-
+                                        {(this.state.selectedIDs.length>0)?<a href={`/admin/student/print/ids?selected=${this.state.selectedIDs}`} target="_blank" className="btn btn-primary col-lg-2 mr-1"> <i className="bi bi-printer"></i> Print Selected </a>:null}
                                     </div>
                                     
                                 </div>

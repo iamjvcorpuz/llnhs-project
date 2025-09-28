@@ -398,8 +398,9 @@ class StudentController extends Controller
         advisory.section_name AS section
         FROM
         student
-        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid
-        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id");
+        LEFT JOIN advisory_group ON advisory_group.student_id = student.uuid  AND advisory_group.status = 'active'
+        LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id
+        WHERE student.status = 'active'");
         return response()->json([
             'status' => 'done',
             'error' => null,
@@ -780,8 +781,8 @@ class StudentController extends Controller
         picture_base64, 
         email, 
         (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.id) AS total_student,
-        (SELECT phone_number FROM contacts WHERE guardian_id = parents.id) as 'phone_number',
-        (SELECT messenger_id FROM contacts WHERE guardian_id = parents.id) as 'facebook_messenger' 
+        (SELECT phone_number FROM contacts WHERE guardian_id = parents.id LIMIT 1) as 'phone_number',
+        (SELECT messenger_id FROM contacts WHERE guardian_id = parents.id LIMIT 1) as 'facebook_messenger' 
         FROM parents LEFT JOIN student_guardians ON student_guardians.parents_id = parents.id
         WHERE 
         student_guardians.student_id IS NOT NULL");
@@ -795,7 +796,7 @@ class StudentController extends Controller
         student.extension_name,
         student.flsh_strand,
         student.flsh_track,
-        student.picture_base64 AS photo,
+        '' AS photo,
         student.uuid AS student_id,
         student.lrn,
         student.qr_code,
@@ -815,6 +816,7 @@ class StudentController extends Controller
         student.picture_base64 <> '' AND
         student.status = 'active' AND
         school_class.level IS NOT NULL");
+        // student.picture_base64
         return  [
             'student' => $student,
             'guardian' => $guardian,

@@ -28,7 +28,8 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
   });
   
   let [mainData,setMainData] = useState([]); 
-  let [useTableOptions,setUseTableOptions] = useState(null); 
+  let [useTableOptions,setUseTableOptions] = useState(null);
+  const [rowSelection, setRowSelection] = useState({});
   useEffect(() => {
     if((data!=undefined) && data.length == 0) {
       defaultPageSize = 5;
@@ -86,7 +87,7 @@ const ReactTable = ({ columns, data, className,showHeader,showPagenation ,defaul
     columns: columns,
     data: mainData,
     defaultColumn: { Filter: DefaultColumnFilter },
-    initialState: {pageSize : defaultPageSize_}
+    initialState: {pageSize : defaultPageSize_},
   },
   useFilters,
   useSortBy, 
