@@ -106,7 +106,7 @@ export default class IDS extends Component {
                     className: "center",
                     Cell: ({row}) => { 
                        return <>
-                        <a target="_blank" href={`/student/${row.original.id}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
+                        <a target="_blank" href={`/student/${row.original.uuid}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
                        </>            
                     }
                 }
@@ -144,13 +144,14 @@ export default class IDS extends Component {
         let self = this;
         axios.get('/student').then(function (response) {
           // handle success
-          console.log(response)
+        //   console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 data.forEach((element,index,arr) => {
                     if(element.status != "remove") {
                         list.push({
                             no: index + 1,
+                            uuid: element.uuid, 
                             id: element.id,
                             photo: element.picture_base64,
                             lrn: element.lrn,
@@ -279,7 +280,7 @@ export default class IDS extends Component {
     }
 
     selectedID(val,lrn) {
-        console.log(val,lrn);
+        // console.log(val,lrn);
         let selectedIDs = [...this.state.selectedIDs];
         if(val == true) {
             selectedIDs.push(lrn);
@@ -287,7 +288,7 @@ export default class IDS extends Component {
             selectedIDs.splice(selectedIDs.findIndex(e=>e==lrn), 1);
         }
         this.setState({selectedIDs:selectedIDs},()=>{
-            console.log(this.state.selectedIDs);
+            // console.log(this.state.selectedIDs);
         })
     }
 
