@@ -34,6 +34,7 @@ export default class PrintIDs extends Component {
             strand: this.props.data.strand,
             track: this.props.data.track,
             noPhotoList: [],
+            noGuardianList: [],
             selected: [],
             ready: false
         }
@@ -90,6 +91,7 @@ export default class PrintIDs extends Component {
     
     generateQRCODES(callback) {
         let student_list = [];
+        let noGuardianList = [];
         let self = this;
         const generateQR = async (text,callback_) => {
             try {
@@ -128,18 +130,29 @@ export default class PrintIDs extends Component {
         }
 
         this.state.student_list.forEach(async(val,i,arr) => {
-            await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
-                await generateQR(val.lrn, async (e) => {
-                    await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
-                        student_list.push({...val,gen_qr: e,vurl: ee,picture: eee});
-                        if((i + 1) == arr.length) {
-                            self.setState({student_list: student_list},() => {
-                                callback();
-                            });
-                        }
+            let guardian_data = self.state.guardian.find(e=>e.student_id==val.student_id);
+            if(typeof(guardian_data)!="undefined") {
+                await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
+                    await generateQR(val.lrn, async (e) => {
+                        await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
+                            student_list.push({...val,gen_qr: e,vurl: ee,picture: eee});
+                            if((i + 1) == arr.length) {
+                                self.setState({student_list: student_list,noGuardianList:noGuardianList},() => {
+                                    callback();
+                                });
+                            }
+                        });
                     });
-                });
-            });
+                });                
+            } else {
+                noGuardianList.push({sname: fullname1, id: val.student_id});
+                if((i + 1) == arr.length) {
+                    self.setState({student_list: student_list,noGuardianList:noGuardianList},() => {
+                        callback();
+                    });
+                }
+            }
+
         });
 
     }
@@ -225,16 +238,17 @@ export default class PrintIDs extends Component {
                 let strand_ = self.state.strand.find(e => e.name == val.flsh_strand);
                 let track = typeof(track_)!="undefined"?track_.acronyms:"";
                 let strand = typeof(strand_)!="undefined"?strand_.acronyms:"";
+                let guardian_data = self.state.guardian.find(e=>e.student_id==val.student_id);
                 let code = val.qr_code,
                     lrn = val.lrn,
                     picture = val.picture,
                     fullname1 = val.first_name + " " + val.middle_name,
                     lastname = val.last_name,
                     track_strand = (track!=""||track!="")?track + "-" + strand:"", 
-                    guardianname = self.state.guardian.find(e=>e.student_id==val.student_id).first_name + " " + self.state.guardian.find(e=>e.student_id==val.student_id).middle_name + " " + self.state.guardian.find(e=>e.student_id==val.student_id).last_name,
-                    relationship = self.state.guardian.find(e=>e.student_id==val.student_id).relationship,
-                    guardiancontact = self.state.guardian.find(e=>e.student_id==val.student_id).phone_number,
-                    address = self.state.guardian.find(e=>e.student_id==val.student_id).current_address,
+                    guardianname = guardian_data.first_name + " " + guardian_data.middle_name + " " + guardian_data.last_name,
+                    relationship = guardian_data.relationship,
+                    guardiancontact = guardian_data.phone_number,
+                    address = guardian_data.current_address,
                     grade = val.grade,
                     level = val.grade_level,
                     section = val.section,
@@ -536,10 +550,14 @@ export default class PrintIDs extends Component {
                 // }
                 if(noPhotoList.length>0) {
                     let listmessage = "";
-
+                    
                     if(Object.keys(noPhotoList).length> 0) {
                         noPhotoList.forEach(element => {
-                            listmessage+=`<li class="list-group-item"><a target="_blank" href="/admin/dashboard/student/update/${element.id}" >${element.sname}</a></li>`
+                            let others = "";
+                            // if(this.state.noGuardianList.length > 0 && ) {
+
+                            // }
+                            listmessage+=`<li class="list-group-item"><a target="_blank" href="/admin/dashboard/student/update/${element.id}" >${element.sname} ${others}</a></li>`
                         }); 
                     }
 
