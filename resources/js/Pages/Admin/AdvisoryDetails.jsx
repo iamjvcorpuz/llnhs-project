@@ -157,7 +157,7 @@ export default class AdvisoryDetails extends Component {
         }
         this.loadSched = this.loadSched.bind(this);
         this.saveStudent = this.saveStudent.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
 
     componentDidMount() {
@@ -558,6 +558,9 @@ export default class AdvisoryDetails extends Component {
                                     <div className="tab-content" id="custom-tabs-three-tabContent">
                                         <div className="tab-pane fade active show" id="page_student_list" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
                                             <div className="clearfix col-lg-12">
+                                                <div className="col-lg-5 m-3 float-left">
+                                                    Total: {this.state.student_list.length} Male: {this.state.student_list.filter(e=>e.sex=="Male").length}  Female: {this.state.student_list.filter(e=>e.sex=="Female").length} 
+                                                </div>
                                                 <button className="btn btn-primary col-lg-1 mr-1 float-right m-2" title="Add Student" onClick={() => {
                                                     $("#studentModel").modal('show')
                                                 }} > <i className="bi bi-person-plus-fill"></i> Add</button>   
