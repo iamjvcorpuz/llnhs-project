@@ -604,6 +604,9 @@ export default class PrintIDs extends Component {
                             listmessage+=`<li class="list-group-item"><a target="_blank" href="/admin/dashboard/student/update/${element.id}" >${element.sname} ${others}</a></li>`
                         }); 
                     }
+                    if(self.state.noGuardianList.length>0) {
+                        listmessage+=`<li class="list-group-item">${self.state.noGuardianList.length} student has no guardian.</li>`
+                    }
 
                     Swal.fire({  
                         title: "List of student has no Photo" ,
