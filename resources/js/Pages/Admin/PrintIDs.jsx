@@ -32,7 +32,9 @@ export default class PrintIDs extends Component {
             student_list: this.props.data.student,
             guardian: this.props.data.guardian,
             strand: this.props.data.strand,
-            track: this.props.data.track
+            track: this.props.data.track,
+            noPhotoList: [],
+            selected: []
         }
         $('body').attr('class', '');
         this.multiple = this.multiple.bind(this);
@@ -40,6 +42,7 @@ export default class PrintIDs extends Component {
     }
 
     componentDidMount() {
+        let self = this;
         $("#frame1").height(0); 
         Swal.fire({
             title: "Generating ID. Please wait.", 
@@ -55,6 +58,28 @@ export default class PrintIDs extends Component {
             dangerMode: true,
             didOpen: () => {
                 Swal.showLoading();
+            }
+        });
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = urlParams.get('selected');
+        console.log(page);
+        this.setState({
+            selected: (typeof(page)!="undefined"&&page!=null&&page!="")?page.split(","):[]
+        },() => {
+            console.log(self.state.selected);
+            if(self.state.selected.length>0) {
+                let temp = [];
+                self.props.data.student.forEach((element,i,arr) => {
+                    if(self.state.selected.includes(element.lrn)) {
+                        temp.push(element);
+                    }
+                    if((i+1) == arr.length) {
+                        console.log(temp)
+                        self.setState({
+                            student_list: temp
+                        });
+                    }
+                });
             }
         });
         setTimeout(() => {
@@ -115,20 +140,42 @@ export default class PrintIDs extends Component {
                     console.error(err)
                 }
             }
+            const loadImageURL = async (url,callback_) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous'; // Important for cross-origin images
+                img.src = url;
+
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    const imageData = canvas.toDataURL('image/png'); // or 'image/jpeg'
+                    callback_(imageData)
+                };
+            
+                img.onerror = function() {
+                    callback_("")
+                };
+
+            }
             let loop_count = 1;
             let loop_row = 1;
             let x = 0;
             let y = 0;
             // console.log(doc);
+            // console.log("val",val);
+            let noPhotoList = [];
             this.state.student_list.forEach(async(val,i,arr) => {
-                console.log("val",val);
+
                 let track_ = self.state.track.find(e => e.name == val.flsh_track);
                 let strand_ = self.state.strand.find(e => e.name == val.flsh_strand);
                 let track = typeof(track_)!="undefined"?track_.acronyms:"";
                 let strand = typeof(strand_)!="undefined"?strand_.acronyms:"";
                 let code = val.qr_code,
                     lrn = val.lrn,
-                    picture = val.photo,
+                    picture = `/profile/photo/student/${val.lrn}`,
                     fullname1 = val.first_name + " " + val.middle_name,
                     lastname = val.last_name,
                     track_strand = (track!=""||track!="")?track + "-" + strand:"", 
@@ -142,14 +189,26 @@ export default class PrintIDs extends Component {
                     _track =  val.flsh_track,
                     _strand = val.flsh_strand,
                     sy = val.sy;
+
                 if(loop_count == 1) {
                     loop_count++;
                     doc.addImage("/images/id/front.png", "PNG", 5, 10, 54, 88);
                     doc.addImage("/images/id/back.png", "PNG", 60, 10, 54, 88);
                     // await generateQR(lrn,7.7, 57, 18, 18);
                     doc.addImage(val.gen_qr,7.7, 57, 18, 18);
+                    console.log(picture)
                     if(picture != "") {
-                        doc.addImage(picture, "PNG", 7.5, 26.5, 26, 25);
+                        await loadImageURL(picture,(resu) => {
+                            if(resu != ""){
+                                doc.addImage(resu, "PNG", 7.5, 26.5, 26, 25);                                
+                            } else {
+                                noPhotoList.push({sname: fullname1, id: val.student_id});
+                                // self.setState({noPhotoList: noPhotoList});
+                            }
+                        });
+                    } else {
+                        noPhotoList.push({sname: fullname1, id: val.student_id});
+                        // self.setState({noPhotoList: noPhotoList});
                     }
                     doc.setFont("helvetica", "bold");
                     doc.setTextColor(255, 255, 255);
@@ -196,7 +255,10 @@ export default class PrintIDs extends Component {
                     doc.text(guardianname.toLocaleUpperCase(), 63, 43.5,{align:'left',maxWidth: 80});
                     doc.text(relationship.toLocaleUpperCase(), 63, 46,{align:'left',maxWidth: 50});
                     doc.text(guardiancontact.toLocaleUpperCase(), 63, 49,{align:'left',maxWidth: 70});
-                    doc.text(address.toLocaleUpperCase(), 63, 52,{align:'left',maxWidth: 79});
+                    if(address.length >= 13) {
+                        doc.setFontSize(6); 
+                    }
+                    doc.text(address.toLocaleUpperCase(), 63, 52,{align:'left',maxWidth: 50});
                     
                 } else if(loop_count == 2) {
                     loop_count++;
@@ -205,7 +267,18 @@ export default class PrintIDs extends Component {
                     // await generateQR(lrn,122.5, 57, 18, 18);
                     doc.addImage(val.gen_qr,122.5, 57, 18, 18);
                     if(picture != "") {
-                        doc.addImage(picture, "PNG", 122.4, 26.5, 26, 25);
+                        await loadImageURL(picture,(resu) => {
+                            if(resu != ""){
+                                doc.addImage(resu, "PNG", 122.4, 26.5, 26, 25);                                
+                            } else {
+                                noPhotoList.push({sname: fullname1, id: val.student_id});
+                                // self.setState({noPhotoList: noPhotoList});
+                                // console.log("No Photo",noPhotoList);
+                            }
+                        });
+                    } else {
+                        noPhotoList.push({sname: fullname1, id: val.student_id});
+                        // self.setState({noPhotoList: noPhotoList}); 
                     }
                     doc.setFont("helvetica", "bold");
                     doc.setTextColor(255, 255, 255);
@@ -226,11 +299,11 @@ export default class PrintIDs extends Component {
                         fname_y = 68;
                     }
                     // max 14 for the size of 15
-                    if(lastname.length > 10) {
+                    if(lastname.length >= 9) {
                         doc.setFontSize(10);
                         fname_y = 64;
                     }
-                    if(lastname.length > 13) {
+                    if(lastname.length >= 13) {
                         doc.setFontSize(7); 
                     }
                     doc.text(lastname.toLocaleUpperCase() , 143, fname_y,{align:'left',maxWidth: 50});
@@ -253,7 +326,10 @@ export default class PrintIDs extends Component {
                     doc.text(guardianname.toLocaleUpperCase(), 177, 43.5,{align:'left',maxWidth: 80});
                     doc.text(relationship.toLocaleUpperCase(), 177, 46,{align:'left',maxWidth: 50});
                     doc.text(guardiancontact.toLocaleUpperCase(), 177, 49,{align:'left',maxWidth: 70});
-                    doc.text(address.toLocaleUpperCase(), 177, 52,{align:'left',maxWidth: 79});
+                    if(address.length > 13) {
+                        doc.setFontSize(6); 
+                    }
+                    doc.text(address.toLocaleUpperCase(), 177, 52,{align:'left',maxWidth: 50});
                 } else if(loop_count == 3) {
                     loop_count++;
                     doc.addImage("/images/id/front.png", "PNG", 5, 106, 54, 88);
@@ -261,7 +337,17 @@ export default class PrintIDs extends Component {
                     // await generateQR(lrn,7.7, 153, 18, 18);
                     doc.addImage(val.gen_qr,7.7, 153, 18, 18);
                     if(picture != "") {
-                        doc.addImage(picture, "PNG", 7.5, 122.5, 26, 25);
+                        await loadImageURL(picture,(resu) => {
+                            if(resu != ""){
+                                doc.addImage(resu, "PNG", 7.5, 122.5, 26, 25);                                
+                            } else {
+                                noPhotoList.push({sname: fullname1, id: val.student_id});
+                                // self.setState({noPhotoList: noPhotoList});
+                            }
+                        });
+                    } else {
+                        noPhotoList.push({sname: fullname1, id: val.student_id});
+                        // self.setState({noPhotoList: noPhotoList});
                     }
                     doc.setFont("helvetica", "bold");
                     doc.setTextColor(255, 255, 255);
@@ -281,9 +367,12 @@ export default class PrintIDs extends Component {
                         fname_y = 165;
                     }
                     // max 14 for the size of 15
-                    if(lastname.length < 14) {
-                        doc.setFontSize(15);
+                    if(lastname.length >= 9) {
+                        doc.setFontSize(10);
                         fname_y = 161;
+                    }
+                    if(lastname.length >= 13) {
+                        doc.setFontSize(7); 
                     }
                     doc.text(lastname.toLocaleUpperCase() , 28, fname_y,{align:'left',maxWidth: 50});
                     doc.setFont("helvetica", "normal");
@@ -300,7 +389,10 @@ export default class PrintIDs extends Component {
                     doc.text(guardianname.toLocaleUpperCase(), 63, 139.5,{align:'left',maxWidth: 80});
                     doc.text(relationship.toLocaleUpperCase(), 63, 142,{align:'left',maxWidth: 50});
                     doc.text(guardiancontact.toLocaleUpperCase(), 63, 145,{align:'left',maxWidth: 70});
-                    doc.text(address.toLocaleUpperCase(), 63, 148,{align:'left',maxWidth: 79});
+                    if(address.length > 13) {
+                        doc.setFontSize(6); 
+                    }
+                    doc.text(address.toLocaleUpperCase(), 63, 148,{align:'left',maxWidth: 50});
                 } else if(loop_count == 4) {
                     loop_count++;
                     loop_row++;
@@ -309,7 +401,17 @@ export default class PrintIDs extends Component {
                     // await generateQR(lrn,122.5, 153, 18, 18);
                     doc.addImage(val.gen_qr,122.5, 153, 18, 18);
                     if(picture != "") {
-                        doc.addImage(picture, "PNG", 122.4, 122.5, 26, 25);
+                        await loadImageURL(picture,(resu) => {
+                            if(resu != ""){
+                                doc.addImage(resu, "PNG", 122.4, 122.5, 26, 25);                                
+                            } else {
+                                noPhotoList.push({sname: fullname1, id: val.student_id});
+                                // self.setState({noPhotoList: noPhotoList});
+                            }
+                        });
+                    } else {
+                        noPhotoList.push({sname: fullname1, id: val.student_id});
+                        
                     }
                     doc.setFont("helvetica", "bold");
                     doc.setTextColor(255, 255, 255);
@@ -329,9 +431,12 @@ export default class PrintIDs extends Component {
                         fname_y = 165;
                     }
                     // max 14 for the size of 15
-                    if(lastname.length < 14) {
-                        doc.setFontSize(15);
+                    if(lastname.length >= 9) {
+                        doc.setFontSize(10);
                         fname_y = 161;
+                    }
+                    if(lastname.length >= 13) {
+                        doc.setFontSize(7); 
                     }
                     doc.text(lastname.toLocaleUpperCase() , 143, fname_y,{align:'left',maxWidth: 50});
                     doc.setFont("helvetica", "normal");
@@ -348,7 +453,10 @@ export default class PrintIDs extends Component {
                     doc.text(guardianname.toLocaleUpperCase(), 177, 139.5,{align:'left',maxWidth: 80});
                     doc.text(relationship.toLocaleUpperCase(), 177, 142,{align:'left',maxWidth: 50});
                     doc.text(guardiancontact.toLocaleUpperCase(), 177, 145,{align:'left',maxWidth: 70});
-                    doc.text(address.toLocaleUpperCase(), 177, 148,{align:'left',maxWidth: 79});
+                    if(address.length > 13) {
+                        doc.setFontSize(6); 
+                    }
+                    doc.text(address.toLocaleUpperCase(), 177, 148,{align:'left',maxWidth: 50});
                 }
                 if(loop_count==5) {
                     loop_count=1;
@@ -358,13 +466,39 @@ export default class PrintIDs extends Component {
                 }
             });
 
-            
-            console.log(doc.output().length >= 1000000,doc.output().length)
+            // console.log(doc.output().length >= 1000000,doc.output().length)
             setTimeout(() => {
+                console.log("No Photo",noPhotoList);
+                self.setState({noPhotoList: noPhotoList});
                 $("#frame1").height(window.innerHeight - 8); 
                 Swal.close(); 
                 $('#frame1').attr('src',doc.output("bloburl"));  
                 // }
+                if(noPhotoList.length>0) {
+                    let listmessage = "";
+
+                    if(Object.keys(noPhotoList).length> 0) {
+                        noPhotoList.forEach(element => {
+                            listmessage+=`<li class="list-group-item"><a target="_blank" href="/admin/dashboard/student/update/${element.id}" >${element.sname}</a></li>`
+                        }); 
+                    }
+
+                    Swal.fire({  
+                        title: "List of student has no Photo" ,
+                        html:`<ul class="list-group" >${listmessage}</ul>`, 
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        cancelButtonText: "Ok",
+                        confirmButtonText: "Continue",
+                        confirmButtonColor: "#DD6B55",
+                        icon: "error",
+                        showLoaderOnConfirm: true, 
+                        closeOnClickOutside: false,  
+                        dangerMode: true,
+                    });
+                }
             }, 1000);
 
                 

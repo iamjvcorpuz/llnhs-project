@@ -101,13 +101,13 @@ export default class AdvisoryDetails extends Component {
                 }
             ],
             columns_student: [
-                {
-                    id: "no",
-                    accessor: 'no',
-                    Header: 'No.', 
-                    width: 100,
-                    className: "center"
-                }, 
+                // {
+                //     id: "no",
+                //     accessor: 'no',
+                //     Header: 'No.', 
+                //     width: 100,
+                //     className: "center"
+                // }, 
                 {
                     id: "picture",
                     Header: 'Picture',  
@@ -115,7 +115,7 @@ export default class AdvisoryDetails extends Component {
                     Cell: ({row}) => { 
                        return <img className="" height={150} width={150}  onError={(e)=>{ 
                             e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                       }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />
+                       }} alt="Picture Error" src={`/profile/photo/student/${row.original.lrn}`} />
                     }
                 }, 
                 {
@@ -159,12 +159,22 @@ export default class AdvisoryDetails extends Component {
         this.saveStudent = this.saveStudent.bind(this);
         // console.log(this.props)
     }
+
     componentDidMount() {
         this.loadSched("all");
         $('#custom-tabs a').on('click', function (e) {
             e.preventDefault()
             $(this).tab('show')
         });
+
+        $("#studentselection" ).select2({
+            theme: "bootstrap",
+            selectionCssClass: 'form-control',
+            containerCssClass: 'form-control',
+            width: '100%',
+            dropdownParent: $("#studentModel")
+        });
+
         let temps = this.state.advisory_list.find(e=>e.id==this.state.classDetails[0].id);
         if(typeof(temps)!="undefined") {
             this.setState({adviser: temps.teacher_fullname});
@@ -608,13 +618,13 @@ export default class AdvisoryDetails extends Component {
                 </div>
             </div>
             
-            <datalist id="selectStudent"> 
+            {/* <datalist id="selectStudent"> 
                 <EachMethod of={this.state.studentsList} render={(element,index) => {
                     if(this.state.studentsEnrolled.length>0 && this.state.studentsEnrolled.some(e=>e.uuid==element.uuid)) {
                         return <option >{`${element.last_name}, ${element.first_name}`}</option>
                     }
                 }} />
-            </datalist>
+            </datalist> */}
 
             <div className="modal fade" tabIndex="-1" role="dialog" id="studentModel" aria-hidden="true" data-bs-backdrop="static">
                 <div className="modal-dialog" role="document">
@@ -631,7 +641,16 @@ export default class AdvisoryDetails extends Component {
                                 
                                 <div className="col-md-12">
                                     <label htmlFor="studentselection" className="form-label">Student</label>
-                                    <input type="text" className="form-control" list="selectStudent"  id="studentselection" defaultValue="" required="" onChange={(e) => {  $("#studentselection-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({studentselection: e.target.value})}}  />
+                                    {/* <input type="text" className="form-control" list="selectStudent"  id="studentselection" defaultValue="" required="" onChange={(e) => {  $("#studentselection-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({studentselection: e.target.value})}}  /> */}
+                                    <select className="form-select" id="studentselection" required="" onChange={(e) => {  $("#studentselection-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({studentselection: e.target.value})}}  >
+                                        <option disabled >Choose...</option>
+                                        <option></option>
+                                        <EachMethod of={this.state.studentsList} render={(element,index) => {
+                                            if(this.state.studentsEnrolled.length>0 && this.state.studentsEnrolled.some(e=>e.uuid==element.uuid)) {
+                                                return <option >{`${element.last_name}, ${element.first_name}`}</option>
+                                            }
+                                        }} />
+                                    </select>
                                     <div id="studentselection-alert" className="invalid-feedback">Please select a valid state.</div>
                                 </div> 
 
