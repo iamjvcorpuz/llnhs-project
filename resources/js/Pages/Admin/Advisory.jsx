@@ -83,7 +83,7 @@ export default class Advisory extends Component {
                         {(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null)?<button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
                             if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
                                 await this.generateQR(row.original.qrcode,() => {
-
+                                    console.log(row.original)
                                     let room_no  = "";
                                     try {
                                         room_no  = row.original.classroom;
@@ -93,6 +93,7 @@ export default class Advisory extends Component {
                                     this.setState({
                                         room_name: row.original.section_name,
                                         room_number: room_no,
+                                        grade_level: row.original.year_level,
                                         teacher_fullname: row.original.teacher_fullname
                                     })
                                     $('#qrcode').modal('show');
@@ -111,7 +112,8 @@ export default class Advisory extends Component {
             qr_code_data: "",
             room_name: "",
             room_number: "",
-            teacher_fullname: ""
+            teacher_fullname: "",
+            grade_level: ""
         }
         this._isMounted = false;
         // this.saveData = this.getAllRequiredData.bind(this);
@@ -1181,11 +1183,12 @@ export default class Advisory extends Component {
                                         </center>
                                         <center className="center">
                                             <strong>
-                                            {this.state.room_name.toLocaleUpperCase()}
+                                            {this.state.grade_level.toLocaleUpperCase()}
                                             </strong>
                                             <br />
                                             <strong>
-                                            Room No. : {this.state.room_number.toLocaleUpperCase()}
+                                            {/* Room No. : {this.state.room_number.toLocaleUpperCase()} */}
+                                            {this.state.room_name.toLocaleUpperCase()}
                                             </strong>
                                             <br />
                                             <strong>

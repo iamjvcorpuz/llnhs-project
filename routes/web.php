@@ -373,7 +373,8 @@ Route::get('/admin/student/print/ids', function () {
     $id = AuthenticatedSessionController::getAuthId();
     if($id!=null) {
         return Inertia::render('Admin/PrintIDs',[ 
-            'data' => StudentController::getStudentDataID()
+            'data' => StudentController::getStudentDataID(),
+            'vurl' => SystemSettingsController::getVURL()
         ]);
     } else {
         abort(404, 'Opps Sorry!');
@@ -865,7 +866,7 @@ Route::get('/student/verifier/{_id}', function ($_id) {
         "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
         "getSchoolStats" => StudentController::getSchoolStats($id)
     ]);
-})->middleware(['auth', 'verified']);
+});
 
 Route::get('/sf2', function () {
     return Inertia::render('SF2');

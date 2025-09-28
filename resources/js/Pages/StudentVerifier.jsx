@@ -22,7 +22,7 @@ export default class StudentVerifier extends Component {
     constructor(props) {
 		super(props);
         this.state = {
-            student_id: this.props.auth.user.user_id,
+            student_id: "",//this.props.auth.user.user_id
             fullname: "",
             grade_level: "",
             level: "",

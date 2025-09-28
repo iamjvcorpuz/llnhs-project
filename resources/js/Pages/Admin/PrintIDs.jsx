@@ -61,20 +61,17 @@ export default class PrintIDs extends Component {
             }
         });
         const urlParams = new URLSearchParams(window.location.search);
-        const page = urlParams.get('selected');
-        console.log(page);
+        const page = urlParams.get('selected'); 
         this.setState({
             selected: (typeof(page)!="undefined"&&page!=null&&page!="")?page.split(","):[]
-        },() => {
-            console.log(self.state.selected);
+        },() => { 
             if(self.state.selected.length>0) {
                 let temp = [];
                 self.props.data.student.forEach((element,i,arr) => {
                     if(self.state.selected.includes(element.lrn)) {
                         temp.push(element);
                     }
-                    if((i+1) == arr.length) {
-                        console.log(temp)
+                    if((i+1) == arr.length) { 
                         self.setState({
                             student_list: temp
                         });
@@ -99,14 +96,25 @@ export default class PrintIDs extends Component {
                 callback_("");
             }
         }
+        const generateQRV = async (text,callback_)  => {
+            try {
+                callback_(await QRCode.toDataURL(text, { errorCorrectionLevel: 'H',margin: 1 }));
+            } catch (err) {
+                callback_("");
+            }
+        }
         this.state.student_list.forEach(async(val,i,arr) => {
-            await generateQR(val.lrn,(e)=>{
-                student_list.push({...val,gen_qr: e});
-                if((i + 1) == arr.length) {
-                    self.setState({student_list: student_list},() => {
-                        callback();
-                    });
-                }
+            await generateQR(val.lrn, async (e) => {
+                await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
+
+                    student_list.push({...val,gen_qr: e,vurl: ee});
+                    if((i + 1) == arr.length) {
+                        self.setState({student_list: student_list},() => {
+                            callback();
+                        });
+                    }
+
+                });
             });
         });
     }
@@ -140,6 +148,7 @@ export default class PrintIDs extends Component {
                     console.error(err)
                 }
             }
+
             const loadImageURL = async (url,callback_) => {
                 const img = new Image();
                 img.crossOrigin = 'Anonymous'; // Important for cross-origin images
@@ -189,14 +198,35 @@ export default class PrintIDs extends Component {
                     _track =  val.flsh_track,
                     _strand = val.flsh_strand,
                     sy = val.sy;
-
+                let vurl = "";
+                if(relationship == null) {
+                    relationship = "";
+                }
+                if(guardiancontact == null) {
+                    guardiancontact = "";
+                }
+                if(guardianname == null) {
+                    guardianname = "";
+                }
+                if(track_strand == null) {
+                    track_strand = "";
+                }
+                if(address == null) {
+                    address = "";
+                }
+                if(grade == null) {
+                    grade = "";
+                }
                 if(loop_count == 1) {
                     loop_count++;
                     doc.addImage("/images/id/front.png", "PNG", 5, 10, 54, 88);
                     doc.addImage("/images/id/back.png", "PNG", 60, 10, 54, 88);
                     // await generateQR(lrn,7.7, 57, 18, 18);
                     doc.addImage(val.gen_qr,7.7, 57, 18, 18);
-                    console.log(picture)
+                    // doc.addImage(val.vurl, 95, 79, 18, 18); 
+                    if(val.vurl != "") {
+                        doc.addImage(val.vurl, 95, 79, 18, 18);
+                    }
                     if(picture != "") {
                         await loadImageURL(picture,(resu) => {
                             if(resu != ""){
@@ -266,6 +296,11 @@ export default class PrintIDs extends Component {
                     doc.addImage("/images/id/back.png", "PNG", 175, 10, 54, 88);
                     // await generateQR(lrn,122.5, 57, 18, 18);
                     doc.addImage(val.gen_qr,122.5, 57, 18, 18);
+
+                    if(val.vurl != "") {
+                        doc.addImage(val.vurl, 210, 79, 18, 18);
+                    }
+
                     if(picture != "") {
                         await loadImageURL(picture,(resu) => {
                             if(resu != ""){
@@ -336,6 +371,9 @@ export default class PrintIDs extends Component {
                     doc.addImage("/images/id/back.png", "PNG", 60, 106, 54, 88);
                     // await generateQR(lrn,7.7, 153, 18, 18);
                     doc.addImage(val.gen_qr,7.7, 153, 18, 18);
+                    if(val.vurl != "") {
+                        doc.addImage(val.vurl, 95, 175, 18, 18);
+                    }
                     if(picture != "") {
                         await loadImageURL(picture,(resu) => {
                             if(resu != ""){
@@ -400,6 +438,9 @@ export default class PrintIDs extends Component {
                     doc.addImage("/images/id/back.png", "PNG", 175, 106, 54, 88);
                     // await generateQR(lrn,122.5, 153, 18, 18);
                     doc.addImage(val.gen_qr,122.5, 153, 18, 18);
+                    if(val.vurl != "") {
+                        doc.addImage(val.vurl, 210, 175, 18, 18);
+                    }
                     if(picture != "") {
                         await loadImageURL(picture,(resu) => {
                             if(resu != ""){

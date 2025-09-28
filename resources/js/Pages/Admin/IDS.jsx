@@ -296,11 +296,11 @@ export default class IDS extends Component {
             <div className="app-content-header"> 
                 <div className="container-fluid"> 
                     <div className="row">
-                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Student</h3></div>
+                    <div className="col-sm-6"><h3 className="mb-0"><i className="nav-icon bi bi-person-lines-fill"></i> Student ID</h3></div>
                     <div className="col-sm-6">
                         <ol className="breadcrumb float-sm-end">
                             <li className="breadcrumb-item"><i className="bi bi-speedometer mr-2"></i><Link href="/admin/dashboard">Dashboard</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">Student</li>
+                            <li className="breadcrumb-item active" aria-current="page">Student ID</li>
                         </ol>
                     </div>
                     </div> 
@@ -320,11 +320,11 @@ export default class IDS extends Component {
                                         </div>
                                         
                                         <a href="/admin/student/print/ids" target="_blank" className="btn btn-primary col-lg-2 mr-1"> <i className="bi bi-printer"></i> Print All </a>
-                                        {(this.state.selectedIDs.length>0)?<a href={`/admin/student/print/ids?selected=${this.state.selectedIDs}`} target="_blank" className="btn btn-primary col-lg-2 mr-1"> <i className="bi bi-printer"></i> Print Selected </a>:null}
+                                        {(this.state.selectedIDs.length>0)?<a href={`/admin/student/print/ids?selected=${encodeURI(this.state.selectedIDs.toLocaleString())}`} target="_blank" className="btn btn-primary col-lg-2 mr-1"> <i className="bi bi-printer"></i> Print Selected </a>:null}
                                     </div>
                                     
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                 <ReactTable
                                     key={"react-tables"}
                                     className={"table table-bordered table-striped "}
