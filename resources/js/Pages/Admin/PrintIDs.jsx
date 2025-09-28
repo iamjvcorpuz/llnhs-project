@@ -79,7 +79,7 @@ export default class PrintIDs extends Component {
                 });
             }
         });
-        setTimeout(() => {
+        setTimeout( async () => {
             this.generateQRCODES(() => {
                 this.multiple();
             });
@@ -138,6 +138,7 @@ export default class PrintIDs extends Component {
                 });
             });
         });
+
     }
     
     async multiple() {

@@ -27,7 +27,7 @@
         <link rel="stylesheet" media="screen, print" href="{{ asset('adminlte/src/assets/font/bootstrap-icons.min.css') }}">
         <link rel="stylesheet" href="{{ url('adminlte/dist/css/adminlte.min.css') }}" />
         <script src="{{ url('js/pace.min.js') }}"></script>
-        <link rel="stylesheet" href="{{ url('js/pace-theme-default.min.css') }}">
+        <link rel="stylesheet" href="{{ url('css/pace-theme-default.min.css') }}">
         <link rel="stylesheet" href="{{ url('css/flash.css') }}">
         <!-- Scripts -->
         @routes
