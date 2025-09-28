@@ -103,17 +103,38 @@ export default class PrintIDs extends Component {
                 callback_("");
             }
         }
+        const loadImageURL = async (url,callback_) => {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous'; // Important for cross-origin images
+            img.src = url;
+
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const imageData = canvas.toDataURL('image/png'); // or 'image/jpeg'
+                callback_(imageData)
+            };
+        
+            img.onerror = function() {
+                callback_("")
+            };
+
+        }
+
         this.state.student_list.forEach(async(val,i,arr) => {
             await generateQR(val.lrn, async (e) => {
                 await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
-
-                    student_list.push({...val,gen_qr: e,vurl: ee});
-                    if((i + 1) == arr.length) {
-                        self.setState({student_list: student_list},() => {
-                            callback();
-                        });
-                    }
-
+                    await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
+                        student_list.push({...val,gen_qr: e,vurl: ee,picture: eee});
+                        if((i + 1) == arr.length) {
+                            self.setState({student_list: student_list},() => {
+                                callback();
+                            });
+                        }
+                    });
                 });
             });
         });
@@ -176,15 +197,31 @@ export default class PrintIDs extends Component {
             // console.log(doc);
             // console.log("val",val);
             let noPhotoList = [];
+            let countPage = 1;
             this.state.student_list.forEach(async(val,i,arr) => {
+                loop_count++;
+                if(loop_count==4) {
+                    doc.addPage();
+                    loop_count=1;
+                }
+            });
 
+            loop_count = 1;
+            doc.setPage(countPage);
+            console.log("PAGE: ",countPage);
+            this.state.student_list.forEach(async (val,i,arr) => {
+                // if(loop_count==5) {
+                //     countPage++; 
+                //     console.log("PAGE: ",countPage);
+                //     doc.setPage(countPage);
+                // }
                 let track_ = self.state.track.find(e => e.name == val.flsh_track);
                 let strand_ = self.state.strand.find(e => e.name == val.flsh_strand);
                 let track = typeof(track_)!="undefined"?track_.acronyms:"";
                 let strand = typeof(strand_)!="undefined"?strand_.acronyms:"";
                 let code = val.qr_code,
                     lrn = val.lrn,
-                    picture = `/profile/photo/student/${val.lrn}`,
+                    picture = val.picture,
                     fullname1 = val.first_name + " " + val.middle_name,
                     lastname = val.last_name,
                     track_strand = (track!=""||track!="")?track + "-" + strand:"", 
@@ -199,6 +236,7 @@ export default class PrintIDs extends Component {
                     _strand = val.flsh_strand,
                     sy = val.sy;
                 let vurl = "";
+                
                 if(relationship == null) {
                     relationship = "";
                 }
@@ -228,14 +266,7 @@ export default class PrintIDs extends Component {
                         doc.addImage(val.vurl, 95, 79, 18, 18);
                     }
                     if(picture != "") {
-                        await loadImageURL(picture,(resu) => {
-                            if(resu != ""){
-                                doc.addImage(resu, "PNG", 7.5, 26.5, 26, 25);                                
-                            } else {
-                                noPhotoList.push({sname: fullname1, id: val.student_id});
-                                // self.setState({noPhotoList: noPhotoList});
-                            }
-                        });
+                        doc.addImage(picture, "PNG", 7.5, 26.5, 26, 25);
                     } else {
                         noPhotoList.push({sname: fullname1, id: val.student_id});
                         // self.setState({noPhotoList: noPhotoList});
@@ -302,15 +333,7 @@ export default class PrintIDs extends Component {
                     }
 
                     if(picture != "") {
-                        await loadImageURL(picture,(resu) => {
-                            if(resu != ""){
-                                doc.addImage(resu, "PNG", 122.4, 26.5, 26, 25);                                
-                            } else {
-                                noPhotoList.push({sname: fullname1, id: val.student_id});
-                                // self.setState({noPhotoList: noPhotoList});
-                                // console.log("No Photo",noPhotoList);
-                            }
-                        });
+                        doc.addImage(picture, "PNG", 122.4, 26.5, 26, 25); 
                     } else {
                         noPhotoList.push({sname: fullname1, id: val.student_id});
                         // self.setState({noPhotoList: noPhotoList}); 
@@ -375,14 +398,7 @@ export default class PrintIDs extends Component {
                         doc.addImage(val.vurl, 95, 175, 18, 18);
                     }
                     if(picture != "") {
-                        await loadImageURL(picture,(resu) => {
-                            if(resu != ""){
-                                doc.addImage(resu, "PNG", 7.5, 122.5, 26, 25);                                
-                            } else {
-                                noPhotoList.push({sname: fullname1, id: val.student_id});
-                                // self.setState({noPhotoList: noPhotoList});
-                            }
-                        });
+                        doc.addImage(picture, "PNG", 7.5, 122.5, 26, 25);
                     } else {
                         noPhotoList.push({sname: fullname1, id: val.student_id});
                         // self.setState({noPhotoList: noPhotoList});
@@ -442,14 +458,7 @@ export default class PrintIDs extends Component {
                         doc.addImage(val.vurl, 210, 175, 18, 18);
                     }
                     if(picture != "") {
-                        await loadImageURL(picture,(resu) => {
-                            if(resu != ""){
-                                doc.addImage(resu, "PNG", 122.4, 122.5, 26, 25);                                
-                            } else {
-                                noPhotoList.push({sname: fullname1, id: val.student_id});
-                                // self.setState({noPhotoList: noPhotoList});
-                            }
-                        });
+                        doc.addImage(picture, "PNG", 122.4, 122.5, 26, 25);
                     } else {
                         noPhotoList.push({sname: fullname1, id: val.student_id});
                         
@@ -500,16 +509,16 @@ export default class PrintIDs extends Component {
                     doc.text(address.toLocaleUpperCase(), 177, 148,{align:'left',maxWidth: 50});
                 }
                 if(loop_count==5) {
+                    countPage++; 
+                    console.log("PAGE: ",countPage);
+                    doc.setPage(countPage);
                     loop_count=1;
-                    if((i+1)!=arr.length) {
-                        doc.addPage();
-                    }
                 }
             });
 
             // console.log(doc.output().length >= 1000000,doc.output().length)
             setTimeout(() => {
-                console.log("No Photo",noPhotoList);
+                // console.log("No Photo",noPhotoList);
                 self.setState({noPhotoList: noPhotoList});
                 $("#frame1").height(window.innerHeight - 8); 
                 Swal.close(); 

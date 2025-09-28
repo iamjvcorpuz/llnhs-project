@@ -162,7 +162,7 @@ export default class Student extends Component {
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteStudent(row.original.id);}}> <i className="bi bi-person-fill-x"></i> Remove</button>    
                         <Link href={`/admin/dashboard/student/update/${row.original.id}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-pen"></i> Edit</Link> 
                         <a target="_blank" href={`/student/${row.original.id}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
-                        <a target="_blank" href={`/admin/dashboard/student/print/${row.original.id}`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print PD</a>    
+                        <a target="_blank" href={`/admin/dashboard/student/print/${row.original.uuid}`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print PD</a>    
                         <Link href={`/admin/attendance/student/${row.original.lrn}/${moment(Date.now()).format('YYYY-MM')}`} className="btn btn-primary btn-block btn-sm col-12 mb-1"> <i className="bi bi-calendar"></i> Attendance</Link> 
                        </>            
                     }
