@@ -509,11 +509,15 @@ export default class PrintIDs extends Component {
                     }
                     doc.text(address.toLocaleUpperCase(), 177, 148,{align:'left',maxWidth: 50});
                 }
-                if(loop_count==5) {
-                    countPage++; 
-                    console.log("PAGE: ",countPage);
-                    doc.setPage(countPage);
-                    loop_count=1;
+                if((i + 1) != arr.length) {
+
+                    if(loop_count==5) {
+                        countPage++; 
+                        console.log("PAGE: ",countPage);
+                        doc.setPage(countPage);
+                        loop_count=1;
+                    }
+                    
                 }
             });
 
