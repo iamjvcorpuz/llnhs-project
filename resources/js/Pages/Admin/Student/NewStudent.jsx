@@ -1001,7 +1001,7 @@ export default class NewStudent extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-12">
+                                    <div className="col-lg-12 d-none">
                                         <hr />
                                         <div className="col-lg-12">
                                             <p className="badge fs-5 bg-primary text-wrap text-start">If school will implement other distance learning modalities aside from face-to-face instruction, what would you prefer for your child?</p>
