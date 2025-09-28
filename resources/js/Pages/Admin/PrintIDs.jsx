@@ -130,6 +130,7 @@ export default class PrintIDs extends Component {
         }
 
         this.state.student_list.forEach(async(val,i,arr) => {
+            let fullname1 = val.first_name + " " + val.middle_name;
             let guardian_data = self.state.guardian.find(e=>e.student_id==val.student_id);
             if(typeof(guardian_data)!="undefined") {
                 await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
