@@ -49,6 +49,7 @@ export default class PrintIDs extends Component {
         $("#frame1").height(0); 
         Swal.fire({
             title: "Generating ID. Please wait.", 
+            html: '<div id="progress-bar-container"><div id="progress-bar" style="width: 0%;"></div></div><p id="percentage-text">0%</p>',
             showCancelButton: false,
             showConfirmButton: false,
             allowOutsideClick: false,
@@ -61,6 +62,23 @@ export default class PrintIDs extends Component {
             dangerMode: true,
             didOpen: () => {
                 Swal.showLoading();
+                const progressBarContainer = document.getElementById('progress-bar-container');
+                const progressBar = document.getElementById('progress-bar');
+                const percentageText = document.getElementById('percentage-text');
+    
+                if (progressBarContainer) {
+                    progressBarContainer.style.width = '100%';
+                    progressBarContainer.style.height = '10px';
+                    progressBarContainer.style.backgroundColor = '#f0f0f0';
+                    progressBarContainer.style.borderRadius = '5px';
+                    progressBarContainer.style.overflow = 'hidden';
+                    progressBarContainer.style.marginBottom = '10px';
+                }
+                if (progressBar) {
+                    progressBar.style.height = '100%';
+                    progressBar.style.backgroundColor = '#4CAF50'; // Green color for progress
+                    progressBar.style.transition = 'width 0.3s ease-in-out';
+                }
             }
         });
         const urlParams = new URLSearchParams(window.location.search);
@@ -88,7 +106,17 @@ export default class PrintIDs extends Component {
             });
         }, 2000);
     }
-    
+    updateLoadingProgress(percentage) {
+        const progressBar = document.getElementById('progress-bar');
+        const percentageText = document.getElementById('percentage-text');
+
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+        }
+        if (percentageText) {
+            percentageText.textContent = `${percentage}%`;
+        }
+    }
     generateQRCODES(callback) {
         let student_list = [];
         let noGuardianList = [];
@@ -127,33 +155,47 @@ export default class PrintIDs extends Component {
                 callback_("")
             };
 
-        }
+        } 
 
-        this.state.student_list.forEach(async(val,i,arr) => {
+        let loops = (i,arr) => new Promise( async (resolve,reject) => {
+            let val = arr[i];
             let fullname1 = val.first_name + " " + val.middle_name;
             let guardian_data = self.state.guardian.find(e=>e.student_id==val.student_id);
+            const percentage = Math.round((i / self.state.student_list.length) * 100);
+            this.updateLoadingProgress(percentage);
             if(typeof(guardian_data)!="undefined") {
                 await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
                     await generateQR(val.lrn, async (e) => {
                         await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
-                            student_list.push({...val,gen_qr: e,vurl: ee,picture: eee});
-                            if((i + 1) == arr.length) {
+                            student_list.push({...val,gen_qr: e,vurl: ee,picture: eee}); 
+                            if((i + 1) == arr.length) { 
                                 self.setState({student_list: student_list,noGuardianList:noGuardianList},() => {
-                                    callback();
+                                    resolve();
+                                    return;
                                 });
+                            } else {
+                                await loops(i + 1,arr);
+                                resolve();
                             }
                         });
                     });
                 });                
             } else {
                 noGuardianList.push({sname: fullname1, id: val.student_id});
-                if((i + 1) == arr.length) {
+                if((i + 1) == arr.length) { 
                     self.setState({student_list: student_list,noGuardianList:noGuardianList},() => {
-                        callback();
+                        resolve();
+                        return;
                     });
+                } else {
+                    await loops(i+1,arr);
+                    resolve();
                 }
             }
+        });
 
+        loops(0,this.state.student_list).then((e) => { 
+            callback();
         });
 
     }
