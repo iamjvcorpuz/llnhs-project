@@ -132,6 +132,7 @@ export default class EditStudent extends Component {
     }
 
     componentDidMount() {
+        let self = this;
         this._isMounted = true;
         console.log(this);
         let so = []
@@ -146,7 +147,45 @@ export default class EditStudent extends Component {
             added_guardians:this.props.guardians,
             selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
             relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:""
+        },() => {
+            if(self.state.pa_hno == "" || self.state.pa_hno == null) {
+                self.setState({
+                    pa_hno: this.state.cd_hno
+                });                
+            }
+            if(self.state.pd_sn == "" || self.state.pd_sn == null) {
+                self.setState({ 
+                    pa_sn: this.state.cd_sn
+                });   
+            }
+            if(self.state.pa_barangay == "" || self.state.pa_barangay == null) {
+                self.setState({ 
+                    pa_barangay: this.state.cd_barangay
+                });   
+            }
+            if(self.state.cd_pa_mcmc == "" || self.state.pa_mc == null) {
+                self.setState({ 
+                    pa_mc: this.state.cd_mc
+                });   
+            }
+            if(self.state.pa_province == "" || self.state.pa_province == null) {
+                self.setState({ 
+                    pa_province: this.state.cd_province
+                });   
+            }
+            if(self.state.pa_zip == "" || self.state.pa_zip == null) {
+                self.setState({ 
+                    pa_zip: this.state.cd_zip
+                });   
+            }
+            if(self.state.pa_country == "" || self.state.pa_country == null) {
+                self.setState({ 
+                    pa_country: this.state.cd_country
+                });   
+            }
+
         });
+        
     }
 
     getParentList() {
@@ -834,13 +873,24 @@ export default class EditStudent extends Component {
                                             <div className="form-inline clearfix">
                                             <label htmlFor="is4ps" className="form-label pr-5">Same with your Current Address?</label>
                                                 <div className="icheck-primary d-inline pr-2">
-                                                    <input type="radio" id="issamecd1" name="issamecd" checked={this.state.is_pa_same_cd==1?true:false} onChange={() => { $('#fspa').attr('disabled',"disabled"); this.setState({is_pa_same_cd: true}); }}/>
+                                                    <input type="radio" id="issamecd1" name="issamecd" checked={this.state.is_pa_same_cd==1?true:false} onChange={() => { $('#fspa').attr('disabled',"disabled"); 
+                                                        this.setState({is_pa_same_cd: true}); 
+                                                        this.setState({
+                                                            pa_hno: this.state.cd_hno,
+                                                            pa_sn: this.state.cd_sn,
+                                                            pa_barangay: this.state.cd_barangay,
+                                                            pa_mc: this.state.cd_mc,
+                                                            pa_province: this.state.cd_province,
+                                                            pa_zip: this.state.cd_zip,
+                                                            pa_country: this.state.cd_country,
+                                                        });
+                                                    }}/>
                                                     <label htmlFor="issamecd1">
                                                         Yes
                                                     </label>
                                                 </div>
                                                 <div className="icheck-primary d-inline">
-                                                    <input type="radio" id="issamecd2" name="issamecd" checked={this.state.is_pa_same_cd==0?true:false}  onChange={() => { $('#fspa').removeAttr('disabled'); this.setState({is_pa_same_cd: true}); }}/>
+                                                    <input type="radio" id="issamecd2" name="issamecd" checked={this.state.is_pa_same_cd==0?true:false}  onChange={() => { $('#fspa').removeAttr('disabled'); this.setState({is_pa_same_cd: false}); }}/>
                                                     <label htmlFor="issamecd2">
                                                         No
                                                     </label>
@@ -974,7 +1024,7 @@ export default class EditStudent extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-12">
+                                    <div className="col-lg-12 d-none">
                                         <hr />
                                         <div className="col-lg-12">
                                             <p className="badge fs-5 bg-primary text-wrap text-start">If school will implement other distance learning modalities aside from face-to-face instruction, what would you prefer for your child?</p>

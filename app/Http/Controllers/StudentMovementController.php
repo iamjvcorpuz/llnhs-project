@@ -93,6 +93,7 @@ class StudentMovementController extends Controller
         ];
         
     }
+
     public static function DropStudent(Request $request) {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
@@ -114,6 +115,41 @@ class StudentMovementController extends Controller
 
         if($StudentLRN->count()==1) { 
             DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'drop']);
+            return response()->json([
+                'status' => 'success',
+                'error' => null,
+                'data' => []
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'error' => "Internal Error",
+                'data' => []
+            ], 200);
+        }
+    }
+
+    public static function ReturnStudent(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'lrn' => 'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $StudentLRN = DB::table('student')->where('lrn', $request->lrn) ->get();
+
+        // $StudentMovementSY = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('sy', $request->school_year)->get();
+        // $StudentMovementGL = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('grade_level', $request->selectedGradeLevel)->get();
+
+        if($StudentLRN->count()==1) { 
+            DB::table('student_movement')->where('student_lrn', $request->lrn)->update(['status'=>'active']);
             return response()->json([
                 'status' => 'success',
                 'error' => null,

@@ -185,7 +185,12 @@ export default class Movement extends Component {
                             <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={() => {
                                 this.transferOutStudent();
                             }}>Transfer Out</button>
-                           </>      
+                           </>
+                        } else if(row.original.status=='drop'){ return <>                        
+                            <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={() => {
+                                this.returnStudent();
+                            }} >Return</button>
+                           </>
                         } else {
                             return <></>
                         }
@@ -304,6 +309,7 @@ export default class Movement extends Component {
         this.updateCrop = this.updateCrop.bind(this);
         this.fetchData = this.fetchData.bind(this);
         this.dropStudent = this.dropStudent.bind(this);
+        this.returnStudent = this.returnStudent.bind(this);
         this.transferOutStudent = this.transferOutStudent.bind(this);
         this._isMounted = false;
     }
@@ -447,6 +453,112 @@ export default class Movement extends Component {
                     };
                     // console.log(datas);
                     axios.post('/admin/update/drop/student/movemet',datas).then(function (response) {
+                            if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                                if(data.status == "success") {
+                                    Swal.fire({  
+                                        title: "Successfuly save!", 
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        confirmButtonText: "Continue", 
+                                        icon: "success",
+                                        showLoaderOnConfirm: true, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    }).then(function (result2) {
+                                        if(result2.isConfirmed) { 
+                                            Swal.close();
+                                            document.getElementById("cancel").click();
+                                        }
+                                    });
+
+                                } else {
+                                    Swal.fire({  
+                                        title: "Fail to drop student", 
+                                        showCancelButton: true,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        cancelButtonText: "Ok",
+                                        confirmButtonText: "Continue",
+                                        confirmButtonColor: "#DD6B55",
+                                        icon: "error",
+                                        showLoaderOnConfirm: false, 
+                                        closeOnClickOutside: false,  
+                                        dangerMode: true,
+                                    });
+                                }
+                            }
+                    }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    Swal.fire({  
+                        title: "Server Error", 
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        cancelButtonText: "Ok",
+                        confirmButtonText: "Continue",
+                        confirmButtonColor: "#DD6B55",
+                        icon: "error",
+                        showLoaderOnConfirm: true, 
+                        closeOnClickOutside: false,  
+                        dangerMode: true,
+                    });
+                    })
+                } else if(result.isDismissed) {
+
+                }
+                return false
+            });            
+        }
+    }
+
+    returnStudent() {
+        let self = this;
+        if(self.state.id != "" && self.state.lrn != "") {
+            if($('#invalidCheck').prop('checked') == false) {
+                $("#invalidCheck-alert").removeAttr('class'); 
+                $("#invalidCheck-alert").addClass('d-block invalid-feedback');
+                // alert('Please check agree to all fields are correct');
+                swal({
+                    title: "Please check agree if all fields are correct",
+                    icon: 'info'
+                })
+                $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+                return;
+            }
+            Swal.fire({
+                title: "If all fields are correct and please click to continue to save", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    Swal.fire({  
+                        title: 'Submitting Records.\nPlease wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    let datas =  {
+                        id: self.state.id,
+                        lrn: self.state.lrn
+                    };
+                    // console.log(datas);
+                    axios.post('/admin/update/return/student/movemet',datas).then(function (response) {
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 if(data.status == "success") {
@@ -1572,7 +1684,7 @@ export default class Movement extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-lg-12">
+                                            <div className="col-lg-12 d-none">
                                                 <hr />
                                                 <div className="col-lg-12">
                                                     <p className="badge fs-5 bg-primary text-wrap text-start">If school will implement other distance learning modalities aside from face-to-face instruction, what would you prefer for your child?</p>
