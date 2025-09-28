@@ -815,7 +815,6 @@ class StudentController extends Controller
         LEFT JOIN advisory ON advisory.id = advisory_group.advisory_id
         LEFT JOIN school_class ON school_class.id = advisory.school_sections_id
         WHERE
-        student.picture_base64 <> '' AND
         student.status = 'active' AND
         school_class.level IS NOT NULL");
         // student.picture_base64
