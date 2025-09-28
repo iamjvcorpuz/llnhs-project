@@ -213,7 +213,8 @@ export default class PrintIDs extends Component {
             let x = 0;
             let y = 0;
             // console.log(doc);
-            // console.log("val",val);
+            console.log("Total: ",this.state.student_list.length);
+            console.log("data: ",this.state.student_list);
             let noPhotoList = [];
             let countPage = 1;
             this.state.student_list.forEach(async(val,i,arr) => {
