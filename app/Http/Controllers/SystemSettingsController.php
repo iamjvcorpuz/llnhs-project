@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class SystemSettingsController extends Controller
 {
+    public static function getVURL() {
+        return env("VERIFIER_URL","https://tinyurl.com/4v4uxjfj");
+    }
+    
     public static function getCurrentSY()
     {
         $sy = DB::table("system_settings")->where('setting', 'SCHOOL_YEAR')->get();
@@ -18,6 +22,7 @@ class SystemSettingsController extends Controller
             return "";
         }
     }
+
     public static function getSchoolRegistration()
     {
         $sy = DB::table("school_registry")->get();
@@ -27,6 +32,7 @@ class SystemSettingsController extends Controller
             return "";
         }
     }
+
     public static function geSystemSettings()
     {
         $sy = DB::table("system_settings")->get();
@@ -36,6 +42,7 @@ class SystemSettingsController extends Controller
             return [];
         }
     }
+
     public static function update(Request $request)
     {
         $validator = Validator::make($request->all(), [ 

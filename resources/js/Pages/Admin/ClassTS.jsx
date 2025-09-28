@@ -678,7 +678,7 @@ export default class ClassTS extends Component {
                                         $('#newClass').modal('show');
                                     }}> <i className="bi bi-plus"></i> Add</button>    
                                 </div>
-                                <div className="card-body"> 
+                                <div className="card-body p-0"> 
 
                                     <ReactTable
                                         key={"react-tables"}

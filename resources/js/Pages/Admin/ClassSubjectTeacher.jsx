@@ -975,8 +975,8 @@ export default class ClassSubjectTeacher extends Component {
                                         $("#newClassTeaching").modal('show');
                                     }}> <i className="bi bi-person-plus-fill"></i> Add</button>    
                                 </div>
-                                <div className="card-body"> 
-                                    <div className="col-lg-12 clearfix mb-2">
+                                <div className="card-body p-0"> 
+                                    <div className="col-lg-12 clearfix mb-2 p-2">
                                         <button className="btn btn-primary mr-1" onClick={() => {
                                             this.loadSched("monday");
                                         }}>Monday</button>

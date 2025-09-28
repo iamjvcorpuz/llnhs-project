@@ -261,7 +261,7 @@ export default class PrintID extends Component {
             // $("#obj1").height(window.innerHeight - 8);
             $("#frame1").height(window.innerHeight - 8);
             // $('#frame1').attr('src',doc.output("datauristring") + '#view=Fit&toolbar=0'); 
-            console.log(doc.output().length >= 1000000,doc.output().length)
+            // console.log(doc.output().length >= 1000000,doc.output().length)
             setTimeout(() => {
                 Swal.close();
                 // if(!self.browser_check_preview() && doc.output().length >= 1000000){
