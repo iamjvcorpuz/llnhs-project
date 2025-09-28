@@ -898,7 +898,7 @@ class StudentController extends Controller
 
     public static function getStudentGuardian($id)
     {
-        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,uuid, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.uuid LIMIT 1) AS \'relationship\', status, picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.uuid) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.uuid LIMIT 1) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?)',[$id]);
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,uuid, qr_code, first_name, last_name, middle_name, extension_name, sex,current_address, (SELECT relationship FROM student_guardians WHERE parents_id = parents.uuid LIMIT 1) AS \'relationship\', status, "" AS picture_base64, email, (SELECT COUNT(*) FROM student_guardians WHERE parents_id = parents.uuid) AS total_student,(SELECT phone_number FROM contacts WHERE guardian_id = parents.uuid LIMIT 1) as \'phone_number\' FROM parents WHERE id IN (SELECT parents_id FROM student_guardians WHERE student_id = ?)',[$id]);
         // $student = Student::findOrFail($id);
         return $student;
     }

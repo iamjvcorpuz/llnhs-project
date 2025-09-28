@@ -34,10 +34,12 @@ export default class PrintIDs extends Component {
             strand: this.props.data.strand,
             track: this.props.data.track,
             noPhotoList: [],
-            selected: []
+            selected: [],
+            ready: false
         }
         $('body').attr('class', '');
         this.multiple = this.multiple.bind(this);
+        this.generateQRCODES = this.generateQRCODES.bind(this);
         console.log(this.props)
     }
 
@@ -85,6 +87,7 @@ export default class PrintIDs extends Component {
             });
         }, 2000);
     }
+    
     generateQRCODES(callback) {
         let student_list = [];
         let self = this;
@@ -125,9 +128,9 @@ export default class PrintIDs extends Component {
         }
 
         this.state.student_list.forEach(async(val,i,arr) => {
-            await generateQR(val.lrn, async (e) => {
-                await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
-                    await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
+            await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
+                await generateQR(val.lrn, async (e) => {
+                    await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
                         student_list.push({...val,gen_qr: e,vurl: ee,picture: eee});
                         if((i + 1) == arr.length) {
                             self.setState({student_list: student_list},() => {
@@ -616,14 +619,12 @@ export default class PrintIDs extends Component {
 		} else {
 			return 0;
 		}
-	}
- 
+	} 
     
     render() {
         return <div className="" > 
             <iframe
                 id="frame1"
-                src="#view=FitH&toolbar=0"
                 width="100%"
                 height="100%"
                 className="">
