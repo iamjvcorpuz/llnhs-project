@@ -304,15 +304,21 @@ class AttendanceController extends Controller
         // echo $year_ . ' ' . $month_ . ' ' . $day_;
         $fulldays = false;
         if(($year_ . '-' . $month_ . '-' . $day_) == $request->date) {
-            // echo "full days";
+            // echo "full day";
             $fulldays = true;
         } else {
             // echo "year month";
             $fulldays = false;
         }
-
+        // print_r($request->all());
+        // echo "\n";
+        // echo "qrcode:  " . (($request->qrcode != "") ? 'true' : 'false');
+        // echo "\n";
+        // echo "fulldays: " . (($fulldays == true) ? 'true' : 'false');
+        // echo "\n";
         if($request->type == "student") {
-            if($request->qrcode != "") {
+            if($request->qrcode != "" && $fulldays == false) {
+                // echo "tae1";
                 $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
                 if(count($logs) > 0) {
                     $start_date = current($logs)->date; 
@@ -351,8 +357,52 @@ class AttendanceController extends Controller
                         
                     }
                 }
-            } else if($request->qrcode == "") {
-
+            } else if($request->qrcode != "" && $fulldays == true) {
+                // echo "tae2";
+                $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+                if(count($logs) > 0) {
+                    $start_date = current($logs)->date; 
+                    $dates = $start_date; 
+                    $month = date("Y-m", strtotime($dates));
+                    $map_attendance_timelogs = [];
+                    // echo "start date " . $start_date;
+                    // foreach ($logs as $key => $value) {
+                    //     // echo "<pre>";
+                    //     // print_r($value);
+                    //     // echo "<pre/>" . $dates;
+    
+                    //     // echo "<pre>";
+                    //     // echo $value->date;
+                    //     // echo "<pre/>";
+    
+                    //     if($dates == $value->date) { 
+                    //         array_push($map_attendance_timelogs, $value);
+                    //         if ($key === array_key_last($logs)) {
+                    //             array_push($map_attendance, (object)[
+                    //                 'date' => $dates,
+                    //                 'month' => $month,
+                    //                 'logs' => $map_attendance_timelogs
+                    //             ]);
+                    //         }
+                    //     } else if($dates != $value->date) { 
+                    //         array_push($map_attendance, (object)[
+                    //             'date' => $dates,
+                    //             'month' => $month,
+                    //             'logs' => $map_attendance_timelogs
+                    //         ]);
+                    //         $dates = $value->date;
+                    //         $map_attendance_timelogs = [];            
+                    //         array_push($map_attendance_timelogs, $value);
+                    //     }
+                        
+                    // }
+                    // array_push($map_attendance, $logs);
+                    $map_attendance = $logs;
+                    
+                }
+            } else if($request->qrcode == "" && $fulldays == false) {
+                // echo "tae3";
+                // multiple student
                 $map_student_list = DB::select('
                 SELECT 
                 ROW_NUMBER() OVER () as no,
@@ -411,6 +461,7 @@ class AttendanceController extends Controller
                         $object->absent = $absent;
                         $object->tardy = $tardy;
                         $object->present = $present;
+                        $object->logs = $logs_temp;
                         
                         array_push($map_attendance,$object);
 
@@ -456,13 +507,9 @@ class AttendanceController extends Controller
 
                 }
 
+            } else {
+                // echo "tae4";
             }
-            
-            // echo "<pre>";
-            // print_r($attendance);
-            // echo "</pre>";
-
-            
         } else if($request->type == "employee") {
             $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
             if(count($logs) > 0) {

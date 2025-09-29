@@ -128,13 +128,14 @@ class StudentController extends Controller
         flsh_semester,
         flsh_track,
         flsh_strand,
-        ldm_applied
-        FROM student WHERE uuid NOT IN (SELECT 
+        ldm_applied,
+        '' AS picture_base64
+        FROM student WHERE uuid IN (SELECT 
         student.uuid
         FROM advisory_group 
         LEFT JOIN advisory ON  advisory.uuid = advisory_group.advisory_id
         LEFT JOIN student ON student.uuid = advisory_group.student_id
-        WHERE advisory_group.status = 'active' AND advisory.status = 'active' )
+        WHERE advisory_group.status = 'active' AND advisory.status = 'active')
         ");
     }
 
