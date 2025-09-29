@@ -34,38 +34,24 @@ export default class Attendance extends Component {
             data_temp: [],
             columns: [
                 {
-                    Header: 'Date', 
-                    width: 130,
-                    accessor: 'date',
-                    className: "text-start"
-                },  
-                {
-                    Header: 'Day', 
-                    width: 100,
-                    accessor: 'day',
-                    className: "center"
-                },  
-                {
                     Header: 'Time Logs', 
-                    accessor: 'logs',
+                    accessor: 'date',
                     className: "text-wrap",
                     width: 800,
                     Cell: ({row}) => {  
                         let timelogs = "wait";
                         let key = row.original.id;
-                        timelogs = row.original.logs.map((element,i) => {
-                            let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
+                        let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
                             // console.log(attendancestatus)
-                            if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element.mode != "absent") {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'success':'info')} mr-1`} >TIME {element.mode}: {element.time}</div>;
-                            } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element.mode == "absent") {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-danger mr-1`} >Absent</div>;
-                            } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && element.mode != "absent") {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-${(element.mode=="IN"?'success':'info')} mr-1`} >TIME {element.mode}: {element.time}</div>;
-                            } else if(typeof(attendancestatus) != "undefined"  && attendancestatus == "absent" && element.mode == "absent") {
-                                return <div key={`xt_${i}`} className={`btn btn-xs btn-danger mr-1`} >Absent</div>;
+                            if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && row.original.mode != "absent") {
+                                return <div key={`xt_${key}`} className={`text-start btn btn-xs btn-${(row.original.mode=="IN"?'success':'info')} mr-1`} >TIME {row.original.mode}: {row.original.time} <br /> {row.original.terminal}</div>;
+                            } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && row.original.mode == "absent") {
+                                return <div key={`xt_${key}`} className={`text-start btn btn-xs btn-danger mr-1`} >Absent</div>;
+                            } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && row.original.mode != "absent") {
+                                return <div key={`xt_${key}`} className={`text-start btn btn-xs btn-${(row.original.mode=="IN"?'success':'info')} mr-1`} >TIME {row.original.mode}: {row.original.time}  <br /> {row.original.terminal}</div>;
+                            } else if(typeof(attendancestatus) != "undefined"  && attendancestatus == "absent" && row.original.mode == "absent") {
+                                return <div key={`xt_${key}`} className={`text-startbtn btn-xs btn-danger mr-1`} >Absent</div>;
                             }
-                        });
                        return <div key={`t_${key}`}> 
                         {timelogs}
                        </div>            
@@ -116,6 +102,52 @@ export default class Attendance extends Component {
                     }
                 }
             ],
+            columns_classroom_status_monthly_by_student: [
+                {
+                    Header: 'Date', 
+                    width: 160,
+                    accessor: 'date',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Day', 
+                    width: 100,
+                    accessor: 'day',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Time Logs', 
+                    accessor: 'logs',
+                    className: "text-wrap",
+                    width: 800,
+                    Cell: ({row}) => {
+                        let timelogs = "";
+                        let key = row.original.id;
+                        let date = row.original.date;
+                        let filter_redundunt = [];
+                        let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
+                        if(typeof(row.original) != "undefined" && typeof(row.original.logs) != "undefined" && row.original.logs.length > 0) { 
+                            timelogs = row.original.logs.map((element1,i1) => {
+                                if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode != "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-start btn btn-xs btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time} <br /> {element1.terminal}</div>;
+                                } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode == "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-start btn btn-xs btn-danger mr-1`} >Absent</div>;
+                                } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && element1.mode != "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-start btn btn-xs btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time}  <br /> {element1.terminal}</div>;
+                                } else if(typeof(attendancestatus) != "undefined"  && attendancestatus == "absent" && element1.mode == "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-startbtn btn-xs btn-danger mr-1`} >Absent</div>;
+                                }
+
+                            });                            
+                        }
+                    return <div key={`t_m_s${key}`}> 
+                        {timelogs}
+                    </div>            
+                    }
+                }
+            ],
             columns_classroom_status_daily: [ 
                 {
                     Header: 'Student Name', 
@@ -123,6 +155,37 @@ export default class Attendance extends Component {
                     className: "text-wrap",
                     filterable: true,
                     width: 800
+                },
+                {
+                    Header: 'Grade/Section/SY', 
+                    accessor: 'section_grade',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 350
+                },
+                {
+                    Header: 'Status',  
+                    accessor: '_id',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 200, Cell: ({row}) => {   
+                        if(row.original.absent == 0 && row.original.present == 0 && row.original.tardy == 0) {
+                            return <div title="Absent" className={"btn btn-xs btn-dark mr-1"} >No Attendance</div>;
+                        } else if(row.original.absent > 0) {
+                            return <div title="Absent" className={"btn btn-xs btn-danger mr-1"} >ABSENT</div>;
+                        } else if(row.original.present > 0) { 
+                            return <div title="Present" className={"btn btn-xs btn-success mr-1"} >PRESENT</div>;
+                        }
+                    }
+                }
+            ],
+            columns_classroom_status_daily_: [ 
+                {
+                    Header: 'Student Name', 
+                    accessor: 'fullname',
+                    className: "text-wrap",
+                    filterable: true,
+                    width: 400
                 },
                 {
                     Header: 'Grade/Section/SY', 
@@ -231,9 +294,13 @@ export default class Attendance extends Component {
                 $('input:radio[name="calendar"][id="radioMonthly"]').prop('checked', true);
             });
         });
-
+        
         $('input:radio[name="calendar"][id="radioDaily"]').prop('checked', true);
-
+        $('input:radio[name="calendar"]').on('change', function (e) {
+            self.setState({calendar: e.target.value,data: [],data_temp: [],selectedMonthYear: ""});
+            $("#smonthly").val("");
+            $("#sdaily").val(""); 
+        });
 
         $('input:radio[name="attendancestatus"]').on('change', function (e) { 
             let calendar = $('input:radio[name="calendar"]:checked').val();
@@ -396,10 +463,16 @@ export default class Attendance extends Component {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD");
         let calendar = $('input:radio[name="calendar"]:checked').val();
+        // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear},this.state.selectedID);
+        console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear,calendar:calendar})
         $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
+        self.setState({loading: true});
+        if(this.state.queryType == "student" && calendar == "monthly" && this.state.selectedQr == "") {
+            ReactNotificationManager.error('Sorry','Please select Student if you filter for monthly')
+            self.setState({loading: false,data: [],data_temp: []});
+            return;
+        }
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
-            self.setState({loading: true})
-            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
                 console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
@@ -426,7 +499,12 @@ export default class Attendance extends Component {
                                     month: self.state.selectedMonthYear
                                 });                                
                             }
+
+                            console.log(temp_list);
                             self.setState({data: temp_list,data_temp: temp_list ,loading: false});
+
+                        } else if(calendar == "daily") {
+                            self.setState({data: data,data_temp: data ,loading: false});
                         } else {
                             self.setState({data: data,data_temp: data,loading: false});
                         }
@@ -435,11 +513,9 @@ export default class Attendance extends Component {
                     $("#printbtn").attr("href",`/admin/attendance/print/${self.state.queryType}/${self.state.selectedQr}/${self.state.selectedMonthYear}`);
                 }
             });            
-        } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
-            self.setState({loading: true})
-            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
+        } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") { 
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                // console.log(response)
+                console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -478,17 +554,21 @@ export default class Attendance extends Component {
                 }
             });            
         } else if( typeof(this.state.selectedMonthYear) == "undefined" && this.state.selectedQr == "" && this.state.queryType == "" && this.state.selectedMonthYear != ""){
-            ReactNotificationManager.error('Sorry','Please fill required field first')   
+            ReactNotificationManager.error('Sorry','Please fill required field first');
+            self.setState({loading: false});
         } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Year and Month')   
+            ReactNotificationManager.error('Sorry','Please select Year and Month 1') ;
+            self.setState({loading: false});
         } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
             if(this.state.queryType == "student") {
                 ReactNotificationManager.error('Sorry','Please select Student')   
             } else if(this.state.queryType == "employee") {
                 ReactNotificationManager.error('Sorry','Please select Employee')   
             }
+            self.setState({loading: false});
         } else if(typeof(this.state.queryType) != "undefined" && this.state.queryType == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Type field')   
+            ReactNotificationManager.error('Sorry','Please select Type field')
+            self.setState({loading: false});
         }
 
     }
@@ -621,33 +701,33 @@ export default class Attendance extends Component {
 
     loadFilter(val) {
         let self = this;
-        console.log(val);
+        // console.log(val);
         // $('input:radio[name="attendancestatus"]').prop('checked', false);
         $('input:radio[name="attendancestatus"]:first').prop('checked', true);
-        self.setState({data_list: [],data:[],data_temp:[],selectedQr:""},() => {
-            setTimeout(() => {
-                self.setState({queryType: val,calendar: "monthly"},() => {
+
+        self.setState({data_list: [],data:[],data_temp:[],selectedQr:"",loading: true,queryType: val,calendar: "monthly"},() => {
+            // setTimeout(() => {
+                // self.setState({queryType: val,calendar: "monthly"},() => {
                     if(val == "employee") {
-                        self.setState({data_list: self.state.employee_list});
+                        self.setState({data_list: self.state.employee_list,loading: false});
                     } else if(val == "student") {                        
-                        self.setState({data_list: self.state.student_list,calendar: "daily"},() => {
+                        self.setState({data_list: self.state.student_list,calendar: "daily",loading: false},() => {
                             // $('input[name="calendar"][id="radioDaily"]').attr('checked', 'checked');
                             $('input:radio[name="calendar"][id="radioDaily"]').prop('checked', true);
                             self.forceUpdate();
                         });
                     } else if(val == "classroom") {
-                        self.setState({data_list: self.state.advisory_list});
+                        self.setState({data_list: self.state.advisory_list,loading: false});
                     }
-                })
-            }, 1000);
+                // })
+            // }, 1000);
         });
     }
 
     selectedMonthYear(val) {
-        // console.log("val",val);
+        console.log("val",val);
         let calendar = $('input:radio[name="calendar"]:checked').val();
-        this.setState({selectedMonthYear: val,calendar:calendar});
-        
+        this.setState({selectedMonthYear: val,calendar:calendar});        
     }
 
     render() { 
@@ -709,7 +789,7 @@ export default class Attendance extends Component {
 
                                 </div>
 
-                                <div className={`col-lg-7`}>
+                                <div className={`col-lg-5`}>
 
                                     <div className="form-group">
                                         <label >Select {capitalizeWords(this.state.queryType)}</label>
@@ -733,7 +813,7 @@ export default class Attendance extends Component {
                                     </div> 
                                 </div> */}
 
-                                {this.state.calendar=="monthly"?<div className="col-lg-2">
+                                {/* {this.state.calendar=="monthly"?<div className="col-lg-2">
                                     <div className="form-check">
                                         <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }} />
                                         <label htmlFor="radioMonthly" className="form-check-label">
@@ -749,11 +829,11 @@ export default class Attendance extends Component {
                                         </label>
                                     </div>  
                                     <input type="date" id="sdaily" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                </div> }
-{/* 
+                                </div> } */}
+
                                 <div className="col-lg-2">
                                     <div className="form-check">
-                                        <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }} />
+                                        <input type="radio" className="form-check-input" id="radioMonthly" name="calendar" defaultChecked="checked" value="monthly" />
                                         <label htmlFor="radioMonthly" className="form-check-label">
                                             Monthly
                                         </label>
@@ -762,13 +842,13 @@ export default class Attendance extends Component {
                                 </div>
                                 <div className="col-lg-2">
                                     <div className="form-check">
-                                        <input type="radio" className="form-check-input" id="radioDaily" name="calendar" defaultChecked="" value="daily" onChange={() =>{ $("#smonthly").val(""); $("#sdaily").val(""); }}  />
+                                        <input type="radio" className="form-check-input" id="radioDaily" name="calendar" defaultChecked="" value="daily"   />
                                         <label htmlFor="radioDaily" className="form-check-label">
                                             Daily
                                         </label>
                                     </div>  
                                     <input type="date" id="sdaily" className="form-control" defaultValue={this.state.monthYear} onChange={(e) => this.selectedMonthYear(e.target.value)} /> 
-                                </div> */}
+                                </div>
 
                                 
 
@@ -821,17 +901,8 @@ export default class Attendance extends Component {
                                         showPagenation={false}
                                         loading={this.state.loading}
                                     />:null}
-                                    {(this.state.calendar=="daily")?<ReactTable
+                                    {(this.state.queryType=="student"&&this.state.selectedQr!=""&&this.state.calendar=="daily")?<ReactTable
                                         key={"react-tables2"}
-                                        className={"table table-bordered table-striped "}
-                                        data={this.state.data} 
-                                        columns={this.state.columns_classroom_status_daily}
-                                        defaultPageSize={31}
-                                        showPagenation={false}
-                                        loading={this.state.loading}
-                                    />:null}
-                                    {(this.state.queryType!="classroom"&&this.state.calendar=="monthly")?<ReactTable
-                                        key={"react-tables3"}
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
@@ -839,6 +910,33 @@ export default class Attendance extends Component {
                                         showPagenation={false}
                                         loading={this.state.loading}
                                     />:null}
+                                    {(this.state.queryType=="student"&&this.state.selectedQr!=""&&this.state.calendar=="monthly")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_monthly_by_student}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="student"&&this.state.selectedQr==""&&this.state.calendar=="monthly")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_monthly}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {/* {(this.state.queryType!="classroom"&&this.state.calendar=="monthly")?<ReactTable
+                                        key={"react-tables3"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null} */}
                                     {/* <ReactTable
                                         key={"react-tables"}
                                         className={"table table-bordered table-striped "}
