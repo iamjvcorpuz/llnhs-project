@@ -271,7 +271,7 @@ export default class PrintIDs extends Component {
 
             loop_count = 1;
             doc.setPage(countPage);
-            console.log("PAGE: ",countPage);
+            // console.log("PAGE: ",countPage);
             this.state.student_list.forEach(async (val,i,arr) => {
                 // if(loop_count==5) {
                 //     countPage++; 
@@ -286,7 +286,7 @@ export default class PrintIDs extends Component {
                 let code = val.qr_code,
                     lrn = val.lrn,
                     picture = val.picture,
-                    fullname1 = val.first_name + " " + val.middle_name,
+                    fullname1 = val.first_name + " " + ((typeof(val.middle_name)!="undefined"&&val.middle_name!="")?val.middle_name.charAt(0) + ".":"") ,
                     lastname = val.last_name,
                     track_strand = (track!=""||track!="")?track + "-" + strand:"", 
                     guardianname = guardian_data.first_name + " " + guardian_data.middle_name + " " + guardian_data.last_name,

@@ -301,7 +301,7 @@ class AdvisoryController extends Controller
 
     public static function sf2($id,$month,$qrcode)
     {
-        return  DB::select("SELECT * FROM attendance WHERE type = 'student' AND terminal_id LIKE '%class_id%' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code IN (SELECT student.lrn FROM advisory_group LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id LEFT JOIN student ON student.id = advisory_group.student_id WHERE advisory_group.status = 'active' AND advisory.status = 'active' AND advisory.qrcode = ?);",[$month,$qrcode]);   
+        return  DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code IN (SELECT student.lrn FROM advisory_group LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id LEFT JOIN student ON student.id = advisory_group.student_id WHERE advisory_group.status = 'active' AND advisory.status = 'active' AND advisory.qrcode = ?);",[$month,$qrcode]);   
     }
 
     /**

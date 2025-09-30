@@ -288,6 +288,7 @@ Route::post('/teacher/advisory/sf2/{code}',function(Request $request) {
     if($id!=null) {
        return [
         "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
+        "studentsList" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($request->code)
        ];
     } else {
         http_response_code(500);
