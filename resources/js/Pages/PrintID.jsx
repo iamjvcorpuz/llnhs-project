@@ -97,7 +97,7 @@ export default class PrintID extends Component {
                 code: this.props.data.student.qr_code,
                 lrn: this.props.data.student.lrn,
                 picture: this.props.data.student.picture_base64,
-                fullname1: this.props.data.student.first_name + " " + this.props.data.student.middle_name,
+                fullname1: this.props.data.student.first_name + " " + ((typeof(this.props.data.student.middle_name)!="undefined"&&this.props.data.student.middle_name!="")?this.props.data.student.middle_name.charAt(0) + ".":"") ,
                 lastname: this.props.data.student.last_name,
                 track_strand: (track!=""||track!="")?track + "-" + strand:"",
                 // grade: this.props.data.grade,

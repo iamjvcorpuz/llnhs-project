@@ -74,7 +74,7 @@ export default class Advisory extends Component {
                 {
                     id: "Action",
                     Header: 'Action',  
-                    width: 150,
+                    width: 160,
                     accessor: 'status',
                     className: "center",
                     Cell: ({row}) => { 
@@ -433,7 +433,7 @@ export default class Advisory extends Component {
                                         $("#newAdvisory").modal('show');
                                     }} > <i className="bi bi-person-plus-fill"></i> Add</button>   */}
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                     <ReactTable
                                         key={"react-tables"}
                                         className={"table table-bordered table-striped "}

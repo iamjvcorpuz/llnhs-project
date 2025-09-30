@@ -181,7 +181,7 @@ class AssignSeatsController extends Controller
                         'student_id' => $val['student_id'],
                         'seat_number' => $val['seat_number']
                     ]);
-                    DB::table('classrooms_seats_assign')->where('id', $addcsa)->update(['uuid' => $addcsa]);
+                    // DB::table('classrooms_seats_assign')->where('id', $addcsa)->update(['uuid' => $addcsa]);
                 }
                 
             }
@@ -206,7 +206,7 @@ class AssignSeatsController extends Controller
                         'student_id' => $val['student_id'],
                         'seat_number' => $val['seat_number']
                     ]);
-                    DB::table('classrooms_seats_assign')->where('id', $addcsa)->update(['uuid' => $addcsa]);
+                    // DB::table('classrooms_seats_assign')->where('id', $addcsa)->update(['uuid' => $addcsa]);
                 }                
             }
 

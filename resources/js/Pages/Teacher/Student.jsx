@@ -45,16 +45,18 @@ export default class Student extends Component {
                     accessor: 'lrn',
                     Header: 'LRN NO.', 
                     maxWidth: 100,
+                    filterable:true
                 },
                 {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
-                    accessor: 'fullname'
+                    accessor: 'fullname',
+                    filterable:true
                 }, 
                 {
                     id: "Action",
-                    Header: 'Status',  
+                    Header: 'Action',  
                     width: 200,
                     accessor: 'student_status',
                     className: "center",
@@ -281,7 +283,7 @@ export default class Student extends Component {
                                     </div>
                                     
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                     <div className="mobile-hidden">
                                         <ReactTable
                                             key={"react-tables"}

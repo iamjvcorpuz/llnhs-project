@@ -474,7 +474,8 @@ export const getWeeksInMonth = (year_month,callback) => {
                             status: '',
                             morning: '',
                             afternoon:''
-                        }
+                        },
+                        count: 0
                     };
                 } else if(moment(year_month + "-" + element_).format('ddd') == "Tue") {
                     temp[i].tue = {
@@ -484,7 +485,8 @@ export const getWeeksInMonth = (year_month,callback) => {
                             status: '',
                             morning: '',
                             afternoon:''
-                        }
+                        },
+                        count: 0
                     };
                 } else if(moment(year_month + "-" + element_).format('ddd') == "Wed") {
                     temp[i].wed = {
@@ -494,7 +496,8 @@ export const getWeeksInMonth = (year_month,callback) => {
                             status: '',
                             morning: '',
                             afternoon:''
-                        }
+                        },
+                        count: 0
                     };
                 } else if(moment(year_month + "-" + element_).format('ddd') == "Thu") {
                     temp[i].thu = {
@@ -504,7 +507,8 @@ export const getWeeksInMonth = (year_month,callback) => {
                             status: '',
                             morning: '',
                             afternoon:''
-                        }
+                        },
+                        count: 0
                     };
                 } else if(moment(year_month + "-" + element_).format('ddd') == "Fri") {
                     temp[i].fri = {
@@ -514,7 +518,8 @@ export const getWeeksInMonth = (year_month,callback) => {
                             status: '',
                             morning: '',
                             afternoon:''
-                        }
+                        },
+                        count: 0
                     };
                 }
             });
