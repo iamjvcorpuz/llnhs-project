@@ -480,11 +480,11 @@ Route::get('/admin/report/sf2', function () {
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),
         'strand' => ProgramsCurricularController::getStrand(),
-        "employee" => EmployeeController::getAll(),
+        "employee" => EmployeeController::getAll_(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
-        "student" => StudentController::getAll(),
+        // "student" => StudentController::getAll(),
         "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
         'sy' => SystemSettingsController::getCurrentSY(),
         'schoolRegistry' => SystemSettingsController::getSchoolRegistration()
