@@ -47,7 +47,7 @@ Route::post('/teacher',[TeacherController::class,'store']);
 Route::post('/teacher/update',[TeacherController::class,'update']);
 Route::delete('/teacher',[TeacherController::class,'remove']);
 
-Route::get('/employee',[EmployeeController::class,'index']);
+Route::get('/employee',[EmployeeController::class,'index_']);
 Route::post('/employee',[EmployeeController::class,'store']);
 Route::post('/employee/update',[EmployeeController::class,'update']);
 Route::delete('/employee',[EmployeeController::class,'remove']);

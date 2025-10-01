@@ -170,6 +170,9 @@ export default class NewEmployee extends Component {
             t_expe: "",
             t_render: "",
             t_title: "",
+            emergency_contact_number: "",
+            emergency_contact_name: "",
+            emergency_contact_relation: ""
         }
         this.webCam = React.createRef(); 
         this.updateCrop = this.updateCrop.bind(this);
@@ -182,7 +185,7 @@ export default class NewEmployee extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        console.log(this)
+        // console.log(this)
         // this.webCam.current.getScreenshot({width: 600, height: 300});
         // $("#fileuploadpanel").modal('show');
         // jQuery.noConflict();
@@ -244,7 +247,7 @@ export default class NewEmployee extends Component {
     
     saveData() {
         let self = this;
-        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "") {
+        if(self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.lrn != "" && self.state.emergency_contact_name != "" && self.state.emergency_contact_number != "" && self.state.emergency_contact_relation != "") {
             if($('#invalidCheck').prop('checked') == false) {
                 $("#invalidCheck-alert").removeAttr('class'); 
                 $("#invalidCheck-alert").addClass('d-block invalid-feedback');
@@ -292,7 +295,10 @@ export default class NewEmployee extends Component {
                         contact_list: self.state.contact_list,
                         employee_type: self.state.employee_type,
                         EB_list: self.state.EB_list,
-                        training_list: self.state.training_list
+                        training_list: self.state.training_list,
+                        emergency_contact_number: self.state.emergency_contact_number,
+                        emergency_contact_name: self.state.emergency_contact_name,
+                        emergency_contact_relation: self.state.emergency_contact_relation
                     };
                     // console.log(datas);
                     axios.post('/employee',datas).then( async function (response) {
@@ -304,14 +310,14 @@ export default class NewEmployee extends Component {
                                     let phone_list = [];
                                     self.state.contact_list.forEach( async element => {
                                         // phone_list.push();
-                                        console.log({
-                                            type: null,
-                                            student_id: null,
-                                            teacher_id: response.data.data.id,
-                                            guardian_id: null,
-                                            phone_number: element.phone_number,
-                                            telephone_number: element.phone_number
-                                        })
+                                        // console.log({
+                                        //     type: null,
+                                        //     student_id: null,
+                                        //     teacher_id: response.data.data.id,
+                                        //     guardian_id: null,
+                                        //     phone_number: element.phone_number,
+                                        //     telephone_number: element.phone_number
+                                        // })
                                         axios.post('/contacts',{
                                             type: null,
                                             student_id: null,
@@ -475,6 +481,23 @@ export default class NewEmployee extends Component {
                 $("#lrn-alert").html('Required Field');
                 $("#lrn-alert").addClass('d-block invalid-feedback');
             }
+
+            if(self.state.emergency_contact_name == "") {
+                $("#emergency_contact_name-alert").removeAttr('class');
+                $("#emergency_contact_name-alert").html('Required Field');
+                $("#emergency_contact_name-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.emergency_contact_number == "") {
+                $("#emergency_contact_number-alert").removeAttr('class');
+                $("#emergency_contact_number-alert").html('Required Field');
+                $("#emergency_contact_number-alert").addClass('d-block invalid-feedback');
+            }
+            if(self.state.emergency_contact_relation == "") {
+                $("#emergency_contact_relation-alert").removeAttr('class');
+                $("#emergency_contact_relation-alert").html('Required Field');
+                $("#emergency_contact_relation-alert").addClass('d-block invalid-feedback');
+            }
+
         }
     }
 
@@ -820,6 +843,29 @@ export default class NewEmployee extends Component {
                                             </div>  
                                         </div>
                                     </div>
+
+                                    <div className="col-lg-12">
+                                        <hr />
+                                        <h5 className="badge fs-5 bg-primary text-start d-block">Emergency Contacts</h5> 
+                                        <div className="row" >
+                                            <div className="col-md-3">
+                                                <label htmlFor="first_name" className="form-label">Contact name</label>
+                                                <input type="text" className="form-control" id="first_name" defaultValue={this.state.emergency_contact_name} required="" onChange={(e) => { $("#emergency_contact_name-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({emergency_contact_name: e.target.value})}}  />
+                                                <div id="emergency_contact_name-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="middle_name" className="form-label">Relationship</label>
+                                                <input type="text" className="form-control" id="middle_name" defaultValue={this.state.emergency_contact_relation} required="" onChange={(e) => {  $("#emergency_contact_relation-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({emergency_contact_relation: e.target.value})}}  />
+                                                <div id="emergency_contact_relation-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                            <div className="col-md-3">
+                                                <label htmlFor="last_name" className="form-label">Contact Number</label>
+                                                <input type="text" className="form-control" id="last_name" defaultValue={this.state.emergency_contact_number} required="" onChange={(e) => { $("#emergency_contact_number-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({emergency_contact_number: e.target.value})}}  />
+                                                <div id="emergency_contact_number-alert" className="valid-feedback">Looks good!</div>
+                                            </div> 
+                                        </div>
+                                    </div>
+
                                     <div className="col-lg-12">
                                         <hr />
                                         <h5 className="badge fs-5 bg-primary text-start d-block">Education Background</h5> 
