@@ -13,6 +13,15 @@ export class ReactNotificationContainer extends Component {
       return <ReactNotifications {...this}  />
    }
 }
+const CustomNotificationContent = (props) => (
+   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
+     <p>{props.message}</p>
+     <button onClick={props.onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+       &times; {/* HTML entity for a multiplication sign (commonly used for close buttons) */}
+     </button>
+   </div>
+ );
+ 
 export const ReactNotificationManager =  {
    'info': function(title,message) {
       Store.addNotification({
@@ -59,17 +68,17 @@ export const ReactNotificationManager =  {
        });
    },'error': function(title,message) {
       Store.addNotification({
-         title: title,
-         message: message,
-         type: "danger",
-         insert: "top",
-         container: "top-right",
-         animationIn: ["animate__animated", "animate__fadeIn"],
-         animationOut: ["animate__animated", "animate__fadeOut"],
-         dismiss: {
-           duration: 5000,
-           onScreen: true
-         }
+        title: title,
+        message: message,
+        type: "danger",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
        });
    },
 }
