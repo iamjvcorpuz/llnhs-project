@@ -360,6 +360,7 @@ class AttendanceController extends Controller
             } else if($request->qrcode != "" && $fulldays == true) {
                 // echo "tae2";
                 $logs = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+                $logs_has_attendance = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? ;",[$request->date,]);
                 if(count($logs) > 0) {
                     $start_date = current($logs)->date; 
                     $dates = $start_date; 
@@ -398,7 +399,18 @@ class AttendanceController extends Controller
                     // }
                     // array_push($map_attendance, $logs);
                     $map_attendance = $logs;
-                    
+                } else if(count($logs) == 0) {
+                    if(count($logs_has_attendance) > 0) {
+                        $object = new stdClass();
+                        $object->terminal = "";
+                        $object->terminal_id = "";
+                        $object->date = "";
+                        $object->day = "";
+                        $object->time = "";
+                        $object->mode = "absent";
+                        $object->status = "absent";
+                        array_push($map_attendance, $object);
+                    }
                 }
             } else if($request->qrcode == "" && $fulldays == false) {
                 // echo "tae3";
