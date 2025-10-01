@@ -29,7 +29,7 @@ export default class PrintIDEmployees extends Component {
             relationship: "",
             guardiancontact: "",
             address: "",
-            student_list: this.props.data,
+            student_list: this.props.data, 
             noPhotoList: [],
             noGuardianList: [],
             selected: [],
@@ -38,7 +38,7 @@ export default class PrintIDEmployees extends Component {
         $('body').attr('class', '');
         this.multiple = this.multiple.bind(this);
         this.generateQRCODES = this.generateQRCODES.bind(this);
-        // console.log(this.props)
+        // console.log(this.props);
     }
 
     componentDidMount() {
@@ -80,13 +80,14 @@ export default class PrintIDEmployees extends Component {
         });
         const urlParams = new URLSearchParams(window.location.search);
         const page = urlParams.get('selected'); 
+        // console.log(page)
         this.setState({
             selected: (typeof(page)!="undefined"&&page!=null&&page!="")?page.split(","):[]
         },() => { 
             if(self.state.selected.length>0) {
                 let temp = [];
-                self.props.data.student.forEach((element,i,arr) => {
-                    if(self.state.selected.includes(element.lrn)) {
+                self.props.data.forEach((element,i,arr) => {
+                    if(self.state.selected.includes(element.qr_code)) {
                         temp.push(element);
                     }
                     if((i+1) == arr.length) { 
@@ -223,7 +224,7 @@ export default class PrintIDEmployees extends Component {
                     fullname1 = val.first_name + " " + ((typeof(val.middle_name)!="undefined"&&val.middle_name!="")?val.middle_name.charAt(0) + ".":""),
                     lastname = val.last_name,
                     type = val.employee_type.toLocaleUpperCase(),
-                    econtact = val.emergency_contact_number;
+                    econtact = val.emergency_contact_number!=null?val.emergency_contact_number:"";
                 
                 if(loop_count == 1) {
                     loop_count++;
@@ -311,6 +312,7 @@ export default class PrintIDEmployees extends Component {
                     doc.setFont("helvetica", "normal");
                     doc.setFontSize(12);
                     doc.text(econtact, 139, 40 + 57,{align:'center',maxWidth: 45});
+
                 } else if(loop_count == 3) {
                     loop_count++;
                     doc.addImage("/images/id-teacher-front.png", "PNG", 5, 124, 88, 54);

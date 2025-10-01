@@ -36,7 +36,7 @@ export default class IDSEmployee extends Component {
                                     type="checkbox"
                                     // checked={row.getIsSelected()}
                                     name={`item-${row.original.uuid}`} // update here 
-                                    onChange={(e) => this.selectedID(e.target.checked,row.original.uuid)}
+                                    onChange={(e) => this.selectedID(e.target.checked,row.original.qr_code)}
                                 />
                             </div>
                         )
