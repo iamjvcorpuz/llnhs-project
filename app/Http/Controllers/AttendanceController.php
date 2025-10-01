@@ -456,7 +456,7 @@ class AttendanceController extends Controller
                         $object->profileImageBase64 = $svalue->student_id;
                         $object->fullname = $svalue->first_name . " " . $svalue->last_name;
                         $object->idnumber = $svalue->qr_code;
-                        $object->logger_type = "studnet";
+                        $object->logger_type = "student";
                         $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
                         $object->absent = $absent;
                         $object->tardy = $tardy;
@@ -478,7 +478,7 @@ class AttendanceController extends Controller
                         $object->profileImageBase64 = $svalue->student_id;
                         $object->fullname = $svalue->first_name . " " . $svalue->last_name;
                         $object->idnumber = $svalue->qr_code;
-                        $object->logger_type = "studnet";
+                        $object->logger_type = "student";
                         $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
                         $object->absent = $absent;
                         $object->tardy = $tardy;
@@ -496,13 +496,90 @@ class AttendanceController extends Controller
                         $object->profileImageBase64 = $svalue->student_id;
                         $object->fullname = $svalue->first_name . " " . $svalue->last_name;
                         $object->idnumber = $svalue->qr_code;
-                        $object->logger_type = "studnet";
+                        $object->logger_type = "student";
                         $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
                         $object->absent = $absent;
                         $object->tardy = $tardy;
                         $object->present = $present;
                         
                         array_push($map_attendance,$object);
+                    }
+
+                }
+
+            } else if($request->qrcode == "" && $fulldays == true) {
+                // echo "tae3";
+                // multiple student
+                $map_student_list = DB::select('
+                SELECT 
+                ROW_NUMBER() OVER () as no,
+                advisory_group.id,
+                student.qr_code,
+                CONCAT(student.last_name , \', \' , student.first_name) as fullname,
+                student.first_name,
+                student.last_name,
+                student.middle_name,
+                student.extension_name,
+                student.flsh_strand,
+                student.flsh_track, 
+                student.id AS student_id,
+                student.lrn, 
+                student.sex,
+                student.status AS \'student_status\',
+                advisory.school_year AS sy,
+                advisory.year_level AS grade,
+                advisory.section_name AS section
+                FROM advisory_group 
+                LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id AND advisory_group.status = "active"
+                LEFT JOIN student ON student.id = advisory_group.student_id
+                WHERE advisory_group.status = \'active\'');
+
+                $attendance = array();
+                
+                
+                foreach ($map_student_list as $key => $svalue) {
+
+                    $logs_temp = [];
+                    $check_timelogs = [];
+
+                    $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);  
+
+                    if(count($logs_temp)>0) {
+
+                        $absent = 0;
+                        $tardy = 0;
+                        $present = 1;
+
+                        foreach($logs_temp as $key_ => $value_) {
+                            $date = new DateTime($value_->date);
+                            $dayOfWeek = $date->format('D');
+                            $object = new stdClass();
+                            $object->_id = $svalue->student_id;
+                            $object->lrn = $svalue->lrn;
+                            $object->profileImageBase64 = $svalue->student_id;
+                            $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                            $object->idnumber = $svalue->qr_code;
+                            $object->logger_type = "student";
+                            $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
+                            $object->grade = $svalue->grade;
+                            $object->section = $svalue->section;
+                            $object->sy = $svalue->sy;
+                            $object->absent = $absent;
+                            $object->tardy = $tardy;
+                            $object->present = $present;
+                            $object->terminal = $value_->terminal;
+                            $object->terminal_id = $value_->terminal_id;
+                            $object->date = $value_->date;
+                            $object->day = $dayOfWeek;
+                            $object->time = $value_->time;
+                            $object->mode = $value_->mode;
+                            
+                            array_push($map_attendance,$object);                            
+                        }
+                        
+
+
+                        // array_push($logs, $logs_temp);
                     }
 
                 }

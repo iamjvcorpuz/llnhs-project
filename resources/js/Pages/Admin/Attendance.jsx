@@ -181,6 +181,34 @@ export default class Attendance extends Component {
             ],
             columns_classroom_status_daily_: [ 
                 {
+                    Header: 'Date', 
+                    width: 160,
+                    accessor: 'date',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Day', 
+                    width: 100,
+                    accessor: 'day',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Time', 
+                    accessor: 'time',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 350
+                },
+                {
+                    Header: 'Terminal', 
+                    accessor: 'terminal',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 350
+                },
+                {
                     Header: 'Student Name', 
                     accessor: 'fullname',
                     className: "text-wrap",
@@ -188,8 +216,15 @@ export default class Attendance extends Component {
                     width: 400
                 },
                 {
-                    Header: 'Grade/Section/SY', 
-                    accessor: 'section_grade',
+                    Header: 'Grade', 
+                    accessor: 'grade',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 350
+                },
+                {
+                    Header: 'Section', 
+                    accessor: 'section',
                     className: "text-wrap center",
                     filterable: true,
                     width: 350
@@ -557,7 +592,7 @@ export default class Attendance extends Component {
             ReactNotificationManager.error('Sorry','Please fill required field first');
             self.setState({loading: false});
         } else if(typeof(this.state.selectedMonthYear) == "undefined" || this.state.selectedMonthYear == "" ) {
-            ReactNotificationManager.error('Sorry','Please select Year and Month 1') ;
+            ReactNotificationManager.error('Sorry','Please select Year and Month') ;
             self.setState({loading: false});
         } else if(typeof(this.state.selectedQr) != "undefined" && this.state.queryType != "" && this.state.selectedQr == "" ) {
             if(this.state.queryType == "student") {
@@ -897,6 +932,15 @@ export default class Attendance extends Component {
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
                                         columns={this.state.columns_classroom_status_monthly}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="student"&&this.state.selectedQr==""&&this.state.calendar=="daily")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_daily_}
                                         defaultPageSize={31}
                                         showPagenation={false}
                                         loading={this.state.loading}
