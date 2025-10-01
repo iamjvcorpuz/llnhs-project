@@ -306,7 +306,7 @@ export default class Attendance extends Component {
         this.loadFilter = this.loadFilter.bind(this);
         this.selectedMonthYear = this.selectedMonthYear.bind(this);
         this.loadAttendanceClassroom = this.loadAttendanceClassroom.bind(this);
-        console.log(this.props)
+        // console.log(this.props)
     }
     
     componentDidMount() {
@@ -323,8 +323,11 @@ export default class Attendance extends Component {
             var selectedData = e.params.data; 
             self.setState({
                 selectedQr: selectedData.id,
-                calendar: "monthly"
+                calendar: "monthly",
+                data: [],data_temp: [],selectedMonthYear: ""
             },() => {
+                $("#smonthly").val("");
+                $("#sdaily").val(""); 
                 // $('input:radio[name="calendar"]:checked').prop('checked', true);
                 $('input:radio[name="calendar"][id="radioMonthly"]').prop('checked', true);
             });
@@ -340,7 +343,7 @@ export default class Attendance extends Component {
         $('input:radio[name="attendancestatus"]').on('change', function (e) { 
             let calendar = $('input:radio[name="calendar"]:checked').val();
             self.setState({loading: true});
-            console.log(e.target.value,self.state.data_temp.length,self.state.queryType,calendar); 
+            // console.log(e.target.value,self.state.data_temp.length,self.state.queryType,calendar); 
             if(self.state.data_temp.length > 0) { 
                 let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
                 let data = self.state.data_temp;
@@ -459,7 +462,7 @@ export default class Attendance extends Component {
                         holidaysList,
                         eventsList: [...holidaysList,...this.state.AttendanceList]
                     },() => {
-                        console.log(this.state.eventsList);
+                        // console.log(this.state.eventsList);
                     });
                 }
             });
@@ -499,7 +502,7 @@ export default class Attendance extends Component {
         let date = moment(new Date()).format("YYYY-MM-DD");
         let calendar = $('input:radio[name="calendar"]:checked').val();
         // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear},this.state.selectedID);
-        console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear,calendar:calendar})
+        // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear,calendar:calendar})
         $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
         self.setState({loading: true});
         if(this.state.queryType == "student" && calendar == "monthly" && this.state.selectedQr == "") {
@@ -509,7 +512,7 @@ export default class Attendance extends Component {
         }
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -535,7 +538,7 @@ export default class Attendance extends Component {
                                 });                                
                             }
 
-                            console.log(temp_list);
+                            // console.log(temp_list);
                             self.setState({data: temp_list,data_temp: temp_list ,loading: false});
 
                         } else if(calendar == "daily") {
@@ -550,7 +553,7 @@ export default class Attendance extends Component {
             });            
         } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") { 
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -760,7 +763,7 @@ export default class Attendance extends Component {
     }
 
     selectedMonthYear(val) {
-        console.log("val",val);
+        // console.log("val",val);
         let calendar = $('input:radio[name="calendar"]:checked').val();
         this.setState({selectedMonthYear: val,calendar:calendar});        
     }
