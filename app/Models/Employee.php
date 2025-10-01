@@ -26,5 +26,8 @@ class Employee extends Model
         'religion',
         'ethic_group',
         'status',
+        'emergency_contact_number',
+        'emergency_contact_name',
+        'emergency_contact_relation'
     ];
 }

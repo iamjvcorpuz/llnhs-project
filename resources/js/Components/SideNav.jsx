@@ -163,11 +163,33 @@ export default function SideNav({
                   </li> */}
                 </ul>
               </li>
+
               <li className="nav-item">
-                <Link href="/admin/users/ids" className="nav-link">
-                  <i className="nav-icon bi bi-person-vcard"></i>
+                <a href="#" className="nav-link">
+                  <i className="nav-icon bi bi-person-vcard-fill"></i>
                   <p>ID's</p>
-                </Link>
+                  <i className="nav-arrow bi bi-chevron-right"></i>
+                </a>
+                <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                    <Link href="/admin/student/ids" className="nav-link">
+                      <i className="nav-icon bi bi-person-vcard"></i>
+                      <p>Student</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/admin/employee/ids" className="nav-link">
+                      <i className="nav-icon bi bi-person-vcard"></i>
+                      <p>Employee</p>
+                    </Link>
+                  </li>
+                  {/* <li className="nav-item">
+                    <Link href="/admin/report/lesf" className="nav-link">
+                      <i className="nav-icon bi bi-file-pdf"></i>
+                      <p>LEARNER ENROLLMENT AND SURVEY FORM</p>
+                    </Link>
+                  </li> */}
+                </ul>
               </li>
               <li className="nav-item">
                 <a href="#" className="nav-link">

@@ -26,7 +26,7 @@ class EmployeeController extends Controller
     }
     public static function index_() 
     {
-        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,\'\' AS \'picture_base64\',employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t;');
+        $student = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,emergency_contact_number,emergency_contact_name,emergency_contact_relation,email,\'\' AS \'picture_base64\',employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t;');
         return response()->json([
             'status' => 'done',
             'error' => null,
@@ -55,6 +55,9 @@ class EmployeeController extends Controller
                             `employee`.`civil_status`,
                             `employee`.`religion`,
                             `employee`.`ethic_group`,
+                            `employee`.`emergency_contact_number`,
+                            `employee`.`emergency_contact_name`,
+                            `employee`.`emergency_contact_relation`,
                             `employee`.`created_at`,
                             `employee`.`updated_at` FROM employee WHERE status = "active" ' );
     }
@@ -76,8 +79,34 @@ class EmployeeController extends Controller
     }
     public static function getData($id)
     {
-        $student = Employee::findOrFail($id);
-        return $student;
+        // $student = Employee::findOrFail($id);
+        // return $student;
+        $student = DB::select('SELECT `employee`.`id`,
+        `employee`.`uuid`,
+        `employee`.`employee_type`,
+        `employee`.`qr_code`,
+        `employee`.`first_name`,
+        `employee`.`last_name`,
+        `employee`.`middle_name`,
+        `employee`.`extension_name`,
+        `employee`.`picture_base64`,
+        `employee`.`email`,
+        `employee`.`status`,
+        `employee`.`bdate`,
+        `employee`.`sex`,
+        `employee`.`civil_status`,
+        `employee`.`religion`,
+        `employee`.`ethic_group`,
+        `employee`.`emergency_contact_number`,
+        `employee`.`emergency_contact_name`,
+        `employee`.`emergency_contact_relation`,
+        `employee`.`created_at`,
+        `employee`.`updated_at` FROM employee WHERE uuid = ? ',[$id]);
+        if(count($student) > 0) {
+            return $student[0];
+        } else {
+            return [];
+        }
     }
     public static function getContacts($id)
     { 

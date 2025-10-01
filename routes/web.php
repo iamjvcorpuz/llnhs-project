@@ -356,13 +356,26 @@ Route::get('/admin/dashboard/users', function () {
     ]);
 })->middleware(['auth', 'verified']);
 
-Route::get('/admin/users/ids', function () {
+Route::get('/admin/student/ids', function () {
 
     $id = AuthenticatedSessionController::getAuthId();
     if($id!=null) {
         return Inertia::render('Admin/IDS',[
-            'user_list' => UserAccountsController::getAll(),
-            'data' => UserAccountsController::getAllUsers()
+            // 'user_list' => UserAccountsController::getAll(),
+            // 'data' => UserAccountsController::getAllUsers()
+        ]);
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
+})->middleware(['auth', 'verified']);
+
+Route::get('/admin/employee/ids', function () {
+
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        return Inertia::render('Admin/IDSEmployee',[
+            // 'user_list' => UserAccountsController::getAll(),
+            // 'data' => UserAccountsController::getAllUsers()
         ]);
     } else {
         abort(404, 'Opps Sorry!');
@@ -380,6 +393,25 @@ Route::get('/admin/student/print/ids', function () {
         abort(404, 'Opps Sorry!');
     }
 })->middleware(['auth', 'verified']);
+
+
+Route::get('/admin/employee/print/ids', function () {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
+        return Inertia::render('Admin/PrintIDEmployees',[ 
+            'data' => EmployeeController::getAll_(),
+            'vurl' => SystemSettingsController::getVURL()
+        ]);
+    } else {
+        abort(404, 'Opps Sorry!');
+    }
+})->middleware(['auth', 'verified']);
+
+Route::get('/employee/{id}/print/id', function (String $id) {
+    return Inertia::render('PrintID',[
+        "data" => StudentController::getDataID($id)
+    ]);
+});
 
 Route::get('/admin/dashboard/settings', function () {
     return Inertia::render('Admin/Users',[
