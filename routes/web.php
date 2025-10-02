@@ -408,8 +408,8 @@ Route::get('/admin/employee/print/ids', function () {
 })->middleware(['auth', 'verified']);
 
 Route::get('/employee/{id}/print/id', function (String $id) {
-    return Inertia::render('PrintID',[
-        "data" => StudentController::getDataID($id)
+    return Inertia::render('PrintIDEmployee',[
+        "data" => EmployeeController::getData($id)
     ]);
 });
 

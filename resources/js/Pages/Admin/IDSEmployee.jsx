@@ -99,7 +99,7 @@ export default class IDSEmployee extends Component {
                     className: "center",
                     Cell: ({row}) => { 
                        return <>
-                        <a target="_blank" href={`/student/${row.original.uuid}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
+                        <a target="_blank" href={`/employee/${row.original.uuid}/print/id`} className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={()=>{ }}> <i className="bi bi-printer"></i> Print ID</a>    
                        </>            
                     }
                 }
