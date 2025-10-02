@@ -64,6 +64,26 @@ export default class SF2 extends Component {
             schoolRegistry: this.props.schoolRegistry,
             student_male_total_daily: [],
             student_female_total_daily: [],
+            totalDropOutM: 0,
+            totalDropOutF: 0,
+            totalTransferOutM: 0,
+            totalTransferOutF: 0,
+            totalTransferInM: 0,
+            totalTransferInF: 0,
+            enrolmentASofM: 0,
+            enrolmentASofF: 0,
+            lateEnrolementM:0,
+            lateEnrolementF:0,
+            RegisteredLearnersM: 0,
+            RegisteredLearnersF: 0,
+            PEM: 0,
+            PEF: 0,
+            ADAM: 0,
+            PAMM: 0,
+            NSAM: 0,
+            ADAF: 0,
+            PAMF: 0,
+            NSAF: 0
         } 
         this.loadPDF = this.loadPDF.bind(this); 
         this.loadPDFTest = this.loadPDFTest.bind(this);
@@ -1117,15 +1137,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.enrolmentASofM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.enrolmentASofF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.enrolmentASofM) + Number(self.state.enrolmentASofF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }
                     ],
@@ -1136,15 +1156,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.lateEnrolementM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.lateEnrolementF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.lateEnrolementM) + Number(self.state.lateEnrolementF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1155,15 +1175,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.RegisteredLearnersM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.RegisteredLearnersF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.RegisteredLearnersM) + Number(self.state.RegisteredLearnersF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1174,15 +1194,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.PEM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.PEF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: ((Number(self.state.PEM) + Number(self.state.PEF) / 2) / 2), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1193,15 +1213,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.ADAM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.ADAF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.ADAM) + Number(self.state.ADAF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1212,15 +1232,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.PAMM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.PAMF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: ((Number(self.state.PAMM) + Number(self.state.PAMF) / 2) / 2), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1231,15 +1251,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.NSAM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.NSAF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.NSAM) + Number(self.state.NSAF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1250,15 +1270,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.totalDropOutM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.totalDropOutF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.totalDropOutM) + Number(self.state.totalDropOutF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1269,15 +1289,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.totalTransferOutM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.totalTransferOutF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.totalTransferOutM) + Number(self.state.totalTransferOutF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1288,15 +1308,15 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.totalTransferInM, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: self.state.totalTransferInF, 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: "0", 
+                            content: Number(self.state.totalTransferInM) + Number(self.state.totalTransferInF), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ]
@@ -2636,30 +2656,37 @@ export default class SF2 extends Component {
     fetchData() {
         let self = this;
         // console.log(self.state.selectedQr,self.state.selectedMonthYear) 
-        self.setState({loading: true});
-        getWeeksInMonth(self.state.selectedMonthYear,(c) => {
-            const getWeeksInMonth_ = c;
-            // console.log(getWeeksInMonth_)
-            self.setState({getWeeksInMonth:getWeeksInMonth_},() => {
-                axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
-                    console.log(response);
-                    if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                        let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-                        if(Object.keys(data).length>0) {
-                            self.setState({
-                                student_list: data.studentsList,
-                                sf2_data: data.sf2_data,
-                                loading: false
-                            },() => {
-                                self.generateData(data.sf2_data);
-                            });
+        if(self.state.selectedQr != "" && self.state.selectedMonthYear != "") {
+            self.setState({loading: true});
+            getWeeksInMonth(self.state.selectedMonthYear,(c) => {
+                const getWeeksInMonth_ = c;
+                // console.log(getWeeksInMonth_)
+                self.setState({getWeeksInMonth:getWeeksInMonth_},() => {
+                    axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
+                        console.log(response);
+                        if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(Object.keys(data).length>0) {
+                                let RegisteredLearnersM = data.studentsList.filter(e=>e.sex=="Male");
+                                let RegisteredLearnersF = data.studentsList.filter(e=>e.sex=="Female");
+                                self.setState({
+                                    student_list: data.studentsList,
+                                    sf2_data: data.sf2_data,
+                                    RegisteredLearnersM: RegisteredLearnersM.length,
+                                    RegisteredLearnersF: RegisteredLearnersF.length,
+                                    loading: false
+                                },() => {
+                                    self.generateData(data.sf2_data);
+                                });
+                            }
                         }
-                    }
+                    }); 
                 }); 
-            }); 
-        });
+            });            
+        } else {
 
-
+            ReactNotificationManager.error('Sorry','Please fill all required inputs')
+        }
     }
     getCheckHasAttendance(data,date) {
         if(data.some(e=>e.date==date) == true) {
@@ -2849,7 +2876,7 @@ export default class SF2 extends Component {
                         <div className="card-header">
                             <div className="row"> 
 
-                                <div className="col-lg-9">
+                                <div className="col-lg-8">
 
                                     <div className="form-group">
                                         <label >Select Class Section</label>
@@ -2870,19 +2897,23 @@ export default class SF2 extends Component {
                                     </div> 
                                 </div>
 
-                                <div className="col-lg-1">
+                                <div className="col-lg-2">
                                     <br />
                                     <button className="btn btn-primary" onClick={() => {
                                         this.fetchData();
                                     }}>
                                         <i className="bi bi-search"></i>
                                     </button>
+                                    <button className="btn btn-primary  ml-1" onClick={() => {
+                                        $('#qrcode').modal('show');
+                                    }}>
+                                        <i className="bi bi-plus"></i>
+                                    </button>
                                 </div>
                             </div>
 
                         </div>
                         <div className="card-body p-0">
-
                             <div className="row"> 
                                 <div className="col-lg-12">
                                     <div className="" >
@@ -2912,5 +2943,142 @@ export default class SF2 extends Component {
                 </div>
             </div>
 
+            <div className="modal fade" tabIndex="-1" role="dialog" id="qrcode" aria-hidden="false" data-bs-backdrop="static">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title fs-5">Others</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                            </button>
+                        </div>
+                        <div className="modal-body"> 
+
+
+                            <div className="row p-2">
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">* Enrolment as of (1st Friday of June)</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="enrolmentM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({enrolmentASofM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="endrolmentF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({enrolmentASofF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Late Enrollment during the month (beyond cut-off)</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="lateEnrolementM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({lateEnrolementM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="lateEnrolementF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({lateEnrolementF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Registered Learners as of end of the month</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="RegisteredLearnersM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({RegisteredLearnersM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="RegisteredLearnersF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({RegisteredLearnersF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Percentage of Enrolment as of end of the month</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="PEM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({PEM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="PEF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({PEF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Average Daily Attendance</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="ADAM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({ADAM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="ADAF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({ADAF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Percentage of Attendance for the month</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="PAMM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({PAMM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="PAMF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({PAMF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Number of students absent for 5 consecutive days:</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="NSAM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({NSAM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="NSAF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({NSAF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Drop out</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="totalDropOutM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({totalDropOutM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="totalDropOutF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({totalDropOutF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Transferred out</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="totalTransferOutM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({totalTransferOutM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="totalTransferOutF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({totalTransferOutF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div className="col-lg-12"> 
+                                    <label htmlFor="first_name" className="form-label">Transferred in</label>
+                                    <div className="row">
+                                        <div className="col-6">   
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="totalTransferInM" placeholder="Male" defaultValue="" required="" onChange={(e) => { this.setState({totalTransferInM: e.target.value})}}  />     
+                                        </div>
+                                        <div className="col-6">
+                                            <input type="number" min={0} className="form-control col-1 text-center" id="totalTransferInF" placeholder="Female" defaultValue="" required="" onChange={(e) => { this.setState({totalTransferInF: e.target.value})}}  />     
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="modal-footer"> 
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            if(this.state.student_list.length>0) {
+                                this.loadPDF();
+                            }
+                            $('#qrcode').modal('hide');
+                        }}>Done</button>
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </DashboardLayout>}
 }
