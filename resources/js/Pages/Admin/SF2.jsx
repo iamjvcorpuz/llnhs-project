@@ -35,7 +35,6 @@ export default class SF2 extends Component {
             sectionListTemp: this.props.sections,
             sectionList: [],
             yeargrade: this.props.schoolyeargrades,
-
             code: "",
             lrn: "",
             picture: "",
@@ -264,103 +263,103 @@ export default class SF2 extends Component {
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[0].mon!=null&&typeof(student_male_total_daily.WeeksInMonth[0].mon.logs)!="undefined")?student_male_total_daily.WeeksInMonth[0].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[0].tue!=null&&typeof(student_male_total_daily.WeeksInMonth[0].tue.logs)!="undefined")?student_male_total_daily.WeeksInMonth[0].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[0].wed!=null&&typeof(student_male_total_daily.WeeksInMonth[0].wed.logs)!="undefined")?student_male_total_daily.WeeksInMonth[0].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[0].thu!=null&&typeof(student_male_total_daily.WeeksInMonth[0].thu.logs)!="undefined")?student_male_total_daily.WeeksInMonth[0].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[0].fri!=null&&typeof(student_male_total_daily.WeeksInMonth[0].fri.logs)!="undefined")?student_male_total_daily.WeeksInMonth[0].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[1].mon!=null&&typeof(student_male_total_daily.WeeksInMonth[1].mon.logs)!="undefined")?student_male_total_daily.WeeksInMonth[1].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[1].tue!=null&&typeof(student_male_total_daily.WeeksInMonth[1].tue.logs)!="undefined")?student_male_total_daily.WeeksInMonth[1].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[1].wed!=null&&typeof(student_male_total_daily.WeeksInMonth[1].wed.logs)!="undefined")?student_male_total_daily.WeeksInMonth[1].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[1].thu!=null&&typeof(student_male_total_daily.WeeksInMonth[1].thu.logs)!="undefined")?student_male_total_daily.WeeksInMonth[1].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[1].fri!=null&&typeof(student_male_total_daily.WeeksInMonth[1].fri.logs)!="undefined")?student_male_total_daily.WeeksInMonth[1].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[2].mon!=null&&typeof(student_male_total_daily.WeeksInMonth[2].mon.logs)!="undefined")?student_male_total_daily.WeeksInMonth[2].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[2].tue!=null&&typeof(student_male_total_daily.WeeksInMonth[2].tue.logs)!="undefined")?student_male_total_daily.WeeksInMonth[2].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[2].wed!=null&&typeof(student_male_total_daily.WeeksInMonth[2].wed.logs)!="undefined")?student_male_total_daily.WeeksInMonth[2].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[2].thu!=null&&typeof(student_male_total_daily.WeeksInMonth[2].thu.logs)!="undefined")?student_male_total_daily.WeeksInMonth[2].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[2].fri!=null&&typeof(student_male_total_daily.WeeksInMonth[2].fri.logs)!="undefined")?student_male_total_daily.WeeksInMonth[2].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[3].mon!=null&&typeof(student_male_total_daily.WeeksInMonth[3].mon.logs)!="undefined")?student_male_total_daily.WeeksInMonth[3].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[3].tue!=null&&typeof(student_male_total_daily.WeeksInMonth[3].tue.logs)!="undefined")?student_male_total_daily.WeeksInMonth[3].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[3].wed!=null&&typeof(student_male_total_daily.WeeksInMonth[3].wed.logs)!="undefined")?student_male_total_daily.WeeksInMonth[3].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[3].thu!=null&&typeof(student_male_total_daily.WeeksInMonth[3].thu.logs)!="undefined")?student_male_total_daily.WeeksInMonth[3].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[3].fri!=null&&typeof(student_male_total_daily.WeeksInMonth[3].fri.logs)!="undefined")?student_male_total_daily.WeeksInMonth[3].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[4].mon!=null&&typeof(student_male_total_daily.WeeksInMonth[4].mon.logs)!="undefined")?student_male_total_daily.WeeksInMonth[4].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[4].tue!=null&&typeof(student_male_total_daily.WeeksInMonth[4].tue.logs)!="undefined")?student_male_total_daily.WeeksInMonth[4].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[4].wed!=null&&typeof(student_male_total_daily.WeeksInMonth[4].wed.logs)!="undefined")?student_male_total_daily.WeeksInMonth[4].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[4].thu!=null&&typeof(student_male_total_daily.WeeksInMonth[4].thu.logs)!="undefined")?student_male_total_daily.WeeksInMonth[4].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0,valign: "middle"}
                 },
                 {
                     content: (typeof(student_male_total_daily.WeeksInMonth)!="undefined"&&student_male_total_daily.WeeksInMonth.length>0&&student_male_total_daily.WeeksInMonth[4].fri!=null&&typeof(student_male_total_daily.WeeksInMonth[4].fri.logs)!="undefined")?student_male_total_daily.WeeksInMonth[4].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: student_male_total_daily.absent,
@@ -512,103 +511,103 @@ export default class SF2 extends Component {
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[0].mon!=null&&typeof(student_female_total_daily.WeeksInMonth[0].mon.logs)!="undefined")?student_female_total_daily.WeeksInMonth[0].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[0].tue!=null&&typeof(student_female_total_daily.WeeksInMonth[0].tue.logs)!="undefined")?student_female_total_daily.WeeksInMonth[0].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[0].wed!=null&&typeof(student_female_total_daily.WeeksInMonth[0].wed.logs)!="undefined")?student_female_total_daily.WeeksInMonth[0].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[0].thu!=null&&typeof(student_female_total_daily.WeeksInMonth[0].thu.logs)!="undefined")?student_female_total_daily.WeeksInMonth[0].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[0].fri!=null&&typeof(student_female_total_daily.WeeksInMonth[0].fri.logs)!="undefined")?student_female_total_daily.WeeksInMonth[0].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[1].mon!=null&&typeof(student_female_total_daily.WeeksInMonth[1].mon.logs)!="undefined")?student_female_total_daily.WeeksInMonth[1].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[1].tue!=null&&typeof(student_female_total_daily.WeeksInMonth[1].tue.logs)!="undefined")?student_female_total_daily.WeeksInMonth[1].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[1].wed!=null&&typeof(student_female_total_daily.WeeksInMonth[1].wed.logs)!="undefined")?student_female_total_daily.WeeksInMonth[1].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[1].thu!=null&&typeof(student_female_total_daily.WeeksInMonth[1].thu.logs)!="undefined")?student_female_total_daily.WeeksInMonth[1].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[1].fri!=null&&typeof(student_female_total_daily.WeeksInMonth[1].fri.logs)!="undefined")?student_female_total_daily.WeeksInMonth[1].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[2].mon!=null&&typeof(student_female_total_daily.WeeksInMonth[2].mon.logs)!="undefined")?student_female_total_daily.WeeksInMonth[2].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[2].tue!=null&&typeof(student_female_total_daily.WeeksInMonth[2].tue.logs)!="undefined")?student_female_total_daily.WeeksInMonth[2].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[2].wed!=null&&typeof(student_female_total_daily.WeeksInMonth[2].wed.logs)!="undefined")?student_female_total_daily.WeeksInMonth[2].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[2].thu!=null&&typeof(student_female_total_daily.WeeksInMonth[2].thu.logs)!="undefined")?student_female_total_daily.WeeksInMonth[2].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[2].fri!=null&&typeof(student_female_total_daily.WeeksInMonth[2].fri.logs)!="undefined")?student_female_total_daily.WeeksInMonth[2].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[3].mon!=null&&typeof(student_female_total_daily.WeeksInMonth[3].mon.logs)!="undefined")?student_female_total_daily.WeeksInMonth[3].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[3].tue!=null&&typeof(student_female_total_daily.WeeksInMonth[3].tue.logs)!="undefined")?student_female_total_daily.WeeksInMonth[3].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[3].wed!=null&&typeof(student_female_total_daily.WeeksInMonth[3].wed.logs)!="undefined")?student_female_total_daily.WeeksInMonth[3].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[3].thu!=null&&typeof(student_female_total_daily.WeeksInMonth[3].thu.logs)!="undefined")?student_female_total_daily.WeeksInMonth[3].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[3].fri!=null&&typeof(student_female_total_daily.WeeksInMonth[3].fri.logs)!="undefined")?student_female_total_daily.WeeksInMonth[3].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[4].mon!=null&&typeof(student_female_total_daily.WeeksInMonth[4].mon.logs)!="undefined")?student_female_total_daily.WeeksInMonth[4].mon.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[4].tue!=null&&typeof(student_female_total_daily.WeeksInMonth[4].tue.logs)!="undefined")?student_female_total_daily.WeeksInMonth[4].tue.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[4].wed!=null&&typeof(student_female_total_daily.WeeksInMonth[4].wed.logs)!="undefined")?student_female_total_daily.WeeksInMonth[4].wed.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[4].thu!=null&&typeof(student_female_total_daily.WeeksInMonth[4].thu.logs)!="undefined")?student_female_total_daily.WeeksInMonth[4].thu.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: (typeof(student_female_total_daily.WeeksInMonth)!="undefined"&&student_female_total_daily.WeeksInMonth.length>0&&student_female_total_daily.WeeksInMonth[4].fri!=null&&typeof(student_female_total_daily.WeeksInMonth[4].fri.logs)!="undefined")?student_female_total_daily.WeeksInMonth[4].fri.count:"",
-                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8}
+                    styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 8,cellPadding:0 ,valign: "middle"}
                 },
                 {
                     content: student_female_total_daily.absent,
@@ -2637,6 +2636,7 @@ export default class SF2 extends Component {
     fetchData() {
         let self = this;
         // console.log(self.state.selectedQr,self.state.selectedMonthYear) 
+        self.setState({loading: true});
         getWeeksInMonth(self.state.selectedMonthYear,(c) => {
             const getWeeksInMonth_ = c;
             // console.log(getWeeksInMonth_)
@@ -2883,9 +2883,14 @@ export default class SF2 extends Component {
                         </div>
                         <div className="card-body p-0">
 
-                            <div className="row">
+                            <div className="row"> 
                                 <div className="col-lg-12">
                                     <div className="" >
+                                        {this.state.loading?<div id="loadingSpinner" className="loading-spinner d-flex justify-content-center align-items-center" >
+                                            <div className="spinner-border text-primary" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>:null}
                                         <object
                                             id="obj1"
                                             type="application/pdf"
