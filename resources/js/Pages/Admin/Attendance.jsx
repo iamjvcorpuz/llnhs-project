@@ -201,21 +201,21 @@ export default class Attendance extends Component {
                     filterable: true,
                     width: 350,
                     Cell: ({row}) => {
-                        let timelogs = "";
                         let key = row.original.id;
                         let date = row.original.date;
                         let filter_redundunt = [];
+                        let timelogs = <div key={`xt_${key}_no_times`} className={`text-center col-12  btn btn-xs btn-danger mr-1`} >No Timelogs</div>;
                         let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
                         if(typeof(row.original) != "undefined" && typeof(row.original.logs) != "undefined" && row.original.logs.length > 0) { 
                             timelogs = row.original.logs.map((element1,i1) => {
                                 if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode != "absent") {
-                                    return <div key={`xt_${key}_${i1}`} className={`text-start btn btn-xs btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time} <br /> {element1.terminal}</div>;
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time} - {element1.terminal}</div>;
                                 } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode == "absent") {
-                                    return <div key={`xt_${key}_${i1}`} className={`text-start btn btn-xs btn-danger mr-1`} >Absent</div>;
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-danger mr-1`} >Absent</div>;
                                 } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && element1.mode != "absent") {
-                                    return <div key={`xt_${key}_${i1}`} className={`text-start btn btn-xs btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time}  <br /> {element1.terminal}</div>;
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time}  - {element1.terminal}</div>;
                                 } else if(typeof(attendancestatus) != "undefined"  && attendancestatus == "absent" && element1.mode == "absent") {
-                                    return <div key={`xt_${key}_${i1}`} className={`text-startbtn btn-xs btn-danger mr-1`} >Absent</div>;
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-danger mr-1`} >Absent</div>;
                                 }
 
                             });                            
@@ -529,7 +529,7 @@ export default class Attendance extends Component {
         }
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -570,7 +570,7 @@ export default class Attendance extends Component {
             });            
         } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") { 
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -642,7 +642,7 @@ export default class Attendance extends Component {
             self.setState({loading: true})
             // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
