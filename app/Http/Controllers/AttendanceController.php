@@ -579,6 +579,7 @@ class AttendanceController extends Controller
                     $object->absent = $absent;
                     $object->tardy = $tardy;
                     $object->present = $present;
+                    $object->logs = [];
 
                     if(count($logs_temp)>0) {
                         $present = 1;
