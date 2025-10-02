@@ -551,47 +551,77 @@ class AttendanceController extends Controller
                 
                 foreach ($map_student_list as $key => $svalue) {
 
+                    $date = new DateTime($request->date);
+                    $dayOfWeek = $date->format('D');
+
                     $logs_temp = [];
-                    $check_timelogs = [];
+                    $timelogs = [];
+
+                    $absent = 0;
+                    $tardy = 0;
+                    $present = 0;
 
                     $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);  
 
+                    $object = new stdClass();
+                    $object->_id = $svalue->student_id;
+                    $object->lrn = $svalue->lrn;
+                    $object->profileImageBase64 = $svalue->student_id;
+                    $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                    $object->idnumber = $svalue->qr_code;
+                    $object->logger_type = "student";
+                    $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
+                    $object->grade = $svalue->grade;
+                    $object->section = $svalue->section;
+                    $object->sy = $svalue->sy;
+                    $object->date = $request->date;
+                    $object->day = $dayOfWeek;
+                    $object->absent = $absent;
+                    $object->tardy = $tardy;
+                    $object->present = $present;
+
                     if(count($logs_temp)>0) {
-
-                        $absent = 0;
-                        $tardy = 0;
                         $present = 1;
-
+                        $absent = 0;
+                        $object->day = $dayOfWeek;
+                        $absent_ = 0;
+                        $tardy_ = 0;
+                        $present_ = 1;
+                        $map_temp_attendance = [];
                         foreach($logs_temp as $key_ => $value_) {
+                            $object_logs = new stdClass(); 
+                            
                             $date = new DateTime($value_->date);
                             $dayOfWeek = $date->format('D');
-                            $object = new stdClass();
-                            $object->_id = $svalue->student_id;
-                            $object->lrn = $svalue->lrn;
-                            $object->profileImageBase64 = $svalue->student_id;
-                            $object->fullname = $svalue->first_name . " " . $svalue->last_name;
-                            $object->idnumber = $svalue->qr_code;
-                            $object->logger_type = "student";
-                            $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
-                            $object->grade = $svalue->grade;
-                            $object->section = $svalue->section;
-                            $object->sy = $svalue->sy;
-                            $object->absent = $absent;
-                            $object->tardy = $tardy;
-                            $object->present = $present;
-                            $object->terminal = $value_->terminal;
-                            $object->terminal_id = $value_->terminal_id;
-                            $object->date = $value_->date;
-                            $object->day = $dayOfWeek;
-                            $object->time = $value_->time;
-                            $object->mode = $value_->mode;
-                            
-                            array_push($map_attendance,$object);                            
+                            $object_logs->absent = $absent_;
+                            $object_logs->tardy = $tardy_;
+                            $object_logs->present = $present_;
+                            $object_logs->terminal = $value_->terminal;
+                            $object_logs->terminal_id = $value_->terminal_id;
+                            $object_logs->date = $value_->date;
+                            $object_logs->day = $dayOfWeek;
+                            $object_logs->time = $value_->time;
+                            $object_logs->mode = $value_->mode;
+
+                            array_push($map_temp_attendance,$object_logs);                            
                         }
                         
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+                        $object->logs = $map_temp_attendance;
 
+                        array_push($map_attendance, $object);
+                    } else {
 
-                        // array_push($logs, $logs_temp);
+                        $present = 0;
+                        $absent = 1;
+                        
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+
+                        array_push($map_attendance, $object);
                     }
 
                 }
