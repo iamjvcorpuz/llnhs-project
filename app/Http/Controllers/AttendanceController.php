@@ -1232,7 +1232,7 @@ class AttendanceController extends Controller
             $phone_number = "";
             $messenger_id = "";
 
-            $mode = $val['status']=='present'?'present':'absent'; 
+            $mode = $val['status']=='present'?'present':($val['status']=='late'?'late':'absent'); 
             $notification = false;
             $student_id = $val['student_id']; 
 

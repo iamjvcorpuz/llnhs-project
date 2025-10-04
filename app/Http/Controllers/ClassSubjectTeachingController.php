@@ -481,7 +481,7 @@ class ClassSubjectTeachingController extends Controller
         // print_r($exist_class_result);
         // // echo $exist_class_result->class_id;
         // echo "--";
-        if($class_teaching_not_exist->count()==1&&$class_teaching_exist->count()==0) {  
+        if($class_teaching_not_exist->count()==1&&$class_teaching_exist->count()==1) {  
             if($exist_class->count() > 0) {
                 if($exist_class->count() == 1) {
                     if($exist_class_result->class_id == $request->classts && $exist_class_result->teacher_id == $request->teacher_id && $exist_class_result->subject_id == $request->subject ) {

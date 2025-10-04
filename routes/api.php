@@ -95,7 +95,8 @@ Route::post('/attendance/filter/time/logs/events',[AttendanceController::class,'
 Route::post('/attendance/all/time/logs',[AttendanceController::class,'getAllTimelogs']);
 // Route::post('/attendance/class/students',[AttendanceController::class,'getClassStudents']);
 Route::post('/attendance/class/students',[ClassSubjectTeachingController::class,'getStudentAssignedSeats']);
-Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClassV1']);
+Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClass']);
+// Route::post('/attendance/time/new/entry/by/class',[AttendanceController::class,'insertTimeTogsByClassV1']);
 Route::post('/attendance/time/new/entry/by/event',[AttendanceController::class,'insertTimeTogsByEvent']);
 Route::post('/attendance/time/new/entry/by/student',[AttendanceController::class,'insertTimeTogsClassByStudent']);
 Route::post('/attendance/time/today/timelogs',[AttendanceController::class,'getTodaysTimelogsClass']);

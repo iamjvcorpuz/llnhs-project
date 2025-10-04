@@ -301,9 +301,10 @@ export default class ClassSubjectTeacher extends Component {
             friday,
             saturday,
             sunday
-        })
+        });
 
-        if(time_start != "" && time_end != "" && description != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != "") { // && flsh_track != ""&& flsh_strand != "" 
+        console.log(time_start != "" , time_end != "" , description != "" , classts != "" , subject != "" , yearlevel != "" , grade != "" ,classroom != "" , schoolyear != "");
+        if(time_start != "" && time_end != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != "") { // description != "" &&  && flsh_track != ""&& flsh_strand != "" 
             Swal.fire({
                 title: "If all fields are correct and please click to continue to save", 
                 showCancelButton: true,
@@ -566,33 +567,33 @@ export default class ClassSubjectTeacher extends Component {
         } catch (error) {
             
         }
-        // console.log({ 
-        //     id: self.state.selected_id,
-        //     teacher_id,
-        //     teacher,
-        //     time_start,
-        //     time_end,
-        //     description,
-        //     subject,
-        //     subject_name,
-        //     classts,
-        //     yearlevel,
-        //     grade,
-        //     classroom,
-        //     schoolyear,
-        //     flsh_track,
-        //     flsh_strand,
-        //     section_name,
-        //     monday,
-        //     tuesday,
-        //     wednesday,
-        //     thursday,
-        //     friday,
-        //     saturday,
-        //     sunday
-        // })
+        console.log({ 
+            id: self.state.selected_id,
+            teacher_id,
+            teacher,
+            time_start,
+            time_end,
+            description,
+            subject,
+            subject_name,
+            classts,
+            yearlevel,
+            grade,
+            classroom,
+            schoolyear,
+            flsh_track,
+            flsh_strand,
+            section_name,
+            monday,
+            tuesday,
+            wednesday,
+            thursday,
+            friday,
+            saturday,
+            sunday
+        })
 
-        if(time_start != "" && time_end != "" && description != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != "") { // && flsh_track != ""&& flsh_strand != "" 
+        if(time_start != "" && time_end != "" && classts != "" && subject != "" && yearlevel != "" && grade != "" && classroom != "" && schoolyear != "" && (monday != "" || tuesday != "" || wednesday != "" || thursday != "" || friday != "" || saturday != "" || sunday != "" )) { // && description != "" && flsh_track != ""&& flsh_strand != "" 
             Swal.fire({
                 title: "If all fields are correct and please click to continue to save", 
                 showCancelButton: true,
@@ -644,7 +645,7 @@ export default class ClassSubjectTeacher extends Component {
                     // console.log(datas);
                     axios.post('/class/subject/teacher/update',datas).then( function (response) {
                         // handle success
-                        // console.log(response);
+                        console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 const data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 // console.log("data",data);
@@ -786,6 +787,16 @@ export default class ClassSubjectTeacher extends Component {
                 $("#description-alert").html('Required Field');
                 $("#description-alert").addClass('d-block invalid-feedback');
             }
+            if(monday == "" || tuesday == "" || wednesday == "" || thursday == "" || friday == "" || saturday == "" || sunday == "" ) {
+                Swal.fire({  
+                    title: 'Day of the week is requried to select', 
+                    icon: "error",
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    cancelButtonText: "Close"
+                });   
+            }
         }
     }
     
@@ -905,9 +916,9 @@ export default class ClassSubjectTeacher extends Component {
                     temp_data.push(val);
                 }
             });
-        } else if(day == "tueday") { 
+        } else if(day == "tuesday") { 
             this.state.data_temp.forEach(val => { 
-                if(val.tueday == "1") {
+                if(val.tuesday == "1") {
                     temp_data.push(val);
                 }
             });
@@ -1246,13 +1257,13 @@ export default class ClassSubjectTeacher extends Component {
                             
                             <div className="col-md-6">
                                 <label htmlFor="time_start" className="form-label">Time Start</label>
-                                <input type="time" className="form-control"id="etime_start" defaultValue="00:00" min={"07:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#time_start-alert").removeAttr('class').addClass('invalid-feedback');}}  />
-                                <div id="time_start-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <input type="time" className="form-control"id="etime_start" defaultValue="00:00" min={"07:00"} required="" onChange={(e) => { console.log(e.target.value); this.setState({time_start:e.target.value}); $("#etime_start-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <div id="etime_start-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="time_end" className="form-label">Time End</label>
-                                <input type="time" className="form-control" id="etime_end" min={this.state.time_start} defaultValue={this.state.time_start} required="" onChange={(e) => {  $("#time_end-alert").removeAttr('class').addClass('invalid-feedback');}}  />
-                                <div id="time_end-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <input type="time" className="form-control" id="etime_end" min={this.state.time_start} defaultValue={this.state.time_start} required="" onChange={(e) => {  $("#etime_end-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <div id="etime_end-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
                                 <div className="row">
@@ -1301,27 +1312,27 @@ export default class ClassSubjectTeacher extends Component {
                                 </div>
                             </div>
                             <div className="col-md-12 d-none">
-                                <label htmlFor="description" className="form-label">Description</label>
-                                <input type="text" className="form-control"  id="edescription" defaultValue="" required="" onChange={(e) => {  $("#description-alert").removeAttr('class').addClass('invalid-feedback');}}  />
-                                <div id="description-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <label htmlFor="edescription" className="form-label">Description</label>
+                                <input type="text" className="form-control"  id="edescription" defaultValue="" required="" onChange={(e) => {  $("#edescription-alert").removeAttr('class').addClass('invalid-feedback');}}  />
+                                <div id="edescription-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             
                             <div className="col-md-12">
-                                <label htmlFor="subject" className="form-label">Subject</label>
-                                <select className="form-select" id="esubject" required="" onChange={(e) => {  $("#subject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
+                                <label htmlFor="esubject" className="form-label">Subject</label>
+                                <select className="form-select" id="esubject" required="" onChange={(e) => {  $("#esubject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
                                     <option disabled >Choose...</option>
                                     <option></option>
                                     <EachMethod of={this.state.subjects} render={(element,index) => {
                                         return <option value={element.id}>{element.subject_name}</option>
                                     }} />
                                 </select>
-                                <div id="subject-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <div id="esubject-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             
                             <div className="col-md-12">
-                                <label htmlFor="teacher" className="form-label">Teacher</label>
-                                <input type="text" className="form-control" list="selectedTeacher" id="eteacher" defaultValue="" required="" onChange={(e) => {  $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedTeacher: e.target.value})}}  />
-                                <div id="teacher-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <label htmlFor="eteacher" className="form-label">Teacher</label>
+                                <input type="text" className="form-control" list="selectedTeacher" id="eteacher" defaultValue="" required="" onChange={(e) => {  $("#eteacher-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedTeacher: e.target.value})}}  />
+                                <div id="eteacher-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="classts" className="form-label">Class Name</label>                                            
@@ -1348,10 +1359,10 @@ export default class ClassSubjectTeacher extends Component {
                                         return <option value={`${element.id}`} >{`${element.section_name} (Room:${element.classroom})`}   </option>
                                     }} />
                                 </select>
-                                <div id="classts-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <div id="eclassts-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
-                                <label htmlFor="yearlevel" className="form-label">Grade</label>                                            
+                                <label htmlFor="eyearlevel" className="form-label">Grade</label>                                            
                                 {/* <input type="text" className="form-control" list="selectedYearLevel" id="yearlevel" defaultValue="" required=""   /> */}
 
                                 <select name="eyearlevel" id="eyearlevel" className="form-control"  aria-readonly onChange={(e) => { 
@@ -1368,7 +1379,7 @@ export default class ClassSubjectTeacher extends Component {
                                         return <option value={`${element.id}`} >{`${element.year_grade}`}</option>
                                     }} />
                                 </select>
-                                <div id="yearlevel-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <div id="eyearlevel-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             {/* <div className="col-md-12">
                                 <label htmlFor="section" className="form-label">Class Section</label>
@@ -1377,36 +1388,36 @@ export default class ClassSubjectTeacher extends Component {
                             </div> */}
 
                             <div className="col-md-12">
-                                <label htmlFor="sectionname" className="form-label">Section Name</label>
-                                <input type="text" className="form-control" id="esectionname" defaultValue="" required="" onChange={(e) => {  $("#sectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
-                                <div id="sectionname-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <label htmlFor="esectionname" className="form-label">Section Name</label>
+                                <input type="text" className="form-control" id="esectionname" defaultValue="" required="" onChange={(e) => {  $("#esectionname-alert").removeAttr('class').addClass('invalid-feedback'); }}  />
+                                <div id="esectionname-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
-                                <label htmlFor="schoolyear" className="form-label">School Year</label>
-                                <input type="text" className="form-control" list="selectedSY" id="eschoolyear" defaultValue="" required="" onChange={(e) => {  $("#schoolyear-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
-                                <div id="schoolyear-alert" className="invalid-feedback">Please select a valid state.</div>
+                                <label htmlFor="eschoolyear" className="form-label">School Year</label>
+                                <input type="text" className="form-control" list="selectedSY" id="eschoolyear" defaultValue="" required="" onChange={(e) => {  $("#eschoolyear-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSY: e.target.value})}}  />
+                                <div id="eschoolyear-alert" className="invalid-feedback">Please select a valid state.</div>
                             </div>
                             <div className="col-md-12">
-                                <label htmlFor="flsh_track" className="form-label">Track</label>
+                                <label htmlFor="eflsh_track" className="form-label">Track</label>
                                 {/* <input type="text" className="form-control" id="flsh_track" defaultValue="" required="" onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}}  /> */}
-                                <select name="eflsh_track" id="eflsh_track" className="form-control"  onChange={(e) => { $("#flsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
+                                <select name="eflsh_track" id="eflsh_track" className="form-control"  onChange={(e) => { $("#eflsh_track-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_track: e.target.value})}} >
                                     <option value=""></option>
                                         <EachMethod of={this.state.track} render={(element,index) => {
                                             return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
                                         }} />
                                 </select>
-                                <div id="flsh_track-alert" className="valid-feedback">Looks good!</div>
+                                <div id="eflsh_track-alert" className="valid-feedback">Looks good!</div>
                             </div> 
                             <div className="col-md-12">
-                                <label htmlFor="flsh_strand" className="form-label">Strand</label>
+                                <label htmlFor="eflsh_strand" className="form-label">Strand</label>
                                 {/* <input type="text" className="form-control" id="flsh_strand" defaultValue="" required="" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}  /> */}
-                                <select name="eflsh_strand" id="eflsh_strand" className="form-control" onChange={(e) => { $("#flsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
+                                <select name="eflsh_strand" id="eflsh_strand" className="form-control" onChange={(e) => { $("#eflsh_strand-alert").removeAttr('class').addClass('invalid-feedback');  this.setState({flsh_strand: e.target.value})}}>
                                     <option value=""></option>
                                         <EachMethod of={this.state.strand} render={(element,index) => {
                                             return <option >{`${element.name} ${(element.acronyms!=""?"("+element.acronyms+")":"")}`}</option>
                                         }} />
                                 </select>
-                                <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
+                                <div id="eflsh_strand-alert" className="valid-feedback">Looks good!</div>
                             </div>
 
                         </div> 
