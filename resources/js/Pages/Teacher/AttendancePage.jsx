@@ -305,6 +305,8 @@ export default class AttendancePage extends Component {
                                         if (obj.lrn === val.lrn) {
                                             if(val.mode == "present") {
                                                 $(`.seat_${obj.seat_number}`).addClass('student_chair_present');
+                                            } else if(val.mode == "late") {
+                                                $(`.seat_${obj.seat_number}`).addClass('student_chair_absent');
                                             } else {
                                                 $(`.seat_${obj.seat_number}`).addClass('student_chair_absent');
                                             }
@@ -630,7 +632,7 @@ export default class AttendancePage extends Component {
         let date = moment(new Date()).format("YYYY-MM-DD");
         // console.log({id:id})
         axios.post('/attendance/class/students',{id:id}).then(function (response) {
-            // console.log(response)
+            console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 // console.log("loadStudentClass",response.data.status,data);
@@ -656,19 +658,60 @@ export default class AttendancePage extends Component {
                             schedule_day.push("Sat");
                         }
                     }
-                    self.setState({
-                        schedule_day: (schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):"",
-                        teaching_class: data.class_teaching,
-                        table_row: Number(data.classrooms_seats[0].number_rows),
-                        table_column: Number(data.classrooms_seats[0].number_columns),
-                        classStudentList: data.student,
-                        seats:  data.classrooms_seats_assign,
-                        assign_students:  data.classrooms_seats_assign,
-                        start_scanning: true,
-                        loading_subject_fetch:false
-                    },() => {
-                        self.assignedStudentList();
-                    });
+                    if(data.classrooms_seats.length > 0 && data.classrooms_seats_assign.length > 0  && data.student.length > 0 ) {
+                        self.setState({
+                            schedule_day: (schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):"",
+                            teaching_class: data.class_teaching,
+                            table_row: Number(data.classrooms_seats[0].number_rows),
+                            table_column: Number(data.classrooms_seats[0].number_columns),
+                            classStudentList: data.student,
+                            seats:  data.classrooms_seats_assign,
+                            assign_students:  data.classrooms_seats_assign,
+                            start_scanning: true,
+                            loading_subject_fetch:false
+                        },() => {
+                            self.assignedStudentList();
+                        });
+                    } else {
+                        let listmessage = "";
+                        if(data.student.length == 0) [
+                            listmessage+=`<li class="list-group-item">Has no student added to class.</li>`
+                        ]
+                        if(data.classrooms_seats.length == 0) [
+                            listmessage+=`<li class="list-group-item">Has no seats.</li>`
+                        ]
+                        if(data.classrooms_seats_assign.length == 0) [
+                            listmessage+=`<li class="list-group-item">Has no seats assign.</li>`
+                        ]
+                        Swal.fire({  
+                            title: "Required to this options" ,
+                            html:`<ul class="list-group" >${listmessage}</ul>`, 
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: "Ok",
+                            confirmButtonText: "Continue",
+                            confirmButtonColor: "#DD6B55",
+                            icon: "error",
+                            showLoaderOnConfirm: true, 
+                            closeOnClickOutside: false,  
+                            dangerMode: true,
+                        });
+                        self.setState({
+                            schedule_day: (schedule_day.length>0)?schedule_day.toString().replaceAll(',',' - '):"",
+                            teaching_class: data.class_teaching,
+                            table_row: 0,
+                            table_column: 0,
+                            classStudentList: [],
+                            seats:  [],
+                            assign_students:  [],
+                            start_scanning: true,
+                            loading_subject_fetch:false
+                        },() => { 
+                        });
+                    }
+
                 }
             }
         });
@@ -708,7 +751,7 @@ export default class AttendancePage extends Component {
 
     submitClassAttendance() {
         let self = this;
-        if(self.state.student_attendance.length == self.state.seats.length) {
+        if(self.state.student_attendance.length > 0) { // self.state.student_attendance.length == self.state.seats.length
 
             let date = moment(new Date()).format("YYYY-MM-DD")
             Swal.fire({
@@ -851,6 +894,8 @@ export default class AttendancePage extends Component {
         let student_attendance = this.state.student_attendance;
         let updatedstudent_list = [];
         if(student_attendance.length > 0 && student_attendance.some(e=>e.student_id==val.student_id)) {
+            let existing = true;
+            let existing_id =  "";
             updatedstudent_list = student_attendance.map(obj => {
                 if (obj.student_id === val.student_id) {
                   return { ...obj,status: status, val }; // Create a new object with updated age
@@ -871,9 +916,10 @@ export default class AttendancePage extends Component {
         return <DashboardLayout title="Student" user={this.props.auth.user} profile={this.props.auth.profile}><div className="noselect"> 
             <Head title="Attendance" /> 
             <div className="mx-auto">
-                {(this.state.start_scanning==true)?<div className="">
+                {/* {(this.state.start_scanning==true)?<div className="log-center-data-mobile">
 
-                </div>:<div className="log-center-data-mobile">
+                </div>: */}
+                <div className="log-center-data-mobile">
                 <div className="row">
                     <div className="form-group hide d-none">
                         <label>Select Option</label>
@@ -926,6 +972,7 @@ export default class AttendancePage extends Component {
                             }} />
                         </select>
                     </div>:null}
+
                     {(this.state.scan_type=="event_attendance")?<div className="form-group">
                         <label>Event Option</label>
                         <select name="subject" className="form-control" id="subject" onChange={(e) => { 
@@ -941,6 +988,7 @@ export default class AttendancePage extends Component {
                             }} />
                         </select>
                     </div>:null}
+                    
                 </div>
                 <div className="row">
                     {(this.state.loading_subject_fetch==true)?<div className="col-lg-12 center mt-5">
@@ -949,7 +997,8 @@ export default class AttendancePage extends Component {
                     </div>
                     </div>:null}
                 </div>
-                </div>}
+                </div>
+                {/* } */}
             </div>
             
             <div className="app-content">
@@ -981,30 +1030,44 @@ export default class AttendancePage extends Component {
                                     {Array.from({length: this.state.table_column}).map((v,b) => {
                                         count++;
                                         let count_=this.state.table_row*this.state.table_column-count;
-                                        return  <div key={`seat_${a}_${b}`} className="col mt-3 mb-3">
-                                                    <center>                                                
+                                        let student_data = this.state.seats.find(e=>e.seat_number==(count_+1));
+                                        let selected_data = typeof(student_data)!="undefined"?this.state.student_attendance.find(e=>e.student_id==student_data.student_id):undefined; 
+                                        if(typeof(student_data)=="undefined") {
+                                            $(`#seat_${a}_${b}`).css('opacity', '0.5');
+                                        }
+                                        return  <div key={`seat_${a}_${b}`} id={`seat_${a}_${b}`} className="col mt-3 mb-3">
+                                                    <center>
                                                         <div className="attendance_icons">
                                                             <img src="/images/student_chair.png" id={`col_${b}_row_${a}_chair`} className={`student_chair seat_${count_+1}`} alt="" />
                                                             {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<img id={`picture_col_${b}_row_${a}_count`} src={`/profile/photo/student/${this.state.seats.find(e=>e.seat_number==(count_+1)).lrn}`} onError={e=>{return e.target.src = '/adminlte/dist/assets/img/avatar.png'}} className="attendance_prof_img rounded-circle auto-margin-lr" alt=""  />:null}
                                                         </div>
                                                         {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<><label id={`col_${b}_row_${a}_name`} className="badge text-bg-success" >{this.state.seats.find(e=>e.seat_number==(count_+1)).fullname}</label><br /></>:<></>}
                                                         <label id={`col_${b}_row_${a}_count`} className="badge text-bg-primary" ># {count_+1}</label>
-                                                        <div>
-                                                        <button className="btn btn-xs btn-success" onClick={() => {
+                                                        
+                                                        {(typeof(student_data)!="undefined")?<div>
+                                                        <button className={`btn btn-xs btn-success ${(typeof(student_data)!="undefined"&&typeof(selected_data)!="undefined"&&selected_data.status=="present")?'d-none':''} `} title="Present" onClick={() => {
                                                             $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_absent');  
                                                             $(`#col_${b}_row_${a}_chair`).addClass('student_chair_present');
                                                             $(`#picture_col_${b}_row_${a}_count`).removeClass('absent_profile_picture');  
                                                             $(`#picture_col_${b}_row_${a}_count`).addClass('present_profile_picture');
                                                             this.setAttendance("present",this.state.seats.find(e=>e.seat_number==(count_+1)));
                                                         }}><i className="bi bi-check"></i></button>
-                                                        <button className="btn btn-xs btn-danger" onClick={() => {
+                                                        <button className={`btn btn-xs btn-warning ${(typeof(student_data)!="undefined"&&typeof(selected_data)!="undefined"&&selected_data.status=="late")?'d-none':''}`} title="Late" onClick={() => {
+                                                            $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_present');
+                                                            $(`#col_${b}_row_${a}_chair`).addClass('student_chair_absent');
+                                                            $(`#picture_col_${b}_row_${a}_count`).removeClass('present_profile_picture');
+                                                            $(`#picture_col_${b}_row_${a}_count`).addClass('absent_profile_picture');
+                                                            this.setAttendance("late",this.state.seats.find(e=>e.seat_number==(count_+1)));
+                                                        }}><i className="bi bi-x"></i></button>
+                                                        <button className={`btn btn-xs btn-danger ${(typeof(student_data)!="undefined"&&typeof(selected_data)!="undefined"&&selected_data.status=="absent")?'d-none':''}`} title="Absent" onClick={() => {
                                                             $(`#col_${b}_row_${a}_chair`).removeClass('student_chair_present');
                                                             $(`#col_${b}_row_${a}_chair`).addClass('student_chair_absent');
                                                             $(`#picture_col_${b}_row_${a}_count`).removeClass('present_profile_picture');
                                                             $(`#picture_col_${b}_row_${a}_count`).addClass('absent_profile_picture');
                                                             this.setAttendance("absent",this.state.seats.find(e=>e.seat_number==(count_+1)));
                                                         }}><i className="bi bi-x"></i></button>
-                                                        </div>
+                                                        </div>:null }
+                                                        
                                                     </center>
                                                 </div>
                                     })}

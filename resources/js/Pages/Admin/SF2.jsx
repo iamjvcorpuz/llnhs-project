@@ -64,6 +64,7 @@ export default class SF2 extends Component {
             schoolRegistry: this.props.schoolRegistry,
             student_male_total_daily: [],
             student_female_total_daily: [],
+            totalDaysAttendance: 0,
             totalDropOutM: 0,
             totalDropOutF: 0,
             totalTransferOutM: 0,
@@ -124,6 +125,7 @@ export default class SF2 extends Component {
         //         this.setState({loading: false})
         //     }, 2000);
         // });
+        
     }
     
     async loadPDF() {
@@ -135,11 +137,12 @@ export default class SF2 extends Component {
         let img_full = '/images/sf2/1.png';
         let img_absent = '/images/sf2/2.png';
         let img_tardy = '/images/sf2/3.png';
-        let img_late = '/images/sf2/4.png';
+        let img_late = '/images/sf2/3.png';
+        let img_cutting = '/images/sf2/4.png';
         let student_male_total_daily = self.state.student_male_total_daily;
         let student_female_total_daily = self.state.student_female_total_daily;
         // console.log(student_male_total_daily)
-        // console.log(student_female_total_daily)
+        console.log(self.state.student_male_list)
         try {
             let self = this;
             let sgv = "";
@@ -1046,6 +1049,8 @@ export default class SF2 extends Component {
                             doc.addImage(img_tardy, 'JPEG', textPos.x - 1.5, textPos.y - 0.5, 3.5 , 5);
                         } else if(data.cell.raw.content == "late") {
                             doc.addImage(img_late, 'JPEG', textPos.x - 1.5, textPos.y - 0.5, 3.5 , 5);
+                        } else if(data.cell.raw.content == "cutting") {
+                            doc.addImage(img_cutting, 'JPEG', textPos.x - 1.5, textPos.y - 0.5, 3.5 , 5);
                         }
                     } 
                 }
@@ -1202,7 +1207,7 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: ((Number(self.state.PEM) + Number(self.state.PEF) / 2) / 2), 
+                            content: ((Number(self.state.PEM) / Number(self.state.PEF)) * 100), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -1240,7 +1245,7 @@ export default class SF2 extends Component {
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         },
                         {
-                            content: ((Number(self.state.PAMM) + Number(self.state.PAMF) / 2) / 2), 
+                            content: ((Number(self.state.PAMM) / Number(self.state.PAMF)) * 100), 
                             styles: {halign: 'center', valign: 'middle',minWidth: 5,minCellHeight: 0,cellWidth: 6.5,fontSize: 5}
                         }   
                     ],
@@ -2659,11 +2664,21 @@ export default class SF2 extends Component {
         if(self.state.selectedQr != "" && self.state.selectedMonthYear != "") {
             self.setState({loading: true});
             getWeeksInMonth(self.state.selectedMonthYear,(c) => {
+                let total_days = 0;
+                c.forEach(element => {
+                    if(Object.keys(element).length>0) {
+                        Object.keys(element).forEach(element_ => { 
+                            if(element[element_] != null && typeof(element[element_].fulldate) !="undefined") {
+                                total_days++;
+                            }
+                        });
+                    }
+                });  
                 const getWeeksInMonth_ = c;
                 // console.log(getWeeksInMonth_)
-                self.setState({getWeeksInMonth:getWeeksInMonth_},() => {
+                self.setState({getWeeksInMonth:getWeeksInMonth_,totalDaysAttendance: total_days},() => {
                     axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
-                        console.log(response);
+                        // console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "200" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                             if(Object.keys(data).length>0) {
@@ -2674,6 +2689,10 @@ export default class SF2 extends Component {
                                     sf2_data: data.sf2_data,
                                     RegisteredLearnersM: RegisteredLearnersM.length,
                                     RegisteredLearnersF: RegisteredLearnersF.length,
+                                    enrolmentASofM: RegisteredLearnersM.length,
+                                    enrolmentASofF: RegisteredLearnersF.length,
+                                    PEM: (RegisteredLearnersM.length / RegisteredLearnersM.length) * 100,
+                                    PEF: (RegisteredLearnersF.length / RegisteredLearnersF.length) * 100,
                                     loading: false
                                 },() => {
                                     self.generateData(data.sf2_data);
@@ -2688,6 +2707,7 @@ export default class SF2 extends Component {
             ReactNotificationManager.error('Sorry','Please fill all required inputs')
         }
     }
+    
     getCheckHasAttendance(data,date) {
         if(data.some(e=>e.date==date) == true) {
             return true;
@@ -2695,6 +2715,41 @@ export default class SF2 extends Component {
             return false;
         }
     }
+
+    attendanceChecking(data,e) {
+        console.log(data);
+        let status  = "full";
+        let has_absent = false;
+        let has_late = false;
+        let absent = 0;
+        let late = 0;
+        data.forEach(element => {
+            if(element.mode == 'absent') {
+                // absent++;
+                has_absent = true;
+            } else if(element.mode == 'late') { 
+                // late++;
+                has_late = true;
+            }
+        });
+        if(has_absent == false && has_late == true) {
+            late++;
+            status = 'late';
+        } else if(has_absent == true && has_late == false) {
+            status = 'absent';
+            absent++;
+        } else if(has_absent == true && has_late == true) {
+            status = 'cuting';
+            absent++;
+        }
+        
+        e({
+            status: status,
+            absent: absent,
+            late: late
+        });
+    }
+
     generateData(data) {
         // console.log(data)
         // console.log(this.state.getWeeksInMonth);
@@ -2709,6 +2764,11 @@ export default class SF2 extends Component {
         let student_female_total_daily_absent = 0;
         let student_male_total_daily_tardy = 0;
         let student_female_total_daily_tardy = 0;
+        let total_days = 0;
+
+
+
+        
         student.forEach((val,i_,arr) => {
             const temp_student_list = {...val,WeeksInMonth: JSON.parse(WeeksInMonth_)};
             // console.log(temp_student_list);
@@ -2724,9 +2784,24 @@ export default class SF2 extends Component {
 
                 let week2 = student_male_total_daily.WeeksInMonth[i];
                 let weekfemale = student_female_total_daily.WeeksInMonth[i];
-
+                
                 if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code) == true) { 
-                    week.mon.logs = { status: 'full',morning: '',afternoon:''}; 
+                    let data_ = data.filter(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code); 
+                    let status  = "full";
+                    let absent = 0;
+                    let late = 0 ;
+                    self.attendanceChecking(data_,(retruns_) => {
+                        status = retruns_.status;
+                        absent = retruns_.absent;
+                        late = retruns_.late;
+                        if(absent>0) {
+                            totalAbsent++; 
+                        }
+                        if(late>0) {
+                            totalTardy++;
+                        }
+                    });
+                    week.mon.logs = { status: status, morning: '',afternoon:''}; 
                     if(val.sex == "Male") {
                         let temp_male_count_present = week2.mon.count;
                         temp_male_count_present++;
@@ -2746,7 +2821,22 @@ export default class SF2 extends Component {
                     }
                 } 
                 if(week.tue != null && data.length > 0 && data.some(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.tue.logs = { status: 'full',morning: '',afternoon:'',absent: 0,tardy: 0};  
+                    let data_ = data.filter(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code); 
+                    let status  = "full";
+                    let absent = 0;
+                    let late = 0 ;
+                    self.attendanceChecking(data_,(retruns_) => {
+                        status = retruns_.status;
+                        absent = retruns_.absent;
+                        late = retruns_.late;
+                        if(absent>0) {
+                            totalAbsent++; 
+                        }
+                        if(late>0) {
+                            totalTardy++;
+                        }
+                    });
+                    week.tue.logs = { status: status,morning: '',afternoon:'',absent: 0,tardy: 0};  
                     if(val.sex == "Male") { 
                         let temp_male_count_present = week2.tue.count;
                         temp_male_count_present++;
@@ -2766,7 +2856,22 @@ export default class SF2 extends Component {
                     }
                 }
                 if(week.wed != null && data.length > 0 && data.some(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.wed.logs = { status: 'full',morning: '',afternoon:'',absent: 0,tardy: 0};  
+                    let data_ = data.filter(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code); 
+                    let status  = "full";
+                    let absent = 0;
+                    let late = 0 ;
+                    self.attendanceChecking(data_,(retruns_) => {
+                        status = retruns_.status;
+                        absent = retruns_.absent;
+                        late = retruns_.late;
+                        if(absent>0) {
+                            totalAbsent++; 
+                        }
+                        if(late>0) {
+                            totalTardy++;
+                        }
+                    });
+                    week.wed.logs = { status: status,morning: '',afternoon:'',absent: 0,tardy: 0};  
                     if(val.sex == "Male") { 
                         let temp_male_count_present = week2.wed.count;
                         temp_male_count_present++;
@@ -2786,7 +2891,22 @@ export default class SF2 extends Component {
                     }
                 }
                 if(week.thu != null && data.length > 0 && data.some(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.thu.logs = { status: 'full',morning: '',afternoon:'',absent: 0,tardy: 0};  
+                    let data_ = data.filter(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code); 
+                    let status  = "full";
+                    let absent = 0;
+                    let late = 0 ;
+                    self.attendanceChecking(data_,(retruns_) => {
+                        status = retruns_.status;
+                        absent = retruns_.absent;
+                        late = retruns_.late;
+                        if(absent>0) {
+                            totalAbsent++; 
+                        }
+                        if(late>0) {
+                            totalTardy++;
+                        }
+                    });
+                    week.thu.logs = { status: status, morning: '',afternoon:'',absent: absent,tardy: late};  
                     if(val.sex == "Male") { 
                         let temp_male_count_present = week2.thu.count;
                         temp_male_count_present++;
@@ -2806,7 +2926,22 @@ export default class SF2 extends Component {
                     }
                 }
                 if(week.fri != null && data.length > 0 && data.some(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.fri.logs = { status: 'full',morning: '',afternoon:'',absent: 0,tardy: 0};  
+                    let data_ = data.filter(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code); 
+                    let status  = "full";
+                    let absent = 0;
+                    let late = 0 ;
+                    self.attendanceChecking(data_,(retruns_) => {
+                        status = retruns_.status;
+                        absent = retruns_.absent;
+                        late = retruns_.late;
+                        if(absent>0) {
+                            totalAbsent++; 
+                        }
+                        if(late>0) {
+                            totalTardy++;
+                        }
+                    });
+                    week.fri.logs = { status: status,morning: '',afternoon:'',absent: absent,tardy: late};  
                     if(val.sex == "Male") { 
                         let temp_male_count_present = week2.fri.count;
                         temp_male_count_present++;

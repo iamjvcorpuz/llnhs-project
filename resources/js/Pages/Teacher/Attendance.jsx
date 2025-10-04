@@ -33,13 +33,15 @@ export default class Student extends Component {
                     Header: 'Date', 
                     width: 150,
                     accessor: 'date',
-                    className: "text-start"
+                    className: "text-start",
+                    filterable: true
                 },  
                 {
                     Header: 'Time Logs', 
                     accessor: 'logs',
                     className: "text-wrap",
                     minWidth: 800,
+                    filterable: true,
                     Cell: ({row}) => {  
                         let timelogs = "wait";
                         let key = row.original.id;
@@ -215,7 +217,7 @@ export default class Student extends Component {
                                     </div>
                                     
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                 {/* <Calendar
                                     events={this.state.eventsList}
                                     localizer={localizer}

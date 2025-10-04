@@ -37,7 +37,7 @@ export default class StudentAdvisoryList extends Component {
                     Cell: ({row}) => { 
                        return <img className="" height={150} width={150}  onError={(e)=>{ 
                             e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                       }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />
+                       }} alt="Picture Error" src={`/profile/photo/student/${row.original.lrn}`} />
                     }
                 }, 
                 {
@@ -45,12 +45,14 @@ export default class StudentAdvisoryList extends Component {
                     accessor: 'lrn',
                     Header: 'LRN NO.', 
                     maxWidth: 100,
+                    filterable: true
                 },
                 {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
-                    accessor: 'fullname'
+                    accessor: 'fullname',
+                    filterable: true
                 }, 
                 {
                     id: "action",
@@ -512,7 +514,7 @@ export default class StudentAdvisoryList extends Component {
                                         <div className="col-lg-2 me-auto">
                                             <h3 className="card-title mt-2 "> <i className="bi bi-person"></i> Student List</h3>
                                         </div>                                        
-                                        <div className="col-lg-4">
+                                        {/* <div className="col-lg-4">
                                             <div className="input-group">
                                                 <span  className="input-group-text">School Year</span>
                                                 <select  className="form-select" id="gender" required="" defaultValue="" >
@@ -525,7 +527,7 @@ export default class StudentAdvisoryList extends Component {
                                                     <option>2025-2026</option>
                                                 </select>
                                             </div> 
-                                        </div>
+                                        </div> */}
 
                                         <button className="btn btn-primary col-lg-1 mr-1" onClick={() => {
                                             $("#studentModel").modal('show')
@@ -533,7 +535,7 @@ export default class StudentAdvisoryList extends Component {
                                     </div>
                                     
                                 </div>
-                                <div className="card-body">
+                                <div className="card-body p-0">
                                 <ReactTable
                                     key={"react-tables"}
                                     className={"table table-bordered table-striped "}
@@ -636,7 +638,7 @@ export default class StudentAdvisoryList extends Component {
                                             </strong>
                                             <br />
                                             <strong>
-                                            Room No.:{this.state.room_number.toLocaleUpperCase()}
+                                            Room No.: {this.state.room_number.toLocaleUpperCase()}
                                             </strong>
                                         </div>
                                         <img src={this.state.qr_code_data}  className="mx-auto" /> 

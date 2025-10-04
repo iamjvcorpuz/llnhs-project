@@ -165,7 +165,7 @@ export default class ClassSchedule extends Component {
                     temp_data.push(val);
                 }
             });
-        } else if(day == "tueday") { 
+        } else if(day == "tuesday") { 
             this.state.schedules.forEach(val => { 
                 if(val.tueday == "1") {
                     temp_data.push(val);
