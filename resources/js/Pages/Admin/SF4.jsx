@@ -1431,8 +1431,7 @@ export default class SF2 extends Component {
                 transferFInA: 0,
                 transferMInB: 0,
                 transferFInB: 0,
-                transferMInAB: 0,
-                transferFInAB: 0
+                transferMInAB: 0, 
             });
     
             if((main_i + 1) == main_arr.length) { 
