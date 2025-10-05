@@ -208,8 +208,12 @@ export default class Attendance extends Component {
                         let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
                         if(typeof(row.original) != "undefined" && typeof(row.original.logs) != "undefined" && row.original.logs.length > 0) { 
                             timelogs = row.original.logs.map((element1,i1) => {
-                                if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode != "absent") {
-                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time} - {element1.terminal}</div>;
+                                if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && (element1.mode == "IN" || element1.mode == "OUT")) {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time} - {(element1.terminal!="web")?element1.terminal:""}</div>;
+                                } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && (element1.mode == "late" || element1.mode == "tardy")) {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="late"?'warning':'info')} mr-1`} >{element1.mode.toUpperCase()}: {element1.time} - {(element1.terminal!="web")?element1.terminal:""} {(element1.terminal=="web")?element1.subject:""}</div>;
+                                } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && (element1.mode == "present" || element1.mode == "tardy")) {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="present"?'success':'info')} mr-1`} >{element1.mode.toUpperCase()}: {element1.time} - {(element1.terminal!="web")?element1.terminal:""} {(element1.terminal=="web")?element1.subject:""}</div>;
                                 } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode == "absent") {
                                     return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-danger mr-1`} >Absent</div>;
                                 } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && element1.mode != "absent") {
@@ -529,7 +533,7 @@ export default class Attendance extends Component {
         }
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                // console.log(response)
+                console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -570,7 +574,7 @@ export default class Attendance extends Component {
             });            
         } else if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr == "" && this.state.queryType != "" && this.state.selectedMonthYear != "") { 
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                // console.log(response)
+                console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
@@ -642,7 +646,7 @@ export default class Attendance extends Component {
             self.setState({loading: true})
             // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                // console.log(response)
+                console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);

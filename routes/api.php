@@ -318,16 +318,16 @@ Route::post('/admin/sf2/{code}',function(Request $request) {
 
 
 Route::post('/admin/sf4',function(Request $request) {
-    // $id = AuthenticatedSessionController::getAuthId();
-    // if($id!=null) {
+    $id = AuthenticatedSessionController::getAuthId();
+    if($id!=null) {
        return [
         "data" =>  AdvisoryController::sf4($request->month),
        ];
-    // } else {
-    //     http_response_code(500);
-    //     echo json_encode(['message' => 'Crazy thing just happened!' ]);
-    //     exit();
-    // }
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Crazy thing just happened!' ]);
+        exit();
+    }
 });
 
 Route::post('/admin/school/details/update',function(Request $request) {
