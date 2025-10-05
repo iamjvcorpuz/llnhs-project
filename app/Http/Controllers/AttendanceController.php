@@ -603,6 +603,20 @@ class AttendanceController extends Controller
                             $object_logs->day = $dayOfWeek;
                             $object_logs->time = $value_->time;
                             $object_logs->mode = $value_->mode;
+                            $object_logs->subject = "";
+                            if($value_->mode == "absent") {
+                                $absent = 1;
+                                $present = 0;
+                            }
+                            if($value_->teacher_id != null) {
+                                $temp = explode('_',$value_->terminal_id); 
+                                if( count($temp) > 0 && gettype($temp[2]) != null) {
+                                    $subject = DB::select("SELECT * FROM class_teaching WHERE uuid = ? ",[$temp[2]]);
+                                    if(count($subject)>0) {
+                                        $object_logs->subject = $subject[0]->subject_name;
+                                    }
+                                }
+                            }
 
                             array_push($map_temp_attendance,$object_logs);                            
                         }
