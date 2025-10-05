@@ -289,7 +289,9 @@ Route::post('/teacher/advisory/sf2/{code}',function(Request $request) {
     if($id!=null) {
        return [
         "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
-        "studentsList" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($request->code)
+        "studentsList" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($request->code), 
+        "dropout" => AdvisoryController::studentDropOut($request->code), 
+        "transfer" => AdvisoryController::studentTransfer($request->code),
        ];
     } else {
         http_response_code(500);
@@ -304,6 +306,8 @@ Route::post('/admin/sf2/{code}',function(Request $request) {
        return [
         "sf2_data" =>  AdvisoryController::sf2($id,$request->month,$request->code), 
         "studentsList" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($request->code), 
+        "dropout" => AdvisoryController::studentDropOut($request->code), 
+        "transfer" => AdvisoryController::studentTransfer($request->code),
        ];
     } else {
         http_response_code(500);
