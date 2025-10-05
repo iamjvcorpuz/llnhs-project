@@ -2780,8 +2780,7 @@ export default class SF2 extends Component {
         let total_female_5_absent = 0;
 
         for (let i = 0; i < student_total_daily.WeeksInMonth.length; i++) {
-            let week = student_total_daily.WeeksInMonth[i]; 
-            console.log(week)
+            let week = student_total_daily.WeeksInMonth[i];  
             if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate) == true) { 
                 total_days++;
             }
@@ -3075,10 +3074,10 @@ export default class SF2 extends Component {
 
                 getWeeksInMonth_student_male_total_daily_temp.push(week2);
                 getWeeksInMonth_student_female_total_daily_temp.push(weekfemale);
-                if(total_male_5_absent_>=5) {
+                if(total_male_5_absent_>=1) {
                     total_male_5_absent++;
                 }
-                if(total_female_5_absent_>=5) {
+                if(total_female_5_absent_>=1) {
                     total_female_5_absent++;
                 }
             } 
@@ -3105,7 +3104,13 @@ export default class SF2 extends Component {
         let PAMF = (((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF ) * 100);
         let ADAM = (student_male_total_daily_present / self.state.totalDaysAttendance) * 100;
         let ADAF = (student_female_total_daily_present / self.state.totalDaysAttendance) * 100;
-
+        let PAMTOTAL = ((PAMM + PAMF) / 2);
+        if(ADAM=="NaN") {
+            ADAM = 0;
+        }
+        if(ADAF=="NaN") {
+            ADAF = 0;
+        }
         // console.log("Percentage of Attendance for the month (male): ",((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
         // console.log("Percentage of Attendance for the month (female): ",((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF) * 100);
         // console.log("Percentage of Attendance for the month: ", ((PAMM + PAMF) / 2));
@@ -3120,14 +3125,15 @@ export default class SF2 extends Component {
             student_female_list: student_list.filter(e => e.sex=="Female"),
             student_male_total_daily: student_male_total_daily,
             student_female_total_daily: student_female_total_daily,
-            PAMM: PAMM,
-            PAMF: PAMF,
-            PAMTOTAL: ((PAMM + PAMF) / 2),
-            ADAM: ADAM.toFixed(2),
-            ADAF: ADAF.toFixed(2),
-            ADATOTAL: (ADAM / ADAF).toFixed(2),
+            PAMM: (PAMM.toFixed(2) != "NaN")?PAMM.toFixed(2):0,
+            PAMF: (PAMF.toFixed(2) != "NaN")?PAMF.toFixed(2):0,
+            PAMTOTAL: (PAMTOTAL.toFixed(2) != "NaN")?PAMTOTAL:0,
+            ADAM: (ADAM != "NaN")?ADAM.toFixed(2):0,
+            ADAF: (ADAF != "NaN")?ADAF.toFixed(2):0,
+            ADATOTAL: ((ADAM / ADAF).toFixed(2)!="NaN")?(ADAM / ADAF).toFixed(2):0,
             NSAM: total_male_5_absent,
-            NSAF: total_female_5_absent
+            NSAF: total_female_5_absent,
+            loading: false
         },() => {
             this.loadPDF();
         })
