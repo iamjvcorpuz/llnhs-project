@@ -107,8 +107,7 @@ export default class SF2 extends Component {
         // });
     }
 
-    async loadPDF() {
-        console.log("loading pdf")
+    async loadPDF() { 
         try {
             let self = this;
             let sgv = "";
@@ -349,6 +348,7 @@ export default class SF2 extends Component {
                 });
 
             }
+
             if(self.state.selectedMonthYear != "") {
                 self.state.advisory.forEach(element => {
                     temp_data.push([ 
@@ -365,152 +365,153 @@ export default class SF2 extends Component {
                             styles: {halign: 'left',minWidth: 40,minCellHeight: 0,cellWidth:40,fontSize: 7}
                         },
                         {
-                            content: "", // registered lerners
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.student_male_list)!="undefined")?element.student_male_list.length:0, // registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 6,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // registered lerners
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.student_female_list)!="undefined")?element.student_female_list.length:0, // registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 6,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// registered lerners
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.student_female_list)!="undefined")?element.student_female_list.length+element.student_male_list.length:0,// registered lerners
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 6,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // attendance da 
-                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.ADAM)!="undefined")?element.ADAM:0, // attendance da 
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// attendance da
-                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.ADAM)!="undefined")?element.ADAF:0,// attendance da
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// attendance da
-                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.ADATOTAL)!="undefined")?element.ADATOTAL:0,// attendance da
+                            styles: {halign: 'center',minWidth: 5,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // attendance pm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.PAMM)!="undefined")?element.PAMM:0, // attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 6,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// attendance pm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.PAMF)!="undefined")?element.PAMF:0,// attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 6,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// attendance pm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.PAMTOTAL)!="undefined")?element.PAMTOTAL:0,// attendance pm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 6,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // DROPPED OUT cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropMOutA)!="undefined")?element.dropMOutA:0, // DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// DROPPED OUT cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropFOutA)!="undefined")?element.dropFOutA:0,// DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// DROPPED OUT cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropMOutA)!="undefined")?element.dropMOutA+element.dropFOutA:0,// DROPPED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // DROPPED OUT fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropMOutB)!="undefined")?element.dropMOutB:0, // DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// DROPPED OUT fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropFOutB)!="undefined")?element.dropFOutB:0,// DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// DROPPED OUT fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropFOutB)!="undefined")?element.dropFOutB+element.dropMOutB:0,// DROPPED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // DROPPED OUT cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropMOutAB)!="undefined")?element.dropMOutAB:0, // DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// DROPPED OUT cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropFOutAB)!="undefined")?element.dropFOutAB:0,// DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// DROPPED OUT cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.dropMOutAB)!="undefined")?element.dropMOutAB+element.dropFOutAB:0,// DROPPED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // TRANSFERRED OUT cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMOutA)!="undefined")?element.transferMOutA:0, // TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED OUT cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFOutA)!="undefined")?element.transferFOutA:0,// TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED OUT cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMOutA)!="undefined")?element.transferMOutA+element.transferFOutA:0,// TRANSFERRED OUT cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // TRANSFERRED OUT fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMOutB)!="undefined")?element.transferMOutB:0, // TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED OUT fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFOutB)!="undefined")?element.transferMOutB:0,// TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED OUT fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFOutB)!="undefined")?element.transferMOutB+element.transferFOutB:0,// TRANSFERRED OUT fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // TRANSFERRED OUT cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFOutAB)!="undefined")?element.transferMOutAB:0, // TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED OUT cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFOutAB)!="undefined")?element.transferFOutAB:0,// TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED OUT cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFOutAB)!="undefined")?element.transferMOutAB+element.transferFOutAB:0,// TRANSFERRED OUT cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // TRANSFERRED IN cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMInA)!="undefined")?element.transferMInA:0, // TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED IN cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFInA)!="undefined")?element.transferFInA:0,// TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED IN cpm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMInA)!="undefined")?element.transferMInA+element.transferFInA:0,// TRANSFERRED IN cpm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // TRANSFERRED IN fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMInB)!="undefined")?element.transferMInB:0, // TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED IN fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFInB)!="undefined")?element.transferFInB:0,// TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED IN fm
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMInB)!="undefined")?element.transferMInB+element.transferFInB:0,// TRANSFERRED IN fm
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "", // TRANSFERRED IN cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMInAB)!="undefined")?element.transferMInAB:0, // TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED IN cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferFInAB)!="undefined")?element.transferFInAB:0,// TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         },
                         {
-                            content: "",// TRANSFERRED IN cem
-                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4}
+                            content: (typeof(element.transferMInAB)!="undefined")?element.transferMInAB+element.transferFInAB:0,// TRANSFERRED IN cem
+                            styles: {halign: 'center',minWidth: 0,minCellHeight: 0,cellWidth: 5,fontSize: 4,cellPadding:0,valign: "middle"}
                         }
                     ]);
                 });                   
             }
+
             const doc = new jsPDF({orientation: 'l',format: 'letter',compressPdf:true});
             doc.addFont('/fonts/arial/ARIALNB.TTF','Arial Narrow Bold', "bold");
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");
@@ -533,7 +534,7 @@ export default class SF2 extends Component {
 
             doc.text('Name of School : ' + self.state.schoolRegistry.school_name, 28, 31,{align:'left'});
             doc.text('School Year : ' + self.props.sy, 176, 31,{align:'left'}); 
-            doc.text('Report for the Month of : ' + self.state.selectedMonthYear, 221, 31,{align:'left'});
+            doc.text('Report for the Month of : ' + ((self.state.selectedMonthYear!="")?moment(self.state.selectedMonthYear,'YYYY-MM').format('MMMM YYYY'):""), 221, 31,{align:'left'});
 
             doc.setFontSize(8);
             autoTable(doc,{ 
@@ -898,7 +899,6 @@ export default class SF2 extends Component {
         }
     }
 
-
     browser_check_preview(){ // check para disable ang preview
 		let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 
@@ -975,72 +975,484 @@ export default class SF2 extends Component {
 
     }
 
+    getCheckHasAttendance(data,date) {
+        if(data.some(e=>e.date==date) == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    attendanceChecking(data,e) {
+        // console.log(data);
+        let status  = "full";
+        let has_absent = false;
+        let has_late = false;
+        let absent = 0;
+        let late = 0;
+        data.forEach(element => {
+            if(element.mode == 'absent') {
+                // absent++;
+                has_absent = true;
+            } else if(element.mode == 'late') { 
+                // late++;
+                has_late = true;
+            }
+        });
+        if(has_absent == false && has_late == true) {
+            late++;
+            status = 'late';
+        } else if(has_absent == true && has_late == false) {
+            status = 'absent';
+            absent++;
+        } else if(has_absent == true && has_late == true) {
+            status = 'cuting';
+            absent++;
+        }
+        
+        e({
+            status: status,
+            absent: absent,
+            late: late
+        });
+    }
+
     fetchData() {
         let self = this;
-        this.loadPDF();
+        // this.loadPDF();
         // console.log(self.state.selectedQr,self.state.selectedMonthYear) 
-        // getWeeksInMonth(self.state.selectedMonthYear,(c) => {
-        //     const getWeeksInMonth_ = c;
-        //     console.log(getWeeksInMonth_)
-        //     self.setState({getWeeksInMonth:getWeeksInMonth_},() => {
-        //         axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
-        //             // console.log(response);
-        //             if( typeof(response.status) != "undefined" && response.status == "200" ) {
-        //                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
-        //                 if(Object.keys(data).length>0) {
-        //                     self.setState({
-        //                         student_list: data.studentsList,
-        //                         loading: false
-        //                     },() => {
-
-        //                         self.generateData(data.sf2_data);
-        //                     });
-        //                 }
-        //             }
-        //         }); 
-        //     }); 
-        // });
+        getWeeksInMonth(self.state.selectedMonthYear,(c) => {
+            let total_days = 0;
+            c.forEach(element => {
+                if(Object.keys(element).length>0) {
+                    Object.keys(element).forEach(element_ => { 
+                        if(element[element_] != null && typeof(element[element_].fulldate) !="undefined") {
+                            total_days++;
+                        }
+                    });
+                }
+            });  
+            const getWeeksInMonth_ = c; 
+            self.setState({getWeeksInMonth:getWeeksInMonth_,totalDaysAttendance: total_days},() => {
+                axios.post(`/admin/sf4/`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
+                    // console.log(response);
+                    if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                        let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                        if(Object.keys(data).length>0) {
+                            self.setState({
+                                loading: false
+                            },() => {
+                                self.generateData(data.data);
+                            });
+                        }
+                    }
+                }); 
+            }); 
+        });
     }
 
-    generateData(data) {
+    generateData(data_) {
         // console.log(data)
-        // console.log(this.state.getWeeksInMonth)
+        // console.log(this.state.getWeeksInMonth);
         let self = this;
-        const student = self.state.student_list;
-        let student_list = []; 
-        // console.log("student",student);
-        student.forEach((val,i_,arr) => {
-            const temp_student_list = {...val,WeeksInMonth: JSON.parse(JSON.stringify(this.state.getWeeksInMonth))}
-            // let getWeeksInMonth = this.state.getWeeksInMonth;
-            let getWeeksInMonth_temp = [];
-            for (let i = 0; i < temp_student_list.WeeksInMonth.length; i++) {
-                let week = temp_student_list.WeeksInMonth[i]; 
-                if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code) == true) { 
-                    week.mon.logs = { status: 'full',morning: '',afternoon:''}; 
-                } else if(week.tue != null && data.length > 0 && data.some(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.tue.logs = { status: 'full',morning: '',afternoon:''};  
-                } else if(week.wed != null && data.length > 0 && data.some(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.wed.logs = { status: 'full',morning: '',afternoon:''};  
-                } else if(week.thu != null && data.length > 0 && data.some(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.thu.logs = { status: 'full',morning: '',afternoon:''};  
-                } else if(week.fri != null && data.length > 0 && data.some(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code) == true) {
-                    week.fri.logs = { status: 'full',morning: '',afternoon:''};  
+        let advisory_list = [];
+
+        data_.forEach((main_val,main_i,main_arr) => {
+            let data = main_val.logs;
+            const student = main_val.student;
+            let WeeksInMonth_ = JSON.stringify(this.state.getWeeksInMonth);
+            let student_list = []; 
+            // console.log("student",student);
+            let student_total_daily = {WeeksInMonth: JSON.parse(WeeksInMonth_),absent: 0,tardy:0};
+            let student_male_total_daily = {WeeksInMonth: JSON.parse(WeeksInMonth_),absent: 0,tardy:0};
+            let student_female_total_daily = {WeeksInMonth: JSON.parse(WeeksInMonth_),absent: 0,tardy:0}; 
+            let student_male_total_daily_absent = 0;
+            let student_male_total_daily_present = 0;
+            let student_female_total_daily_absent = 0;
+            let student_female_total_daily_present = 0;
+            let student_male_total_daily_tardy = 0;
+            let student_female_total_daily_tardy = 0;
+            let total_days = 0;
+            let total_male_5_absent = 0;
+            let total_female_5_absent = 0;
+    
+
+            for (let i = 0; i < student_total_daily.WeeksInMonth.length; i++) {
+                let week = student_total_daily.WeeksInMonth[i];
+                if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate) == true) { 
+                    total_days++;
+                }
+                if(week.tue != null && data.length > 0 && data.some(e=>e.date==week.tue.fulldate) == true) { 
+                    total_days++;
+                }
+                if(week.wed != null && data.length > 0 && data.some(e=>e.date==week.wed.fulldate) == true) { 
+                    total_days++;
+                }
+                if(week.thu != null && data.length > 0 && data.some(e=>e.date==week.thu.fulldate) == true) { 
+                    total_days++;
+                }
+                if(week.fri != null && data.length > 0 && data.some(e=>e.date==week.fri.fulldate) == true) { 
+                    total_days++;
+                }
+            }
+
+            student.forEach((val,i_,arr) => {
+                const temp_student_list = {...val,WeeksInMonth: JSON.parse(WeeksInMonth_)};
+                // console.log(temp_student_list);
+                // let getWeeksInMonth = this.state.getWeeksInMonth;
+                let getWeeksInMonth_temp = [];
+                let getWeeksInMonth_student_male_total_daily_temp = [];
+                let getWeeksInMonth_student_female_total_daily_temp = [];
+                let totalAbsent = 0;
+                let totalTardy = 0;
+                for (let i = 0; i < temp_student_list.WeeksInMonth.length; i++) {
+    
+                    let week = temp_student_list.WeeksInMonth[i]; 
+    
+                    let week2 = student_male_total_daily.WeeksInMonth[i];
+                    let weekfemale = student_female_total_daily.WeeksInMonth[i];
+                    let total_male_5_absent_ = 0;
+                    let total_female_5_absent_ = 0;
+                    
+                    if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code) == true) { 
+                        let data_ = data.filter(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code); 
+                        let status  = "full";
+                        let absent = 0;
+                        let late = 0 ;
+                        self.attendanceChecking(data_,(retruns_) => {
+                            status = retruns_.status;
+                            absent = retruns_.absent;
+                            late = retruns_.late;
+                            if(absent>0) {
+                                totalAbsent++; 
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_absent++;
+                                    total_male_5_absent_++; 
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;                                
+                                }
+                            } else {
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_present++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_present++;
+                                }
+                            }
+                            if(late>0) {
+                                totalTardy++;
+                            }
+                        });
+                        week.mon.logs = { status: status, morning: '',afternoon:''}; 
+                        if(val.sex == "Male") {
+                            let temp_male_count_present = week2.mon.count;
+                            temp_male_count_present++;
+                            week2.mon.count = temp_male_count_present - absent;
+                        } else if(val.sex == "Female") { 
+                            let temp_male_count_present = weekfemale.mon.count;
+                            temp_male_count_present++;
+                            weekfemale.mon.count = temp_male_count_present - absent;
+                        }
+                    } else if(week.mon != null && data.length > 0 && data.some(e=>e.date==week.mon.fulldate&&e.qr_code===val.qr_code) == false && self.getCheckHasAttendance(data,week.mon.fulldate) == true) { 
+                        week.mon.logs = { status: 'absent',morning: '',afternoon:''};
+                        totalAbsent++; 
+                        if(val.sex == "Male") { 
+                            student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                        } else if(val.sex == "Female") { 
+                            student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                        }
+                    } 
+                    if(week.tue != null && data.length > 0 && data.some(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code) == true) {
+                        let data_ = data.filter(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code); 
+                        let status  = "full";
+                        let absent = 0;
+                        let late = 0 ;
+                        self.attendanceChecking(data_,(retruns_) => {
+                            status = retruns_.status;
+                            absent = retruns_.absent;
+                            late = retruns_.late;
+                            if(absent>0) {
+                                totalAbsent++; 
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                                }
+                            } else {
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_present++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_present++;
+                                }
+                            }
+                            if(late>0) {
+                                totalTardy++;
+                            }
+                        });
+                        week.tue.logs = { status: status,morning: '',afternoon:'',absent: 0,tardy: 0};  
+                        if(val.sex == "Male") { 
+                            let temp_male_count_present = week2.tue.count;
+                            temp_male_count_present++;
+                            week2.tue.count = temp_male_count_present - absent;
+                        } else if(val.sex == "Female") { 
+                            let temp_male_count_present = weekfemale.tue.count;
+                            temp_male_count_present++;
+                            weekfemale.tue.count = temp_male_count_present - absent;
+                        }
+                    } else if(week.tue != null && data.length > 0 && data.some(e=>e.date==week.tue.fulldate&&e.qr_code===val.qr_code) == false && self.getCheckHasAttendance(data,week.tue.fulldate) == true) { 
+                        week.tue.logs = { status: 'absent',morning: '',afternoon:''};
+                        totalAbsent++; 
+                        if(val.sex == "Male") { 
+                            student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                        } else  if(val.sex == "Female") { 
+                            student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                        }
+                    }
+                    if(week.wed != null && data.length > 0 && data.some(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code) == true) {
+                        let data_ = data.filter(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code); 
+                        let status  = "full";
+                        let absent = 0;
+                        let late = 0 ;
+                        self.attendanceChecking(data_,(retruns_) => {
+                            status = retruns_.status;
+                            absent = retruns_.absent;
+                            late = retruns_.late;
+                            if(absent>0) {
+                                totalAbsent++; 
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                                }
+                            } else {
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_present++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_present++;
+                                }
+                            }
+                            if(late>0) {
+                                totalTardy++;
+                            }
+                        });
+                        week.wed.logs = { status: status,morning: '',afternoon:'',absent: 0,tardy: 0};  
+                        if(val.sex == "Male") { 
+                            let temp_male_count_present = week2.wed.count;
+                            temp_male_count_present++;
+                            week2.wed.count = temp_male_count_present - absent;
+                        } else if(val.sex == "Female") { 
+                            let temp_male_count_present = weekfemale.wed.count;
+                            temp_male_count_present++;
+                            weekfemale.wed.count = temp_male_count_present - absent;
+                        }
+                    } else if(week.wed != null && data.length > 0 && data.some(e=>e.date==week.wed.fulldate&&e.qr_code===val.qr_code) == false && self.getCheckHasAttendance(data,week.wed.fulldate) == true) { 
+                        week.wed.logs = { status: 'absent',morning: '',afternoon:''};
+                        totalAbsent++; 
+                        if(val.sex == "Male") { 
+                            student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                        } else  if(val.sex == "Female") { 
+                            student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                        }
+                    }
+                    if(week.thu != null && data.length > 0 && data.some(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code) == true) {
+                        let data_ = data.filter(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code); 
+                        let status  = "full";
+                        let absent = 0;
+                        let late = 0 ;
+                        self.attendanceChecking(data_,(retruns_) => {
+                            status = retruns_.status;
+                            absent = retruns_.absent;
+                            late = retruns_.late;
+                            if(absent>0) {
+                                totalAbsent++; 
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                                }
+                            } else {
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_present++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_present++;
+                                }
+                            }
+                            if(late>0) {
+                                totalTardy++;
+                            }
+                        });
+                        week.thu.logs = { status: status, morning: '',afternoon:'',absent: absent,tardy: late};  
+                        if(val.sex == "Male") { 
+                            let temp_male_count_present = week2.thu.count;
+                            temp_male_count_present++;
+                            week2.thu.count = temp_male_count_present - absent;
+                        } else if(val.sex == "Female") { 
+                            let temp_male_count_present = weekfemale.thu.count;
+                            temp_male_count_present++;
+                            weekfemale.thu.count = temp_male_count_present - absent;
+                        }
+                    } else if(week.thu != null && data.length > 0 && data.some(e=>e.date==week.thu.fulldate&&e.qr_code===val.qr_code) == false && self.getCheckHasAttendance(data,week.thu.fulldate) == true) { 
+                        week.thu.logs = { status: 'absent',morning: '',afternoon:''};
+                        totalAbsent++; 
+                        if(val.sex == "Male") { 
+                            student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                        } else  if(val.sex == "Female") { 
+                            student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                        }
+                    }
+                    if(week.fri != null && data.length > 0 && data.some(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code) == true) {
+                        let data_ = data.filter(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code); 
+                        let status  = "full";
+                        let absent = 0;
+                        let late = 0 ;
+                        self.attendanceChecking(data_,(retruns_) => {
+                            status = retruns_.status;
+                            absent = retruns_.absent;
+                            late = retruns_.late;
+                            if(absent>0) {
+                                totalAbsent++; 
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                                }
+                            } else {
+                                if(val.sex == "Male") { 
+                                    student_male_total_daily_present++;
+                                } else if(val.sex == "Female") { 
+                                    student_female_total_daily_present++;
+                                }
+                            }
+                            if(late>0) {
+                                totalTardy++;
+                            }
+                        });
+                        week.fri.logs = { status: status,morning: '',afternoon:'',absent: absent,tardy: late};  
+                        if(val.sex == "Male") { 
+                            let temp_male_count_present = week2.fri.count;
+                            temp_male_count_present++;
+                            week2.fri.count = temp_male_count_present - absent;
+                        } else if(val.sex == "Female") { 
+                            let temp_male_count_present = weekfemale.fri.count;
+                            temp_male_count_present++;
+                            weekfemale.fri.count = temp_male_count_present - absent;
+                        }
+                    } else if(week.fri != null && data.length > 0 && data.some(e=>e.date==week.fri.fulldate&&e.qr_code===val.qr_code) == false && self.getCheckHasAttendance(data,week.fri.fulldate) == true) { 
+                        week.fri.logs = { status: 'absent',morning: '',afternoon:''};
+                        totalAbsent++; 
+                        if(val.sex == "Male") { 
+                            student_male_total_daily_absent++;
+                                    total_male_5_absent_++;
+                        } else  if(val.sex == "Female") { 
+                            student_female_total_daily_absent++; 
+                                    total_female_5_absent_++;
+                        }
+                    } 
+    
+                    // student_male_total_daily_absent_ = student_male_total_daily_absent_ + student_male_total_daily_absent;
+                    // student_female_total_daily_absent_= student_female_total_daily_absent_ + student_female_total_daily_absent; 
+                    getWeeksInMonth_temp.push(week)
+    
+                    getWeeksInMonth_student_male_total_daily_temp.push(week2);
+                    getWeeksInMonth_student_female_total_daily_temp.push(weekfemale);
+                    if(total_male_5_absent_>=1) {
+                        total_male_5_absent++;
+                    }
+                    if(total_female_5_absent_>=1) {
+                        total_female_5_absent++;
+                    }
                 } 
-                getWeeksInMonth_temp.push(week)
-            } 
-            student_list.push({...val,WeeksInMonth: getWeeksInMonth_temp});
+                // console.log(getWeeksInMonth_temp);
+                student_male_total_daily = { WeeksInMonth: getWeeksInMonth_student_male_total_daily_temp,absent: student_male_total_daily_absent,tardy: student_male_total_daily_tardy};
+                student_female_total_daily = { WeeksInMonth: getWeeksInMonth_student_female_total_daily_temp,absent: student_female_total_daily_absent,tardy: student_female_total_daily_tardy};
+                student_list.push({...val,WeeksInMonth: getWeeksInMonth_temp,absent: totalAbsent,tardy: totalTardy});
+                // console.log(student_list);
+    
+            });      
+           
+    
+            let PAMM = (((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
+            let PAMF = (((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF ) * 100);
+            let ADAM = (student_male_total_daily_present / self.state.totalDaysAttendance) * 100;
+            let ADAF = (student_female_total_daily_present / self.state.totalDaysAttendance) * 100;
+            let PAMTOTAL = ((PAMM + PAMF) / 2);
+
+            if(ADAM=="NaN") {
+                ADAM = 0;
+            }
+            if(ADAF=="NaN") {
+                ADAF = 0;
+            }
+            
+            advisory_list.push({
+                ...main_val.advisory,
+                student_list: student_list,
+                student_male_list: student_list.filter(e => e.sex=="Male"),
+                student_female_list: student_list.filter(e => e.sex=="Female"),
+                student_male_total_daily: student_male_total_daily,
+                student_female_total_daily: student_female_total_daily,
+                PAMM: (PAMM.toFixed(2) != "NaN")?PAMM.toFixed(2):0,
+                PAMF: (PAMF.toFixed(2) != "NaN")?PAMF.toFixed(2):0,
+                PAMTOTAL: (PAMTOTAL.toFixed(2) != "NaN")?PAMTOTAL:0,
+                ADAM: (ADAM != "NaN")?ADAM.toFixed(2):0,
+                ADAF: (ADAF != "NaN")?ADAF.toFixed(2):0,
+                ADATOTAL: ((ADAM / ADAF).toFixed(2)!="NaN")?(ADAM / ADAF).toFixed(2):0,
+                NSAM: total_male_5_absent,
+                NSAF: total_female_5_absent,
+                dropMOutA: 0,
+                dropFOutA: 0,
+                dropMOutB: 0,
+                dropFOutB: 0,
+                dropMOutAB: 0,
+                dropFOutAB: 0,
+                transferMOutA: 0,
+                transferFOutA: 0,
+                transferMOutB: 0,
+                transferFOutB: 0,
+                transferMOutAB: 0,
+                transferFInAB: 0,
+                transferMInA: 0,
+                transferFInA: 0,
+                transferMInB: 0,
+                transferFInB: 0,
+                transferMInAB: 0,
+                transferFInAB: 0
+            });
+    
+            if((main_i + 1) == main_arr.length) {
+                console.log(advisory_list);
+                self.setState({
+                    advisory:advisory_list
+                },() => {
+                    self.loadPDF();
+                });
+            }
+
         });
 
-        this.setState({
-            student_list: student_list,
-            student_male_list: student_list.filter(e => e.sex=="Male"),
-            student_female_list: student_list.filter(e => e.sex=="Female"),
-        },() => {
-            this.loadPDF();
-        })
-        // console.log(student_list);
-    }
 
+
+        
+
+
+
+    }
     
     render() {
         return <DashboardLayout title="Attendance" user={this.props.auth.user} profile={this.props.auth.profile}>
@@ -1124,5 +1536,5 @@ export default class SF2 extends Component {
                 </div>
             </div>
 
-        </DashboardLayout>}
+    </DashboardLayout>}
 }

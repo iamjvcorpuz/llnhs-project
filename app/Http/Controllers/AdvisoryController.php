@@ -7,6 +7,7 @@ use App\Models\AdvisoryGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 
 class AdvisoryController extends Controller
 {
@@ -324,6 +325,26 @@ class AdvisoryController extends Controller
                 "in" => 0
             ]
         ];   
+    }
+
+    public static function sf4($month)
+    {
+        $filtered_data = [];
+        
+        $advisory = DB::select('SELECT advisory.id,advisory.qrcode,advisory.teacher_id,advisory.school_sections_id,advisory.section_name,advisory.year_level,advisory.school_year,advisory.subject_id,advisory.description,advisory.status,CONCAT(employee.last_name , \', \' , employee.first_name) as teacher_fullname,(SELECT classroom FROM school_class WHERE id = advisory.school_sections_id) as \'classroom\' FROM advisory LEFT JOIN employee ON employee.id = advisory.teacher_id WHERE advisory.status = \'active\'');
+
+        if(count($advisory)>0) {
+            foreach ($advisory as $key => $value) {
+
+                $object = new stdClass();
+                $object->advisory = $value;
+                $object->logs = AdvisoryController::sf2("",$month,$value->qrcode);
+                $object->student = AdvisoryController::TeachersAllStudentAdvisoriesQR($value->qrcode);
+
+                array_push($filtered_data,$object);
+            }            
+        }
+        return $filtered_data;
     }
 
     /**
