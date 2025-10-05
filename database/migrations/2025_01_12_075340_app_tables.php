@@ -107,6 +107,9 @@ return new class extends Migration
                 $table->string('civil_status')->nullable();
                 $table->string('religion')->nullable();
                 $table->string('ethic_group')->nullable(); 
+                $table->string('emergency_contact_number')->nullable(); 
+                $table->string('emergency_contact_name')->nullable(); 
+                $table->string('emergency_contact_relation')->nullable(); 
                 $table->timestampTz('created_at')->useCurrent();
                 $table->timestampTz('updated_at')->useCurrent()->useCurrentOnUpdate();
             });
