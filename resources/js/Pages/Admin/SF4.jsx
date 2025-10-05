@@ -1435,8 +1435,7 @@ export default class SF2 extends Component {
                 transferFInAB: 0
             });
     
-            if((main_i + 1) == main_arr.length) {
-                console.log(advisory_list);
+            if((main_i + 1) == main_arr.length) { 
                 self.setState({
                     advisory:advisory_list
                 },() => {
