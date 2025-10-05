@@ -304,6 +304,28 @@ class AdvisoryController extends Controller
         return  DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code IN (SELECT student.lrn FROM advisory_group LEFT JOIN advisory ON  advisory.id = advisory_group.advisory_id LEFT JOIN student ON student.id = advisory_group.student_id WHERE advisory_group.status = 'active' AND advisory.status = 'active' AND advisory.qrcode = ?);",[$month,$qrcode]);   
     }
 
+    public static function studentDropOut($qrcode)
+    {
+        return  [
+            "male" => 0,
+            "female" => 0
+        ];   
+    }
+
+    public static function studentTransfer($qrcode)
+    {
+        return  [
+            "male" => [
+                "out" => 0,
+                "in" => 0
+            ],
+            "female" => [
+                "out" => 0,
+                "in" => 0
+            ]
+        ];   
+    }
+
     /**
      * Store a newly created resource in storage.
      */
