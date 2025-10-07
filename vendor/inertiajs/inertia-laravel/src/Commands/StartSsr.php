@@ -2,11 +2,11 @@
 
 namespace Inertia\Commands;
 
+use Inertia\Ssr\SsrException;
 use Illuminate\Console\Command;
 use Inertia\Ssr\BundleDetector;
-use Inertia\Ssr\SsrException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inertia:start-ssr')]
 class StartSsr extends Command
@@ -26,7 +26,7 @@ class StartSsr extends Command
     protected $description = 'Start the Inertia SSR server';
 
     /**
-     * Start the Inertia SSR server.
+     * Start the SSR server via a Node process.
      */
     public function handle(): int
     {
@@ -36,7 +36,7 @@ class StartSsr extends Command
             return self::FAILURE;
         }
 
-        $bundle = (new BundleDetector)->detect();
+        $bundle = (new BundleDetector())->detect();
         $configuredBundle = config('inertia.ssr.bundle');
 
         if ($bundle === null) {

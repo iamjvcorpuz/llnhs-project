@@ -3,11 +3,10 @@
 namespace Inertia;
 
 use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Session\Store;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\MessageBag;
 use Inertia\Support\Header;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Support\LaravelVapor;
 use Symfony\Component\HttpFoundation\Response;
 
 class Middleware
@@ -22,31 +21,35 @@ class Middleware
     protected $rootView = 'app';
 
     /**
-     * Determine the current asset version.
+     * Determines the current asset version.
+     *
+     * @see https://inertiajs.com/asset-versioning
      *
      * @return string|null
      */
     public function version(Request $request)
     {
-        if (config('app.asset_url')) {
-            return hash('xxh128', config('app.asset_url'));
-        }
-
-        if (file_exists($manifest = public_path('build/manifest.json'))) {
-            return hash_file('xxh128', $manifest);
+        if (LaravelVapor::detect()) {
+            return md5(config('app.asset_url'));
         }
 
         if (file_exists($manifest = public_path('mix-manifest.json'))) {
-            return hash_file('xxh128', $manifest);
+            return md5_file($manifest);
+        }
+
+        if (file_exists($manifest = public_path('build/manifest.json'))) {
+            return md5_file($manifest);
         }
 
         return null;
     }
 
     /**
-     * Define the props that are shared by default.
+     * Defines the props that are shared by default.
      *
-     * @return array<string, mixed>
+     * @see https://inertiajs.com/shared-data
+     *
+     * @return array
      */
     public function share(Request $request)
     {
@@ -56,7 +59,9 @@ class Middleware
     }
 
     /**
-     * Set the root template that is loaded on the first page visit.
+     * Sets the root template that's loaded on the first page visit.
+     *
+     * @see https://inertiajs.com/server-side-setup#root-template
      *
      * @return string
      */
@@ -66,19 +71,9 @@ class Middleware
     }
 
     /**
-     * Define a callback that returns the relative URL.
-     *
-     * @return \Closure|null
-     */
-    public function urlResolver()
-    {
-        return null;
-    }
-
-    /**
      * Handle the incoming request.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function handle(Request $request, Closure $next)
     {
@@ -88,10 +83,6 @@ class Middleware
 
         Inertia::share($this->share($request));
         Inertia::setRootView($this->rootView($request));
-
-        if ($urlResolver = $this->urlResolver()) {
-            Inertia::resolveUrlUsing($urlResolver);
-        }
 
         $response = $next($request);
         $response->headers->set('Vary', Header::INERTIA);
@@ -116,7 +107,8 @@ class Middleware
     }
 
     /**
-     * Handle empty responses.
+     * Determines what to do when an Inertia action returned with no response.
+     * By default, we'll redirect the user back to where they came from.
      */
     public function onEmptyResponse(Request $request, Response $response): Response
     {
@@ -124,21 +116,21 @@ class Middleware
     }
 
     /**
-     * Handle version changes.
+     * Determines what to do when the Inertia asset version has changed.
+     * By default, we'll initiate a client-side location visit to force an update.
      */
     public function onVersionChange(Request $request, Response $response): Response
     {
         if ($request->hasSession()) {
-            /** @var Store $session */
-            $session = $request->session();
-            $session->reflash();
+            $request->session()->reflash();
         }
 
         return Inertia::location($request->fullUrl());
     }
 
     /**
-     * Resolve validation errors for client-side use.
+     * Resolves and prepares validation errors in such
+     * a way that they are easier to use client-side.
      *
      * @return object
      */
@@ -148,10 +140,7 @@ class Middleware
             return (object) [];
         }
 
-        /** @var array<string, MessageBag> $bags */
-        $bags = $request->session()->get('errors')->getBags();
-
-        return (object) collect($bags)->map(function ($bag) {
+        return (object) collect($request->session()->get('errors')->getBags())->map(function ($bag) {
             return (object) collect($bag->messages())->map(function ($errors) {
                 return $errors[0];
             })->toArray();
