@@ -15,7 +15,8 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "spatie/fork": "^1.2",
-        "tightenco/ziggy": "^2.0"
+        "tightenco/ziggy": "^2.0",
+        "xslain/laravel-offline-sync": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

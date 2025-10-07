@@ -67,6 +67,7 @@ return new class extends Migration
                 $table->string('fmaiden_name')->nullable(); 
                 $table->string('flast_name')->nullable(); 
                 $table->string('fextension_name')->nullable(); 
+                $table->string('ldm_applied')->nullable(); 
                 $table->string('status');
                 $table->timestampTz('created_at')->useCurrent();
                 $table->timestampTz('updated_at')->useCurrent()->useCurrentOnUpdate();
