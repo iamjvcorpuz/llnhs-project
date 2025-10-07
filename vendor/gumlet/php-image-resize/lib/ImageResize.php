@@ -226,7 +226,7 @@ class ImageResize
             if( !empty($exact_size) && is_array($exact_size) ){
                 $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
             } else{
-                $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
+                $dest_image = imagecreatetruecolor((int) $this->getDestWidth(), (int) $this->getDestHeight());
             }
 
             $background = imagecolorallocatealpha($dest_image, 255, 255, 255, 1);
@@ -241,9 +241,9 @@ class ImageResize
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
                 imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
             } else{
-                $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
+                $dest_image = imagecreatetruecolor((int) $this->getDestWidth(), (int) $this->getDestHeight());
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
-                imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
+                imagefilledrectangle($dest_image, 0, 0, (int) $this->getDestWidth(), (int) $this->getDestHeight(), $background);
             }
             break;
 
@@ -253,9 +253,9 @@ class ImageResize
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
                 imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
             } else{
-                $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
+                $dest_image = imagecreatetruecolor((int) $this->getDestWidth(), (int) $this->getDestHeight());
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
-                imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
+                imagefilledrectangle($dest_image, 0, 0, (int) $this->getDestWidth(), (int) $this->getDestHeight(), $background);
             }
                 
             imagealphablending($dest_image, false);
@@ -269,9 +269,9 @@ class ImageResize
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
                 imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
             } else{
-                $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
+                $dest_image = imagecreatetruecolor((int) $this->getDestWidth(), (int) $this->getDestHeight());
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
-                imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
+                imagefilledrectangle($dest_image, 0, 0, (int) $this->getDestWidth(), (int) $this->getDestHeight(), $background);
             }
                 
             imagealphablending($dest_image, false);
@@ -284,13 +284,13 @@ class ImageResize
                 if( !empty($exact_size) && is_array($exact_size) ){
                     $dest_image = imagecreate($exact_size[0], $exact_size[1]);
                 } else{
-                    $dest_image = imagecreate($this->getDestWidth(), $this->getDestHeight());
+                    $dest_image = imagecreate((int) $this->getDestWidth(), (int) $this->getDestHeight());
                 }
             } else {
                 if( !empty($exact_size) && is_array($exact_size) ){
                     $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
                 } else{
-                    $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
+                    $dest_image = imagecreatetruecolor((int) $this->getDestWidth(), (int) $this->getDestHeight());
                 }
             }
 
@@ -308,9 +308,9 @@ class ImageResize
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
                 imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
             } else {
-                $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
+                $dest_image = imagecreatetruecolor((int) $this->getDestWidth(), (int) $this->getDestHeight());
                 $background = imagecolorallocate($dest_image, 255, 255, 255);
-                imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
+                imagefilledrectangle($dest_image, 0, 0, (int) $this->getDestWidth(), (int) $this->getDestHeight(), $background);
             }
             break;
         }
@@ -337,12 +337,12 @@ class ImageResize
             $this->source_image,
             $this->dest_x,
             $this->dest_y,
-            $this->source_x,
-            $this->source_y,
-            $this->getDestWidth(),
-            $this->getDestHeight(),
-            $this->source_w,
-            $this->source_h
+            (int) $this->source_x,
+            (int) $this->source_y,
+            (int) $this->getDestWidth(),
+            (int) $this->getDestHeight(),
+            (int) $this->source_w,
+            (int) $this->source_h
         );
 
         if ($this->gamma_correct) {
@@ -712,7 +712,7 @@ class ImageResize
     /**
      * Gets width of the destination image
      *
-     * @return integer
+     * @return integer|float
      */
     public function getDestWidth()
     {
@@ -721,7 +721,8 @@ class ImageResize
 
     /**
      * Gets height of the destination image
-     * @return integer
+     *
+     * @return integer|float
      */
     public function getDestHeight()
     {

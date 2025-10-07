@@ -140,6 +140,10 @@ return [
     
     'aliases' => [
         'Process' => Illuminate\Support\Facades\Process::class,
+        'OfflineSyncJob' => App\Jobs\OfflineSyncJob::class,
+        // 'OfflineSync' => \Xslain\OfflineSync::class,
+
+        // 'OfflineSync' => \Xslain\OfflineSync\Facades\OfflineSync::class,
         // 'Menu' => Casperlaitw\LaravelFbMessenger\Facades\MessengerMenu::class,
     ]
     

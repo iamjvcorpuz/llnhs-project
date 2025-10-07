@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+// use Xslain\OfflineSync\Traits\Syncable;
+// use Xslain\OfflineSync\Contracts\SyncableModelInterface;
+
 class Student extends Model
 {
     use HasFactory;
@@ -12,6 +15,7 @@ class Student extends Model
     public $table = "student";
 
     protected $fillable = [
+        'uuid',
         'qr_code',
         'lrn',
         'psa_cert_no',
@@ -62,6 +66,6 @@ class Student extends Model
         'ffirst_name',
         'fmiddle_name ',
         'flast_name',
-        'fextension_name',
+        'fextension_name'
     ];
 }
