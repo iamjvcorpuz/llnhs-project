@@ -65,7 +65,8 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 RUN a2enmod rewrite headers
 
-
+RUN echo "memory_limit = 1056M" > /usr/local/etc/php/conf.d/memory-limit.ini
+RUN echo "* * * * * cd /var/www/html && php artisan schedule:run >> /var/www/html/storage/logs/cron.log 2>&1" | crontab -
 # COPY ./www/lnhs-attendance-system/start.sh /usr/local/bin/start
 
 #grant permission to exec start.sh
