@@ -10,7 +10,7 @@
         "almasaeed2010/adminlte": "~3.2",
         "doctrine/dbal": "^4.2",
         "gumlet/php-image-resize": "^2.1",
-        "inertiajs/inertia-laravel": "^1.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
