@@ -2,6 +2,8 @@ import React from 'react';
 import $ from "jquery";
 import { Link } from '@inertiajs/react';
 import moment from 'moment';
+import axios from 'axios';
+
 //#region 
 export const sortTimeDESC = function(a,b){
     let t1 = new Date(Date.parse(a.created_at));
@@ -372,7 +374,15 @@ export const weekCount = (year, month_number, startDayOfWeek) => {
     var used = firstWeekDay + numberOfDaysInMonth;
   
     return Math.ceil( used / 7);
-  }
+}
+
+// const getVoicesAsync = () => new Promise(resolve => {
+//     let voices = speechSynthesis.getVoices();
+//     if (voices.length) return resolve(voices);
+//     speechSynthesis.onvoiceschanged = () => resolve(speechSynthesis.getVoices());
+// });
+
+// const voices = await getVoicesAsync();
 
 export const AlertSound = {
     /*
@@ -392,10 +402,29 @@ export const AlertSound = {
         // document.createElement('audio')
     },
     speech: async function(message) {
-        const utterance = new SpeechSynthesisUtterance(message);
-        const voices = speechSynthesis.getVoices();
-        utterance.voice = voices[0]; 
-        speechSynthesis.speak(utterance);
+        console.log("speak ",message)
+        // console.log(`🗣️ Voices found (${voices.length}):`, voices.map(v => `${v.name} (${v.lang})`));
+        // if (!voices.length) {
+        //     console.warn("⚠️ No voices loaded! Try restarting browser or installing a TTS engine (e.g., espeak-ng).");
+        //     return;
+        // }
+        // let msg = new SpeechSynthesisUtterance(message);
+        // msg.voice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+        // msg.pitch = 1;
+        // msg.rate = 1;
+        // msg.volume = 1;
+
+        // msg.onstart = e => console.log("▶️ Speech started:", e);
+        // msg.onpause = e => console.log("⏸️ Speech paused:", e);
+        // msg.onresume = e => console.log("⏯️ Speech resumed:", e);
+        // msg.onend = e => console.log("✅ Speech ended:", e);
+        // msg.onerror = e => console.error("❌ Speech error:", e);
+        
+        // speechSynthesis.cancel();
+        // speechSynthesis.speak(msg);
+        axios.post('/speak',{message: message}).then(function (response) {
+            // console.log("speak",response);
+        });
     },
     loading_data: async function(){        
         let a = new Audio('/sound/loading_data.mp3'); 
@@ -429,6 +458,7 @@ export const AlertSound = {
         });
     }
 }
+
 export const getWeeksInMonth = (year_month,callback) => {
     let totalWeeks = new Date(moment(year_month)).getWeekOfMonth();
     let temp = [];

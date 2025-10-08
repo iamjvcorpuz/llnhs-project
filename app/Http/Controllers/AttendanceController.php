@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\Attendance;
 use App\Models\Notifications;
+use App\Models\Student;
 use DateTime;
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,13 @@ class AttendanceController extends Controller
         // $Teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' AND t.qr_code = ?;',[$request->code]);
         
         if($Student->count()>0) { 
-            $Student[0]->type = "student"; 
+            $Student[0]->type = "student";  
+            $StudentDataID = StudentController::getDataSections($Student[0]->uuid);
+            $grade = $StudentDataID['getSchoolStats'][0]->grade;
+            $section = $StudentDataID['getSchoolStats'][0]->section;
+            $Student[0]->grade = is_null($grade)==false ? $grade : '';
+            $Student[0]->section = is_null($section)==false ? $section : '';
+            // $Student[0]->section = $StudentDataID;
             return response()->json([
                 'status' => 'success',
                 'error' => null,
@@ -117,7 +124,7 @@ class AttendanceController extends Controller
                 $object->profileImageBase64 = $student[0]->id;
                 $object->fullname = $student[0]->first_name . " " . $student[0]->last_name;
                 $object->idnumber = $student[0]->qr_code;
-                $object->logger_type = "studnet";
+                $object->logger_type = "student";
                 $object->logger_section = "";
                 $object->timelogs =  "TIME " . $val->mode . ": " . $val->time;
                 $object->date = $val->date;
@@ -901,10 +908,10 @@ class AttendanceController extends Controller
         $logsdata = gettype($request->logsdata)=="string"? json_decode( $request->logsdata ,true) : $request->logsdata;
         $userdata = gettype($request->userdata)=="string"? json_decode( $request->userdata ,true) : $request->userdata;
 
-        echo "<pre>";
-        print_r($logsdata);
-        print_r($userdata);
-        echo "</pre>";
+        // echo "<pre>";
+        // print_r($logsdata);
+        // print_r($userdata);
+        // echo "</pre>";
         $type = $userdata['type'];
         $student_id = null;
         $teacher_id = null;
@@ -1868,5 +1875,9 @@ class AttendanceController extends Controller
             'error' => null,
             'data' => []
         ], 200);
+    }
+    public static function speaking($message) {
+        // pulseaudio -k # reset if wala nag tingog sa host
+        exec("espeak-ng -s 130 -p 60 -a 120 -v en-us '" . $message . "'");
     }
 }

@@ -409,3 +409,7 @@ Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
         exit();
     }
 });
+
+Route::post('/speak',function(Request $request) {
+    AttendanceController::speaking($request->message);
+});
