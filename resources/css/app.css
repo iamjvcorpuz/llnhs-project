@@ -331,12 +331,27 @@ color: black;
     margin-top: 0px;
     margin-left: 8px;
     margin-bottom: 10px;
-    font-size: 4vh;
+    font-size: 3.5vh;
 }
 .logger-details-space {
     max-height: 34.3vh;
     height: 34vh;
     /* background-color: #028eb4; */
+}
+.logger-name-fullname {
+    font-size: 300%; 
+    text-align: center;
+    width: 100%;  
+    padding:10px;
+    margin-bottom: 5px;
+    height: 65px;
+    min-height: 65px;
+    line-height: 0.8;
+    /* border-color: #2c3335;
+    border-style: solid; 
+    border-radius: 10px;
+    background-color: #78bbf8;
+    box-shadow:0 0 5px rgba(102, 101, 101, 0.384); */
 }
 .logger-name {
     font-size: 250%; 

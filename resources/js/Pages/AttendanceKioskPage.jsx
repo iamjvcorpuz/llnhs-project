@@ -171,28 +171,33 @@ export default class AttendancePage extends Component {
         let self = this;
         let count = 0;
         // let t = setInterval(() => {
-        //     self.setState({
-        //         attendance_data: [...self.state.attendance_data,{
-        //             id: self.state.attendance_data.length,
-        //             fullname: "Juan Dela Filipe y Cresostomo Ibarra",
-        //             nicname: "Juan",
-        //             timelogs: "Time In: 08:00 AM",
-        //             section: "Section 1"
-        //         }]
-        //     },() => {
-        //         Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
-        //             // console.log(result)
-        //             if(typeof(result)!="undefined") { 
-        //                 self.setState({attendance_data_temp: result}); 
-        //             } else { 
-        //                 self.setState({attendance_data_temp: result}); 
-        //             }
-        //         });
-        //         if(count==10) {
-        //             clearInterval(t)
-        //         }
-        //         count++;
-        //     })
+        // //     self.setState({
+        // //         attendance_data: [...self.state.attendance_data,{
+        // //             id: self.state.attendance_data.length,
+        // //             fullname: "Juan Dela Filipe y Cresostomo Ibarra",
+        // //             nicname: "Juan",
+        // //             timelogs: "Time In: 08:00 AM",
+        // //             section: "Section 1"
+        // //         }]
+        // //     },() => {
+        // //         Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
+        // //             // console.log(result)
+        // //             if(typeof(result)!="undefined") { 
+        // //                 self.setState({attendance_data_temp: result}); 
+        // //             } else { 
+        // //                 self.setState({attendance_data_temp: result}); 
+        // //             }
+        // //         });
+        // //         if(count==10) {
+        // //             clearInterval(t)
+        // //         }
+        // //         count++;
+        // //     })
+        // // console.log("aw");
+        // setInterval(() => {
+        //     console.log("aw");
+        //     self.AlertSound.speech(`RUEL PAQUERA. successfuly. time IN`);
+        // }, 5000);
         // }, 500);
                 // this.setState({
                 //     idnumber: "00003",
@@ -218,6 +223,13 @@ export default class AttendancePage extends Component {
     async eventKeys(key_, e){
         let self = this;
         let key = key_.key; 
+        let temp = [
+            {rfid:"0870250666",qr: "000012121212"},
+            {rfid:"0870292068",qr: "0002121"},
+            {rfid:"4291801298",qr: "0002929212"},
+            {rfid:"3794933508",qr: "000990029292"},
+            {rfid:"3007756699",qr: "22200021121"}
+        ]
         try {
             if(self.timeoutScan != null){
                 self.setState({
@@ -243,11 +255,21 @@ export default class AttendancePage extends Component {
             }
             if (key == "Enter" && self.state.scanned_code != "Enter" && self.state.scanned_code.trim() !== "" ) { 
                 // console.log(self.state.scanned_code, " - aw");
+                let scanned_code = "";
+                if(temp.some(e=>e.rfid==self.state.scanned_code.trim())) {
+                    scanned_code = temp.find(e=>e.rfid==self.state.scanned_code.trim()).qr;
+                    self.setState({
+                        scanned_code_history: scanned_code,
+                        scanned_code: scanned_code
+                    });  
+                } else {
+                    scanned_code = self.state.scanned_code;
+                }
                 self.timeoutScan = setTimeout(() => {
                     clearTimeout(self.timeoutScan);
                     self.timeoutScan = null;
                 }, 2000);
-                self.queryAccounts(self.state.scanned_code);
+                self.queryAccounts(scanned_code);
                 self.setState({
                     scanned_code: ""
                 }); 
@@ -290,14 +312,14 @@ export default class AttendancePage extends Component {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD")
         axios.post('/attendance/time/today/all/timelogs',{date:date}).then(function (response) {
-            console.log(response)
+            // console.log(response)
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
                     self.setState({attendance_data: data.sort(sortTimeDESC)},() => {
 
                         Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
-                            // console.log(result)
+                            // console.log(result);
                             if(typeof(result)!="undefined") { 
                                 self.setState({attendance_data_temp: result}); 
                             } else { 
@@ -321,7 +343,7 @@ export default class AttendancePage extends Component {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 // console.log("aw",response.data.status,data);
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    console.log("aw",data);
+                    console.log("aw",data,(typeof(data.grade)!="undefined"?data.grade:"") + " " + (typeof(data.section)!="undefined"?data.section:""));
                     self.setState({
                         userdata: data,
                         _id: data.id,
@@ -330,7 +352,7 @@ export default class AttendancePage extends Component {
                         fullname: `${data.first_name} ${data.last_name}`.toLocaleUpperCase(),
                         idnumber: data.id,
                         logger_type: data.type,
-                        logger_section: typeof(data.section)!="undefined"?data.section:""
+                        logger_section: (typeof(data.grade)!="undefined"?data.grade:"") + " " + (typeof(data.section)!="undefined"?data.section:"")
                     },() => {
                         self.queryAttendanceLogs(code,data);                       
                     });
@@ -370,7 +392,7 @@ export default class AttendancePage extends Component {
         let self = this;
         let date = moment(new Date()).format("YYYY-MM-DD")
         axios.post('/attendance/time/logs',{qrcode: code,date:date}).then(function (response) {
-            console.log(response);
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 // console.log("aw",response.data.status,data);
@@ -392,7 +414,8 @@ export default class AttendancePage extends Component {
                         time: moment(new Date()).format('hh:mm A'),
                         mode: mode
                     },userdata, () => {
-                        
+                        self.AlertSound.speech(`${self.state.fullname}. successfuly. time ${mode}`);
+                        self.alertMessages();
                         self.setState({
                             attendance_data: [...self.state.attendance_data,{
                                 _id: self.state._id,
@@ -404,7 +427,6 @@ export default class AttendancePage extends Component {
                                 mode: mode
                             }]
                         },() => {                
-                            self.AlertSound.speech(`${self.state.fullname}. successfuly. time ${mode}`);
                             // self.AlertSound.success_timelogs();
                             Pagination(self.state.attendance_data,self.state.pagenationIndex,4,null).Content("",(result) => { 
                                 // console.log(result)
@@ -437,7 +459,7 @@ export default class AttendancePage extends Component {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 // console.log("aw",response.data.status,data);
                 if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    console.log("aw",data);
+                    // console.log("aw",data);
                     // self.setState({
                     //     userdata: data,
                     //     _id: data.id,
@@ -481,7 +503,7 @@ export default class AttendancePage extends Component {
             }
         }).catch(function (error) {
             // handle error
-            console.log(error);
+            // console.log(error);
             callback();
         }).finally(function () {
             // always executed
@@ -492,13 +514,13 @@ export default class AttendancePage extends Component {
     alertMessages() {
         let self = this;
         let timeoutIntervals = 5000;
-        if(this.intervals != null) {
+        if(self.intervals != null) {
             clearTimeout(this.intervals);
-            this.intervals = null;
+            self.intervals = null;
         }
         //
         //
-        this.intervals = setTimeout(() => {
+        self.intervals = setTimeout(() => {
             self.setState({
                 lrn: "",
                 profileImageBase64: "",
@@ -510,8 +532,8 @@ export default class AttendancePage extends Component {
                 time_logs_status: "",
                 time_logs_status_message:""
             },() => {
-                clearTimeout(this.intervals);
-                this.intervals = null;
+                clearTimeout(self.intervals);
+                self.intervals = null;
             });
         }, timeoutIntervals);
     }
@@ -559,17 +581,17 @@ export default class AttendancePage extends Component {
                 </div>
                 <div className="log-center-data">
                     <br />
-                    <br />
-                    <br />
+                    {/* <br />
+                    <br /> */}
                     <div className="header_time">
                         <div className="logger-name-small">
-                        {(this.state.logger_type=="Student")?(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:"":(this.state.idnumber!="")?`ID : ${this.state.lrn}`:""}
+                        {(this.state.logger_type=="student")?(this.state.idnumber!="")?`LRN : ${this.state.lrn}`:"":(this.state.idnumber!="")?`ID : ${this.state.lrn}`:""}
                         </div>            
                         <hr />
-                        <div className="logger-name"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
+                        <div className="logger-name-fullname"><strong>{(this.state.fullname!="")?this.state.fullname:""}</strong></div> 
                         <hr />
                         <div className="logger-name-small">
-                        {(this.state.logger_type=="Student")?(this.state.logger_section!="")?this.state.logger_section:"":null}
+                        {(this.state.logger_type=="student")?(this.state.logger_section!="")?this.state.logger_section:"":null}
                         </div>
                         <hr />
                         <div className="datetimeCount" id="datetime" >-</div>
@@ -604,7 +626,7 @@ export default class AttendancePage extends Component {
                                         e.target.error=null;
                                         e.target.src='/adminlte/dist/assets/img/avatar.png';
                                     }}
-                                    src={(typeof(element.profile_photo)!="undefined"&&element.profile_photo!="")?element.profile_photo:'/adminlte/dist/assets/img/avatar.png'} 
+                                    src={(element.logger_type=="student")?`/profile/photo/student/${element.lrn}`:`/profile/photo/employee/${element.idnumber}`} 
                                     onClick={() => {
                                         console.log("image call single click"); 
                                     }} 

@@ -47,7 +47,8 @@ class OfflineSyncJob implements ShouldQueue
                 // ini_set('memory_limit', '512M');
                 $command = 'offline-sync:' . $this->syncType;
                 $options = $this->modelClass ? ['--model' => $this->modelClass] : [];
-                // $options = $this->modelClass ? ['--model' => $this->modelClass, '--timeout' => 30,'--once' => true] : [];                
+                // $options = $this->modelClass ? ['--model' => $this->modelClass, '--timeout' => 30,'--once' => true] : [];    
+                ini_set('memory_limit', '-1');            
                 Artisan::call($command, $options);
                 $output = Artisan::output(); 
                 Log::info('Offline sync processed: ' . $output);
