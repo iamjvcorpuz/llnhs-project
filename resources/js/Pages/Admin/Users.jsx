@@ -79,7 +79,7 @@ export default class Users extends Component {
 
     componentDidMount() {
         this.loadData();
-        this.getAllUsers();
+        // this.getAllUsers();
     }
 
     getAllUsers() {
