@@ -18,7 +18,7 @@ class OfflineSyncJob implements ShouldQueue
 
     public $tries = 3; // Retry up to 3 times on failure
     public $backoff = [10, 30, 60]; // Exponential backoff in seconds
-    public $timeout = 60;
+    public $timeout = 6000;
     protected $modelClass;
     protected $syncType; // 'push', 'pull', or 'sync
     public $userId;
@@ -43,15 +43,15 @@ class OfflineSyncJob implements ShouldQueue
         $IsKiosk =  env('KIOSK', false);
         if($IsKiosk==true) { 
             try {
+                echo "\n--------------start---------------\n";
                 ini_set('memory_limit', '-1');
                 $command = 'offline-sync:' . $this->syncType;
                 $options = $this->modelClass ? ['--model' => $this->modelClass] : [];
-                echo "-----------------------------\n";
                 Artisan::call($command, $options);
                 $output = Artisan::output();
                 echo $output;
                 Log::channel('single')->info('Offline sync processed: ' . $output);
-                echo "-----------------------------\n";
+                echo "-----------------end------------\n";
             } catch (\Exception $e) {
                 echo "\n----------------------------- Error: " . $e->getMessage();
                 Log::channel('single')->error('Offline sync failed: ' . $e->getMessage());
@@ -60,9 +60,10 @@ class OfflineSyncJob implements ShouldQueue
         } else {
             echo "\nsFailed to start. APP IS NOT A KIOSK MODE";
         }
-    }   
+    }
     public static function dispatchIfNotExists(?string $userId)
     {
+        echo "\n--------------start check---------------\n";
         $uniqueId = md5("process_user_task_{$userId}"); 
         $exists = DB::table('jobs')
             ->where('queue', 'offline-sync')
@@ -72,6 +73,24 @@ class OfflineSyncJob implements ShouldQueue
         if (!$exists) {
             // dispatch(new self($userId,'sync'));
             self::dispatch($userId,'sync');
+        } else {
+            echo "\n--------------exist jobs---------------\n";
+        }
+    }
+    public static function dispatchUpIfNotExists(?string $userId)
+    {
+        echo "\n--------------start check---------------\n";
+        $uniqueId = md5("process_user_task_{$userId}"); 
+        $exists = DB::table('jobs')
+            ->where('queue', 'offline-sync')
+            ->where('payload', 'like', '%' . $uniqueId . '%')
+            ->exists();
+
+        if (!$exists) {
+            // dispatch(new self($userId,'sync'));
+            self::dispatch($userId,'sync');
+        } else {
+            echo "\n--------------exist jobs---------------\n";
         }
     }
     public function backoff()

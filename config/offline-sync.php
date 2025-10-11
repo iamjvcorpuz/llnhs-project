@@ -94,6 +94,7 @@ return [
     |
     */
     'queue' => [
+        'enabled' => true,
         'connection' => env('OFFLINE_SYNC_QUEUE_CONNECTION', 'database'),
         'queue' => env('OFFLINE_SYNC_QUEUE_NAME', 'offline-sync'),
         'failed_table' => env('OFFLINE_SYNC_FAILED_TABLE', 'offline_sync_failed_jobs'),
