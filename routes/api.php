@@ -23,6 +23,7 @@ use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentMovementController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SyncDBController;
 use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserAccountsController;
@@ -412,4 +413,8 @@ Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
 
 Route::post('/speak',function(Request $request) {
     AttendanceController::speaking($request->message);
+});
+
+Route::post('/collection/sync',function(Request $request) {
+   return SyncDBController::CollectionData($request); 
 });

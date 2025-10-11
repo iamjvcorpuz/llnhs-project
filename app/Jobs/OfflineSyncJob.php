@@ -40,21 +40,21 @@ class OfflineSyncJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // set_time_limit(160);
         $IsKiosk =  env('KIOSK', false);
         if($IsKiosk==true) { 
             try {
-                // ini_set('memory_limit', '512M');
+                ini_set('memory_limit', '-1');
                 $command = 'offline-sync:' . $this->syncType;
                 $options = $this->modelClass ? ['--model' => $this->modelClass] : [];
-                // $options = $this->modelClass ? ['--model' => $this->modelClass, '--timeout' => 30,'--once' => true] : [];    
-                ini_set('memory_limit', '-1');            
+                echo "-----------------------------\n";
                 Artisan::call($command, $options);
-                $output = Artisan::output(); 
-                Log::info('Offline sync processed: ' . $output);
+                $output = Artisan::output();
+                echo $output;
+                Log::channel('single')->info('Offline sync processed: ' . $output);
+                echo "-----------------------------\n";
             } catch (\Exception $e) {
-                echo "Error: " . $e->getMessage();
-                Log::error('Offline sync failed: ' . $e->getMessage());
+                echo "\n----------------------------- Error: " . $e->getMessage();
+                Log::channel('single')->error('Offline sync failed: ' . $e->getMessage());
                 throw $e;  // Retry
             }
         } else {
@@ -63,8 +63,7 @@ class OfflineSyncJob implements ShouldQueue
     }   
     public static function dispatchIfNotExists(?string $userId)
     {
-        $uniqueId = md5("process_user_task_{$userId}");
-        // Check if job exists in the queue
+        $uniqueId = md5("process_user_task_{$userId}"); 
         $exists = DB::table('jobs')
             ->where('queue', 'offline-sync')
             ->where('payload', 'like', '%' . $uniqueId . '%')
@@ -77,6 +76,6 @@ class OfflineSyncJob implements ShouldQueue
     }
     public function backoff()
     {
-        return [10, 30, 60]; // Wait 10s, 30s, 60s between retries
+        return [10, 30, 60];
     }
 }

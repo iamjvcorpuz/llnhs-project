@@ -26,7 +26,8 @@ class AttendanceSync extends Model implements SyncableModelInterface
         'teacher_id',
         'time',
         'date',
-        'status'
+        'status',
+        'update_at'
     ];
     public function getSyncableFields(): array
     {
@@ -41,7 +42,8 @@ class AttendanceSync extends Model implements SyncableModelInterface
             'teacher_id',
             'time',
             'date',
-            'status'
+            'status',
+            'update_at'
         ];
     }
 
@@ -53,5 +55,23 @@ class AttendanceSync extends Model implements SyncableModelInterface
     public function getSyncPriority(): int
     {
         return 1;  // Higher = sync first
+    }
+
+    public function prepareSyncData(): array
+    {
+        return [
+            'uuid', 
+            'terminal',
+            'terminal_id',
+            'mode',
+            'type',
+            'qr_code',
+            'student_id',
+            'teacher_id',
+            'time',
+            'date',
+            'status',
+            'update_at'
+        ];
     }
 }
