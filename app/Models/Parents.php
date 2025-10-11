@@ -5,9 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use Xslain\OfflineSync\Traits\Syncable;
-use Xslain\OfflineSync\Contracts\SyncableModelInterface;
-
 class Parents extends Model
 {
     use HasFactory;

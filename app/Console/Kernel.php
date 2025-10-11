@@ -11,7 +11,8 @@ class Kernel extends ConsoleKernel
     {
         // Define your scheduled tasks here, e.g.:
         // $schedule->command('inspire')->everyMinute();
-        
+        echo "\m ------------ start schedule ------------\n";
+        echo "\m ------------ end schedule ------------\n";
     }
 
     protected function commands()
