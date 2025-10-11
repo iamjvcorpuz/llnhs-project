@@ -186,8 +186,10 @@ export default class MyProfile extends Component {
                 }
             ],
         }
-        console.log(this.props); 
+        this.webCam = React.createRef(); 
+        this.updateCrop = this.updateCrop.bind(this);
         this.getAttendanceLogs = this.getAttendanceLogs.bind(this);
+        this.updatePhoto = this.updatePhoto.bind(this);
     }
 
     componentDidMount() {
@@ -270,6 +272,230 @@ export default class MyProfile extends Component {
         });
     }
 
+    updateCrop(result) { 
+        let self = this;
+        this.setState({
+            photobase64final:result
+        },() => {
+            self.updatePhoto();
+        });
+    }
+
+    getBase64 = (file, callback) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          callback(reader.result);
+        };
+        reader.onerror = function (error) {
+          console.log("Error: ", error);
+        };
+    };
+
+    onFileChange = (e) => {
+        $('.progress-bar').css("width", '0%');
+        if(e.target.files.length) {
+            const { name, type } = e.target.files[0];
+            // console.log(e.target.files[0]);
+            let filetype = "pdf";
+            if(type == "application/pdf") {
+                filetype = "pdf";
+            } else if(type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                filetype = "docs";
+            } else if(type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                filetype = "docs";
+            } else if(type == "image/png") {
+                filetype = "image";
+            } else if(type == "image/jpeg") {
+                filetype = "image";
+            }
+            this.getBase64(e.target.files[0], (result) => {
+              this.setState({
+                photoupload: result,
+                filedata: result,
+                filedataName: name,
+                filetype: type,
+                filetype_: filetype
+              });
+            });
+            $("#fileuploadpanel").modal('show');
+        }
+    };
+
+    updatePhoto() {
+        let self = this;
+        if(self.state.lrn != "" && self.state.first_name != "" && self.state.middle_name != "" && self.state.last_name != "" && self.state.sex != "" && self.state.bdate != ""&& self.state.psa_cert_no != "") {
+            if($('#invalidCheck').prop('checked') == false) {
+                $("#invalidCheck-alert").removeAttr('class'); 
+                $("#invalidCheck-alert").addClass('d-block invalid-feedback');
+                // alert('Please check agree to all fields are correct');
+                swal({
+                    title: "Please check agree if all fields are correct",
+                    icon: 'info'
+                })
+                $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+                return;
+            }
+            Swal.fire({
+                title: "You want to update your photo?. click continue to save", 
+                showCancelButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "Continue", 
+                icon: "warning",
+                showLoaderOnConfirm: true, 
+                closeOnClickOutside: false,  
+                dangerMode: true,
+            }).then((result) => {
+                // console.log("result",result)
+                if(result.isConfirmed) {
+                    Swal.fire({  
+                        title: 'Submitting Records.\nPlease wait.', 
+                        html:'<i class="fa fa-times-circle-o"></i>&nbsp;&nbsp;Close',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                          Swal.showLoading();
+                        }
+                    });
+                    let datas =  {
+                        id: self.state.id,
+                        qr_code: self.state.lrn, 
+                        picture_base64:self.state.photobase64final,
+                        lrn:self.state.lrn
+                    };
+                    axios.post('/student/photo/update',datas).then(function (response) {
+                        // handle success
+                        // console.log(response);
+                        if( typeof(response.status) != "undefined" && response.status == "201" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(data.status == "success") {
+                                Swal.fire({  
+                                    title: "Successfuly save!", 
+                                    showCancelButton: true,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    confirmButtonText: "Continue", 
+                                    icon: "success",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                }).then(function (result2) {
+                                    if(result2.isConfirmed) { 
+                                        Swal.close();
+                                    }
+                                });
+
+                            } else {
+                                Swal.fire({  
+                                    title: "Fail to save", 
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    cancelButtonText: "Ok",
+                                    confirmButtonText: "Continue",
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: false, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                            }
+                        } else if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                            let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                            if(data.status == "data_exist") { 
+                                Swal.fire({  
+                                    title: "Data Exist", 
+                                    cancelButtonText: "Ok",
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false, 
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+                                // console.log(typeof(data.data)!="undefined",data.data.length>0)
+                                if(typeof(data.data)!="undefined"&&data.data.length>0) {
+                                    data.data.forEach((val,i,arr) => {
+                                        console.log(val)
+                                        if(val.field=='lrn') {
+                                            $("#lrn-alert").removeAttr('class');
+                                            $("#lrn-alert").html('LRN is already exist');
+                                            $("#lrn-alert").addClass('d-block invalid-feedback');
+                                        } else if(val.field=='first_name') {
+                                            $("#first-name-alert").removeAttr('class');
+                                            $("#first-name-alert").html('First is already exist');
+                                            $("#first-name-alert").addClass('d-block invalid-feedback');
+                                        } else if(val.field=='last_name') {
+                                            $("#last-name-alert").removeAttr('class');
+                                            $("#last-name-alert").html('Last is already exist');
+                                            $("#last-name-alert").addClass('d-block invalid-feedback');
+                                        } else if(val.field=='middle_name') {
+                                            $("#middle-name-alert").removeAttr('class');
+                                            $("#middle-name-alert").html('Middle is already exist');
+                                            $("#middle-name-alert").addClass('d-block invalid-feedback');
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }).catch(function (error) { 
+                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                            let listmessage = "";
+
+                            if(Object.keys(data.errors).length> 0) {
+                                Object.keys(data.errors).forEach(element => {
+                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                });
+                            }
+
+                            Swal.fire({  
+                                title: data.message ,
+                                html:`<ul class="list-group" >${listmessage}</ul>`, 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+
+                        } else {
+                            Swal.fire({  
+                                title: "Server Error", 
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                cancelButtonText: "Ok",
+                                confirmButtonText: "Continue",
+                                confirmButtonColor: "#DD6B55",
+                                icon: "error",
+                                showLoaderOnConfirm: true, 
+                                closeOnClickOutside: false,  
+                                dangerMode: true,
+                            });
+                        }
+                    })
+                } else if(result.isDismissed) {
+
+                }
+                return false
+            });            
+        }
+    }
+
     render() {
         return <DashboardLayout title="Profile" user={this.props.auth.user} profile={this.props.auth.profile} ><div className="noselect">
             <div className="app-content-header"> 
@@ -283,10 +509,17 @@ export default class MyProfile extends Component {
                                 </div>
                                 <div className="widget-user-image">
                                     <img className="img-circle elevation-2" src={this.state.photobase64final!=""?this.state.photobase64final:"/adminlte/dist/assets/img/avatar.png"}
-                                                    ref={t=> this.upload_view_image = t}
-                                                    onError={(e)=>{ 
-                                                        this.upload_view_image.src='/adminlte/dist/assets/img/avatar.png'; 
-                                                    }} alt="User Avatar" />
+                                    ref={t=> this.upload_view_image = t}
+                                    onError={(e)=>{ 
+                                        this.upload_view_image.src='/adminlte/dist/assets/img/avatar.png'; 
+                                    }} alt="User Avatar" />
+                                    <label htmlFor="cameraInput" className="camera-btn" tabIndex="0" role="button">
+                                        <svg className="camera-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4 7h3l2-2h6l2 2h3v12H4V7z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <circle cx="12" cy="13" r="3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                                        </svg>
+                                    </label>
+                                    <input id="cameraInput" type="button" onClick={() => { this.setState({cameraOn: true}); $("#camerapanel").modal('show') }} accept="image/*" capture="environment" />
                                 </div>
                                 <div className="card-footer">
                                     <div className="row">
@@ -897,5 +1130,72 @@ export default class MyProfile extends Component {
                 return <option >{`${element.last_name}, ${element.first_name}`}</option>
             }} />
         </datalist>
+
+        <div className="modal fade" tabIndex="-1" role="dialog" id="fileuploadpanel" data-bs-backdrop="static">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title fs-5">Image</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                    </button>
+                </div>
+                <div className="modal-body">
+                    <ImageCrop src={this.state.photoupload} onChange={this.updateCrop}  />
+                </div>
+                <div className="modal-footer"> 
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div className="modal fade" tabIndex="-1" role="dialog" id="camerapanel" data-bs-backdrop="static">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title fs-5">Camera Capture</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+                    </button>
+                </div>
+                <div className="modal-body">
+                {(this.state.cameraOn==true)?<Webcam
+                    className="webcam"
+                    audio={false}
+                    screenshotFormat="image/jpeg"
+                    videoConstraints={{
+                        width: 600,  
+                        height: 600,
+                        facingMode: "user"
+                    }}
+                    mirrored={true}
+                    screenshotQuality={1}
+                    imageSmoothing={true}
+                    ref={this.webCam}
+                />:null}
+                </div>
+                <div className="modal-footer"> 
+                    <input type="file" className="form-control" id="inputGroupFile02" onClick={() => {
+                        this.setState({cameraOn: false});
+                        $("#camerapanel").modal('hide');
+                    }} onChange={this.onFileChange}  />
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => { this.setState({cameraOn: false});}}>Close</button>
+                    <button type="button" className="btn btn-primary" onClick={()=> { 
+                        try {
+                            this.setState({
+                                photoupload: this.webCam.current.getScreenshot({width: 400, height: 400}),
+                                cameraOn: false
+                            },() => {
+                                $("#camerapanel").modal('hide');
+                                $("#fileuploadpanel").modal('show');
+                            });
+                        } catch (error) {
+                            alert("Pleasse try again")
+                        }
+                        }}>Capture</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
     </DashboardLayout>}
 }
