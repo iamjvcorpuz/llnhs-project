@@ -1184,7 +1184,7 @@ class StudentController extends Controller
             if($StudentLRN->count()==1) {
 
                 // $customer = Student::update($request->except('parents')); 
-                $updateStudent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id','relationship']));
+                $updateStudent = DB::table('student')->where('uuid', $request->id)->update($request->except(['parents','id','relationship']));
 
                 // $updateStudentParent = DB::table('student')->where('id', $request->id)->update($request->except(['parents','id']));
                 // $StudentParent->count() == 0 && 
@@ -1218,6 +1218,66 @@ class StudentController extends Controller
                 return response()->json([
                     'status' => 'data_exist',
                     'error' => "DATA EXIST",
+                    'data' => $fields
+                ], 200);
+            }
+        } else {
+            if($StudentLRN->count()>0) {
+                $fields[] = (object)['field'=>'lrn']; 
+            }
+            $fields[] = (object)['field'=>'last_name'];
+            $fields[] = (object)['field'=>'first_name'];
+            return response()->json([
+                'status' => 'data_exist',
+                'error' => "DATA EXIST",
+                'data' => $fields
+            ], 200);
+        }
+    }
+
+
+    public function updatePhoto(Request $request) 
+    {
+
+        // echo "<pre>";
+        // echo $request;
+        // echo "</pre>";
+
+        $validator = Validator::make($request->all(), [
+            'lrn' => 'required|string', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Required Fields',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // $Student = DB::table('student')->where('id', $request->id)->get();
+        $Student = DB::table('student')->where('uuid', $request->id)->get();
+
+        $StudentLRN = DB::table('student')->where('lrn', $request->lrn) ->get();
+
+        $fields = [];
+        if($Student->count()==1) {
+            if($StudentLRN->count()==1) {
+
+                // $customer = Student::update($request->except('parents')); 
+                $updateStudent = DB::table('student')->where('uuid', $request->id)->update($request->except(['lrn']));
+
+                return response()->json([
+                    'status' => 'success',
+                    'error' => null,
+                    'data' => $updateStudent
+                ], 201);
+
+            } else {  
+                $fields[] = (object)['field'=>'lrn']; 
+                return response()->json([
+                    'status' => 'data_exist',
+                    'error' => "DATA NOT EXIST",
                     'data' => $fields
                 ], 200);
             }

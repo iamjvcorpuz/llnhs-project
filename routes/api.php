@@ -39,6 +39,7 @@ Route::get('/generate/code',[GeneralController::class,'generateCode']);
 Route::get('/student',[StudentController::class,'getAllStudent_']);
 Route::post('/student',[StudentController::class,'store']); 
 Route::post('/student/update',[StudentController::class,'update']);
+Route::post('/student/photo/update',[StudentController::class,'updatePhoto']);
 Route::delete('/student',[StudentController::class,'remove']);
 Route::post('/student/scan/qr',[StudentController::class,'getQRcode']);
 Route::post('/student/grades',[StudentController::class,'getStudentGrade']);
