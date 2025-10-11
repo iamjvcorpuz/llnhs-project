@@ -189,6 +189,7 @@ class StudentController extends Controller
         FROM student WHERE status = 'active' 
         ");
     }
+
     public static function getAllNonAdvisory($id) 
     {
         return DB::select('SELECT ROW_NUMBER() OVER () as "index", 
@@ -1061,7 +1062,7 @@ class StudentController extends Controller
                     $usernames= $usernames . $value[0];
                 }
 
-                $usernames = $usernames . ucfirst(strtolower($lastname));
+                $usernames = trim($usernames) . ucfirst(strtolower($lastname));
 
                 $customer = Student::create($request->except(['parents','relationship'])); 
 
@@ -1080,6 +1081,7 @@ class StudentController extends Controller
                     'plainpassword' => $password,
                     'verified' => null
                 ]); 
+                
                 DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);
 
                 // UserAccounts::factory()->state([

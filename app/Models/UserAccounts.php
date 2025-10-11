@@ -2,17 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory; 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use Xslain\OfflineSync\Traits\Syncable;
-use Xslain\OfflineSync\Contracts\SyncableModelInterface;
-
-class UserAccounts extends Authenticatable  implements SyncableModelInterface
+class UserAccounts extends Authenticatable 
 {
-    use HasFactory, Notifiable, Syncable;
+    use HasFactory;
     
     public $table = "user_accounts";
 
@@ -31,27 +26,4 @@ class UserAccounts extends Authenticatable  implements SyncableModelInterface
         'plainpassword',
         'remember_token'
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'update_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-    public function getSyncableFields(): array
-    {
-        return ['uuid', 'user_id', 'user_role_id', 'user_type', 'fullname', 'username', 'password', 'plainpassword', 'updated_at'];
-    }
-
-    public function getExcludedFields(): array
-    {
-        return [];
-    }
-
-    public function getSyncPriority(): int
-    {
-        return 1;  // Higher = sync first
-    }
 }

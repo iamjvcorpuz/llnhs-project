@@ -74,7 +74,7 @@ export default class Users extends Component {
         this.saveNewAuthData = this.saveNewAuthData.bind(this);
         this.saveAuthData = this.saveAuthData.bind(this);
 
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     componentDidMount() {

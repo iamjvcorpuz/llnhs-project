@@ -112,6 +112,7 @@ class TeacherController extends Controller
                 'plainpassword' => $usernames,
                 'verified' => null
             ]);
+            DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);
             
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
