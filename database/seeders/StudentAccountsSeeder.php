@@ -32,8 +32,9 @@ class StudentAccountsSeeder extends Seeder
 
             $usernames = trim($usernames) . str_replace(' ', '',ucfirst(strtolower($lastname)));
             
-            $acc = DB::table('user_accounts')->where('user_id', $val->uuid);
+            $acc = DB::table('user_accounts')->where('user_id', $val->uuid)->where('user_type', 'Student');
             if($acc->count() == 0) {
+                echo "\nAdded ". $val->first_name . " " . $val->last_name;
                 $UserAccounts = UserAccounts::create([
                     'user_id' => $val->uuid,
                     'user_type' => 'Student',
@@ -46,7 +47,7 @@ class StudentAccountsSeeder extends Seeder
                 ]);      
                 DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);          
             } else {
-                DB::table('user_accounts')->where('user_id', $val->uuid)->update(['password'=>Hash::make($password),'plainpassword' => $password]);
+                // DB::table('user_accounts')->where('user_id', $val->uuid)->update(['password'=>Hash::make($password),'plainpassword' => $password]);
             }
 
         }
