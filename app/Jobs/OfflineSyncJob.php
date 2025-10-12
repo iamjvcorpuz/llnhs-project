@@ -45,7 +45,12 @@ class OfflineSyncJob implements ShouldQueue
             try {
                 echo "\n--------------start---------------\n";
                 ini_set('memory_limit', '-1');
+
                 $command = 'offline-sync:' . $this->syncType;
+                if($this->syncType == "up") {
+                    $command = 'offline-sync:' . $this->syncType . ' --full --direction=to-online';
+                }
+                
                 $options = $this->modelClass ? ['--model' => $this->modelClass] : [];
                 Artisan::call($command, $options);
                 $output = Artisan::output();

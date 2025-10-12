@@ -294,6 +294,6 @@ Schedule::call(function () {
 
 
 // Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --memory=1gb --timeout=300')->everyTenSeconds()->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
-Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --timeout=300 --memory=1056M')->everyMinute()->then(function() {
+Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3  --memory=1056M')->everyMinute()->then(function() {
     echo "------------------------------ Schedule COMMAND ------------------------------";
 })->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));

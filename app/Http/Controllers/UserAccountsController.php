@@ -43,8 +43,8 @@ class UserAccountsController extends Controller
         //     'guardians' => DB::select('SELECT * FROM parents')
         // ];
         return  [
-            'student' => StudentController::getAllActive_(),
-            'teacher' => EmployeeController::index_(),
+            'student' => StudentController::getAllActive__(),
+            'teacher' => EmployeeController::getAll_(),
             'guardians' => DB::select('SELECT * FROM parents')
         ];
     }

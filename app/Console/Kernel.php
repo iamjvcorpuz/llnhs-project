@@ -12,6 +12,9 @@ class Kernel extends ConsoleKernel
         // Define your scheduled tasks here, e.g.:
         // $schedule->command('inspire')->everyMinute();
         echo "\m ------------ start schedule ------------\n";
+        // Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --timeout=300 --memory=1056M')->everyMinute()->then(function() {
+        //     echo "------------------------------ Schedule COMMAND ------------------------------";
+        // })->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
         echo "\m ------------ end schedule ------------\n";
     }
 
