@@ -221,7 +221,7 @@ export default function SideNav({
                   <li className="nav-item">
                     <Link href="/admin/dashboard/events" className="nav-link">
                       <i className="nav-icon bi bi-calendar"></i>
-                      <p>Events</p>
+                      <p>Events / Facilities</p>
                     </Link>
                   </li>
                   <li className="nav-item">
