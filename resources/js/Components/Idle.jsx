@@ -40,9 +40,6 @@ export default  class Idle extends React.Component {
    handleMouseClick = e => {
     this.runningtime = 0;
    }
-   componentWillUnmount() {
-    this._isMounted = false;
-   }
    componentDidMount() {
     let self = this;
     this._isMounted = true;
@@ -76,6 +73,7 @@ export default  class Idle extends React.Component {
     }, 1000);    
    }
    componentWillUnmount() {
+    this._isMounted = false;
     document.body.removeEventListener('mousemove',this.handleMouseMove,true);
     document.body.removeEventListener('keypress',this.handleMouseMove,true);
     document.body.removeEventListener('click',this.handleMouseMove,true);
