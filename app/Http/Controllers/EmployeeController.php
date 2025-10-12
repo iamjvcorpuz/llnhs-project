@@ -41,6 +41,7 @@ class EmployeeController extends Controller
     {
         return DB::select('SELECT `employee`.`id`,
                             `employee`.`uuid`,
+                            CONCAT(`employee`.last_name , \', \' , `employee`.first_name) as fullname,
                             `employee`.`employee_type`,
                             `employee`.`qr_code`,
                             `employee`.`first_name`,

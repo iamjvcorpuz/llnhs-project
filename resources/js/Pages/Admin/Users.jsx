@@ -30,7 +30,7 @@ export default class Users extends Component {
                     Cell: ({row}) => { 
                        return <img className="" height={100} width={100}  onError={(e)=>{ 
                         e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                   }} alt="Picture Error" src={(row.original.photo!=null&&row.original.photo!="")?row.original.photo:(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'} />
+                   }} alt="Picture Error" src={`/profile/photo/employee/${row.original.id}`} />
                     },
                 }, 
                 {
@@ -44,7 +44,7 @@ export default class Users extends Component {
                     id: "type",
                     Header: 'User Type',  
                     width: 100,
-                    accessor: 'user_role',
+                    accessor: 'user_type',
                     className: "center",
                     filterable: true
                 },   
@@ -74,12 +74,12 @@ export default class Users extends Component {
         this.saveNewAuthData = this.saveNewAuthData.bind(this);
         this.saveAuthData = this.saveAuthData.bind(this);
 
-        // console.log(this.props)
+        console.log(this.props)
     }
 
     componentDidMount() {
         this.loadData();
-        // this.getAllUsers();
+        this.getAllUsers();
     }
 
     getAllUsers() {
@@ -115,8 +115,25 @@ export default class Users extends Component {
     }
 
     selectedAccounts(val) {
-        console.log(val);
+        
         $("#username").val(val.username);
+        let user_type_ = val.user_type.toLowerCase();
+        let a = this.state.data_users.find( ee => ee.uuid == val.user_id && ee.user_type == user_type_); 
+        if(a != null && typeof(a.user_type)!="undefined") {
+            let default_username = this.getInitials(a.first_name).replaceAll(' ', '') + this.capitalizeFirstLetter(a.last_name).replaceAll(' ', ''); ;
+            let default_password = "";
+            if(a.user_type == "student") {                                         
+                default_password = a.lrn;
+            } else if(a.user_type == "guardians") {
+                default_password = default_username;
+            } else {
+                default_password = default_username;
+            }
+    
+            $('#username').val(default_username);
+            $('#password').val(default_password);
+
+        }
         this.setState({
             selectedAccount: val
         })
@@ -177,10 +194,10 @@ export default class Users extends Component {
                         username: username,
                         password: password
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/user/accounts/auth',datas).then( async function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 if(data.status == "success") {
@@ -526,6 +543,25 @@ export default class Users extends Component {
         });
     }
 
+    getInitials(fullName) {
+        const names = fullName.trim().split(' '); // Trim leading/trailing spaces and split by space
+        let initials = '';
+      
+        for (let i = 0; i < names.length; i++) {
+          if (names[i].length > 0) { // Ensure the word is not empty
+            initials += names[i][0].toUpperCase();
+          }
+        }
+        return initials;
+    }
+    capitalizeFirstLetter(string_) {
+        let string = string_;
+        if (typeof string !== 'string' || string.length === 0) {
+          return string; // Handle non-string or empty input
+        }
+        string = string_.toLowerCase();
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     render() {
         return <DashboardLayout title="User" user={this.props.auth.user}>
             <div className="app-content-header"> 
@@ -586,7 +622,7 @@ export default class Users extends Component {
                                 </div>
                                 <div className="col-md-12">
                                     <label htmlFor="password" className="form-label">Password</label>
-                                    <input type="password" className="form-control"  id="password" defaultValue="" required="" onChange={(e) => {  }}  />
+                                    <input type="text" className="form-control"  id="password" defaultValue="" required="" onChange={(e) => {  }}  />
                                     <div id="password-alert" className="invalid-feedback">Please select a valid state.</div>
                                 </div>
 
@@ -622,7 +658,22 @@ export default class Users extends Component {
                                         // console.log(this.state.data_users.length,this.state.data_users.find( ee => `${ee.last_name}, ${ee.first_name}`== e.target.value));
                                         let a = this.state.data_users.find( ee => `${ee.last_name}, ${ee.first_name}`== e.target.value);
                                         if(a != null && typeof(a.user_type)!="undefined") {
+
+                                            let default_username = this.getInitials(a.first_name).replaceAll(' ', '') + this.capitalizeFirstLetter(a.last_name).replaceAll(' ', ''); ;
+                                            let default_password = "";
+                                            // console.log(a.user_type);
+                                            // if(a.user_type == "")
+                                            if(a.user_type == "student") {                                         
+                                                default_password = a.lrn;
+                                            } else if(a.user_type == "guardians") {
+                                                default_password = default_username;
+                                            } else {
+                                                default_password = default_username;
+                                            }
+                                            console.log(default_username,default_password)
                                             $('#utype').val(a.user_type.toUpperCase());
+                                            $('#nusername').val(default_username);
+                                            $('#npassword').val(default_password);
                                             this.setState({selectedAccount: a});
                                         } else if(e.target.value == "") {
                                             $('#utype').val("");
