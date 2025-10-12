@@ -24,13 +24,21 @@ export default class Users extends Component {
                 {
                     id: "picture",
                     Header: 'Picture',  
-                    accessor: 'photo',
+                    accessor: 'index',
                     className: "center",
                     width: 126,
                     Cell: ({row}) => { 
+                        let target_photo = "";
+                        if(row.original.user_type == "Student") {
+                            target_photo = 'student';
+                        } else if(row.original.user_type == "Guardian") {
+                            target_photo = 'parent';
+                        } else {
+                            target_photo = 'employee';
+                        }
                        return <img className="" height={100} width={100}  onError={(e)=>{ 
                         e.target.src=(row.original.sex=="Male")?'/adminlte/dist/assets/img/avatar.png':'/adminlte/dist/assets/img/avatar-f.jpeg'; 
-                   }} alt="Picture Error" src={`/profile/photo/employee/${row.original.id}`} />
+                   }} alt="Picture Error" src={`/profile/photo/${target_photo}/${row.original.user_id}`} />
                     },
                 }, 
                 {

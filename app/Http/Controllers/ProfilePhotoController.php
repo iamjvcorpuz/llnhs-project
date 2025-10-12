@@ -11,6 +11,10 @@ class ProfilePhotoController extends Controller
     {
         if($type == "student") {
             $result = DB::table('student')->where('lrn',$id)->get();
+            if($result->count() == 0) {
+                $result = DB::table('student')->where('uuid',$id)->get();
+            }
+
             if($result->count() > 0) {
                 return $result[0]->picture_base64;
             } else {
