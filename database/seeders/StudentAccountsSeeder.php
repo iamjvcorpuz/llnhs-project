@@ -47,7 +47,8 @@ class StudentAccountsSeeder extends Seeder
                 ]);      
                 DB::table('user_accounts')->where('id', $UserAccounts->id)->update(['uuid' => $UserAccounts->id]);          
             } else {
-                // DB::table('user_accounts')->where('user_id', $val->uuid)->update(['password'=>Hash::make($password),'plainpassword' => $password]);
+                echo "\nUpdate ". $val->first_name . " " . $val->last_name;
+                DB::table('user_accounts')->where('user_id', $val->uuid)->where('user_type', 'Student')->update(['password'=>Hash::make($password),'plainpassword' => $password]);
             }
 
         }
