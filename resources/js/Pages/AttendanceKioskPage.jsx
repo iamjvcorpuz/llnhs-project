@@ -555,8 +555,7 @@ export default class AttendancePage extends Component {
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                 // console.log("aw",response.data.status,data);
-                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                    console.log("aw",data,(typeof(data.grade)!="undefined"?data.grade:"") + " " + (typeof(data.section)!="undefined"?data.section:""));
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") { 
                     if(typeof(data.remote)!="undefined" && data.remote == "online") {
                         $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connecting');
                         $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-disconnected'); 
@@ -566,7 +565,6 @@ export default class AttendancePage extends Component {
                         $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connected'); 
                         $('.status-float-attendance-page').addClass('status-float-attendance-page-server-disconnected');
                     }
-                    
                 } else {
                     $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connecting');
                     $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connected'); 
