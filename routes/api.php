@@ -13,6 +13,7 @@ use App\Http\Controllers\EventsController;
 use App\Http\Controllers\FinalGradeController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\HolidaysController;
+use App\Http\Controllers\kioskController;
 use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ProfilePhotoController;
@@ -419,3 +420,7 @@ Route::post('/speak',function(Request $request) {
 Route::post('/collection/sync',function(Request $request) {
    return SyncDBController::CollectionData($request); 
 });
+
+Route::post('/kiosk/status',[kioskController::class,'GetDetails']);
+ 
+ 

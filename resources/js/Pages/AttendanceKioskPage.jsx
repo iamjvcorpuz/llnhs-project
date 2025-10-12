@@ -8,6 +8,8 @@ import moment from 'moment';
 import axios from 'axios';
 import ReactTable from "@/Components/ReactTable"; 
 
+import Idle from '@/Components/Idle';
+
 setInterval( async () => {
     let dt = new Date();
     let time = moment(dt);  
@@ -210,6 +212,7 @@ export default class AttendancePage extends Component {
                 // });
         window.addEventListener('keydown', this.eventKeys);
         this.getAllTodaysTimeLogs();
+        this.kioskDetails();
     }
 
     paganationPosition(index) { 
@@ -538,6 +541,47 @@ export default class AttendancePage extends Component {
         }, timeoutIntervals);
     }
 
+    kioskDetails() {
+        let self = this;
+        // console.log("queryAccounts code",code)
+        // status-float-attendance-page
+        // status-float-attendance-page-server-connecting
+        // status-float-attendance-page-server-connected
+        // status-float-attendance-page-server-disconnected
+        $('.status-float-attendance-page').addClass('status-float-attendance-page-server-connecting');
+        axios.post('/kiosk/status').then(function (response) {
+            // handle success
+            // console.log(response);
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                // console.log("aw",response.data.status,data);
+                if(typeof(response.data)!="undefined"&&response.data.status == "success") {
+                    console.log("aw",data,(typeof(data.grade)!="undefined"?data.grade:"") + " " + (typeof(data.section)!="undefined"?data.section:""));
+                    if(typeof(data.remote)!="undefined" && data.remote == "online") {
+                        $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connecting');
+                        $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-disconnected'); 
+                        $('.status-float-attendance-page').addClass('status-float-attendance-page-server-connected');
+                    } else if(typeof(data.remote)!="undefined" && data.remote == "offline") {
+                        $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connecting');
+                        $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connected'); 
+                        $('.status-float-attendance-page').addClass('status-float-attendance-page-server-disconnected');
+                    }
+                    
+                } else {
+                    $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connecting');
+                    $('.status-float-attendance-page').removeClass('status-float-attendance-page-server-connected'); 
+                    $('.status-float-attendance-page').addClass('status-float-attendance-page-server-disconnected');
+                }
+            } else {
+            }
+        }).catch(function (error) {
+        // handle error
+            console.log(error);
+        }).finally(function () {
+        // always executed
+        });
+    }
+
     speak(text) {
         // Create a SpeechSynthesisUtterance
         const utterance = new SpeechSynthesisUtterance(text);
@@ -552,6 +596,16 @@ export default class AttendancePage extends Component {
             handleFocusableElements={this.handleFocusableElements}
             handleKeys={['numeric','enter']}
             onKeyEvent={(key, e)=>{ this.eventKeys(key, e); }} /> */}
+            <Idle
+                timeout={60}
+                callbackOption={"continue"}
+                callback={ () => {
+                    let self = this;
+                    console.log("idle loop");
+                    this.kioskDetails();
+                    this.getAllTodaysTimeLogs();
+                }}
+            />
             <Head title="Attendance" />
             <nav className="main-header navbar attendance-nav">
                 <div className="attendance-nav-container">
