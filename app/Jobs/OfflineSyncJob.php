@@ -63,7 +63,8 @@ class OfflineSyncJob implements ShouldQueue
     }
     public static function dispatchIfNotExists(?string $userId)
     {
-        echo "\n--------------start check---------------\n";
+        $uniqueId = md5("process_user_task_{$userId}"); 
+        echo "\n--------------start check---------------\n" . $uniqueId;
         $uniqueId = md5("process_user_task_{$userId}"); 
         $exists = DB::table('jobs')
             ->where('queue', 'offline-sync')
@@ -79,8 +80,8 @@ class OfflineSyncJob implements ShouldQueue
     }
     public static function dispatchUpIfNotExists(?string $userId)
     {
-        echo "\n--------------start check---------------\n";
         $uniqueId = md5("process_user_task_{$userId}"); 
+        echo "\n--------------start check---------------\n" . $uniqueId;
         $exists = DB::table('jobs')
             ->where('queue', 'offline-sync')
             ->where('payload', 'like', '%' . $uniqueId . '%')

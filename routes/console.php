@@ -50,7 +50,7 @@ Schedule::call(function () {
 
     $IsKiosk = env('KIOSK', false);
     $busy = false;
-    OfflineSyncJob::dispatchIfNotExists(AttendanceSync::class); 
+
     if($IsKiosk == true && $busy == false) {
 
         
@@ -58,46 +58,28 @@ Schedule::call(function () {
         echo "KIOSK MODE ON\n";    
         $UserAccounts = DB::select("SELECT id FROM user_accounts");
         echo "\nUSER ACCOUNTS ";
-        echo "LOCAL TOTAL : " . count($UserAccounts) . " :";
+        echo "LOCAL TOTAL : " . count($UserAccounts) . " : " . UserAccountsSync::count();
         if(count($UserAccounts) == 0) {
             $busy = true;
             echo "\nCREATING USER ACCOUNTS ";
             OfflineSyncJob::dispatchIfNotExists(UserAccountsSync::class);
             // OfflineSyncJob::dispatch(UserAccounts::class, 'sync')->onQueue('offline-sync');
         }
-        
-        $Parents = DB::select("SELECT id FROM parents");
-        echo "\nParents ";
-        echo "LOCAL TOTAL : " . count($Parents) . " :";
-        if(count($Parents) == 0) {
-            echo "\nCREATING PARENTS ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ParentsSync::class); 
-        }
 
         $Employee = DB::select("SELECT id FROM employee");
         echo "\nEmployee ";
-        echo "LOCAL TOTAL : " . count($Employee) . " :";
+        echo "LOCAL TOTAL : " . count($Employee) . " : " . EmployeeSync::count();
         if(count($Employee) == 0) {
             echo "\nCREATING EMPLOYEE ";
             $busy = true;
             OfflineSyncJob::dispatchIfNotExists(EmployeeSync::class); 
         }
 
-        $Student = DB::select("SELECT id FROM student");
-        echo "\nStudent ";
-        echo "LOCAL TOTAL : " . count($Student) . " :";
-        if(count($Student) == 0) {
-            echo "\nCREATING STUDENT ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(StudentSync::class); 
-        }
-
         $Advisory = DB::select("SELECT id FROM advisory");
-        echo "\nAdvisory";
-        echo "LOCAL TOTAL : " . count($Advisory) . " :";
+        echo "\nAdvisory ";
+        echo "LOCAL TOTAL : " . count($Advisory) . " : " . AdvisorySync::count();
         if(count($Advisory) == 0) {
-            echo "\nCREATING STUDENT ";
+            echo "\nCREATING Advisory ";
             $busy = true;
             OfflineSyncJob::dispatchIfNotExists(AdvisorySync::class); 
         }
@@ -139,7 +121,7 @@ Schedule::call(function () {
         }
         
         $EducationBackground = DB::select("SELECT id FROM education_background");
-        echo "\nEducationBackground";
+        echo "\nEducationBackground ";
         echo "LOCAL TOTAL : " . count($EducationBackground) . " :";
         if(count($EducationBackground) == 0) {
             echo "\nCREATING EducationBackground ";
@@ -148,7 +130,7 @@ Schedule::call(function () {
         }
         
         $Holidays = DB::select("SELECT id FROM holidays");
-        echo "\nHolidays";
+        echo "\nHolidays ";
         echo "LOCAL TOTAL : " . count($Holidays) . " :";
         if(count($Holidays) == 0) {
             echo "\nCREATING Holidays ";
@@ -157,7 +139,7 @@ Schedule::call(function () {
         }
         
         $MessengerFB = DB::select("SELECT id FROM messenger");
-        echo "\nMessengerFB";
+        echo "\nMessengerFB ";
         echo "LOCAL TOTAL : " . count($MessengerFB) . " :";
         if(count($MessengerFB) == 0) {
             echo "\nCREATING MessengerFB ";
@@ -165,8 +147,17 @@ Schedule::call(function () {
             OfflineSyncJob::dispatchIfNotExists(MessengerFBSync::class); 
         }
         
+        $Contacts = DB::select("SELECT id FROM contacts");
+        echo "\nContacts ";
+        echo "LOCAL TOTAL : " . count($Contacts) . " :";
+        if(count($Contacts) == 0) {
+            echo "\nCREATING Contacts ";
+            $busy = true;
+            OfflineSyncJob::dispatchIfNotExists(ContactsSync::class); 
+        }
+        
         $Notifications = DB::select("SELECT id FROM notifications");
-        echo "\nNotifications";
+        echo "\nNotifications ";
         echo "LOCAL TOTAL : " . count($Notifications) . " :";
         if(count($Notifications) == 0) {
             echo "\nCREATING Notifications ";
@@ -175,7 +166,7 @@ Schedule::call(function () {
         }
         
         $ClassTS = DB::select("SELECT id FROM school_class");
-        echo "\nClassTS";
+        echo "\nClassTS ";
         echo "LOCAL TOTAL : " . count($ClassTS) . " :";
         if(count($ClassTS) == 0) {
             echo "\nCREATING ClassTS ";
@@ -184,7 +175,7 @@ Schedule::call(function () {
         }
         
         $SchoolRegistry = DB::select("SELECT id FROM school_registry");
-        echo "\nSchoolRegistry";
+        echo "\nSchoolRegistry ";
         echo "LOCAL TOTAL : " . count($SchoolRegistry) . " :";
         if(count($SchoolRegistry) == 0) {
             echo "\nCREATING nSchoolRegistry ";
@@ -193,7 +184,7 @@ Schedule::call(function () {
         }
         
         $SchoolSection = DB::select("SELECT id FROM school_sections");
-        echo "\nSchoolSection";
+        echo "\nSchoolSection ";
         echo "LOCAL TOTAL : " . count($SchoolSection) . " :";
         if(count($SchoolSection) == 0) {
             echo "\nCREATING SchoolSection ";
@@ -202,7 +193,7 @@ Schedule::call(function () {
         }
         
         $Subjects = DB::select("SELECT id FROM school_subjects");
-        echo "\nSubjects";
+        echo "\nSubjects ";
         echo "LOCAL TOTAL : " . count($Subjects) . " :";
         if(count($Subjects) == 0) {
             echo "\nCREATING Subjects ";
@@ -211,7 +202,7 @@ Schedule::call(function () {
         }
         
         $SchoolYearGrades = DB::select("SELECT id FROM school_year_grades");
-        echo "\nSchoolYearGrades";
+        echo "\nSchoolYearGrades ";
         echo "LOCAL TOTAL : " . count($SchoolYearGrades) . " :";
         if(count($SchoolYearGrades) == 0) {
             echo "\nCREATING SchoolYearGrades ";
@@ -220,7 +211,7 @@ Schedule::call(function () {
         }
         
         $SpecializeProgram = DB::select("SELECT id FROM specialize_program");
-        echo "\nSpecializeProgram";
+        echo "\nSpecializeProgram ";
         echo "LOCAL TOTAL : " . count($SpecializeProgram) . " :";
         if(count($SpecializeProgram) == 0) {
             echo "\nCREATING SpecializeProgram ";
@@ -229,7 +220,7 @@ Schedule::call(function () {
         }
         
         $SpecificPrograms = DB::select("SELECT id FROM specific_programs");
-        echo "\nSpecificPrograms";
+        echo "\nSpecificPrograms ";
         echo "LOCAL TOTAL : " . count($SpecificPrograms) . " :";
         if(count($SpecificPrograms) == 0) {
             echo "\nCREATING SpecificPrograms ";
@@ -238,7 +229,7 @@ Schedule::call(function () {
         }
         
         $StudentFinalGrades = DB::select("SELECT id FROM student_final_grades");
-        echo "\nStudentFinalGrades";
+        echo "\nStudentFinalGrades ";
         echo "LOCAL TOTAL : " . count($StudentFinalGrades) . " :";
         if(count($StudentFinalGrades) == 0) {
             echo "\nCREATING StudentFinalGrades ";
@@ -247,7 +238,7 @@ Schedule::call(function () {
         }
         
         $StudentGuardian = DB::select("SELECT id FROM student_guardians");
-        echo "\nStudentFinalGrades";
+        echo "\nStudentFinalGrades ";
         echo "LOCAL TOTAL : " . count($StudentGuardian) . " :";
         if(count($StudentGuardian) == 0) {
             echo "\nCREATING StudentGuardian ";
@@ -256,7 +247,7 @@ Schedule::call(function () {
         }
         
         $StudentMovement = DB::select("SELECT id FROM student_movement");
-        echo "\nStudentMovement";
+        echo "\nStudentMovement ";
         echo "LOCAL TOTAL : " . count($StudentMovement) . " :";
         if(count($StudentMovement) == 0) {
             echo "\nCREATING StudentMovement ";
@@ -265,7 +256,7 @@ Schedule::call(function () {
         }
         
         $Tranings = DB::select("SELECT id FROM tranings");
-        echo "\nTranings";
+        echo "\nTranings ";
         echo "LOCAL TOTAL : " . count($Tranings) . " :";
         if(count($Tranings) == 0) {
             echo "\nCREATING Tranings ";
@@ -274,6 +265,26 @@ Schedule::call(function () {
         }
         
         
+        $Parents = DB::select("SELECT id FROM parents");
+        echo "\nParents ";
+        echo "LOCAL TOTAL : " . count($Parents) . " : " . ParentsSync::count();
+        if(count($Parents) == 0) {
+            echo "\nCREATING PARENTS ";
+            $busy = true;
+            OfflineSyncJob::dispatchIfNotExists(ParentsSync::class); 
+        }
+
+        $Student = DB::select("SELECT id FROM student");
+        echo "\nStudent ";
+        echo "LOCAL TOTAL : " . count($Student) . " : " . StudentSync::count();
+        if(count($Student) == 0) {
+            echo "\nCREATING STUDENT ";
+            $busy = true;
+            OfflineSyncJob::dispatchIfNotExists(StudentSync::class); 
+        }
+
+        OfflineSyncJob::dispatchIfNotExists(AttendanceSync::class);
+
     } else if($busy == true) {
         echo "\nConsole is busy";
     } else {
@@ -283,4 +294,6 @@ Schedule::call(function () {
 
 
 // Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --memory=1gb --timeout=300')->everyTenSeconds()->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
-Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --timeout=30000 --memory=1056M')->everyTenSeconds()->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
+Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --timeout=300 --memory=1056M')->everyMinute()->then(function() {
+    echo "------------------------------ Schedule COMMAND ------------------------------";
+})->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
