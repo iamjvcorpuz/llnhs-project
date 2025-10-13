@@ -202,7 +202,7 @@ export default class EditParents extends Component {
                         current_address: self.state.address,
                         contact_list: self.state.contact_list
                     };
-                    // console.log(datas);
+                    console.log(datas);
                     axios.post('/parents/update',datas).then( async function (response) {
                         // handle success
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {

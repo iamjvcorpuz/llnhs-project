@@ -385,8 +385,8 @@ Route::post('/messenger/send/message',[MessengerController::class,'sendMessage']
 
 
 Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
-    $id = AuthenticatedSessionController::getAuthId();
-    if($id!=null) {
+    // $id = AuthenticatedSessionController::getAuthId();
+    // if($id!=null) {
         $base64_data = ProfilePhotoController::getPhoto($usrtype,$usrid); 
         if($base64_data != "") {
             try {
@@ -405,12 +405,12 @@ Route::get('/profile/photo/{usrtype}/{usrid}',function($usrtype,$usrid){
             echo '/adminlte/dist/assets/img/avatar.png';
             // abort(404, 'Opps Sorry!');
         }
-    } else {
-        // abort(404, 'Opps Sorry!');
-        http_response_code(500);
-        echo json_encode(['message' => 'Crazy thing just happened!' ]);
-        exit();
-    }
+    // } else {
+    //     // abort(404, 'Opps Sorry!');
+    //     http_response_code(500);
+    //     echo json_encode(['message' => 'Crazy thing just happened!' ]);
+    //     exit();
+    // }
 });
 
 Route::post('/speak',function(Request $request) {
