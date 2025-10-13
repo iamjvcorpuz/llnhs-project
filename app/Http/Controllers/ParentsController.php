@@ -241,7 +241,7 @@ class ParentsController extends Controller
             if($contact_list != NULL) {
                 foreach($contact_list as $key => $val) {
                     // print_r($val);                    
-                    $guardian_id = isset($val['guardian_id']) ? $val['guardian_id'] : "";
+                    $guardian_id = isset($val['guardian_id']) ? $val['guardian_id'] : $request->id;
                     $phone_number = isset($val['phone_number']) ? $val['phone_number'] : "";
                     $messenger_id = isset($val['messenger_id']) ? $val['messenger_id'] : "";
                     $messenger_name = isset($val['messenger_name']) ? $val['messenger_name'] : "";
