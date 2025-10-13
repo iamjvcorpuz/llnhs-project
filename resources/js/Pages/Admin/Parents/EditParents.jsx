@@ -54,7 +54,8 @@ export default class EditParents extends Component {
                     id: "fullname",
                     Header: 'Fullname', 
                     width: 800,
-                    accessor: 'fullname'
+                    accessor: 'fullname',
+                    filterable: true
                 }, 
                 {
                     id: "Status",
@@ -942,7 +943,7 @@ export default class EditParents extends Component {
                         }} aria-label="Close"> 
                         </button>
                     </div>
-                    <div className="modal-body"> 
+                    <div className="modal-body p-0"> 
 
                     <ReactTable
                         key={"react-tables"}
