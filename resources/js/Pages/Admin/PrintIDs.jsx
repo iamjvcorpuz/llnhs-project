@@ -36,7 +36,8 @@ export default class PrintIDs extends Component {
             noPhotoList: [],
             noGuardianList: [],
             selected: [],
-            ready: false
+            ready: false,
+            vurl: this.props.vurl
         }
         $('body').attr('class', '');
         this.multiple = this.multiple.bind(this);
@@ -106,6 +107,7 @@ export default class PrintIDs extends Component {
             });
         }, 2000);
     }
+
     updateLoadingProgress(percentage) {
         const progressBar = document.getElementById('progress-bar');
         const percentageText = document.getElementById('percentage-text');
@@ -117,6 +119,7 @@ export default class PrintIDs extends Component {
             percentageText.textContent = `${percentage}%`;
         }
     }
+
     generateQRCODES(callback) {
         let student_list = [];
         let noGuardianList = [];
@@ -161,12 +164,13 @@ export default class PrintIDs extends Component {
             let val = arr[i];
             let fullname1 = val.first_name + " " + val.middle_name;
             let guardian_data = self.state.guardian.find(e=>e.student_id==val.student_id);
+            // console.log(self.state.vurl + "/" + val.uuid)
             const percentage = Math.round((i / self.state.student_list.length) * 100);
-            this.updateLoadingProgress(percentage);
+            self.updateLoadingProgress(percentage);
             if(typeof(guardian_data)!="undefined") {
                 await loadImageURL(`/profile/photo/student/${val.lrn}`,async (eee) => {
                     await generateQR(val.lrn, async (e) => {
-                        await generateQRV(this.state.vurl + "/" + val.uuid,async (ee) => {
+                        await generateQRV(self.state.vurl + "/" + val.uuid,async (ee) => {
                             student_list.push({...val,gen_qr: e,vurl: ee,picture: eee}); 
                             if((i + 1) == arr.length) { 
                                 self.setState({student_list: student_list,noGuardianList:noGuardianList},() => {
