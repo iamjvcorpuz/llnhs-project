@@ -44,6 +44,13 @@ Route::post('/student/photo/update',[StudentController::class,'updatePhoto']);
 Route::delete('/student',[StudentController::class,'remove']);
 Route::post('/student/scan/qr',[StudentController::class,'getQRcode']);
 Route::post('/student/grades',[StudentController::class,'getStudentGrade']);
+Route::post('/student/verifier/',function(Request $request) {
+    return [
+        'student' => StudentController::getDataNoPicture($request->id),
+        'guardians' => StudentController::getStudentGuardian($request->id), 
+        "getSchoolStats" => StudentController::getSchoolStats($request->id)
+    ];
+});
  
 Route::get('/teacher',[TeacherController::class,'index']);
 Route::post('/teacher',[TeacherController::class,'store']);
