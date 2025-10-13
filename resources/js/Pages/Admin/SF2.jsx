@@ -12,7 +12,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 import { ReactNotificationManager,ReactNotificationContainer } from '@/Components/Notification'; 
 // const generateQR = async text => {
 //     try {
-//       console.log(await QRCode.toDataURL(text))
+//       // console.log(await QRCode.toDataURL(text))
 //     } catch (err) {
 //       console.error(err)
 //     }
@@ -91,7 +91,7 @@ export default class SF2 extends Component {
         this.loadPDF = this.loadPDF.bind(this); 
         this.loadPDFTest = this.loadPDFTest.bind(this);
         this.fetchData = this.fetchData.bind(this);
-        // console.log(this.props)
+        // // console.log(this.props)
     }
 
     componentDidMount() { 
@@ -105,9 +105,9 @@ export default class SF2 extends Component {
         });
         $('#data-list').on('select2:select', function (e) { 
             var selectedData = e.params.data; 
-            console.log(selectedData,e.params);
+            // console.log(selectedData,e.params);
             let temp = self.state.class_list.find(e=>e.qrcode==selectedData.id);
-            console.log(temp);
+            // console.log(temp);
             self.setState({
                 grade: temp.year_level,
                 section: temp.section_name,
@@ -120,7 +120,7 @@ export default class SF2 extends Component {
         //     });
         // }
         // getWeeksInMonth('2025-07',(getWeeksInMonth_) => {
-        //     console.log(getWeeksInMonth_);
+        //     // console.log(getWeeksInMonth_);
         //     this.setState({getWeeksInMonth:getWeeksInMonth_})
         //     setTimeout(() => {
         //         this.loadPDFTest();
@@ -131,7 +131,7 @@ export default class SF2 extends Component {
     }
     
     async loadPDF() {
-        // console.log("loading pdf",this.state.student_male_list,this.state.student_female_list)
+        // // console.log("loading pdf",this.state.student_male_list,this.state.student_female_list)
         let self = this;
         let green = {fillColor:[0,128,0]};
         let red = {fillColor:[216,78,75]};
@@ -143,8 +143,8 @@ export default class SF2 extends Component {
         let img_cutting = '/images/sf2/4.png';
         let student_male_total_daily = self.state.student_male_total_daily;
         let student_female_total_daily = self.state.student_female_total_daily;
-        // console.log(student_male_total_daily)
-        // console.log(self.state.student_male_list)
+        // // console.log(student_male_total_daily)
+        // // console.log(self.state.student_male_list)
         try {
             let self = this;
             let sgv = "";
@@ -879,7 +879,7 @@ export default class SF2 extends Component {
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");
             let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
             let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-            // console.log(doc.getFontList());
+            // // console.log(doc.getFontList());
             doc.addImage("/images/deped-d.png", "PNG", 5, 10, 24, 24);
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(15);
@@ -1095,7 +1095,7 @@ export default class SF2 extends Component {
             doc.text("X 100", 116, startY + 25,{align:'left'});
             
             doc.rect(130, startY , 55, 70);
-            // console.log("startY",startY,t1y);
+            // // console.log("startY",startY,t1y);
             autoTable(doc,{ 
                 theme: 'plain',
                 startY: startY,
@@ -1361,12 +1361,12 @@ export default class SF2 extends Component {
             // $('#frame1').attr('src',doc.output("datauristring"));  
                 
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 
     async loadPDFTest() {
-        // console.log("loading pdf",this.state.student_male_list,this.state.student_female_list)
+        // // console.log("loading pdf",this.state.student_male_list,this.state.student_female_list)
         let green = {fillColor:[0,128,0]};
         let red = {fillColor:[216,78,75]};
         let img_none = '/images/sf2/1.png';
@@ -2108,7 +2108,7 @@ export default class SF2 extends Component {
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");
             let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
             let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-            // console.log(doc.getFontList());
+            // // console.log(doc.getFontList());
             doc.addImage("/images/deped-d.png", "PNG", 5, 10, 24, 24);
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(15);
@@ -2314,7 +2314,7 @@ export default class SF2 extends Component {
             doc.text("X 100", 116, startY + 25,{align:'left'});
             
             doc.rect(130, startY , 55, 70);
-            console.log("startY",startY,t1y);
+            // console.log("startY",startY,t1y);
             autoTable(doc,{ 
                 theme: 'plain',
                 startY: startY,
@@ -2580,7 +2580,7 @@ export default class SF2 extends Component {
             // $('#frame1').attr('src',doc.output("datauristring"));  
                 
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 
@@ -2624,7 +2624,7 @@ export default class SF2 extends Component {
 	}
  
     selectedMonthYear(val) {
-        // console.log("val",val);
+        // // console.log("val",val);
         this.setState({selectedMonthYear: val});
     }
 
@@ -2633,12 +2633,12 @@ export default class SF2 extends Component {
         let date = moment(new Date()).format("YYYY-MM-DD");
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             self.setState({loading: true})
-            // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
+            // // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear})
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
-                // console.log(response)
+                // // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
-                    console.log("aw",response.data.status,data);
+                    // console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
                         self.setState({data: data,loading: false});
                     }
@@ -2662,7 +2662,7 @@ export default class SF2 extends Component {
 
     fetchData() {
         let self = this;
-        // console.log(self.state.selectedQr,self.state.selectedMonthYear) 
+        // // console.log(self.state.selectedQr,self.state.selectedMonthYear) 
         if(self.state.selectedQr != "" && self.state.selectedMonthYear != "") {
             self.setState({loading: true});
             getWeeksInMonth(self.state.selectedMonthYear,(c) => {
@@ -2677,10 +2677,10 @@ export default class SF2 extends Component {
                     }
                 });  
                 const getWeeksInMonth_ = c;
-                // console.log(getWeeksInMonth_)
+                // // console.log(getWeeksInMonth_)
                 self.setState({getWeeksInMonth:getWeeksInMonth_,totalDaysAttendance: total_days},() => {
                     axios.post(`/admin/sf2/${self.state.selectedQr}`,{code:self.state.selectedQr,month: self.state.selectedMonthYear}).then(function (response) {
-                        // console.log(response);
+                        // // console.log(response);
                         if( typeof(response.status) != "undefined" && response.status == "200" ) {
                             let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                             if(Object.keys(data).length>0) {
@@ -2725,7 +2725,7 @@ export default class SF2 extends Component {
     }
 
     attendanceChecking(data,e) {
-        // console.log(data);
+        // // console.log(data);
         let status  = "full";
         let has_absent = false;
         let has_late = false;
@@ -2759,13 +2759,13 @@ export default class SF2 extends Component {
     }
 
     generateData(data) {
-        // console.log(data)
-        // console.log(this.state.getWeeksInMonth);
+        // // console.log(data)
+        // // console.log(this.state.getWeeksInMonth);
         let self = this;
         const student = self.state.student_list;
         let WeeksInMonth_ = JSON.stringify(this.state.getWeeksInMonth);
         let student_list = []; 
-        // console.log("student",student);
+        // // console.log("student",student);
         let student_total_daily = {WeeksInMonth: JSON.parse(WeeksInMonth_),absent: 0,tardy:0};
         let student_male_total_daily = {WeeksInMonth: JSON.parse(WeeksInMonth_),absent: 0,tardy:0};
         let student_female_total_daily = {WeeksInMonth: JSON.parse(WeeksInMonth_),absent: 0,tardy:0}; 
@@ -2801,7 +2801,7 @@ export default class SF2 extends Component {
         
         student.forEach((val,i_,arr) => {
             const temp_student_list = {...val,WeeksInMonth: JSON.parse(WeeksInMonth_)};
-            // console.log(temp_student_list);
+            // // console.log(temp_student_list);
             // let getWeeksInMonth = this.state.getWeeksInMonth;
             let getWeeksInMonth_temp = [];
             let getWeeksInMonth_student_male_total_daily_temp = [];
@@ -3081,23 +3081,23 @@ export default class SF2 extends Component {
                     total_female_5_absent++;
                 }
             } 
-            // console.log(getWeeksInMonth_temp);
+            // // console.log(getWeeksInMonth_temp);
             student_male_total_daily = { WeeksInMonth: getWeeksInMonth_student_male_total_daily_temp,absent: student_male_total_daily_absent,tardy: student_male_total_daily_tardy};
             student_female_total_daily = { WeeksInMonth: getWeeksInMonth_student_female_total_daily_temp,absent: student_female_total_daily_absent,tardy: student_female_total_daily_tardy};
             student_list.push({...val,WeeksInMonth: getWeeksInMonth_temp,absent: totalAbsent,tardy: totalTardy});
-            // console.log(student_list);
+            // // console.log(student_list);
 
         });
         
-        console.log("Total Male Absent of the month: ",student_male_total_daily_absent);
-        console.log("Total Female Absent of the month: ",student_female_total_daily_absent);
-        console.log("Total Male Present of the month: ",student_male_total_daily_present);
-        console.log("Total Female Present of the month: ",student_female_total_daily_present);
-        console.log("Total Absent of the month: ",student_male_total_daily_absent + student_female_total_daily_absent);
-        console.log("Total Days of the month: ",self.state.totalDaysAttendance);
-        // console.log("Total Attendance of the month: ",total_days);
-        // console.log("Number of students absent for 5 consecutive days MALE: ",total_male_5_absent);
-        // console.log("Number of students absent for 5 consecutive days FEMALE: ",total_female_5_absent);
+        // console.log("Total Male Absent of the month: ",student_male_total_daily_absent);
+        // console.log("Total Female Absent of the month: ",student_female_total_daily_absent);
+        // console.log("Total Male Present of the month: ",student_male_total_daily_present);
+        // console.log("Total Female Present of the month: ",student_female_total_daily_present);
+        // console.log("Total Absent of the month: ",student_male_total_daily_absent + student_female_total_daily_absent);
+        // console.log("Total Days of the month: ",self.state.totalDaysAttendance);
+        // // console.log("Total Attendance of the month: ",total_days);
+        // // console.log("Number of students absent for 5 consecutive days MALE: ",total_male_5_absent);
+        // // console.log("Number of students absent for 5 consecutive days FEMALE: ",total_female_5_absent);
         
 
         let PAMM = (((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
@@ -3111,13 +3111,13 @@ export default class SF2 extends Component {
         if(ADAF=="NaN") {
             ADAF = 0;
         }
-        // console.log("Percentage of Attendance for the month (male): ",((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
-        // console.log("Percentage of Attendance for the month (female): ",((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF) * 100);
-        // console.log("Percentage of Attendance for the month: ", ((PAMM + PAMF) / 2));
+        // // console.log("Percentage of Attendance for the month (male): ",((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
+        // // console.log("Percentage of Attendance for the month (female): ",((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF) * 100);
+        // // console.log("Percentage of Attendance for the month: ", ((PAMM + PAMF) / 2));
 
-        // console.log("Average Daily Attendance MALE: ", (student_male_total_daily_present / self.state.totalDaysAttendance) * 100);
-        // console.log("Average Daily Attendance FEMALE: ", (student_female_total_daily_present / self.state.totalDaysAttendance) * 100);
-        // console.log("Average Daily Attendance: ", (ADAM / ADAF));
+        // // console.log("Average Daily Attendance MALE: ", (student_male_total_daily_present / self.state.totalDaysAttendance) * 100);
+        // // console.log("Average Daily Attendance FEMALE: ", (student_female_total_daily_present / self.state.totalDaysAttendance) * 100);
+        // // console.log("Average Daily Attendance: ", (ADAM / ADAF));
         
         this.setState({
             student_list: student_list,
@@ -3130,7 +3130,7 @@ export default class SF2 extends Component {
             PAMTOTAL: (PAMTOTAL.toFixed(2) != "NaN")?PAMTOTAL:0,
             ADAM: (ADAM != "NaN")?ADAM.toFixed(2):0,
             ADAF: (ADAF != "NaN")?ADAF.toFixed(2):0,
-            ADATOTAL: ((ADAM / ADAF).toFixed(2)!="NaN")?(ADAM / ADAF).toFixed(2):0,
+            ADATOTAL: ((ADAM + ADAF).toFixed(2)!="NaN")?(ADAM + ADAF).toFixed(2):0,
             NSAM: total_male_5_absent,
             NSAF: total_female_5_absent,
             loading: false

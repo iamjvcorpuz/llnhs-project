@@ -86,7 +86,7 @@ export default class SF2 extends Component {
 
     componentDidMount() {  
         getWeeksInMonth('2025-07',(getWeeksInMonth_) => {
-            console.log(getWeeksInMonth_);
+            // console.log(getWeeksInMonth_);
             this.setState({getWeeksInMonth:getWeeksInMonth_})
             setTimeout(() => {
                 // this.loadPDFTest();
@@ -560,7 +560,7 @@ export default class SF2 extends Component {
             PAMTOTAL: (PAMTOTAL.toFixed(2) != "NaN")?PAMTOTAL:0,
             ADAM: (ADAM != "NaN")?ADAM.toFixed(2):0,
             ADAF: (ADAF != "NaN")?ADAF.toFixed(2):0,
-            ADATOTAL: ((ADAM / ADAF).toFixed(2)!="NaN")?(ADAM / ADAF).toFixed(2):0,
+            ADATOTAL: ((ADAM + ADAF).toFixed(2)!="NaN")?(ADAM + ADAF).toFixed(2):0,
             NSAM: total_male_5_absent,
             NSAF: total_female_5_absent,
             loading:false
@@ -1354,7 +1354,7 @@ export default class SF2 extends Component {
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");
             let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
             let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-            console.log(doc.getFontList());
+            // console.log(doc.getFontList());
             doc.addImage("/images/deped-d.png", "PNG", 5, 10, 24, 24);
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(15);
@@ -1566,7 +1566,7 @@ export default class SF2 extends Component {
             doc.text("X 100", 116, startY + 25,{align:'left'});
             
             doc.rect(130, startY , 55, 70);
-            console.log("startY",startY,t1y);
+            // console.log("startY",startY,t1y);
             autoTable(doc,{ 
                 theme: 'plain',
                 startY: startY,
@@ -1850,7 +1850,7 @@ export default class SF2 extends Component {
         let student_male_total_daily = self.state.student_male_total_daily;
         let student_female_total_daily = self.state.student_female_total_daily;
         // console.log(student_male_total_daily)
-        console.log(self.state.student_male_list)
+        // console.log(self.state.student_male_list)
         try {
             let self = this;
             let sgv = "";
@@ -3814,7 +3814,7 @@ export default class SF2 extends Component {
             doc.addFont('/fonts/arial/ArialMdm.ttf','Arial Medium', "normal");
             let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
             let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-            console.log(doc.getFontList());
+            // console.log(doc.getFontList());
             doc.addImage("/images/deped-d.png", "PNG", 5, 10, 24, 24);
             doc.setFont("Arial Medium", "normal"); 
             doc.setFontSize(15);
@@ -4023,7 +4023,7 @@ export default class SF2 extends Component {
             doc.text("X 100", 116, startY + 25,{align:'left'});
             
             doc.rect(130, startY , 55, 70);
-            console.log("startY",startY,t1y);
+            // console.log("startY",startY,t1y);
             autoTable(doc,{ 
                 theme: 'plain',
                 startY: startY,
@@ -4368,7 +4368,7 @@ export default class SF2 extends Component {
                                             <div className="input-group">
                                                 <span  className="input-group-text">Month</span>
                                                 <input className="form-control" type="month" onChange={(e) => {
-                                                    console.log(e.target.value);
+                                                    // console.log(e.target.value);
                                                     this.setState({month: e.target.value,loading: true},() => {
                                                         this.fetchData();
                                                     });
@@ -4445,7 +4445,7 @@ export default class SF2 extends Component {
                                     <select name="yearlevel" id="yearlevel" className="form-control" onChange={(e) => { 
                                          $("#teacher-alert").removeAttr('class').addClass('invalid-feedback'); 
                                          $('#section').val("");
-                                         console.log(e.target.value)
+                                        //  console.log(e.target.value)
                                          if(e.target.value != "") {
                                             this.setState({selectedYearLevel: e.target.value,sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==e.target.value)})  
                                          }
