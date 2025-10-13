@@ -144,7 +144,7 @@ export default class SF2 extends Component {
         let student_male_total_daily = self.state.student_male_total_daily;
         let student_female_total_daily = self.state.student_female_total_daily;
         // console.log(student_male_total_daily)
-        console.log(self.state.student_male_list)
+        // console.log(self.state.student_male_list)
         try {
             let self = this;
             let sgv = "";
@@ -1107,10 +1107,10 @@ export default class SF2 extends Component {
                         {
                             content: "Month: \n\n     " + moment(self.state.selectedMonthYear,'YYYY-MM').format('MMMM YYYY'), 
                             rowSpan: 2,
-                            styles: { halign: 'left',minCellHeight: 0, fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 22}
+                            styles: { halign: 'left',minCellHeight: 0, fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 25}
                         },
                         {
-                            content: "No. of Days of\nClasses: \n            " + self.state.totalDaysAttendance, 
+                            content: "No. of Days of\nClasses: \n\n            " + self.state.totalDaysAttendance, 
                             rowSpan: 2,
                             styles: { halign: 'left',minCellHeight: 0, fontSize: 6,lineColor: 1,lineWidth: .01,cellWidth: 22}
                         },
@@ -3089,12 +3089,12 @@ export default class SF2 extends Component {
 
         });
         
-        // console.log("Total Male Absent of the month: ",student_male_total_daily_absent);
-        // console.log("Total Female Absent of the month: ",student_female_total_daily_absent);
-        // console.log("Total Male Present of the month: ",student_male_total_daily_present);
-        // console.log("Total Female Present of the month: ",student_female_total_daily_present);
-        // console.log("Total Absent of the month: ",student_male_total_daily_absent + student_female_total_daily_absent);
-        // console.log("Total Days of the month: ",self.state.totalDaysAttendance);
+        console.log("Total Male Absent of the month: ",student_male_total_daily_absent);
+        console.log("Total Female Absent of the month: ",student_female_total_daily_absent);
+        console.log("Total Male Present of the month: ",student_male_total_daily_present);
+        console.log("Total Female Present of the month: ",student_female_total_daily_present);
+        console.log("Total Absent of the month: ",student_male_total_daily_absent + student_female_total_daily_absent);
+        console.log("Total Days of the month: ",self.state.totalDaysAttendance);
         // console.log("Total Attendance of the month: ",total_days);
         // console.log("Number of students absent for 5 consecutive days MALE: ",total_male_5_absent);
         // console.log("Number of students absent for 5 consecutive days FEMALE: ",total_female_5_absent);
@@ -3102,8 +3102,8 @@ export default class SF2 extends Component {
 
         let PAMM = (((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
         let PAMF = (((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF ) * 100);
-        let ADAM = (student_male_total_daily_present / self.state.totalDaysAttendance) * 100;
-        let ADAF = (student_female_total_daily_present / self.state.totalDaysAttendance) * 100;
+        let ADAM = (student_male_total_daily_present / self.state.totalDaysAttendance);
+        let ADAF = (student_female_total_daily_present / self.state.totalDaysAttendance);
         let PAMTOTAL = ((PAMM + PAMF) / 2);
         if(ADAM=="NaN") {
             ADAM = 0;
@@ -3138,7 +3138,6 @@ export default class SF2 extends Component {
             this.loadPDF();
         })
     }
-
     
     render() {
         return <DashboardLayout title="Attendance" user={this.props.auth.user} profile={this.props.auth.profile}>
