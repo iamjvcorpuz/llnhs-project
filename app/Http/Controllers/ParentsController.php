@@ -105,7 +105,7 @@ class ParentsController extends Controller
             'sex' => 'required|string',
             'current_address'=> 'required'
         ]);
-// 'bdate' => 'required|string',
+        // 'bdate' => 'required|string',
         $contact_list = $request->contact_list;
         if ($validator->fails()) {
             return response()->json([

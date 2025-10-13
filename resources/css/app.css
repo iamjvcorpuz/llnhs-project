@@ -987,3 +987,35 @@ height: 100%;
 #cameraInput {
     display:none
 }
+.slable {
+    width: 100%;
+    min-height: 25px;
+}
+.shimmer {
+    padding: 5px;
+    width: 95%; 
+    background: #ffffff;
+}
+.shimmer .image-card { 
+    float: right;
+    border-radius: 8px;
+}
+.stroke {
+    /* height: 15px; */
+    background: #777; 
+}
+.animate {
+    animation: shimmer 3s;
+    animation-iteration-count: infinite;
+    background: linear-gradient(to right, #e6e6e6 5%, #cccccc 25%, #e6e6e6 35%);
+    background-size: 1000px 100%;
+}
+@keyframes shimmer {
+    from {
+        background-position: -1000px 0;
+    }
+    to {
+        background-position: 1000px 0;
+    }
+}
+  

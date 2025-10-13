@@ -876,7 +876,7 @@ Route::get('/student/verifier/qr/scan', function () {
 
 Route::get('/student/verifier/{_id}', function ($_id) {
     // PhdLDZ4QtP9pXb4heEpXgGSn8ytm70ZoFYYr7nomDRXElL3Dn3n35EuHL0QL
-    // https://llnhs-ams.ngrok.io/student/verifier/
+    // https://llnhs-ams.ngrok.io/student/verifier/student_id
     // http://localhost:8000/student/verifier/
     // http://localhost:8000/student/verifier/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
     // https://tinyurl.com/4v4uxjfj/eyJpdiI6InZWdkx3eCtzTDFRVmMxSDkvZXI1ZUE9PSIsInZhbHVlIjoiNEdrWUlvTnFmZDBSaHhkaG1rc1RmUT09IiwibWFjIjoiZGU5MjAxZGNiMmYwOGY1MGI4NjJiMzhiNmU0MmIxMmJiNjQ2MzdjNmY3OTI4Y2NhNTU5ZmQyMTJhMGNmYmI0YyIsInRhZyI6IiJ9
@@ -888,16 +888,26 @@ Route::get('/student/verifier/{_id}', function ($_id) {
         // ...
     }
     return Inertia::render('StudentVerifier',[
-        'parents' => ParentsController::getAll(),
-        'student' => StudentController::getData($id),
-        'guardians' => StudentController::getStudentGuardian($id),
+        // 'parents' => ParentsController::getAll(),
+        'id' => $id,
+        'student' => [],
+        'guardians' => [],
         'track' => ProgramsCurricularController::getTrack(),
         'strand' => ProgramsCurricularController::getStrand(),
-        "subjects" => SubjectController::getAll(),
+        // "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(), 
-        "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
-        "getSchoolStats" => StudentController::getSchoolStats($id)
+        // "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+        "getSchoolStats" => []
     ]);
+
+    // 'student' => StudentController::getDataNoPicture($id),
+    // 'guardians' => StudentController::getStudentGuardian($id),
+    // 'track' => ProgramsCurricularController::getTrack(),
+    // 'strand' => ProgramsCurricularController::getStrand(),
+    // // "subjects" => SubjectController::getAll(),
+    // "sections" => SchoolSectionController::getAll(), 
+    // // "todayAttendance" => AttendanceController::_getTodaysTimelogs(),
+    // "getSchoolStats" => StudentController::getSchoolStats($id)
 });
 
 Route::get('/sf2', function () {

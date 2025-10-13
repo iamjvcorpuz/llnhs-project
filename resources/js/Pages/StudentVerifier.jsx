@@ -79,7 +79,7 @@ export default class StudentVerifier extends Component {
             filetype: "",
             filetype_: "",
             cameraOn: false,
-            parent_data: this.props.parents,
+            parent_data: [],
             parent_columns: [
                 {
                     id: "no",
@@ -185,9 +185,11 @@ export default class StudentVerifier extends Component {
                     className: "center"
                 }
             ],
-            notFound: false
+            notFound: false,
+            loading: true
         }
         // console.log(this.props); 
+        this.getData = this.getData.bind(this);
         this.getAttendanceLogs = this.getAttendanceLogs.bind(this);
     }
 
@@ -201,9 +203,9 @@ export default class StudentVerifier extends Component {
 
             let selected_quardians = "";
             let so = []
-            this.props.parents.forEach(element => {
-                so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
-            });
+            // this.props.parents.forEach(element => {
+            //     so.push({ value: element.id, label: `${element.last_name}, ${element.first_name} ${element.middle_name}` })
+            // });
             let t = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].track:"";
             let s = (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].strand:"";
             
@@ -216,7 +218,7 @@ export default class StudentVerifier extends Component {
                 added_guardians:this.props.guardians,
                 selected_quardians: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].id:"",
                 relationship: (this.props.guardians!=null&&this.props.guardians.length>0)?this.props.guardians[0].relationship:"",
-                fullname: this.props.student.first_name + " " + this.props.student.last_name,
+                fullname:  typeof(this.props.student.first_name)!="undefined"?this.props.student.first_name + " " + this.props.student.last_name:"",
                 grade_level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade:"",
                 level: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].grade_level:"",
                 section: (this.props.getSchoolStats!=null&&this.props.getSchoolStats.length>0)?this.props.getSchoolStats[0].section:"",
@@ -228,6 +230,7 @@ export default class StudentVerifier extends Component {
             self.setState({notFound: true})
         }
 
+        this.getData();
 
         // this.attendancePieRender(0,0);
         // this.getAttendanceLogs();
@@ -257,6 +260,37 @@ export default class StudentVerifier extends Component {
         });
     }
 
+    getData() {
+        let self = this;
+        axios.post('/student/verifier',{id:self.props.id}).then(function (response) {
+            console.log(response);
+            if( typeof(response.status) != "undefined" && response.status == "200" ) {
+                let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
+                if(Object.keys(data).length>0) { 
+                    console.log(data);
+                    let t = (data.getSchoolStats!=null&&data.getSchoolStats.length>0)?data.getSchoolStats[0].track:"";
+                    let s = (data.getSchoolStats!=null&&data.getSchoolStats.length>0)?data.getSchoolStats[0].strand:"";
+                    let _track = (self.props.track.length>0)?self.props.track.find((e) => `${e.name} (${e.acronyms})` === t):"";
+                    let _strand = (self.props.strand.length>0)?self.props.strand.find((e) => `${e.name} (${e.acronyms})` === s):""; 
+                    self.setState({
+                        ...data.student,
+                        added_guardians:data.guardians, 
+                        relationship: (data.guardians!=null&&data.guardians.length>0)?data.guardians[0].relationship:"",
+                        fullname:  typeof(data.student.first_name)!="undefined"?data.student.first_name + " " + data.student.last_name:"",
+                        grade_level: (data.getSchoolStats!=null&&data.getSchoolStats.length>0)?data.getSchoolStats[0].grade:"",
+                        level: (data.getSchoolStats!=null&&data.getSchoolStats.length>0)?data.getSchoolStats[0].grade_level:"",
+                        section: (data.getSchoolStats!=null&&data.getSchoolStats.length>0)?data.getSchoolStats[0].section:"",
+                        _track:  t,
+                        _strand: s,
+                        sy: (data.getSchoolStats!=null&&data.getSchoolStats.length>0)?data.getSchoolStats[0].sy:"",
+                        loading: false,
+                    });   
+                    
+                }
+            }
+        });
+    }
+
     render() {
         return <>
         <div className="noselect">
@@ -281,39 +315,39 @@ export default class StudentVerifier extends Component {
                                     </div>
                                 </div>
                                 <div className="widget-user-image">
-                                    <img className="img-circle elevation-2" src={this.state.photobase64final!=""?this.state.photobase64final:"/adminlte/dist/assets/img/avatar.png"}
-                                                    ref={t=> this.upload_view_image = t}
-                                                    onError={(e)=>{ 
-                                                        this.upload_view_image.src='/adminlte/dist/assets/img/avatar.png'; 
-                                                    }} alt="User Avatar" />
+                                    <img className="img-circle elevation-2" height={100} width={100} src={`/profile/photo/student/${this.state.lrn}`}
+                                    ref={t=> this.upload_view_image = t}
+                                    onError={(e)=>{ 
+                                        this.upload_view_image.src='/adminlte/dist/assets/img/avatar.png'; 
+                                    }} alt="User Avatar" />
                                 </div>
-                                <div className="card-footer">
+                                <div className="card-footer ">
                                     <div className="row">
                                         <div className="col-sm-12">
                                             <div className="description-block">
-                                            <h3 className="widget-user-username">{this.state.fullname}</h3>
+                                            <h3 className={(this.state.loading)?"widget-user-username stroke animate slable":"widget-user-username" }>{this.state.fullname}</h3>
                                             </div>                                    
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="description-block">
-                                                <h5 className="description-header">{this.state.level}  {this.state.grade_level}</h5>
+                                                <h5 className={(this.state.loading)?"description-header stroke animate slable":"description-header"}>{this.state.level}  {this.state.grade_level}</h5>
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="description-block">
-                                                <h5 className="description-header"> SY: {this.state.sy}</h5>
+                                                <h5 className={(this.state.loading)?"description-header stroke animate slable":"description-header"}>  {"SY:" + this.state.sy}</h5>
                                             </div>
                                         </div>
-                                        {this.state._track!=""?<div className="col-sm-3 border-right">
+                                        {this.state._track!=""?<div className="col-sm-6 border-right">
                                             <div className="description-block">
-                                                <h5 className="description-header">{this.state._track}</h5>
-                                                <span className="description-text">TRACK</span>
+                                                <h5 className="description-header">TRACK</h5>
+                                                <span className="description-text">{this.state._track}</span>
                                             </div> 
                                         </div>:null} 
-                                        {this.state._strand!=""?<div className="col-sm-3">
+                                        {this.state._strand!=""?<div className="col-sm-6">
                                             <div className="description-block">
-                                            <h5 className="description-header">{this.state._strand}</h5>
-                                            <span className="description-text">STRAND</span>
+                                            <h5 className="description-header">STRAND</h5>
+                                            <span className="description-text">{this.state._strand}</span>
                                             </div> 
                                         </div>:null} 
                                     </div> 
@@ -340,11 +374,11 @@ export default class StudentVerifier extends Component {
             </div>
             
         </div>
-        <datalist id="parentslist">
+        {/* <datalist id="parentslist">
             <EachMethod of={this.state.parent_data} render={(element,index) => {
                 return <option >{`${element.last_name}, ${element.first_name}`}</option>
             }} />
-        </datalist>
+        </datalist> */}
         </>
     }
 }
