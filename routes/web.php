@@ -281,7 +281,7 @@ Route::get('/admin/dashboard/parents/update/{id}', function ($id) {
 
 Route::get('/admin/dashboard/advisory', function () {
     return Inertia::render('Admin/Advisory',[
-        "teacher" => EmployeeController::getAllTeacher(),
+        "teacher" => EmployeeController::getAllTeacherNoImage(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
@@ -294,7 +294,7 @@ Route::get('/admin/dashboard/advisory', function () {
 
 Route::get('/admin/dashboard/advisory/schedules', function () {
     return Inertia::render('Admin/AdvisoryList',[
-        "teacher" => EmployeeController::getAllTeacher(),
+        "teacher" => EmployeeController::getAllTeacherNoImage(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
@@ -472,7 +472,7 @@ Route::get('/admin/dashboard/class/rooms', function () {
 
 Route::get('/admin/dashboard/class/subject/teacher', function () {
     return Inertia::render('Admin/ClassSubjectTeacher',[ 
-        "teacher" => EmployeeController::getAllTeacher(),
+        "teacher" => EmployeeController::getAllTeacherNoImage(),
         "class" => ClassTSController::getAll(),
         "classroom" => ClassroomController::getAll(),
         "advisory" => AdvisoryController::getAll(),

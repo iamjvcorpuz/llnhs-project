@@ -72,6 +72,12 @@ class EmployeeController extends Controller
         // return Employee::all();
         return $teacher;
     }
+    public static function getAllTeacherNoImage() 
+    {
+        $teacher = DB::select('SELECT ROW_NUMBER() OVER () as "index",uuid,id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type = \'Teacher\' ;');
+        // return Employee::all();
+        return $teacher;
+    }
     public static function getAllNONETeacher() 
     {
         $employee = DB::select('SELECT ROW_NUMBER() OVER () as "index",id,qr_code,first_name,last_name,middle_name,extension_name,bdate,sex,status,email,picture_base64,employee_type,(SELECT COUNT(*) FROM advisory AS a WHERE a.teacher_id = t.id AND a.status = \'active\') AS \'total_advisory\' FROM employee AS t WHERE employee_type != \'Teacher\' ;');
