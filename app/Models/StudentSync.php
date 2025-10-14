@@ -129,7 +129,7 @@ class StudentSync extends Model implements SyncableModelInterface
 
     public function getExcludedFields(): array
     {
-        return ['picture_base64'];
+        return [];
     }
 
     public function getSyncPriority(): int
