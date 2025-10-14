@@ -49,8 +49,10 @@ class OfflineSyncJob implements ShouldQueue
                 $command = 'offline-sync:' . $this->syncType;
                 if($this->syncType == "up") {
                     $command = 'offline-sync:' . $this->syncType . ' --full --direction=to-online';
+                } else  if($this->syncType == "up") {
+                    $command = 'offline-sync:' . $this->syncType . ' --full --direction=to-online';
                 }
-                
+
                 $options = $this->modelClass ? ['--model' => $this->modelClass] : [];
                 Artisan::call($command, $options);
                 $output = Artisan::output();
@@ -94,7 +96,23 @@ class OfflineSyncJob implements ShouldQueue
 
         if (!$exists) {
             // dispatch(new self($userId,'sync'));
-            self::dispatch($userId,'sync');
+            self::dispatch($userId,'up');
+        } else {
+            echo "\n--------------exist jobs---------------\n";
+        }
+    }
+    public static function dispatchDownIfNotExists(?string $userId)
+    {
+        $uniqueId = md5("process_user_task_{$userId}"); 
+        echo "\n--------------start check---------------\n" . $uniqueId;
+        $exists = DB::table('jobs')
+            ->where('queue', 'offline-sync')
+            ->where('payload', 'like', '%' . $uniqueId . '%')
+            ->exists();
+
+        if (!$exists) {
+            // dispatch(new self($userId,'sync'));
+            self::dispatch($userId,'down');
         } else {
             echo "\n--------------exist jobs---------------\n";
         }

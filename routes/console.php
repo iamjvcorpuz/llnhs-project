@@ -283,7 +283,7 @@ Schedule::call(function () {
             OfflineSyncJob::dispatchIfNotExists(StudentSync::class); 
         }
 
-        OfflineSyncJob::dispatchIfNotExists(AttendanceSync::class);
+        OfflineSyncJob::dispatchUpIfNotExists(AttendanceSync::class);
 
     } else if($busy == true) {
         echo "\nConsole is busy";
