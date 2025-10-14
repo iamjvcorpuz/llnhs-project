@@ -272,7 +272,7 @@ export default class AttendancePage extends Component {
                 self.timeoutScan = setTimeout(() => {
                     clearTimeout(self.timeoutScan);
                     self.timeoutScan = null;
-                }, 59000);
+                }, 5000);
                 self.queryAccounts(scanned_code);
                 self.setState({
                     scanned_code: ""
