@@ -66,6 +66,7 @@ export default class AttendancePage extends Component {
         this.speak = this.speak.bind(this);
         this.AlertSound = AlertSound;
         this.timeoutScan = null;
+        //AMPAD, ZIESTER MASHARI PAKAN
         // setInterval(() => {
         //     this.setState({
         //         attendance_data: [...this.state.attendance_data,{
@@ -271,7 +272,7 @@ export default class AttendancePage extends Component {
                 self.timeoutScan = setTimeout(() => {
                     clearTimeout(self.timeoutScan);
                     self.timeoutScan = null;
-                }, 2000);
+                }, 59000);
                 self.queryAccounts(scanned_code);
                 self.setState({
                     scanned_code: ""
@@ -516,7 +517,7 @@ export default class AttendancePage extends Component {
 
     alertMessages() {
         let self = this;
-        let timeoutIntervals = 5000;
+        let timeoutIntervals = 59000;
         if(self.intervals != null) {
             clearTimeout(this.intervals);
             self.intervals = null;

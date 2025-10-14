@@ -24,10 +24,13 @@ export default class Dashboard extends Component {
             unenrolled: (typeof(this.props.unenrolled)!="undefined"&&this.props.unenrolled!=null&&this.props.unenrolled.length>0)?this.props.unenrolled[0].TOTAL:0,
             transferout: this.props.StudentMovements.transferOut,
             transferin: this.props.StudentMovements.transferIn,
-            dropout: this.props.StudentMovements.dropout
+            dropout: this.props.StudentMovements.dropout,
+            student_absent: 0,
+            student_present: 0,
+            student_late: 0
         }
         this.speak = this.speak.bind(this);
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     componentDidMount() {
@@ -94,6 +97,7 @@ export default class Dashboard extends Component {
         }
         
         this.loadAnnualTimelogs();
+        this.chart1();
     }
     loadAnnualTimelogs() {
         let self = this;
@@ -179,12 +183,45 @@ export default class Dashboard extends Component {
         );
         sales_chart.render();
     }
+
     speak(text) {
         // Create a SpeechSynthesisUtterance
         const utterance = new SpeechSynthesisUtterance(text);
         const voices = speechSynthesis.getVoices();
         utterance.voice = voices[1];
         speechSynthesis.speak(utterance);
+    }
+
+    chart1() {
+              
+        // var options = {
+        //     series: [14, 23, 21],
+        //     chart: {
+        //     type: 'polarArea',
+        // },
+        // stroke: {
+        //     colors: ['#fff']
+        // },
+        // fill: {
+        //     opacity: 0.8
+        // },
+        // responsive: [{
+        //     breakpoint: 480,
+        //     options: {
+        //         chart: {
+        //         width: 200,
+        //         height: 300
+        //         },
+        //         legend: {
+        //         position: 'bottom'
+        //         }
+        //     }
+        // }]
+        // };
+
+        // var chart = new ApexCharts(document.querySelector("#chart1"), options);
+        // chart.render();
+
     }
     
     render() {
@@ -432,11 +469,74 @@ export default class Dashboard extends Component {
                             </div> 
                         </div>
 
-                        
+                        <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
+                            <div className="small-box text-bg-primary shadow-panel">
+                            <div className="inner">
+                                <h3>{this.state.student_absent}</h3>
+                                <p>Absent</p>
+                            </div>
+                            <svg 
+                                className="small-box-icon"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 32 32">
+                                <g id="student">
+                                    <path className="cls-1" d="M23.91 15h.59a2.5 2.5 0 1 0 0-5h-.09c-.66-4.56-4.2-8-8.41-8a7.84 7.84 0 0 0-4.58 1.5 1 1 0 1 0 1.16 1.62A5.9 5.9 0 0 1 16 4a6.48 6.48 0 0 1 5.82 4.17A4 4 0 0 1 20.24 8 4.43 4.43 0 0 1 18 6.41a1 1 0 0 0-.88-.41 1 1 0 0 0-.81.46 6.55 6.55 0 0 1-3.24 2.6 6.1 6.1 0 0 1-3.27.21 8 8 0 0 1 .71-1.79 1 1 0 1 0-1.75-1A10 10 0 0 0 7.62 10H7.5a2.5 2.5 0 0 0 0 5h.64a9.28 9.28 0 0 0 3.05 4.29 7.29 7.29 0 0 0-5.16 7V29a1 1 0 0 0 1 1H25a1 1 0 0 0 1-1v-2.74a1 1 0 0 0-2 0V28h-1v-4.81l.23.33a1 1 0 0 0 1.71-1 7.16 7.16 0 0 0-4.1-3.16A9.38 9.38 0 0 0 23.91 15zM9.82 13.84v-.1A1 1 0 0 0 8.57 13H7.51a.5.5 0 0 1 0-1h1a1 1 0 0 0 1-.76 7.76 7.76 0 0 0 1.61.16 7.94 7.94 0 0 0 2.67-.46 8.46 8.46 0 0 0 3.48-2.38A6.19 6.19 0 0 0 19.69 10a5.89 5.89 0 0 0 2.69.15c.05.31.09.62.11.94a1 1 0 0 0 .32.68 1 1 0 0 0 .7.29h1a.5.5 0 0 1 0 1h-1.23a.71.71 0 0 0-.21 0h-.23a1 1 0 0 0-.64.67A6.64 6.64 0 0 1 16 19a6.65 6.65 0 0 1-6.18-5.16zM17 21l-1 1.33L15 21zm-3 2 1.2 1.6a1 1 0 0 0 1.6 0L18 23v5h-4zm-6 3.26a5.26 5.26 0 0 1 1-3.06V28H8zM11 28v-6.47a5.66 5.66 0 0 1 1-.36V28zm9 0v-6.84a5 5 0 0 1 1 .36V28z"/>
+                                    <path className="cls-1" d="M14 14a1 1 0 0 0 0-2 1 1 0 0 0 0 2zM18 14a1 1 0 0 0 0-2 1 1 0 0 0 0 2z"/>
+                                </g>
+                            </svg>
+                            </div> 
+                        </div>
+
+                        <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
+                            <div className="small-box text-bg-primary shadow-panel">
+                            <div className="inner">
+                                <h3>{this.state.student_present}</h3>
+                                <p>Present</p>
+                            </div>
+                            <svg 
+                                className="small-box-icon"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 32 32">
+                                <g id="student">
+                                    <path className="cls-1" d="M23.91 15h.59a2.5 2.5 0 1 0 0-5h-.09c-.66-4.56-4.2-8-8.41-8a7.84 7.84 0 0 0-4.58 1.5 1 1 0 1 0 1.16 1.62A5.9 5.9 0 0 1 16 4a6.48 6.48 0 0 1 5.82 4.17A4 4 0 0 1 20.24 8 4.43 4.43 0 0 1 18 6.41a1 1 0 0 0-.88-.41 1 1 0 0 0-.81.46 6.55 6.55 0 0 1-3.24 2.6 6.1 6.1 0 0 1-3.27.21 8 8 0 0 1 .71-1.79 1 1 0 1 0-1.75-1A10 10 0 0 0 7.62 10H7.5a2.5 2.5 0 0 0 0 5h.64a9.28 9.28 0 0 0 3.05 4.29 7.29 7.29 0 0 0-5.16 7V29a1 1 0 0 0 1 1H25a1 1 0 0 0 1-1v-2.74a1 1 0 0 0-2 0V28h-1v-4.81l.23.33a1 1 0 0 0 1.71-1 7.16 7.16 0 0 0-4.1-3.16A9.38 9.38 0 0 0 23.91 15zM9.82 13.84v-.1A1 1 0 0 0 8.57 13H7.51a.5.5 0 0 1 0-1h1a1 1 0 0 0 1-.76 7.76 7.76 0 0 0 1.61.16 7.94 7.94 0 0 0 2.67-.46 8.46 8.46 0 0 0 3.48-2.38A6.19 6.19 0 0 0 19.69 10a5.89 5.89 0 0 0 2.69.15c.05.31.09.62.11.94a1 1 0 0 0 .32.68 1 1 0 0 0 .7.29h1a.5.5 0 0 1 0 1h-1.23a.71.71 0 0 0-.21 0h-.23a1 1 0 0 0-.64.67A6.64 6.64 0 0 1 16 19a6.65 6.65 0 0 1-6.18-5.16zM17 21l-1 1.33L15 21zm-3 2 1.2 1.6a1 1 0 0 0 1.6 0L18 23v5h-4zm-6 3.26a5.26 5.26 0 0 1 1-3.06V28H8zM11 28v-6.47a5.66 5.66 0 0 1 1-.36V28zm9 0v-6.84a5 5 0 0 1 1 .36V28z"/>
+                                    <path className="cls-1" d="M14 14a1 1 0 0 0 0-2 1 1 0 0 0 0 2zM18 14a1 1 0 0 0 0-2 1 1 0 0 0 0 2z"/>
+                                </g>
+                            </svg>
+                            </div> 
+                        </div>
+
+
+
+                        <div className="col-lg-3 col-6" title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
+                            <div className="small-box text-bg-primary shadow-panel">
+                            <div className="inner">
+                                <h3>{this.state.student_late}</h3>
+                                <p>Tardy / Late</p>
+                            </div>
+                            <svg 
+                                className="small-box-icon"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 32 32">
+                                <g id="student">
+                                    <path className="cls-1" d="M23.91 15h.59a2.5 2.5 0 1 0 0-5h-.09c-.66-4.56-4.2-8-8.41-8a7.84 7.84 0 0 0-4.58 1.5 1 1 0 1 0 1.16 1.62A5.9 5.9 0 0 1 16 4a6.48 6.48 0 0 1 5.82 4.17A4 4 0 0 1 20.24 8 4.43 4.43 0 0 1 18 6.41a1 1 0 0 0-.88-.41 1 1 0 0 0-.81.46 6.55 6.55 0 0 1-3.24 2.6 6.1 6.1 0 0 1-3.27.21 8 8 0 0 1 .71-1.79 1 1 0 1 0-1.75-1A10 10 0 0 0 7.62 10H7.5a2.5 2.5 0 0 0 0 5h.64a9.28 9.28 0 0 0 3.05 4.29 7.29 7.29 0 0 0-5.16 7V29a1 1 0 0 0 1 1H25a1 1 0 0 0 1-1v-2.74a1 1 0 0 0-2 0V28h-1v-4.81l.23.33a1 1 0 0 0 1.71-1 7.16 7.16 0 0 0-4.1-3.16A9.38 9.38 0 0 0 23.91 15zM9.82 13.84v-.1A1 1 0 0 0 8.57 13H7.51a.5.5 0 0 1 0-1h1a1 1 0 0 0 1-.76 7.76 7.76 0 0 0 1.61.16 7.94 7.94 0 0 0 2.67-.46 8.46 8.46 0 0 0 3.48-2.38A6.19 6.19 0 0 0 19.69 10a5.89 5.89 0 0 0 2.69.15c.05.31.09.62.11.94a1 1 0 0 0 .32.68 1 1 0 0 0 .7.29h1a.5.5 0 0 1 0 1h-1.23a.71.71 0 0 0-.21 0h-.23a1 1 0 0 0-.64.67A6.64 6.64 0 0 1 16 19a6.65 6.65 0 0 1-6.18-5.16zM17 21l-1 1.33L15 21zm-3 2 1.2 1.6a1 1 0 0 0 1.6 0L18 23v5h-4zm-6 3.26a5.26 5.26 0 0 1 1-3.06V28H8zM11 28v-6.47a5.66 5.66 0 0 1 1-.36V28zm9 0v-6.84a5 5 0 0 1 1 .36V28z"/>
+                                    <path className="cls-1" d="M14 14a1 1 0 0 0 0-2 1 1 0 0 0 0 2zM18 14a1 1 0 0 0 0-2 1 1 0 0 0 0 2z"/>
+                                </g>
+                            </svg>
+                            </div> 
+                        </div>
                         
 
                     </div>
-                    
+                    <div className="row">
+                        <div className="col-lg-3" >
+                            <div id="chart1">
+
+                            </div>
+                        </div>
+                    </div>
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card mb-4">
