@@ -84,6 +84,7 @@ class StudentSync extends Model implements SyncableModelInterface
             'bdate',
             'sex',
             'status',
+            'picture_base64',
             'is_ip',
             'ip_specify',
             'is_4ps_benficiary',

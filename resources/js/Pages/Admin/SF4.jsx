@@ -1389,8 +1389,8 @@ export default class SF2 extends Component {
     
             let PAMM = (((student_male_total_daily_present / total_days) / self.state.RegisteredLearnersM ) * 100);
             let PAMF = (((student_female_total_daily_present / total_days) / self.state.RegisteredLearnersF ) * 100);
-            let ADAM = (student_male_total_daily_present / self.state.totalDaysAttendance) * 100;
-            let ADAF = (student_female_total_daily_present / self.state.totalDaysAttendance) * 100;
+            let ADAM = (student_male_total_daily_present / self.state.totalDaysAttendance);
+            let ADAF = (student_female_total_daily_present / self.state.totalDaysAttendance);
             let PAMTOTAL = ((PAMM + PAMF) / 2);
 
             if(ADAM=="NaN") {
@@ -1410,9 +1410,9 @@ export default class SF2 extends Component {
                 PAMM: (PAMM.toFixed(2) != "NaN")?PAMM.toFixed(2):0,
                 PAMF: (PAMF.toFixed(2) != "NaN")?PAMF.toFixed(2):0,
                 PAMTOTAL: (PAMTOTAL.toFixed(2) != "NaN")?PAMTOTAL:0,
-                ADAM: (ADAM != "NaN")?ADAM.toFixed(2):0,
-                ADAF: (ADAF != "NaN")?ADAF.toFixed(2):0,
-                ADATOTAL: ((ADAM / ADAF).toFixed(2)!="NaN")?(ADAM / ADAF).toFixed(2):0,
+                ADAM: (ADAM != "NaN")?ADAM.toFixed(0):0,
+                ADAF: (ADAF != "NaN")?ADAF.toFixed(0):0,
+                ADATOTAL: ((ADAM + ADAF).toFixed(2)!="NaN")?(ADAM + ADAF).toFixed(0):0,
                 NSAM: total_male_5_absent,
                 NSAF: total_female_5_absent,
                 dropMOutA: 0,

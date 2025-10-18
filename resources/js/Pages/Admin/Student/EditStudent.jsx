@@ -134,7 +134,7 @@ export default class EditStudent extends Component {
     componentDidMount() {
         let self = this;
         this._isMounted = true;
-        console.log(this);
+        // console.log(this);
         let so = []
         let selected_quardians = "";
         this.props.parents.forEach(element => {
