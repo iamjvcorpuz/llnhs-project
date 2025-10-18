@@ -75,9 +75,10 @@ export default class ClassRooms extends Component {
             floor_no: "",
             building_no: "",
             description: "",
-            selectedData: {}
+            selectedData: {},
+            loading: false
         }
-        console.log(this.props)
+        // console.log(this.props)
         this.delete = this.delete.bind(this);
         this.selectSubject = this.selectSubject.bind(this);
         this.getAllData = this.getAllData.bind(this);
@@ -99,16 +100,18 @@ export default class ClassRooms extends Component {
     getAllData() {
         let self = this;
         axios.get('/classroom').then(function (response) {
-            console.log(response);
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                 if(Object.keys(data).length>0) {
                     self.setState({
                         data: data, 
+                        loading: false
                     });
                 } else {
                     self.setState({
-                        data: [] 
+                        data: [],
+                        loading: false
                     });
                 }
             }
@@ -153,7 +156,7 @@ export default class ClassRooms extends Component {
                         building_no: building,
                         description: description,
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/classroom',datas).then( async function (response) {
                         // handle success
                         console.log(response);
@@ -519,6 +522,11 @@ export default class ClassRooms extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title"> <i className="bi bi-door-open"></i> Classroom List</h3> 
+                                    <button className="btn btn-primary float-right mr-1" onClick={() => { 
+                                        this.setState({loading: true},() => {
+                                            this.getAllData();
+                                        })
+                                    }}> <i className="bi bi-arrow-clockwise"></i></button>    
                                     <button className="btn btn-primary float-right mr-1" onClick={() => {
 
                                         $("#room").val('');
@@ -536,6 +544,7 @@ export default class ClassRooms extends Component {
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
+                                        loading={this.state.loading}
                                     />
                                 </div>
                             </div>

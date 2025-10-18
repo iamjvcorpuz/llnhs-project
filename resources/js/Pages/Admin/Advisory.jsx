@@ -115,7 +115,8 @@ export default class Advisory extends Component {
             room_name: "",
             room_number: "",
             teacher_fullname: "",
-            grade_level: ""
+            grade_level: "",
+            loading: true
         }
         this._isMounted = false;
         // this.saveData = this.getAllRequiredData.bind(this);
@@ -125,7 +126,7 @@ export default class Advisory extends Component {
         this.viewData = this.viewData.bind(this);
         this.updateData = this.updateData.bind(this);
         this.generateQR = this.generateQR.bind(this);
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     componentDidMount() {
@@ -141,7 +142,7 @@ export default class Advisory extends Component {
     getAllData() {
         let self = this;
         axios.get('/advisory').then(function (response) {
-            console.log(response);
+            // console.log(response);
             if( typeof(response.status) != "undefined" && response.status == "200" ) {
                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                 if(Object.keys(data).length>0) {
@@ -155,7 +156,8 @@ export default class Advisory extends Component {
                         yeargrade: data.schoolyeargrades,
                         track: data.track,
                         strand: data.strand,
-                        class: data.class
+                        class: data.class,
+                        loading: false
                     });
                 }
             }
@@ -593,16 +595,16 @@ export default class Advisory extends Component {
             console.log("error",error)
         }
 
-        console.log({ 
-            teacher_id: teacher,
-            teacher_name: teacher_name,
-            year_level: year_level,
-            grade: grade,
-            school_sections_id: section,
-            section_name: section_name,
-            schoolyear: schoolyear,
-            subject_id: subject
-        })
+        // console.log({ 
+        //     teacher_id: teacher,
+        //     teacher_name: teacher_name,
+        //     year_level: year_level,
+        //     grade: grade,
+        //     school_sections_id: section,
+        //     section_name: section_name,
+        //     schoolyear: schoolyear,
+        //     subject_id: subject
+        // })
 
         if(teacher != "" && yearlevel != "" && section != "" && schoolyear != "" ) {
             if($('#invalidCheck').prop('checked') == false) {
@@ -848,6 +850,11 @@ export default class Advisory extends Component {
                                 <div className="card-header">
                                     <h3 className="card-title  mt-2"> <i className="bi bi-person-lines-fill"></i> List</h3> 
                                     {/* <Link className="btn btn-primary float-right mr-1" href="/admin/dashboard/advisory/new" > <i className="bi bi-person-plus-fill"></i> Add</Link>   */}
+                                    <button className="btn btn-primary float-right mr-1" onClick={() => { 
+                                        this.setState({loading: true},() => {
+                                            this.getAllData();
+                                        })
+                                    }}> <i className="bi bi-arrow-clockwise"></i></button>    
                                     <button className="btn btn-primary float-right mr-1" onClick={() => {
                                         this.setState({sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==1)})  
                                         $("#newAdvisory").modal('show');
