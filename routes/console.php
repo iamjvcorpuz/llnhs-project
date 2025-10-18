@@ -59,229 +59,229 @@ Schedule::call(function () {
         $UserAccounts = DB::select("SELECT id FROM user_accounts");
         echo "\nUSER ACCOUNTS ";
         echo "LOCAL TOTAL : " . count($UserAccounts) . " : " . UserAccountsSync::count();
-        if(count($UserAccounts) == 0) {
-            $busy = true;
-            echo "\nCREATING USER ACCOUNTS ";
-            OfflineSyncJob::dispatchIfNotExists(UserAccountsSync::class);
-            // OfflineSyncJob::dispatch(UserAccounts::class, 'sync')->onQueue('offline-sync');
-        }
+        // if(count($UserAccounts) == 0) {
+        //     $busy = true;
+        //     echo "\nCREATING USER ACCOUNTS ";
+            OfflineSyncJob::dispatchDownIfNotExists(UserAccountsSync::class);
+        //     // OfflineSyncJob::dispatch(UserAccounts::class, 'sync')->onQueue('offline-sync');
+        // }
 
         $Employee = DB::select("SELECT id FROM employee");
         echo "\nEmployee ";
         echo "LOCAL TOTAL : " . count($Employee) . " : " . EmployeeSync::count();
-        if(count($Employee) == 0) {
-            echo "\nCREATING EMPLOYEE ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(EmployeeSync::class); 
-        }
+        // if(count($Employee) == 0) {
+        //     echo "\nCREATING EMPLOYEE ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(EmployeeSync::class); 
+        // }
 
         $Advisory = DB::select("SELECT id FROM advisory");
         echo "\nAdvisory ";
         echo "LOCAL TOTAL : " . count($Advisory) . " : " . AdvisorySync::count();
-        if(count($Advisory) == 0) {
-            echo "\nCREATING Advisory ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(AdvisorySync::class); 
-        }
+        // if(count($Advisory) == 0) {
+        //     echo "\nCREATING Advisory ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(AdvisorySync::class); 
+        // }
 
         $AdvisoryGroup = DB::select("SELECT id FROM advisory");
         echo "\nAdvisoryGroup ";
         echo "LOCAL TOTAL : " . count($AdvisoryGroup) . " :";
-        if(count($AdvisoryGroup) == 0) {
-            echo "\nCREATING AdvisoryGroup ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(AdvisoryGroupSync::class); 
-        }
+        // if(count($AdvisoryGroup) == 0) {
+        //     echo "\nCREATING AdvisoryGroup ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(AdvisoryGroupSync::class); 
+        // }
 
         $ClassSubjectTeaching = DB::select("SELECT id FROM class_teaching");
         echo "\nAdvisoryGroup ";
         echo "LOCAL TOTAL : " . count($ClassSubjectTeaching) . " :";
-        if(count($ClassSubjectTeaching) == 0) {
-            echo "\nCREATING ClassSubjectTeaching ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ClassSubjectTeachingSync::class); 
-        }
+        // if(count($ClassSubjectTeaching) == 0) {
+        //     echo "\nCREATING ClassSubjectTeaching ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(ClassSubjectTeachingSync::class); 
+        // }
 
         $Classroom = DB::select("SELECT id FROM classrooms_seats");
         echo "\nclassrooms_seats ";
         echo "LOCAL TOTAL : " . count($Classroom) . " :";
-        if(count($Classroom) == 0) {
-            echo "\nCREATING Classroom ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ClassroomSync::class); 
-        }
+        // if(count($Classroom) == 0) {
+        //     echo "\nCREATING Classroom ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(ClassroomSync::class); 
+        // }
 
         $ClassroomsSA = DB::select("SELECT id FROM classrooms_seats_assign");
         echo "\nclassrooms_seats_assign ";
         echo "LOCAL TOTAL : " . count($ClassroomsSA) . " :";
-        if(count($ClassroomsSA) == 0) {
-            echo "\nCREATING ClassroomsSA ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ClassroomsSASync::class); 
-        }
+        // if(count($ClassroomsSA) == 0) {
+        //     echo "\nCREATING ClassroomsSA ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(ClassroomsSASync::class); 
+        // }
         
         $EducationBackground = DB::select("SELECT id FROM education_background");
         echo "\nEducationBackground ";
         echo "LOCAL TOTAL : " . count($EducationBackground) . " :";
-        if(count($EducationBackground) == 0) {
-            echo "\nCREATING EducationBackground ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(EducationBackgroundSync::class); 
-        }
+        // if(count($EducationBackground) == 0) {
+        //     echo "\nCREATING EducationBackground ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(EducationBackgroundSync::class); 
+        // }
         
         $Holidays = DB::select("SELECT id FROM holidays");
         echo "\nHolidays ";
         echo "LOCAL TOTAL : " . count($Holidays) . " :";
-        if(count($Holidays) == 0) {
-            echo "\nCREATING Holidays ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(HolidaysSync::class); 
-        }
+        // if(count($Holidays) == 0) {
+        //     echo "\nCREATING Holidays ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(HolidaysSync::class); 
+        // }
         
         $MessengerFB = DB::select("SELECT id FROM messenger");
         echo "\nMessengerFB ";
         echo "LOCAL TOTAL : " . count($MessengerFB) . " :";
-        if(count($MessengerFB) == 0) {
-            echo "\nCREATING MessengerFB ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(MessengerFBSync::class); 
-        }
+        // if(count($MessengerFB) == 0) {
+        //     echo "\nCREATING MessengerFB ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(MessengerFBSync::class); 
+        // }
         
         $Contacts = DB::select("SELECT id FROM contacts");
         echo "\nContacts ";
         echo "LOCAL TOTAL : " . count($Contacts) . " :";
-        if(count($Contacts) == 0) {
-            echo "\nCREATING Contacts ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ContactsSync::class); 
-        }
+        // if(count($Contacts) == 0) {
+        //     echo "\nCREATING Contacts ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(ContactsSync::class); 
+        // }
         
         $Notifications = DB::select("SELECT id FROM notifications");
         echo "\nNotifications ";
         echo "LOCAL TOTAL : " . count($Notifications) . " :";
-        if(count($Notifications) == 0) {
-            echo "\nCREATING Notifications ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(NotificationsSync::class); 
-        }
+        // if(count($Notifications) == 0) {
+        //     echo "\nCREATING Notifications ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(NotificationsSync::class); 
+        // }
         
         $ClassTS = DB::select("SELECT id FROM school_class");
         echo "\nClassTS ";
         echo "LOCAL TOTAL : " . count($ClassTS) . " :";
-        if(count($ClassTS) == 0) {
-            echo "\nCREATING ClassTS ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ClassTSSync::class); 
-        }
+        // if(count($ClassTS) == 0) {
+        //     echo "\nCREATING ClassTS ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(ClassTSSync::class); 
+        // }
         
         $SchoolRegistry = DB::select("SELECT id FROM school_registry");
         echo "\nSchoolRegistry ";
         echo "LOCAL TOTAL : " . count($SchoolRegistry) . " :";
-        if(count($SchoolRegistry) == 0) {
-            echo "\nCREATING nSchoolRegistry ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(SchoolRegistrySync::class); 
-        }
+        // if(count($SchoolRegistry) == 0) {
+        //     echo "\nCREATING nSchoolRegistry ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(SchoolRegistrySync::class); 
+        // }
         
         $SchoolSection = DB::select("SELECT id FROM school_sections");
         echo "\nSchoolSection ";
         echo "LOCAL TOTAL : " . count($SchoolSection) . " :";
-        if(count($SchoolSection) == 0) {
-            echo "\nCREATING SchoolSection ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(SchoolSectionSync::class); 
-        }
+        // if(count($SchoolSection) == 0) {
+        //     echo "\nCREATING SchoolSection ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(SchoolSectionSync::class); 
+        // }
         
         $Subjects = DB::select("SELECT id FROM school_subjects");
         echo "\nSubjects ";
         echo "LOCAL TOTAL : " . count($Subjects) . " :";
-        if(count($Subjects) == 0) {
-            echo "\nCREATING Subjects ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(SubjectsSync::class); 
-        }
+        // if(count($Subjects) == 0) {
+        //     echo "\nCREATING Subjects ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(SubjectsSync::class); 
+        // }
         
         $SchoolYearGrades = DB::select("SELECT id FROM school_year_grades");
         echo "\nSchoolYearGrades ";
         echo "LOCAL TOTAL : " . count($SchoolYearGrades) . " :";
-        if(count($SchoolYearGrades) == 0) {
-            echo "\nCREATING SchoolYearGrades ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(SchoolYearGradesSync::class); 
-        }
+        // if(count($SchoolYearGrades) == 0) {
+        //     echo "\nCREATING SchoolYearGrades ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(SchoolYearGradesSync::class); 
+        // }
         
         $SpecializeProgram = DB::select("SELECT id FROM specialize_program");
         echo "\nSpecializeProgram ";
         echo "LOCAL TOTAL : " . count($SpecializeProgram) . " :";
-        if(count($SpecializeProgram) == 0) {
-            echo "\nCREATING SpecializeProgram ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(SpecializeProgramSync::class); 
-        }
+        // if(count($SpecializeProgram) == 0) {
+        //     echo "\nCREATING SpecializeProgram ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(SpecializeProgramSync::class); 
+        // }
         
         $SpecificPrograms = DB::select("SELECT id FROM specific_programs");
         echo "\nSpecificPrograms ";
         echo "LOCAL TOTAL : " . count($SpecificPrograms) . " :";
-        if(count($SpecificPrograms) == 0) {
-            echo "\nCREATING SpecificPrograms ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(SpecificProgramsSync::class); 
-        }
+        // if(count($SpecificPrograms) == 0) {
+        //     echo "\nCREATING SpecificPrograms ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(SpecificProgramsSync::class); 
+        // }
         
         $StudentFinalGrades = DB::select("SELECT id FROM student_final_grades");
         echo "\nStudentFinalGrades ";
         echo "LOCAL TOTAL : " . count($StudentFinalGrades) . " :";
-        if(count($StudentFinalGrades) == 0) {
-            echo "\nCREATING StudentFinalGrades ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(StudentFinalGradesSync::class); 
-        }
+        // if(count($StudentFinalGrades) == 0) {
+        //     echo "\nCREATING StudentFinalGrades ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(StudentFinalGradesSync::class); 
+        // }
         
         $StudentGuardian = DB::select("SELECT id FROM student_guardians");
         echo "\nStudentFinalGrades ";
         echo "LOCAL TOTAL : " . count($StudentGuardian) . " :";
-        if(count($StudentGuardian) == 0) {
-            echo "\nCREATING StudentGuardian ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(StudentGuardianSync::class); 
-        }
+        // if(count($StudentGuardian) == 0) {
+        //     echo "\nCREATING StudentGuardian ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(StudentGuardianSync::class); 
+        // }
         
         $StudentMovement = DB::select("SELECT id FROM student_movement");
         echo "\nStudentMovement ";
         echo "LOCAL TOTAL : " . count($StudentMovement) . " :";
-        if(count($StudentMovement) == 0) {
-            echo "\nCREATING StudentMovement ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(StudentMovementSync::class); 
-        }
+        // if(count($StudentMovement) == 0) {
+        //     echo "\nCREATING StudentMovement ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(StudentMovementSync::class); 
+        // }
         
         $Tranings = DB::select("SELECT id FROM tranings");
         echo "\nTranings ";
         echo "LOCAL TOTAL : " . count($Tranings) . " :";
-        if(count($Tranings) == 0) {
-            echo "\nCREATING Tranings ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(TraningsSync::class); 
-        }
+        // if(count($Tranings) == 0) {
+        //     echo "\nCREATING Tranings ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(TraningsSync::class); 
+        // }
         
         
         $Parents = DB::select("SELECT id FROM parents");
         echo "\nParents ";
         echo "LOCAL TOTAL : " . count($Parents) . " : " . ParentsSync::count();
-        if(count($Parents) == 0) {
-            echo "\nCREATING PARENTS ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(ParentsSync::class); 
-        }
+        // if(count($Parents) == 0) {
+        //     echo "\nCREATING PARENTS ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(ParentsSync::class); 
+        // }
 
         $Student = DB::select("SELECT id FROM student");
         echo "\nStudent ";
         echo "LOCAL TOTAL : " . count($Student) . " : " . StudentSync::count();
-        if(count($Student) == 0) {
-            echo "\nCREATING STUDENT ";
-            $busy = true;
-            OfflineSyncJob::dispatchIfNotExists(StudentSync::class); 
-        }
+        // if(count($Student) == 0) {
+        //     echo "\nCREATING STUDENT ";
+        //     $busy = true;
+            OfflineSyncJob::dispatchDownIfNotExists(StudentSync::class); 
+        // }
 
         OfflineSyncJob::dispatchUpIfNotExists(AttendanceSync::class);
 
@@ -294,6 +294,6 @@ Schedule::call(function () {
 
 
 // Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3 --memory=1gb --timeout=300')->everyTenSeconds()->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
-Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3  --memory=1056M')->everyMinute()->then(function() {
-    echo "------------------------------ Schedule COMMAND ------------------------------";
-})->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));
+// Schedule::command('queue:work --queue=offline-sync --stop-when-empty --tries=3  --memory=1056M')->everyMinute()->then(function() {
+//     echo "------------------------------ Schedule COMMAND ------------------------------";
+// })->withoutOverlapping()->appendOutputTo(storage_path('logs/cron.log'));

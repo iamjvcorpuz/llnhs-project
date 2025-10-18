@@ -40,6 +40,12 @@ class OfflineSyncJob implements ShouldQueue
      */
     public function handle(): void
     {
+        // Xslain\OfflineSync
+        // 'offline-sync:sync 
+        // {--model= : Sync specific model class}
+        // {--direction=both : Sync direction (to-online, to-offline, both)}
+        // {--force : Force sync even if offline}
+        // {--full : Perform full synchronization}';
         $IsKiosk =  env('KIOSK', false);
         if($IsKiosk==true) { 
             try {
@@ -47,20 +53,27 @@ class OfflineSyncJob implements ShouldQueue
                 ini_set('memory_limit', '-1');
 
                 $command = 'offline-sync:' . $this->syncType;
+                $options = [];
                 if($this->syncType == "up") {
-                    $command = 'offline-sync:' . $this->syncType . ' --full --direction=to-online';
-                } else  if($this->syncType == "up") {
-                    $command = 'offline-sync:' . $this->syncType . ' --full --direction=to-online';
+                    $command = 'offline-sync:sync';
+                    $options = $this->modelClass ? ['--direction' => 'to-online', '--model' => $this->modelClass] : [];
+                } else  if($this->syncType == "down") {
+                    $command = 'offline-sync:sync';
+                    $options = $this->modelClass ? ['--direction' => 'to-offline', '--model' => $this->modelClass] : [];
                 }
 
-                $options = $this->modelClass ? ['--model' => $this->modelClass] : [];
+                
+                echo $command;
+                print_r($options);
+                echo "\n";
                 Artisan::call($command, $options);
                 $output = Artisan::output();
                 echo $output;
                 Log::channel('single')->info('Offline sync processed: ' . $output);
                 echo "-----------------end------------\n";
             } catch (\Exception $e) {
-                echo "\n----------------------------- Error: " . $e->getMessage();
+                echo "\n-----------------------------\nError: " . $e->getMessage();
+                echo "-----------------end------------\n";
                 Log::channel('single')->error('Offline sync failed: ' . $e->getMessage());
                 throw $e;  // Retry
             }
@@ -104,7 +117,7 @@ class OfflineSyncJob implements ShouldQueue
     public static function dispatchDownIfNotExists(?string $userId)
     {
         $uniqueId = md5("process_user_task_{$userId}"); 
-        echo "\n--------------start check---------------\n" . $uniqueId;
+        echo "\n--------------start check---------------\n" . $userId;
         $exists = DB::table('jobs')
             ->where('queue', 'offline-sync')
             ->where('payload', 'like', '%' . $uniqueId . '%')

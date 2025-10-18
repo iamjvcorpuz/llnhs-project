@@ -75,30 +75,32 @@ export default class Advisory extends Component {
                     accessor: 'status',
                     className: "center",
                     Cell:  ({row}) => { 
-                        let temp = this.state.class.find(e=>e.id==String(row.original.school_sections_id)); 
+                        let temp = this.state.class.find(e=>e.id==String(row.original.school_sections_id));  
                        return <>                       
                         <button className="btn btn-danger btn-block btn-sm col-12 mb-1" onClick={()=>{this.deleteAdvisory(row.original.id);}} > <i className="bi bi-person-fill-x"></i> Remove</button>    
                         <button className="btn btn-info btn-block btn-sm col-12 mb-1" onClick={() => { this.viewData(row.original); }}> <i className="bi bi-pen"></i> Edit</button> 
-                        <Link href={`/admin/class/advisory/details/${temp.qr_code}/${row.original.qrcode}`} className="btn btn-primary btn-block btn-sm col-12 mb-1" > <i className="bi bi-pen"></i> Details</Link> 
+                        <Link href={`/admin/class/advisory/details/${typeof(temp)!="undefined"&&typeof(temp.qr_code)!="undefined"?temp.qr_code:"null"}/${row.original.qrcode}`} className="btn btn-primary btn-block btn-sm col-12 mb-1" > <i className="bi bi-pen"></i> Details</Link> 
                         {(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null)?<button className="btn btn-success btn-block btn-sm col-12 mb-1" onClick={ async ()=>{ 
-                            if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
-                                await this.generateQR(row.original.qrcode,() => {
-                                    console.log(row.original)
-                                    let room_no  = "";
-                                    try {
-                                        room_no  = row.original.classroom;
-                                    } catch (error) {
-                                        
-                                    }
-                                    this.setState({
-                                        room_name: row.original.section_name,
-                                        room_number: room_no,
-                                        grade_level: row.original.year_level,
-                                        teacher_fullname: row.original.teacher_fullname
-                                    })
-                                    $('#qrcode').modal('show');
+                            if(typeof(temp)!="undefined"&&typeof(temp.qr_code)!="undefined") {
+                                if(typeof(row.original.qrcode)!="undefined"&&row.original.qrcode!=null) {
+                                    await this.generateQR(row.original.qrcode,() => {
+                                        console.log(row.original)
+                                        let room_no  = "";
+                                        try {
+                                            room_no  = row.original.classroom;
+                                        } catch (error) {
+                                            
+                                        }
+                                        this.setState({
+                                            room_name: row.original.section_name,
+                                            room_number: room_no,
+                                            grade_level: row.original.year_level,
+                                            teacher_fullname: row.original.teacher_fullname
+                                        })
+                                        $('#qrcode').modal('show');
 
-                                }); 
+                                    }); 
+                                }                                
                             }
                         }}> <i className="bi bi-qr-code"></i> QR</button>:null}
                        </>            
@@ -1140,17 +1142,17 @@ export default class Advisory extends Component {
                                 </select>
                                 <div id="flsh_strand-alert" className="valid-feedback">Looks good!</div>
                             </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="esubject" className="form-label">Subject</label>
-                                    <select className="form-select" id="esubject" required="" onChange={(e) => {  $("#subject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
-                                        <option disabled >Choose...</option>
-                                        <option></option>
-                                        <EachMethod of={this.state.subjects} render={(element,index) => {
-                                            return <option value={element.id}>{element.subject_name}</option>
-                                        }} />
-                                    </select>
-                                    <div id="subject-alert" className="invalid-feedback">Please select a valid state.</div>
-                                </div>
+                            <div className="col-md-12 d-none">
+                                <label htmlFor="esubject" className="form-label">Subject</label>
+                                <select className="form-select" id="esubject" required="" onChange={(e) => {  $("#subject-alert").removeAttr('class').addClass('invalid-feedback'); this.setState({selectedSubject: e.target.value})}}  >
+                                    <option disabled >Choose...</option>
+                                    <option></option>
+                                    <EachMethod of={this.state.subjects} render={(element,index) => {
+                                        return <option value={element.id}>{element.subject_name}</option>
+                                    }} />
+                                </select>
+                                <div id="subject-alert" className="invalid-feedback">Please select a valid state.</div>
+                            </div>
 
                             </div> 
                         </div>
