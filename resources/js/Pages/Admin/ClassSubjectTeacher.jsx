@@ -122,7 +122,8 @@ export default class ClassSubjectTeacher extends Component {
             track: this.props.track,
             strand: this.props.strand,
             time_start: "",
-            time_end: ""
+            time_end: "",
+            loading: true
         }
 
         this.delete = this.delete.bind(this);
@@ -231,6 +232,7 @@ export default class ClassSubjectTeacher extends Component {
                         yeargrade: data.schoolyeargrades,
                         data: data.class_teaching,
                         data_temp: data.class_teaching,
+                        loading: false
                     },() => {
                         if(self.state.data.length>0) {
                             self.setState({
@@ -981,6 +983,11 @@ export default class ClassSubjectTeacher extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title"> <i className="bi bi-microsoft-teams"></i> Class Schedule List</h3> 
+                                    <button className="btn btn-primary float-right mr-1" onClick={() => { 
+                                        this.setState({loading: true},() => {
+                                            this.getAllData();
+                                        })
+                                    }}> <i className="bi bi-arrow-clockwise"></i></button>    
                                     <button className="btn btn-primary float-right mr-1" onClick={() => {
                                         // this.setState({sectionList: this.state.sectionListTemp.filter(ee => ee.year_grade_id==1)})  
                                         $("#newClassTeaching").modal('show');

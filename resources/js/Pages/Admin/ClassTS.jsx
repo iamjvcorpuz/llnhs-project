@@ -143,7 +143,8 @@ export default class ClassTS extends Component {
             qr_code: "",
             qr_code_data: "",
             room_name: "",
-            room_number: ""
+            room_number: "",
+            loading: true
         }
         // console.log(this.props)
         this.delete = this.delete.bind(this);
@@ -226,6 +227,7 @@ export default class ClassTS extends Component {
                         yeargrade_temp: data.schoolyeargrades,
                         yeargrade: [],
                         data: data.class,
+                        loading:false
                     },() => {
                         if(self.state.data.length>0) {
                             self.setState({
@@ -666,6 +668,11 @@ export default class ClassTS extends Component {
                             <div className="card mb-4">
                                 <div className="card-header">
                                     <h3 className="card-title"> <i className="bi bi-people-fill"></i> Class List</h3>
+                                    <button className="btn btn-primary float-right mr-1" onClick={() => { 
+                                        this.setState({loading: true},() => {
+                                            this.getAllData();
+                                        })
+                                    }}> <i className="bi bi-arrow-clockwise"></i></button>    
                                     <button className="btn btn-primary float-right mr-1" onClick={() => {
 
                                         // $("#room").val('');
@@ -685,6 +692,7 @@ export default class ClassTS extends Component {
                                         className={"table table-bordered table-striped table-hover "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
+                                        loading={this.state.loading}
                                         getTrProps={(original) => {
                                             return {
                                                 onClick: (e) => {
