@@ -116,7 +116,7 @@ export default class Advisory extends Component {
             room_number: "",
             teacher_fullname: "",
             grade_level: "",
-            loading: true
+            loading: false
         }
         this._isMounted = false;
         // this.saveData = this.getAllRequiredData.bind(this);
@@ -866,6 +866,7 @@ export default class Advisory extends Component {
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
                                         columns={this.state.columns}
+                                        loading={this.state.loading}
                                         getTrProps={(original) => {
                                             return {
                                                 onDoubleClick: (e) => { 
