@@ -30,7 +30,7 @@ export default class Dashboard extends Component {
             student_late: 0
         }
         this.speak = this.speak.bind(this);
-        // console.log(this.props)
+        console.log(this.props)
     }
 
     componentDidMount() {
@@ -446,7 +446,7 @@ export default class Dashboard extends Component {
                         <div className="col-lg-3 col-6"  title={`As of S.Y. ${this.props.schoolStatus.school_year}`} tooltip={`As of S.Y. ${this.props.schoolStatus.school_year}`}> 
                             <div className="small-box text-bg-primary shadow-panel">
                             <div className="inner">
-                                <h3>{this.state.transferout.length} / {this.state.transferin.length}</h3>
+                                <h3>{this.state.transferin.length} / {this.state.transferout.length} </h3>
                                 <p>Transfer IN / OUT</p>
                             </div>
                             <svg className="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

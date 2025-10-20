@@ -554,14 +554,14 @@ Route::get('/admin/student/movement', function () {
     $id = AuthenticatedSessionController::getAuthId();
     return Inertia::render('Admin/Student/Movement',[
         "code" => $code,
-        'parents' => ParentsController::getAll(),
+        'parents' => ParentsController::getAllNoImage(),
         "students" =>  AdvisoryController::TeachersAllStudentAdvisoriesQR($code), 
         "studentsEnrolled" =>  StudentController::getEnrolledStudent(), 
         "studentsList" =>  StudentController::getAllNonAdvisory($id),   
         "schoolyeargrades" => SchoolYearGradesController::getAll(),
         'track' => ProgramsCurricularController::getTrack(),
         'strand' => ProgramsCurricularController::getStrand(),
-        "employee" => EmployeeController::getAll(),
+        "employee" => EmployeeController::getAllTeacherNoImage(),
         "advisory" => AdvisoryController::getAll(),
         "subjects" => SubjectController::getAll(),
         "sections" => SchoolSectionController::getAll(),
