@@ -9,6 +9,7 @@ use App\Models\UserAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 class ParentsController extends Controller
 {
@@ -34,6 +35,19 @@ class ParentsController extends Controller
     public static function getAll() 
     {
         return Parents::all();
+    }
+    public static function getAllNoImage() 
+    {
+        $excludeColumns = ['picture_base64'];
+
+    // Get all columns for the table
+        $allColumns = Schema::getColumnListing('parents');
+
+        // Filter out the excluded columns
+        $selectedColumns = array_diff($allColumns, $excludeColumns);
+        return DB::table('parents')
+        ->select($selectedColumns)
+        ->get();
     }
     public static function getAllActive() 
     {

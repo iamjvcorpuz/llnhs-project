@@ -51,7 +51,7 @@ class StudentMovementController extends Controller
                             DB::table('student_movement')->where('id', $val->id)->update(['track' => $datas_[0]->track_name,'track_id' => $datas_[0]->track_id]);
                         }
                     }                    
-                } else if(isNull($datas_[0]->track_name) && $val->track != $datas_[0]->track_name) {
+                } else if( count($datas_) > 0 && isNull($datas_[0]->track_name) && $val->track != $datas_[0]->track_name) {
                     DB::table('student_movement')->where('id', $val->id)->update(['track' => $datas_[0]->track_name,'track_id' => $datas_[0]->track_id]);
                 }
                 if($val->strand == "N/A") {
@@ -60,7 +60,7 @@ class StudentMovementController extends Controller
                             DB::table('student_movement')->where('id', $val->id)->update(['strand' => $datas_[0]->strand_name,'strand_id' => $datas_[0]->strand_id]);
                         }
                     }                    
-                } else if(isNull($datas_[0]->strand_name) && $val->strand != $datas_[0]->strand_name) {
+                } else if(count($datas_) > 0 && isNull($datas_[0]->strand_name) && $val->strand != $datas_[0]->strand_name) {
                     DB::table('student_movement')->where('id', $val->id)->update(['track' => $datas_[0]->strand_name,'track_id' => $datas_[0]->strand_id]);
                 }
             }
@@ -83,7 +83,7 @@ class StudentMovementController extends Controller
         // }
         $dropout = DB::select("SELECT * FROM student_movement WHERE status = 'drop';");
         $transferOut = DB::select("SELECT * FROM student_movement WHERE status = 'transfer_out';");
-        $transferIn = DB::select("SELECT * FROM student_movement WHERE transferee = '1';");;
+        $transferIn = DB::select("SELECT * FROM student_movement WHERE transferee = '1';");
 
 
         return [
@@ -224,15 +224,15 @@ class StudentMovementController extends Controller
 
         $StudentMovementSY = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('sy', $request->school_year)->get();
         $StudentMovementGL = DB::table('student_movement')->where('student_lrn', $request->lrn)->where('grade_level', $request->selectedGradeLevel)->get();
-
+        
 
         $fields = [];
-        $track = "N/A";
-        $track_id = "N/A";
-        $strand = "N/A";
-        $strand_id = "N/A";
-        $semester_1st = "N/A";
-        $semester_2nd = "N/A";
+        $track = $request->flsh_track;
+        $track_id = $request->flsh_track_id;
+        $strand = $request->flsh_strand;
+        $strand_id = $request->flsh_strand_id;
+        $semester_1st = $request->flsh_semester=="1st"?1:"N/A";
+        $semester_2nd = $request->flsh_semester=="2nd"?1:"N/A";
         $movement_status = "";
         $balik_aral = "";
         $balik_aral_date = "";
@@ -241,8 +241,19 @@ class StudentMovementController extends Controller
         $transfer_sy_completed = $request->elsyc;
         $transfer_school_attended = $request->elsa;
         $transfer_school_id = $request->lesa_school_id;
-        $transferee = $request->transferee;
+        $transferee = $request->transferee; 
 
+        // echo "track: " . $track . "\n";
+        // echo "track_id: " . $track_id . "\n";
+        // echo "strand: " . $strand . "\n";
+        // echo "strand_id: " . $strand_id . "\n";
+        // echo "semester_1st: " . $semester_1st . "\n";
+        // echo "semester_2nd: " . $semester_2nd . "\n";
+        // return response()->json([
+        //     'status' => 'success',
+        //     'error' => null,
+        //     'data' => []
+        // ], 201); 
         if($StudentLRN->count()==1) {
             if($StudentMovementSY->count()==0) {
                 if($StudentMovementGL->count() == 1 && $request->repeater == true) {

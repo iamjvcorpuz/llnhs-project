@@ -312,6 +312,7 @@ export default class Movement extends Component {
         this.returnStudent = this.returnStudent.bind(this);
         this.transferOutStudent = this.transferOutStudent.bind(this);
         this._isMounted = false;
+        console.log(this.props);
     }
 
     componentDidMount() {
@@ -769,7 +770,11 @@ export default class Movement extends Component {
                         didOpen: () => {
                           Swal.showLoading();
                         }
-                    });
+                    }); 
+                    
+                    let flsh_track_ = self.state.track.find(ee => `${ee.name} ${(ee.acronyms!=""?"("+ee.acronyms+")":"")}` === self.state.flsh_track_);
+                    let flsh_strand_ = self.state.strand.find(ee => `${ee.name} ${(ee.acronyms!=""?"("+ee.acronyms+")":"")}` === self.state.flsh_strand_);
+                    // console.log(flsh_track_,flsh_strand_);
                     let datas =  {
                         id: self.state.id,
                         lrn: self.state.lrn, 
@@ -778,7 +783,9 @@ export default class Movement extends Component {
                         selectedGradeLevel: self.state.selectedGradeLevel,
                         flsh_semester: self.state.flsh_semester_,
                         flsh_track: self.state.flsh_track_,
+                        flsh_track_id: flsh_track_.id,
                         flsh_strand: self.state.flsh_strand_,
+                        flsh_strand_id: flsh_strand_.id,
                         repeater: repeater,
                         elglc:elglc,
                         elsyc:elsyc,
@@ -786,10 +793,10 @@ export default class Movement extends Component {
                         lesa_school_id:lesa_school_id,
                         transferee: self.state.transferee
                     };
-                    console.log(datas);
+                    // console.log(datas);
                     axios.post('/admin/update/student/movemet',datas).then(function (response) {
                         // handle success
-                        console.log(response);
+                        // console.log(response);
                             if( typeof(response.status) != "undefined" && response.status == "201" ) {
                                 let data = typeof(response.data) != "undefined" && typeof(response.data)!="undefined"?response.data:{};
                                 if(data.status == "success") {
@@ -868,50 +875,66 @@ export default class Movement extends Component {
                                 }
                             }
                     }).catch(function (error) {
-                    // handle error
-                    console.log(error);
-                    // Swal.fire({  
-                    //     title: "Server Error", 
-                    //     showCancelButton: true,
-                    //     showConfirmButton: false,
-                    //     allowOutsideClick: false,
-                    //     allowEscapeKey: false,
-                    //     cancelButtonText: "Ok",
-                    //     confirmButtonText: "Continue",
-                    //     confirmButtonColor: "#DD6B55",
-                    //     icon: "error",
-                    //     showLoaderOnConfirm: true, 
-                    //     closeOnClickOutside: false,  
-                    //     dangerMode: true,
-                    // });
-                    try {
-                        if( typeof(error.status) != "undefined" && error.status == "422" ) {
-                            let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
-                            let listmessage = "";
+                        // handle error
+                        // console.log(error);
+                        // Swal.fire({  
+                        //     title: "Server Error", 
+                        //     showCancelButton: true,
+                        //     showConfirmButton: false,
+                        //     allowOutsideClick: false,
+                        //     allowEscapeKey: false,
+                        //     cancelButtonText: "Ok",
+                        //     confirmButtonText: "Continue",
+                        //     confirmButtonColor: "#DD6B55",
+                        //     icon: "error",
+                        //     showLoaderOnConfirm: true, 
+                        //     closeOnClickOutside: false,  
+                        //     dangerMode: true,
+                        // });
+                        try {
+                            if( typeof(error.status) != "undefined" && error.status == "422" ) {
+                                let data = typeof(error.response.data) != "undefined" && typeof(error.response.data)!="undefined"?error.response.data:{};
+                                let listmessage = "";
 
-                            if(Object.keys(data.errors).length> 0) {
-                                Object.keys(data.errors).forEach(element => {
-                                    listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                if(Object.keys(data.errors).length> 0) {
+                                    Object.keys(data.errors).forEach(element => {
+                                        listmessage+=`<li class="list-group-item">${data.errors[element][0]}\n</li>`
+                                    });
+                                }
+
+                                Swal.fire({  
+                                    title: data.message ,
+                                    html:`<ul class="list-group" >${listmessage}</ul>`, 
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    cancelButtonText: "Ok",
+                                    confirmButtonText: "Continue",
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
+                                });
+
+                            } else {
+                                Swal.fire({  
+                                    title: "Server Error", 
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    cancelButtonText: "Ok",
+                                    confirmButtonText: "Continue",
+                                    confirmButtonColor: "#DD6B55",
+                                    icon: "error",
+                                    showLoaderOnConfirm: true, 
+                                    closeOnClickOutside: false,  
+                                    dangerMode: true,
                                 });
                             }
-
-                            Swal.fire({  
-                                title: data.message ,
-                                html:`<ul class="list-group" >${listmessage}</ul>`, 
-                                showCancelButton: true,
-                                showConfirmButton: false,
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                cancelButtonText: "Ok",
-                                confirmButtonText: "Continue",
-                                confirmButtonColor: "#DD6B55",
-                                icon: "error",
-                                showLoaderOnConfirm: true, 
-                                closeOnClickOutside: false,  
-                                dangerMode: true,
-                            });
-
-                        } else {
+                        } catch (error) {
                             Swal.fire({  
                                 title: "Server Error", 
                                 showCancelButton: true,
@@ -927,22 +950,6 @@ export default class Movement extends Component {
                                 dangerMode: true,
                             });
                         }
-                    } catch (error) {
-                        Swal.fire({  
-                            title: "Server Error", 
-                            showCancelButton: true,
-                            showConfirmButton: false,
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            cancelButtonText: "Ok",
-                            confirmButtonText: "Continue",
-                            confirmButtonColor: "#DD6B55",
-                            icon: "error",
-                            showLoaderOnConfirm: true, 
-                            closeOnClickOutside: false,  
-                            dangerMode: true,
-                        });
-                    }
                     })
                 } else if(result.isDismissed) {
 
@@ -950,7 +957,7 @@ export default class Movement extends Component {
                 return false
             });            
         } else {
-            console.log("aw",self.state.selectedGradeLevel);
+            // console.log("aw",self.state.selectedGradeLevel);
             if(self.state.schoolRegistry.school_year == "") {
                 $("#sy-alert").removeAttr('class');
                 $("#sy-alert").html('Required Field');
