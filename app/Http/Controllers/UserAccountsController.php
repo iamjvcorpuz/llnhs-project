@@ -89,6 +89,10 @@ class UserAccountsController extends Controller
             $user_type = $roles[0]->name;
         }
 
+        if($user_type == "" || $user_type == null) {
+            $user_type = $request->user_type;
+        }
+
         $users_ids = DB::table('user_accounts')->where('user_id', $request->id)->where('user_type', $user_type)->get();
 
         if($users_ids->count()==0){
@@ -102,7 +106,7 @@ class UserAccountsController extends Controller
                 'plainpassword' => $request->password,
                 'verified' => null
             ])->create();
-            DB::table('holidays')->where('id', $user_accounts->id)->update(['uuid' => $user_accounts->id]);
+            DB::table('user_accounts')->where('id', $user_accounts->id)->update(['uuid' => $user_accounts->id]);
             return response()->json([
                 'status' => 'success',
                 'error' => null,

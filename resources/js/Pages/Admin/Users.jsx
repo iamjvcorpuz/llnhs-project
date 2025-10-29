@@ -562,6 +562,7 @@ export default class Users extends Component {
         }
         return initials;
     }
+
     capitalizeFirstLetter(string_) {
         let string = string_;
         if (typeof string !== 'string' || string.length === 0) {
@@ -570,6 +571,7 @@ export default class Users extends Component {
         string = string_.toLowerCase();
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
+    
     render() {
         return <DashboardLayout title="User" user={this.props.auth.user}>
             <div className="app-content-header"> 
@@ -678,7 +680,7 @@ export default class Users extends Component {
                                             } else {
                                                 default_password = default_username;
                                             }
-                                            console.log(default_username,default_password)
+                                            // console.log(default_username,default_password)
                                             $('#utype').val(a.user_type.toUpperCase());
                                             $('#nusername').val(default_username);
                                             $('#npassword').val(default_password);
