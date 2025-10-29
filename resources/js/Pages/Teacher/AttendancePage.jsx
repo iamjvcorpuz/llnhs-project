@@ -1041,7 +1041,7 @@ export default class AttendancePage extends Component {
                                                             <img src="/images/student_chair.png" id={`col_${b}_row_${a}_chair`} className={`student_chair seat_${count_+1}`} alt="" />
                                                             {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<img id={`picture_col_${b}_row_${a}_count`} src={`/profile/photo/student/${this.state.seats.find(e=>e.seat_number==(count_+1)).lrn}`} onError={e=>{return e.target.src = '/adminlte/dist/assets/img/avatar.png'}} className="attendance_prof_img rounded-circle auto-margin-lr" alt=""  />:null}
                                                         </div>
-                                                        {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<><label id={`col_${b}_row_${a}_name`} className="badge text-bg-success" >{this.state.seats.find(e=>e.seat_number==(count_+1)).last_name}</label><br /></>:<></>}
+                                                        {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<><label id={`col_${b}_row_${a}_name`} className="badge text-bg-success" title={this.state.seats.find(e=>e.seat_number==(count_+1)).fullname} >{this.state.seats.find(e=>e.seat_number==(count_+1)).last_name}</label><br /></>:<></>}
                                                         <label id={`col_${b}_row_${a}_count`} className="badge text-bg-primary" ># {count_+1}</label>
                                                         
                                                         {(typeof(student_data)!="undefined")?<div>
