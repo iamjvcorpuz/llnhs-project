@@ -420,7 +420,7 @@ export default class AssignSeats extends Component {
                                                                 {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<img src="/adminlte/dist/assets/img/avatar.png" className="attendance_prof_img rounded-circle shadow auto-margin-lr" alt=""  />:null}
                                                                 {/* <img src="/adminlte/dist/assets/img/avatar.png" className="attendance_prof_img rounded-circle shadow auto-margin-lr" alt=""  /> */}
                                                             </div>
-                                                            {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<><label id={`col_${b}_row_${a}_name`} className="badge text-bg-success" >{this.state.seats.find(e=>e.seat_number==(count_+1)).fullname}</label><br /></>:<></>}
+                                                            {(this.state.seats.length>0&&this.state.seats.find(e=>e.seat_number==(count_+1))!=undefined)?<><label id={`col_${b}_row_${a}_name`} className="badge text-bg-success" title={this.state.seats.find(e=>e.seat_number==(count_+1)).fullname} >{this.state.seats.find(e=>e.seat_number==(count_+1)).last_name}</label><br /></>:<></>}
                                                             <label id={`col_${b}_row_${a}_count`} className="badge text-bg-primary" ># {count_+1}</label>
                                                             <div>
                                                             {(this.state.seats.length==0||this.state.seats.find(e=>e.seat_number===(count_+1))==undefined)?<button id={`bx_${count_+1}`} className="btn btn-xs btn-success" onClick={() => {
