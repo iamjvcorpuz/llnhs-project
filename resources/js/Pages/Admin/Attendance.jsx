@@ -67,7 +67,7 @@ export default class Attendance extends Component {
                     filterable: true
                 },  
                 {
-                    Header: 'Student Name', 
+                    Header: 'Fullname', 
                     accessor: 'logs',
                     className: "text-wrap",
                     width: 800,
@@ -76,9 +76,9 @@ export default class Attendance extends Component {
                         let key = row.original.id;
                         let date = row.original.date;
                         let filter_redundunt = [];
-                        if(typeof(row.original) != "undefined") {
+                        if(typeof(row.original) != "undefined" && row.original.logs.length > 0) {
                             timelogs = row.original.logs.map((element1,i1) => {
-                                if( typeof(element1.logs) !="undefined" &&  element1.logs.length > 0) {
+                                if( typeof(element1.logs) != "undefined" &&  element1.logs.length > 0) {
                                     return element1.logs.map((element,i) => {
                                         if(element.date == date) {
                                             if(filter_redundunt.includes(element1.fullname) == false){
@@ -99,6 +99,48 @@ export default class Attendance extends Component {
                     return <div key={`t_${key}`}> 
                         {timelogs}
                     </div>            
+                    }
+                }
+            ],
+            columns_classroom_status_monthly_no_qr: [
+                {
+                    Header: 'Date', 
+                    width: 200,
+                    accessor: 'date',
+                    className: "text-start",
+                    filterable: true
+                },  
+                {
+                    Header: 'Day', 
+                    width: 100,
+                    accessor: 'day',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Fullname', 
+                    accessor: 'attendees',
+                    className: "text-wrap",
+                    width: 800,
+                    Cell: ({row}) => {  
+                        let timelogs = "";
+                        let key = row.original.id;
+                        let date = row.original.date;
+                        let filter_redundunt = []; 
+                        if(typeof(row.original) != "undefined" && row.original.attendees.length > 0) {
+                            timelogs = row.original.attendees.map((element1,i1) => {
+                                if(element1.attendance_status == "absent") {
+                                    return <div key={`xt_${i1}`} title="Absent" className={"btn btn-xs btn-danger mr-1"} >{element1.fullname}</div>;
+                                } else if(element1.attendance_status == "present") {
+                                    return <div key={`xt_${i1}`} title="Present" className={"btn btn-xs btn-success mr-1"} >{element1.fullname}</div>;
+                                } else {
+                                    return <></>;
+                                }
+                            });
+                        }
+                        return <div key={`t_${key}`}> 
+                            {timelogs}
+                        </div>            
                     }
                 }
             ],
@@ -150,7 +192,7 @@ export default class Attendance extends Component {
             ],
             columns_classroom_status_daily: [ 
                 {
-                    Header: 'Student Name', 
+                    Header: 'Fullname', 
                     accessor: 'fullname',
                     className: "text-wrap",
                     filterable: true,
@@ -249,6 +291,79 @@ export default class Attendance extends Component {
                     className: "text-wrap center",
                     filterable: true,
                     width: 350
+                },
+                {
+                    Header: 'Status',  
+                    accessor: '_id',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 200, Cell: ({row}) => {   
+                        if(row.original.absent == 0 && row.original.present == 0 && row.original.tardy == 0) {
+                            return <div title="Absent" className={"btn btn-xs btn-dark mr-1"} >No Attendance</div>;
+                        } else if(row.original.absent > 0) {
+                            return <div title="Absent" className={"btn btn-xs btn-danger mr-1"} >ABSENT</div>;
+                        } else if(row.original.present > 0) { 
+                            return <div title="Present" className={"btn btn-xs btn-success mr-1"} >PRESENT</div>;
+                        }
+                    }
+                }
+            ],
+            columns_classroom_status_daily_employee: [ 
+                {
+                    Header: 'Date', 
+                    width: 160,
+                    accessor: 'date',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Day', 
+                    width: 100,
+                    accessor: 'day',
+                    className: "text-center",
+                    filterable: true
+                },  
+                {
+                    Header: 'Time Logs', 
+                    accessor: 'logs',
+                    className: "text-wrap center",
+                    filterable: true,
+                    width: 350,
+                    Cell: ({row}) => {
+                        let key = row.original.id;
+                        let date = row.original.date;
+                        let filter_redundunt = [];
+                        let timelogs = <div key={`xt_${key}_no_times`} className={`text-center col-12  btn btn-xs btn-danger mr-1`} >No Timelogs</div>;
+                        let attendancestatus = $('input:radio[name="attendancestatus"]:checked').val();
+                        if(typeof(row.original) != "undefined" && typeof(row.original.logs) != "undefined" && row.original.logs.length > 0) { 
+                            timelogs = row.original.logs.map((element1,i1) => {
+                                if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && (element1.mode == "IN" || element1.mode == "OUT")) {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time} - {(element1.terminal!="web")?element1.terminal:""}</div>;
+                                } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && (element1.mode == "late" || element1.mode == "tardy")) {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="late"?'warning':'info')} mr-1`} >{element1.mode.toUpperCase()}: {element1.time} - {(element1.terminal!="web")?element1.terminal:""} {(element1.terminal=="web")?element1.subject:""}</div>;
+                                } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "all" && (element1.mode == "present" || element1.mode == "tardy")) {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="present"?'success':'info')} mr-1`} >{element1.mode.toUpperCase()}: {element1.time} - {(element1.terminal!="web")?element1.terminal:""} {(element1.terminal=="web")?element1.subject:""}</div>;
+                                } else if(typeof(attendancestatus) != "undefined" && attendancestatus == "all" && element1.mode == "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-danger mr-1`} >Absent</div>;
+                                } else if( typeof(attendancestatus) != "undefined" && attendancestatus == "present" && element1.mode != "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-${(element1.mode=="IN"?'success':'info')} mr-1`} >TIME {element1.mode}: {element1.time}  - {element1.terminal}</div>;
+                                } else if(typeof(attendancestatus) != "undefined"  && attendancestatus == "absent" && element1.mode == "absent") {
+                                    return <div key={`xt_${key}_${i1}`} className={`text-center btn btn-xs col-12 btn-danger mr-1`} >Absent</div>;
+                                }
+
+                            });                            
+                        }
+                    return <div key={`t_m_s${key}`}> 
+                        {timelogs}
+                    </div>            
+                    }
+                },
+                {
+                    Header: 'Fullname', 
+                    accessor: 'fullname',
+                    className: "text-wrap",
+                    filterable: true,
+                    width: 400
                 },
                 {
                     Header: 'Status',  
@@ -400,6 +515,38 @@ export default class Attendance extends Component {
                                 month: self.state.selectedMonthYear
                             });
                         }
+                    } else if(calendar == "monthly" &&  self.state.selectedQr == "") {
+                        // let temp_list = [];
+                        for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                            let atten = [];
+                            let day_ = moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd');
+                            data.forEach(element => {
+                                if(typeof(element.logs) !="undefined" && element.logs.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
+                                    try {
+                                        if( typeof(attendancestatus) != "undefined" && (attendancestatus == "present" || attendancestatus == "all")) {
+                                            atten.push({...element,attendance_status:"present"});
+                                        }
+                                    } catch (error) {
+                                        
+                                    }
+                                } else {
+                                    if( day_ != "Sat" && day_ != "Sun") {
+                                        if( typeof(attendancestatus) != "undefined" && (attendancestatus == "absent" || attendancestatus == "all")) {
+                                            atten.push({...element,attendance_status:"absent"});
+                                        }
+                                    }
+                                }
+                            }); 
+                            temp_list.push({
+                                id: `list1_` +index+1,
+                                date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                day: day_,
+                                attendees: atten,
+                                month: self.state.selectedMonthYear
+                            });                                
+                        }
+                        // console.log(temp_list);
+                        // self.setState({data: temp_list ,loading: false}); 
                     } else {
                         for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
                             let atten = [];
@@ -525,12 +672,16 @@ export default class Attendance extends Component {
         // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear},this.state.selectedID);
         // console.log({qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear,calendar:calendar})
         $("#printbtn").attr("href",`/admin/attendance/print/${this.state.queryType}/${this.state.selectedQr}/${this.state.selectedMonthYear}`);
-        self.setState({loading: true});
-        if(this.state.queryType == "student" && calendar == "monthly" && this.state.selectedQr == "") {
-            ReactNotificationManager.error('Sorry','Please select Student if you filter for monthly')
-            self.setState({loading: false,data: [],data_temp: []});
-            return;
-        }
+        self.setState({loading: true,data:[]});
+        // if(this.state.queryType == "student" && calendar == "monthly" && this.state.selectedQr == "") {
+        //     ReactNotificationManager.error('Sorry','Please select Student if you filter for monthly')
+        //     self.setState({loading: false,data: [],data_temp: []});
+        //     return;
+        // } else  if(this.state.queryType == "employee" && calendar == "monthly" && this.state.selectedQr == "") {
+        //     ReactNotificationManager.error('Sorry','Please select Employee if you filter for monthly')
+        //     self.setState({loading: false,data: [],data_temp: []});
+        //     return;
+        // }
         if( typeof(this.state.selectedMonthYear) != "undefined" && this.state.selectedQr != "" && this.state.queryType != "" && this.state.selectedMonthYear != "") {
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
                 // console.log(response)
@@ -538,7 +689,7 @@ export default class Attendance extends Component {
                     let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
                     // console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                        if(calendar == "monthly") {
+                        if(calendar == "monthly" &&  self.state.selectedQr != "") {
                             let temp_list = [];
 
                             for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
@@ -562,6 +713,33 @@ export default class Attendance extends Component {
                             // console.log(temp_list);
                             self.setState({data: temp_list,data_temp: temp_list ,loading: false});
 
+                        } else if(calendar == "monthly" &&  self.state.selectedQr == "") {
+                            let temp_list = [];
+
+                            for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                                let atten = [];
+                                data.forEach(element => {
+                                    if(element.logs.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
+                                        try {
+                                            atten.push({...element,attendance_status:"present"});
+                                        } catch (error) {
+                                            
+                                        }
+                                    } else {
+                                        atten.push({...element,attendance_status:"absent"});
+                                    }
+                                });
+                                temp_list.push({
+                                    id: `list1_` +index+1,
+                                    date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                    day: moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd'),
+                                    attendees: atten,
+                                    month: self.state.selectedMonthYear
+                                });                                
+                            }
+                            console.log(temp_list);
+                            self.setState({data: temp_list,data_temp: temp_list ,loading: false});
+
                         } else if(calendar == "daily") {
                             self.setState({data: data,data_temp: data ,loading: false});
                         } else {
@@ -576,10 +754,10 @@ export default class Attendance extends Component {
             axios.post('/attendance/filter/time/logs',{qrcode: this.state.selectedQr,type: this.state.queryType ,date:this.state.selectedMonthYear}).then(function (response) {
                 // console.log(response)
                 if( typeof(response.status) != "undefined" && response.status == "200" ) {
-                    let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:{};
+                    let data = typeof(response.data) != "undefined" && typeof(response.data.data)!="undefined"?response.data.data:[];
                     // console.log("aw",response.data.status,data);
                     if(typeof(response.data)!="undefined"&&response.data.status == "success") {
-                        if(calendar == "monthly") {
+                        if(calendar == "monthly" &&  self.state.selectedQr != "") {
                             let temp_list = [];
 
                             for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
@@ -600,6 +778,36 @@ export default class Attendance extends Component {
                                 });                               
                             }
                             self.setState({data: temp_list,data_temp: temp_list ,loading: false});
+                        } else if(calendar == "monthly" &&  self.state.selectedQr == "") {
+                            let temp_list = [];
+
+                            for (let index = 0; index < moment(self.state.selectedMonthYear).daysInMonth(); index++) {
+                                let atten = [];
+                                let day_ = moment(`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`).format('ddd');
+                                data.forEach(element => {
+                                    if( typeof(element.logs) !="undefined" && element.logs.some(e=>e.date==`${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`)) { 
+                                        try {
+                                            atten.push({...element,attendance_status:"present"});
+                                        } catch (error) {
+                                            
+                                        }
+                                    } else {
+                                        if( day_ != "Sat" && day_ != "Sun") {
+                                            atten.push({...element,attendance_status:"absent"});
+                                        }
+                                    }
+                                }); 
+                                temp_list.push({
+                                    id: `list1_` +index+1,
+                                    date: `${self.state.selectedMonthYear}-${String(index+1).padStart(2, '0')}`,
+                                    day: day_,
+                                    attendees: atten,
+                                    month: self.state.selectedMonthYear
+                                });                                
+                            }
+                            // console.log(temp_list);
+                            self.setState({data: temp_list,data_temp: data ,loading: false});
+
                         } else {
 
 
@@ -996,7 +1204,43 @@ export default class Attendance extends Component {
                                         key={"react-tables2"}
                                         className={"table table-bordered table-striped "}
                                         data={this.state.data} 
-                                        columns={this.state.columns_classroom_status_monthly}
+                                        columns={this.state.columns_classroom_status_monthly_no_qr}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="employee"&&this.state.selectedQr!=""&&this.state.calendar=="monthly")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_monthly_by_student}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="employee"&&this.state.selectedQr!=""&&this.state.calendar=="daily")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="employee"&&this.state.selectedQr==""&&this.state.calendar=="daily")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_daily_employee}
+                                        defaultPageSize={31}
+                                        showPagenation={false}
+                                        loading={this.state.loading}
+                                    />:null}
+                                    {(this.state.queryType=="employee"&&this.state.selectedQr==""&&this.state.calendar=="monthly")?<ReactTable
+                                        key={"react-tables2"}
+                                        className={"table table-bordered table-striped "}
+                                        data={this.state.data} 
+                                        columns={this.state.columns_classroom_status_monthly_no_qr}
                                         defaultPageSize={31}
                                         showPagenation={false}
                                         loading={this.state.loading}
