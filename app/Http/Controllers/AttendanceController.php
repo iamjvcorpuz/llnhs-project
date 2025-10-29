@@ -501,6 +501,7 @@ class AttendanceController extends Controller
                         $object->section_grade = $svalue->grade . " " . $svalue->section . " " . $svalue->sy;
                         $object->absent = $absent;
                         $object->tardy = $tardy;
+                        $object->logs = [];
                         
                         array_push($map_attendance,$object);
                     } else if(count($check_timelogs) == 0 && count($logs_temp) == 0) {
@@ -520,6 +521,7 @@ class AttendanceController extends Controller
                         $object->absent = $absent;
                         $object->tardy = $tardy;
                         $object->present = $present;
+                        $object->logs = [];
                         
                         array_push($map_attendance,$object);
                     }
@@ -652,33 +654,245 @@ class AttendanceController extends Controller
                 // echo "tae4";
             }
         } else if($request->type == "employee") {
-            $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
-            if(count($logs) > 0) {
-                $start_date = current($logs)->date; 
-                $dates = $start_date; 
-                $month = date("Y-m", strtotime($dates));
-                $map_attendance_timelogs = [];
-                foreach ($logs as $key => $value) {
-                    if($dates == $value->date) {
-                        array_push($map_attendance_timelogs, $value);
-                        if ($key === array_key_last($logs)) {
+            if($request->qrcode != "" && $fulldays == false) {
+                $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND (qr_code = ? OR teacher_id = ?)",[$request->date,$request->qrcode,$request->qrcode]);
+                if(count($logs) > 0) {
+                    $start_date = current($logs)->date; 
+                    $dates = $start_date; 
+                    $month = date("Y-m", strtotime($dates));
+                    $map_attendance_timelogs = [];
+                    foreach ($logs as $key => $value) {
+                        if($dates == $value->date) {
+                            array_push($map_attendance_timelogs, $value);
+                            if ($key === array_key_last($logs)) {
+                                array_push($map_attendance, (object)[
+                                    'date' => $dates,
+                                    'month' => $month,
+                                    'logs' => $map_attendance_timelogs
+                                ]);
+                            }
+                        } else if($dates != $value->date) {
                             array_push($map_attendance, (object)[
                                 'date' => $dates,
                                 'month' => $month,
                                 'logs' => $map_attendance_timelogs
                             ]);
+                            $map_attendance_timelogs = [];
+                            $dates = $value->date;
+                            array_push($map_attendance_timelogs, $value);
                         }
-                    } else if($dates != $value->date) {
-                        array_push($map_attendance, (object)[
-                            'date' => $dates,
-                            'month' => $month,
-                            'logs' => $map_attendance_timelogs
-                        ]);
-                        $map_attendance_timelogs = [];
-                        $dates = $value->date;
-                        array_push($map_attendance_timelogs, $value);
                     }
                 }
+            } else if($request->qrcode != "" && $fulldays == true) {
+                // echo "tae2";
+                $logs = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$request->qrcode]);
+                $logs_has_attendance = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? ;",[$request->date,]);
+                if(count($logs) > 0) {
+                    $start_date = current($logs)->date; 
+                    $dates = $start_date; 
+                    $month = date("Y-m", strtotime($dates));
+                    $map_attendance_timelogs = [];
+                    $map_attendance = $logs;
+                } else if(count($logs) == 0) {
+                    if(count($logs_has_attendance) > 0) {
+                        $object = new stdClass();
+                        $object->terminal = "";
+                        $object->terminal_id = "";
+                        $object->date = "";
+                        $object->day = "";
+                        $object->time = "";
+                        $object->mode = "absent";
+                        $object->status = "absent";
+                        array_push($map_attendance, $object);
+                    }
+                }
+            } else if($request->qrcode == "" && $fulldays == false) {
+                // echo "tae3";
+                // multiple student
+                $map_list = EmployeeController::getAllTeacher();
+
+                // echo "<pre>";
+                // print_r($map_student_list);
+                // echo "</pre>";
+                $attendance = array();
+                
+                foreach ($map_list as $key => $svalue) {
+
+                    $logs_temp = [];
+                    $check_timelogs = [];
+                    if($fulldays==false) {
+                        $logs_temp = DB::select("SELECT * FROM attendance WHERE (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);
+                        $check_timelogs = DB::select("SELECT * FROM attendance WHERE  (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m') = ?",[$request->date,]);
+                    } else if($fulldays==true) {
+                        $logs_temp = DB::select("SELECT * FROM attendance WHERE  (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);   
+                        $check_timelogs = DB::select("SELECT * FROM attendance WHERE  (type = 'employee' OR type = 'teacher') AND DATE_FORMAT(`date`, '%Y-%m-%d') = ?",[$request->date]);                        
+                    } 
+
+                    if(count($logs_temp)>0) {
+
+                        $absent = 0;
+                        $tardy = 0;
+                        $present = 1;
+                        
+                        $object = new stdClass();
+                        $object->_id = $svalue->uuid;
+                        $object->lrn = $svalue->qr_code;
+                        $object->profileImageBase64 = $svalue->uuid;
+                        $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                        $object->idnumber = $svalue->qr_code;
+                        $object->logger_type = "employee";
+                        $object->section_grade = "";
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+                        $object->logs = $logs_temp;
+                        
+                        array_push($map_attendance,$object);
+
+                        // array_push($logs, $logs_temp);
+                    } else if(count($check_timelogs)>0) {
+
+                        $absent = 1;
+                        $tardy = 0;
+                        $present = 0;
+                        
+                        $object = new stdClass();
+                        $object->_id = $svalue->uuid;
+                        $object->lrn = $svalue->qr_code;
+                        $object->profileImageBase64 = $svalue->uuid;
+                        $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                        $object->idnumber = $svalue->qr_code;
+                        $object->logger_type = "employee";
+                        $object->section_grade = "";
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->logs = [];
+                        
+                        array_push($map_attendance,$object);
+                    } else if(count($check_timelogs) == 0 && count($logs_temp) == 0) {
+
+                        $absent = 0;
+                        $tardy = 0;
+                        $present = 0;
+                        
+                        $object = new stdClass();
+                        $object->_id = $svalue->uuid;
+                        $object->lrn = $svalue->qr_code;
+                        $object->profileImageBase64 = $svalue->uuid;
+                        $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                        $object->idnumber = $svalue->qr_code;
+                        $object->logger_type = "student";
+                        $object->section_grade = "";
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+                        $object->logs = [];
+                        
+                        array_push($map_attendance,$object);
+                    }
+
+                }
+
+            } else if($request->qrcode == "" && $fulldays == true) {
+                // echo "tae3";
+                // multiple student
+                $map_list = EmployeeController::getAllTeacher();
+
+                $attendance = array();
+                
+                
+                foreach ($map_list as $key => $svalue) {
+
+                    $date = new DateTime($request->date);
+                    $dayOfWeek = $date->format('D');
+
+                    $logs_temp = [];
+                    $timelogs = [];
+
+                    $absent = 0;
+                    $tardy = 0;
+                    $present = 0;
+
+                    $logs_temp = DB::select("SELECT * FROM attendance WHERE type = 'student' AND DATE_FORMAT(`date`, '%Y-%m-%d') = ? AND qr_code = ?",[$request->date,$svalue->qr_code]);  
+
+                    $object = new stdClass();
+                    $object->_id = $svalue->uuid;
+                    $object->lrn = $svalue->qr_code;
+                    $object->profileImageBase64 = $svalue->uuid;
+                    $object->fullname = $svalue->first_name . " " . $svalue->last_name;
+                    $object->idnumber = $svalue->qr_code;
+                    $object->logger_type = "employee";
+                    $object->section_grade = "";
+                    $object->grade = "";
+                    $object->section = "";
+                    $object->sy = "";
+                    $object->date = $request->date;
+                    $object->day = $dayOfWeek;
+                    $object->absent = $absent;
+                    $object->tardy = $tardy;
+                    $object->present = $present;
+                    $object->logs = [];
+
+                    if(count($logs_temp)>0) {
+                        $present = 1;
+                        $absent = 0;
+                        $object->day = $dayOfWeek;
+                        $absent_ = 0;
+                        $tardy_ = 0;
+                        $present_ = 1;
+                        $map_temp_attendance = [];
+                        foreach($logs_temp as $key_ => $value_) {
+                            $object_logs = new stdClass(); 
+                            
+                            $date = new DateTime($value_->date);
+                            $dayOfWeek = $date->format('D');
+                            $object_logs->absent = $absent_;
+                            $object_logs->tardy = $tardy_;
+                            $object_logs->present = $present_;
+                            $object_logs->terminal = $value_->terminal;
+                            $object_logs->terminal_id = $value_->terminal_id;
+                            $object_logs->date = $value_->date;
+                            $object_logs->day = $dayOfWeek;
+                            $object_logs->time = $value_->time;
+                            $object_logs->mode = $value_->mode;
+                            $object_logs->subject = "";
+                            if($value_->mode == "absent") {
+                                $absent = 1;
+                                $present = 0;
+                            }
+                            if($value_->teacher_id != null) {
+                                $temp = explode('_',$value_->terminal_id); 
+                                if( count($temp) > 0 && gettype($temp[2]) != null) {
+                                    $subject = DB::select("SELECT * FROM class_teaching WHERE uuid = ? ",[$temp[2]]);
+                                    if(count($subject)>0) {
+                                        $object_logs->subject = $subject[0]->subject_name;
+                                    }
+                                }
+                            }
+
+                            array_push($map_temp_attendance,$object_logs);                            
+                        }
+                        
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+                        $object->logs = $map_temp_attendance;
+
+                        array_push($map_attendance, $object);
+                    } else {
+
+                        $present = 0;
+                        $absent = 1;
+                        
+                        $object->absent = $absent;
+                        $object->tardy = $tardy;
+                        $object->present = $present;
+
+                        array_push($map_attendance, $object);
+                    }
+
+                }
+
             }
         }
 
@@ -939,7 +1153,7 @@ class AttendanceController extends Controller
                 $messenger_id = $contacts[0]->messenger_id;
                 $messenger_name = $contacts[0]->messenger_name;
             }
-        } else if($userdata['type'] == "teacher") {
+        } else if($userdata['type'] == "teacher" || $userdata['type'] == "employee" ) {
             $teacher_id = $userdata['id'];
         }
         // echo "<pre>";
@@ -1026,8 +1240,8 @@ class AttendanceController extends Controller
                 Process::start($command);
             }
             // --------------------------------------------------------------------------------------------------------------------------------------
-        } else if($userdata['type'] == "teacher") {
-            $logs = DB::select('SELECT * FROM attendance WHERE type = "student" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
+        } else if($userdata['type'] == "teacher" || $userdata['type'] == "employee" ) {
+            $logs = DB::select('SELECT * FROM attendance WHERE type = "teacher" AND date = ? AND qr_code = ?',[$logsdata['date'],$logsdata['code']]);
         }
 
 
