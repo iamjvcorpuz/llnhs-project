@@ -16,7 +16,7 @@ export default class Default extends Component {
         this.state = {
             
         }
-        console.log(this);
+        // console.log(this);
     }
     render() {
         return <LoginLayout>
