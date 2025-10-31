@@ -48,7 +48,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $userd,
                 'profile' => $profile,
-                'varsion' => env('VERSION',"v0.8.7")
+                'varsion' => env('VERSION',"v1.0.9")
             ],
         ];
     }

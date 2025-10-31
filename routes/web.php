@@ -958,6 +958,10 @@ Route::get('/employeeattendance', function () {
     return Inertia::render('EmployeeAttendance',['props' => null,]);
 })->middleware(['auth', 'verified']);
 
+// Route::fallback(function () {
+//     return Inertia::render('Errors/Default');
+// });
+
 require __DIR__.'/auth.php';
 require __DIR__.'/api.php';
 require __DIR__.'/fb.php';

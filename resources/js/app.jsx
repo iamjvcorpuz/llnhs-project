@@ -23,7 +23,7 @@ $.fn.select2.defaults.set( "theme", "bootstrap" );
 import DataTable from 'datatables.net';
 window.DataTable = DataTable;
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'llnhs';
  
 const cleanApp = () => { 
     document.getElementById('llnhs-app').removeAttribute('data-page');
@@ -35,8 +35,12 @@ createInertiaApp({
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,
-            import.meta.glob('./Pages/**/*.jsx'),
-        ),
+            import.meta.glob('./Pages/**/*.jsx'), 
+        ).catch(() => {
+            // Fallback to 404 if page not found
+            console.log("Test")
+            return resolvePageComponent('./Pages/Errors/404.jsx', import.meta.glob('./Pages/**/*.tsx'));
+        }),
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />); 
     },
